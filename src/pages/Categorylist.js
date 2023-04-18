@@ -25,7 +25,7 @@ const Categorylist = () => {
   const dispatch = useDispatch();
   useEffect(() => {
     dispatch(getpcategories());
-  });
+  }, []);
   const pcategorystate = useSelector((state) => state.pcategory.pcategories);
 
   const data = [];

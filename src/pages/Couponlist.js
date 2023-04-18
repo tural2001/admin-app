@@ -1,10 +1,11 @@
 import { Table } from 'antd';
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { Link } from 'react-router-dom';
+import { getAllCoupon } from '../features/coupon/couponSlice';
 import { BiEdit } from 'react-icons/bi';
 import { AiFillDelete } from 'react-icons/ai';
-import { getOrders } from '../features/auth/authSlice';
+import { Link } from 'react-router-dom';
+
 const columns = [
   {
     title: 'SNo',
@@ -13,18 +14,17 @@ const columns = [
   {
     title: 'Name',
     dataIndex: 'name',
+    sorter: (a, b) => a.name.length - b.name.length,
   },
   {
-    title: 'Product',
-    dataIndex: 'product',
+    title: 'Expiry',
+    dataIndex: 'expiry',
+    sorter: (a, b) => a.expiry.length - b.expiry.length,
   },
   {
-    title: 'Amount',
-    dataIndex: 'amount',
-  },
-  {
-    title: 'Date',
-    dataIndex: 'date',
+    title: 'Discount',
+    dataIndex: 'discount',
+    sorter: (a, b) => parseFloat(a.discount) - parseFloat(b.discount),
   },
   {
     title: 'Action',
@@ -32,27 +32,19 @@ const columns = [
   },
 ];
 
-const Orders = () => {
+const Couponlist = () => {
   const dispatch = useDispatch();
   useEffect(() => {
-    dispatch(getOrders());
+    dispatch(getAllCoupon());
   }, [dispatch]);
-  const orderState = useSelector((state) => state.auth.orders);
+  const couponState = useSelector((state) => state.coupon.coupons);
   const data = [];
-  for (let i = 0; i < orderState.length; i++) {
+  for (let i = 0; i < couponState.length; i++) {
     data.push({
       key: i + 1,
-      name: orderState[i].orderby.name,
-      product: orderState[i].products.map((i, j) => {
-        console.log(i.product);
-        return (
-          <ul key={j}>
-            <li>{i.product}</li>
-          </ul>
-        );
-      }),
-      amount: orderState[i].paymentIntent.amount,
-      date: new Date(orderState[i].createdAt).toLocaleString(),
+      name: couponState[i].name,
+      expiry: new Date(couponState[i].expiry).toLocaleString(),
+      discount: couponState[i].discount,
       action: (
         <>
           <Link to="/" className="fs-3 text-danger">
@@ -65,9 +57,10 @@ const Orders = () => {
       ),
     });
   }
+
   return (
     <div>
-      <h3 className="mb-4 title">Orders</h3>
+      <h3 className="mb-4 title">Coupons</h3>
       <div>
         <Table columns={columns} dataSource={data} />
       </div>
@@ -75,4 +68,4 @@ const Orders = () => {
   );
 };
 
-export default Orders;
+export default Couponlist;

@@ -16,6 +16,7 @@ import { createProducts } from '../features/product/productSlice';
 // import { Multiselect } from 'react-widgets';
 import { Select } from 'antd';
 import { toast } from 'react-toastify';
+import { resetState } from '../features/product/productSlice';
 
 let schema = yup.object({
   title: yup.string().required('Title is Required'),
@@ -98,7 +99,7 @@ const Addproduct = () => {
       formik.resetForm();
       setColor(null);
       setTimeout(() => {
-        navigate('/admin/list-product');
+        dispatch(resetState());
       }, 3000);
     },
   });
