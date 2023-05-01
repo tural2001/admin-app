@@ -34,11 +34,10 @@ const Addbrand = () => {
   useEffect(() => {
     if (getBrandId !== undefined) {
       dispatch(getABrand(getBrandId));
-      formik.values.title = brandName;
     } else {
       dispatch(resetState());
     }
-  }, [getBrandId]);
+  }, [dispatch, getBrandId]);
 
   useEffect(() => {
     if (isSuccess && createdBrand) {
@@ -51,7 +50,15 @@ const Addbrand = () => {
     if (isError) {
       toast.error('Something Went Wrong!');
     }
-  }, [isSuccess, isError, isLoading]);
+  }, [
+    isSuccess,
+    isError,
+    isLoading,
+    createdBrand,
+    updatedBrand,
+    brandName,
+    navigate,
+  ]);
 
   const formik = useFormik({
     enableReinitialize: true,
@@ -68,7 +75,7 @@ const Addbrand = () => {
         formik.resetForm();
         setTimeout(() => {
           dispatch(resetState());
-        }, 3000);
+        }, 300);
       }
     },
   });

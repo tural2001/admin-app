@@ -3,7 +3,6 @@ import CustomInput from '../components/CustomInput';
 import { useFormik } from 'formik';
 import * as yup from 'yup';
 import ReactQuill from 'react-quill';
-import { useNavigate } from 'react-router';
 import 'react-quill/dist/quill.snow.css';
 import { useDispatch, useSelector } from 'react-redux';
 import { getBrands } from '../features/brand/brandSlice';
@@ -35,15 +34,13 @@ let schema = yup.object({
 
 const Addproduct = () => {
   const dispatch = useDispatch();
-  const navigate = useNavigate();
   const [color, setColor] = useState([]);
-  const [images, setImages] = useState([]);
 
   useEffect(() => {
     dispatch(getBrands());
     dispatch(getpcategories());
     dispatch(getColors());
-  }, []);
+  }, [dispatch]);
 
   const brandState = useSelector((state) => state.brand.brands);
   const pcategorystate = useSelector((state) => state.pcategory.pcategories);

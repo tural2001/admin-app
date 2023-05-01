@@ -4,8 +4,13 @@ import { useDispatch, useSelector } from 'react-redux';
 import { toast } from 'react-toastify';
 import { useFormik } from 'formik';
 import * as yup from 'yup';
-import { resetState } from '../features/coupon/couponSlice';
+import {
+  getACoupon,
+  resetState,
+  updateACoupon,
+} from '../features/coupon/couponSlice';
 import { createCoupon } from '../features/coupon/couponSlice';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 let schema = yup.object({
   name: yup.string().required('Brand name is Required'),
@@ -15,37 +20,89 @@ let schema = yup.object({
 
 const AddCoupon = () => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const location = useLocation();
+  const getCouponId = location.pathname.split('/')[3];
+
   const newCoupon = useSelector((state) => state.coupon);
 
-  const { isSuccess, isError, isLoading, createdCoupon } = newCoupon;
+  const {
+    isSuccess,
+    isError,
+    isLoading,
+    createdCoupon,
+    couponName,
+    couponExpiry,
+    couponDiscount,
+    updatedCoupon,
+  } = newCoupon;
+
+  const changeDateFormat = (date) => {
+    const dateObj = new Date(date);
+    const year = dateObj.getFullYear();
+    const month = (dateObj.getMonth() + 1).toString().padStart(2, '0');
+    const day = dateObj.getDate().toString().padStart(2, '0');
+    return `${year}-${month}-${day}`;
+  };
+
+  useEffect(() => {
+    if (getCouponId !== undefined) {
+      dispatch(getACoupon(getCouponId));
+    } else {
+      dispatch(resetState());
+    }
+  }, [dispatch, getCouponId]);
+
   useEffect(() => {
     if (isSuccess && createdCoupon) {
       toast.success('Coupon Added Successfully!');
     }
+    if (isSuccess && updatedCoupon) {
+      toast.success('Coupon Updated Successfully!');
+      navigate('/admin/coupon-list');
+    }
     if (isError) {
       toast.error('Something Went Wrong!');
     }
-  }, [isSuccess, isError, isLoading, createdCoupon]);
+  }, [
+    isSuccess,
+    isError,
+    isLoading,
+    createdCoupon,
+    couponName,
+    updatedCoupon,
+    couponExpiry,
+    couponDiscount,
+    navigate,
+  ]);
 
   const formik = useFormik({
+    enableReinitialize: true,
     initialValues: {
-      name: '',
-      expiry: '',
-      discount: '',
+      name: couponName || '',
+      expiry: changeDateFormat(couponExpiry) || '',
+      discount: couponDiscount || '',
     },
     validationSchema: schema,
     onSubmit: (values) => {
-      dispatch(createCoupon(values));
-      formik.resetForm();
-      setTimeout(() => {
-        dispatch(resetState());
-      }, 3000);
+      if (getCouponId !== undefined) {
+        const data = { id: getCouponId, couponData: values };
+        dispatch(updateACoupon(data));
+      } else {
+        dispatch(createCoupon(values));
+        formik.resetForm();
+        setTimeout(() => {
+          dispatch(resetState());
+        }, 300);
+      }
     },
   });
 
   return (
     <div>
-      <h3 className="mb-4 title">Add Coupon</h3>
+      <h3 className="mb-4 title">
+        {getCouponId !== undefined ? 'Edit' : 'Add'} Coupon
+      </h3>
       <div>
         <form action="" onSubmit={formik.handleSubmit}>
           <CustomInput
@@ -89,7 +146,7 @@ const AddCoupon = () => {
             className="btn btn-success border-0 rounded-3 my-5"
             type="submit"
           >
-            Add Coupon
+            {getCouponId !== undefined ? 'Edit' : 'Add'} Coupon
           </button>
         </form>
       </div>

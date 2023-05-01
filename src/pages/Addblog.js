@@ -1,17 +1,17 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import CustomInput from '../components/CustomInput';
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 import Dropzone from 'react-dropzone';
-import { useNavigate } from 'react-router';
 import { deleteImg, uploadImg } from '../features/upload/uploadSlice';
 import { useFormik } from 'formik';
 import * as yup from 'yup';
 import { toast } from 'react-toastify';
 import { useDispatch, useSelector } from 'react-redux';
 import { getbcategories } from '../features/bcategory/bcategorySlice';
-import { createBlog } from '../features/blogs/blogSlice';
+import { createBlog, getABlog, updateABlog } from '../features/blogs/blogSlice';
 import { resetState } from '../features/blogs/blogSlice';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 let schema = yup.object({
   title: yup.string().required('Title is Required'),
@@ -23,26 +23,58 @@ let schema = yup.object({
 const Addblog = (e) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const [color, setColor] = useState([]);
-  const [images, setImages] = useState([]);
+  const location = useLocation();
+  const getBlogId = location.pathname.split('/')[3];
 
   useEffect(() => {
     dispatch(getbcategories());
-  }, []);
+  }, [dispatch]);
 
   const imgState = useSelector((state) => state.upload.images);
   const bcategoryState = useSelector((state) => state.bcategory.bcategories);
   const newBlog = useSelector((state) => state.blog);
 
-  const { isSuccess, isError, isLoading, createdProduct } = newBlog;
+  const {
+    isSuccess,
+    isError,
+    isLoading,
+    createdProduct,
+    blogName,
+    updatedBlog,
+    blogCategory,
+    blogDescription,
+  } = newBlog;
+
+  useEffect(() => {
+    if (getBlogId !== undefined) {
+      dispatch(getABlog(getBlogId));
+    } else {
+      dispatch(resetState());
+    }
+  }, [dispatch, getBlogId]);
+
   useEffect(() => {
     if (isSuccess && createdProduct) {
-      toast.success('Product Added Successfully!');
+      toast.success('Blog Added Successfully!');
+    }
+    if (isSuccess && updatedBlog !== undefined) {
+      toast.success('Blog Updated Successfully!');
+      navigate('/admin/blog-list');
     }
     if (isError) {
       toast.error('Something Went Wrong!');
     }
-  }, [isSuccess, isError, isLoading, createdProduct]);
+  }, [
+    isSuccess,
+    isError,
+    isLoading,
+    createdProduct,
+    blogName,
+    blogCategory,
+    blogDescription,
+    updatedBlog,
+    navigate,
+  ]);
 
   const img = [];
   imgState.forEach((i) => {
@@ -57,25 +89,33 @@ const Addblog = (e) => {
   }, [img]);
 
   const formik = useFormik({
+    enableReinitialize: true,
     initialValues: {
-      title: '',
-      description: '',
-      category: '',
+      title: blogName || '',
+      description: blogDescription || '',
+      category: blogCategory || '',
       images: '',
     },
     validationSchema: schema,
     onSubmit: (values) => {
-      dispatch(createBlog(values));
-      formik.resetForm();
-      setTimeout(() => {
-        dispatch(resetState());
-      }, 3000);
+      if (getBlogId !== undefined) {
+        const data = { id: getBlogId, blogData: values };
+        dispatch(updateABlog(data));
+      } else {
+        dispatch(createBlog(values));
+        formik.resetForm();
+        setTimeout(() => {
+          dispatch(resetState());
+        }, 300);
+      }
     },
   });
 
   return (
     <div>
-      <h3 className="mb-4 title">Add Blog</h3>
+      <h3 className="mb-4 title">
+        {getBlogId !== undefined ? 'Edit' : 'Add'} Blog
+      </h3>
 
       <div className="">
         <form action="" onSubmit={formik.handleSubmit}>
@@ -158,7 +198,7 @@ const Addblog = (e) => {
             className="btn btn-success border-0 rounded-3 my-5"
             type="submit"
           >
-            Add Blog
+            {getBlogId !== undefined ? 'Edit' : 'Add'} Blog
           </button>
         </form>
       </div>
