@@ -9,7 +9,11 @@ import * as yup from 'yup';
 import { toast } from 'react-toastify';
 import { useDispatch, useSelector } from 'react-redux';
 import { getbcategories } from '../features/bcategory/bcategorySlice';
-import { createBlog, getABlog, updateABlog } from '../features/blogs/blogSlice';
+import {
+  createABlog,
+  getABlog,
+  updateABlog,
+} from '../features/blogs/blogSlice';
 import { resetState } from '../features/blogs/blogSlice';
 import { useLocation, useNavigate } from 'react-router-dom';
 
@@ -38,7 +42,7 @@ const Addblog = (e) => {
     isSuccess,
     isError,
     isLoading,
-    createdProduct,
+    createdBlog,
     blogName,
     updatedBlog,
     blogCategory,
@@ -54,7 +58,7 @@ const Addblog = (e) => {
   }, [dispatch, getBlogId]);
 
   useEffect(() => {
-    if (isSuccess && createdProduct) {
+    if (isSuccess && createdBlog) {
       toast.success('Blog Added Successfully!');
     }
     if (isSuccess && updatedBlog !== undefined) {
@@ -68,7 +72,7 @@ const Addblog = (e) => {
     isSuccess,
     isError,
     isLoading,
-    createdProduct,
+    createdBlog,
     blogName,
     blogCategory,
     blogDescription,
@@ -86,7 +90,7 @@ const Addblog = (e) => {
 
   useEffect(() => {
     formik.values.images = img;
-  }, [img]);
+  }, []);
 
   const formik = useFormik({
     enableReinitialize: true,
@@ -98,11 +102,12 @@ const Addblog = (e) => {
     },
     validationSchema: schema,
     onSubmit: (values) => {
+      // alert(JSON.stringify(values));
       if (getBlogId !== undefined) {
         const data = { id: getBlogId, blogData: values };
         dispatch(updateABlog(data));
       } else {
-        dispatch(createBlog(values));
+        dispatch(createABlog(values));
         formik.resetForm();
         setTimeout(() => {
           dispatch(resetState());

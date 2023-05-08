@@ -1,7 +1,6 @@
 import { Table } from 'antd';
 import React, { useEffect, useState } from 'react';
 import { AiFillDelete, AiOutlineEye } from 'react-icons/ai';
-import { BiEdit } from 'react-icons/bi';
 import { Link } from 'react-router-dom';
 import {
   deleteAEnquiry,

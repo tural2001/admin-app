@@ -18,6 +18,7 @@ let schema = yup.object({
 const Addblogcat = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+
   const location = useLocation();
   const getbcategoryId = location.pathname.split('/')[3];
   const newbCategory = useSelector((state) => state.bcategory);

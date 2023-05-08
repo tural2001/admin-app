@@ -39,7 +39,7 @@ export const deleteABlog = createAsyncThunk(
   }
 );
 
-export const createBlog = createAsyncThunk(
+export const createABlog = createAsyncThunk(
   'blog/create-blog',
   async (blogData, thunkAPI) => {
     try {
@@ -84,16 +84,16 @@ export const blogSlice = createSlice({
         state.isError = true;
         state.message = action.error;
       })
-      .addCase(createBlog.pending, (state) => {
+      .addCase(createABlog.pending, (state) => {
         state.isLoading = true;
       })
-      .addCase(createBlog.fulfilled, (state, action) => {
+      .addCase(createABlog.fulfilled, (state, action) => {
         state.isLoading = false;
         state.isSuccess = true;
         state.isError = false;
         state.createdBlog = action.payload;
       })
-      .addCase(createBlog.rejected, (state, action) => {
+      .addCase(createABlog.rejected, (state, action) => {
         state.isLoading = false;
         state.isSuccess = false;
         state.isError = true;
