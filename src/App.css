@@ -42,3 +42,18 @@
   font-family: Roboto !important;
   color: var(--color-828599);
 }
+
+.Menu {
+  background-color: inherit;
+}
+.ant-layout-sider-children {
+  background-image: url(https://static.vecteezy.com/system/resources/previews/005/572/340/original/foggy-landscape-forest-in-the-morning-beautiful-sunrise-mist-cover-mountain-background-at-countryside-winter-free-photo.jpg);
+  background-size: cover;
+}
+
+.ant-menu-item:hover {
+  color: white;
+}
+/* .ant-menu-submenu .ant-menu-submenu-inline:hover {
+  background: wheat !important;
+} */

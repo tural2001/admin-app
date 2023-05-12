@@ -8,15 +8,9 @@ import { useDispatch, useSelector } from 'react-redux';
 import { getBrands } from '../features/brand/brandSlice';
 import { getpcategories } from '../features/pcategory/pcategorySlice';
 import { getColors } from '../features/color/colorSlice';
-// import 'react-widgets/styles.css';
 import Dropzone from 'react-dropzone';
 import { deleteImg, uploadImg } from '../features/upload/uploadSlice';
-import {
-  createProducts,
-  getAProduct,
-  updateAProduct,
-} from '../features/product/productSlice';
-// import { Multiselect } from 'react-widgets';
+import { createProducts } from '../features/product/productSlice';
 import { Select } from 'antd';
 import { toast } from 'react-toastify';
 import { resetState } from '../features/product/productSlice';
@@ -51,26 +45,13 @@ const Addproduct = () => {
   const colorState = useSelector((state) => state.color.colors);
   const imgState = useSelector((state) => state.upload.images);
   const newProduct = useSelector((state) => state.product);
-  // const getProductId = location.pathname.split('/')[3];
 
   const { isSuccess, isError, isLoading, createdProduct } = newProduct;
-
-  // useEffect(() => {
-  //   if (getProductId !== undefined) {
-  //     dispatch(getAProduct(getProductId));
-  //   } else {
-  //     dispatch(resetState());
-  //   }
-  // }, [dispatch, getProductId]);
 
   useEffect(() => {
     if (isSuccess && createdProduct) {
       toast.success('Product Added Successfully!');
     }
-    // if (isSuccess && updatedProduct !== undefined) {
-    //   toast.success('Brand Updated Successfully!');
-    //   navigate('/admin/product-list');
-    // }
     if (isError) {
       toast.error('Something Went Wrong!');
     }
@@ -111,30 +92,21 @@ const Addproduct = () => {
     },
     validationSchema: schema,
     onSubmit: (values) => {
-      // if (getProductId !== undefined) {
-      //   const data = { id: getProductId, productData: values };
-      //   dispatch(updateAProduct(data));
-      // } else {
       dispatch(createProducts(values));
       formik.resetForm();
       setColor(null);
       setTimeout(() => {
         dispatch(resetState());
-      }, 300);
+      }, 1000);
     },
   });
   const handleColors = (e) => {
     setColor(e);
   };
-  // const handleImg = (e) => {
-  //   setImage(e);
-  // };
+
   return (
     <div>
-      <h3 className="mb-4 title">
-        {/* {getProductId !== undefined ? 'Edit' : 'Add'} */}
-        Product
-      </h3>
+      <h3 className="mb-4 title">Add Product</h3>
       <div>
         <form
           onSubmit={formik.handleSubmit}
@@ -288,8 +260,7 @@ const Addproduct = () => {
             className="btn btn-success border-0 rounded-3 my-5"
             type="submit"
           >
-            {/* {getProductId !== undefined ? 'Edit' : 'Add'}  */}
-            Product
+            Add Product
           </button>
         </form>
       </div>

@@ -31,13 +31,14 @@ const MainLayout = () => {
       <Sider trigger={null} collapsible collapsed={collapsed}>
         <div className="logo">
           <h2 className="text-white fs-4 text-center py-3 mb-0">
-            <span className="sm-logo">TR</span>
-            <span className="lg-logo">Turo</span>
+            <span className="sm-logo">TRS</span>
+            <span className="lg-logo">Turo Store</span>
           </h2>
         </div>
         <Menu
-          theme="dark"
+          // theme="dark"
           mode="inline"
+          className="Menu"
           defaultSelectedKeys={['']}
           onClick={({ key }) => {
             if (key === 'signout') {

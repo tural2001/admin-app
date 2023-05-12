@@ -22,30 +22,11 @@ const deleteProduct = async (id) => {
   return response.data;
 };
 
-// const updateProduct = async (product) => {
-//   const response = await axios.put(
-//     `${base_url}product/${product.id}`,
-//     {
-//       title: product.productData.title,
-//       description: product.productData.description,
-//       price: product.productData.price,
-//       quantity: product.productData.quantity,
-//       brand: product.productData.brand,
-//       category: product.productData.category,
-//       tags: product.productData.tags,
-//       color: product.productData.color,
-//     },
-//     config
-//   );
-//   return response.data;
-// };
-
 const productService = {
   getProducts,
   getProduct,
   createProduct,
   deleteProduct,
-  // updateProduct,
 };
 
 export default productService;
