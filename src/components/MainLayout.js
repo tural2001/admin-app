@@ -2,6 +2,7 @@ import { MenuFoldOutlined, MenuUnfoldOutlined } from '@ant-design/icons';
 import {
   AiOutlineBgColors,
   AiOutlineDashboard,
+  AiOutlineLogout,
   AiOutlineShoppingCart,
   AiOutlineUser,
 } from 'react-icons/ai';
@@ -42,6 +43,8 @@ const MainLayout = () => {
           defaultSelectedKeys={['']}
           onClick={({ key }) => {
             if (key === 'signout') {
+              localStorage.clear();
+              window.location.reload();
             } else {
               navigate(key);
             }
@@ -157,6 +160,11 @@ const MainLayout = () => {
               key: 'enquiries',
               icon: <FaClipboardList className="fs-4" />,
               label: 'Enquiries',
+            },
+            {
+              key: 'signout',
+              icon: <AiOutlineLogout className="fs-4" />,
+              label: 'Sign Out',
             },
           ]}
         />

@@ -5,6 +5,7 @@ import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import { useDispatch, useSelector } from 'react-redux';
 import { login } from '../features/auth/authSlice';
+import { toast } from 'react-toastify';
 
 let schema = Yup.object({
   email: Yup.string()
@@ -36,7 +37,7 @@ const Login = () => {
     } else {
       navigate('');
     }
-  }, [user, isError, isSuccess, isLoading]);
+  }, [user, isError, isSuccess, isLoading, message]);
 
   return (
     <div className="py-5" style={{ background: '#ffd333', minHeight: '100vh' }}>
@@ -78,14 +79,10 @@ const Login = () => {
               <div>{formik.errors.password}</div>
             ) : null}
           </div>
-          <div className="mb-3 text-end">
-            <Link to="forgot-password" className="">
-              Forgot Password?
-            </Link>
-          </div>
+
           <button
             to="/admin"
-            className="border-0 px-3 py-2 text-white fw-bold w-100 text-center text-decoration-none fs-5"
+            className="border-0 px-3 py-2 mt-5 text-white fw-bold w-100 text-center text-decoration-none fs-5"
             style={{ background: '#ffd333' }}
             type="submit"
           >

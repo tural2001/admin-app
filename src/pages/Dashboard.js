@@ -1,8 +1,14 @@
-import React, { Component } from 'react';
+import React, { useEffect, useState } from 'react';
 import { BsArrowDownRight } from 'react-icons/bs';
-import Chart from 'react-apexcharts';
-
+import { useDispatch, useSelector } from 'react-redux';
 import { Table } from 'antd';
+import {
+  getMonthlyData,
+  getOrders,
+  getYearlyData,
+} from '../features/auth/authSlice';
+import { Column } from '@ant-design/plots';
+
 const columns = [
   {
     title: 'SNo',
@@ -13,128 +19,203 @@ const columns = [
     dataIndex: 'name',
   },
   {
-    title: 'Product',
+    title: 'Product Count',
     dataIndex: 'product',
+  },
+  {
+    title: 'Total Price',
+    dataIndex: 'price',
+  },
+  {
+    title: 'Total Price After Discount',
+    dataIndex: 'dprice',
   },
   {
     title: 'Status',
     dataIndex: 'status',
   },
 ];
-const data = [];
-for (let i = 0; i < 46; i++) {
-  data.push({
-    key: i,
-    name: `Edward King ${i}`,
-    product: 32,
-    status: `London, Park Lane no. ${i}`,
-  });
-}
 
-class Dashboard extends Component {
-  constructor(props) {
-    super(props);
+const Dashboard = () => {
+  const dispatch = useDispatch();
+  const monthlyDataState = useSelector((state) => state?.auth?.montlyData);
+  const yearlyDataState = useSelector((state) => state?.auth?.yearlyData);
+  const orderState = useSelector((state) => state?.auth?.orders?.orders);
+  const [dataMonthly, setDataMonthly] = useState([]);
+  const [dataMonthlySales, setDataMonthlySales] = useState([]);
+  const [orderData, setOrderData] = useState([]);
+  useEffect(() => {
+    dispatch(getMonthlyData());
+    dispatch(getYearlyData());
+    dispatch(getOrders());
+  }, []);
 
-    this.state = {
-      options: {
-        chart: {
-          id: 'basic-bar',
-        },
-        xaxis: {
-          categories: [
-            'Jan',
-            'Feb',
-            'Mar',
-            'Apr',
-            'May',
-            'Jun',
-            'July',
-            'Aug',
-            'Sept',
-            'Oct',
-            'Nov',
-            'Dec',
-          ],
-        },
+  useEffect(() => {
+    let monthNames = [
+      'January',
+      'February',
+      'March',
+      'April',
+      'May',
+      'June',
+      'July',
+      'August',
+      'September',
+      'October',
+      'November',
+      'December',
+    ];
+
+    let data = [];
+    let monthlyOrderCount = [];
+    for (let index = 0; index < monthlyDataState?.length; index++) {
+      const element = monthlyDataState[index];
+      data.push({
+        type: monthNames[element?._id?.month],
+        income: element?.amount,
+      });
+      monthlyOrderCount.push({
+        type: monthNames[element?._id?.month],
+        income: element?.count,
+      });
+    }
+    setDataMonthly(data);
+    setDataMonthlySales(monthlyOrderCount);
+
+    const data1 = [];
+    for (let i = 1; i < orderState?.length; i++) {
+      data1.push({
+        key: i,
+        name: orderState[i]?.user?.name,
+        product: orderState[i]?.orderItems?.length,
+        price: orderState[i]?.totalPrice,
+        dprice: orderState[i]?.totalPriceAfterDiscount,
+        status: orderState[i]?.orderStatus,
+      });
+      setOrderData(data1);
+    }
+  }, [monthlyDataState]);
+
+  const config = {
+    data: dataMonthly,
+    xField: 'type',
+    yField: 'income',
+    label: {
+      // 可手动配置 label 数据标签位置
+      position: 'middle',
+      // 'top', 'bottom', 'middle',
+      // 配置样式
+      style: {
+        fill: '#FFFFFF',
+        opacity: 0.6,
       },
-      series: [
-        {
-          name: 'series-1',
-          data: [30, 40, 45, 50, 49, 95, 70, 51, 70, 40, 62, 54],
-        },
-      ],
-    };
-  }
-  render() {
-    return (
-      <div>
-        <h3 className="mb-4 title">Dashboard</h3>
-        <div className="d-flex justify-content-between align-items-center gap-3">
-          <div className="d-flex justify-content-between align-items-end flex-grow-1 bg-white p-3 rounded-3">
-            <div>
-              <p className="desc">Total</p> <br />{' '}
-              <h4 className="mb-0 sub-title">1100azn</h4>
-            </div>
-            <div className="d-flex flex-column align-items-end">
-              <h6 className="red">
-                <BsArrowDownRight />
-                32%
-              </h6>
-              <p className="mb-0 desc">Compared To April 2022</p>
-            </div>
+    },
+    xAxis: {
+      label: {
+        autoHide: true,
+        autoRotate: false,
+      },
+    },
+    meta: {
+      type: {
+        alias: 'Monthly',
+      },
+      sales: {
+        alias: 'Income',
+      },
+    },
+  };
+  const config2 = {
+    data: dataMonthlySales,
+    xField: 'type',
+    yField: 'income',
+    label: {
+      position: 'middle',
+
+      style: {
+        fill: '#FFFFFF',
+        opacity: 0.6,
+      },
+    },
+    xAxis: {
+      label: {
+        autoHide: true,
+        autoRotate: false,
+      },
+    },
+    meta: {
+      type: {
+        alias: 'Monthly',
+      },
+      sales: {
+        alias: 'Income',
+      },
+    },
+  };
+  return (
+    <div>
+      <h3 className="mb-4 title">Dashboard</h3>
+      <div className="d-flex justify-content-between align-items-center gap-3">
+        <div className="d-flex justify-content-between align-items-end flex-grow-1 bg-white p-3 rounded-3">
+          <div>
+            <p className="desc">Total Income</p> <br />{' '}
+            <h4 className="mb-0 sub-title">
+              {yearlyDataState &&
+                yearlyDataState.map((item, index) => {
+                  return <>{item?.amount} Azn</>;
+                })}
+            </h4>
           </div>
-          <div className="d-flex justify-content-between align-items-end flex-grow-1 bg-white p-3 rounded-3">
-            <div>
-              <p className="desc">Total</p> <br />
-              <h4 className="mb-0 sub-title">1100azn</h4>
-            </div>
-            <div className="d-flex flex-column align-items-end">
-              <h6 className="red">
-                <BsArrowDownRight />
-                32%
-              </h6>
-              <p className="mb-0 desc">Compared To April 2022</p>
-            </div>
+          <div className="d-flex flex-column align-items-end">
+            <h6 className="red">
+              <BsArrowDownRight />
+              32%
+            </h6>
+            <p className="mb-0 desc">Yearly Total Income</p>
           </div>
-          <div className="d-flex justify-content-between align-items-end flex-grow-1 bg-white p-3 rounded-3">
-            <div>
-              <p className="desc">Total</p> <br />{' '}
-              <h4 className="mb-0 sub-title">1100azn</h4>
-            </div>
-            <div className="d-flex flex-column align-items-end">
-              <h6 className="green">
-                <BsArrowDownRight />
-                32%
-              </h6>
-              <p className="mb-0 desc">Compared To April 2022</p>
-            </div>
+        </div>
+        <div className="d-flex justify-content-between align-items-end flex-grow-1 bg-white p-3 rounded-3">
+          <div>
+            <p className="desc">Total Sales</p> <br />
+            <h4 className="mb-0 sub-title">
+              {' '}
+              {yearlyDataState &&
+                yearlyDataState.map((item, index) => {
+                  return item?.count;
+                })}
+            </h4>
+          </div>
+          <div className="d-flex flex-column align-items-end">
+            <h6 className="red">
+              <BsArrowDownRight />
+              32%
+            </h6>
+            <p className="mb-0 desc">Yearly Total Sales</p>
+          </div>
+        </div>
+      </div>
+      <div className="d-flex justify-content-between gap-3">
+        <div className="mt-4">
+          <h3 className="mb-5">Income Statics</h3>
+          <div className="app">
+            <Column {...config} />
           </div>
         </div>
         <div className="mt-4">
           <h3 className="mb-5">Income Statics</h3>
           <div className="app">
-            <div className="row">
-              <div className="mixed-chart">
-                <Chart
-                  options={this.state.options}
-                  series={this.state.series}
-                  type="bar"
-                  width="1100px"
-                  height="400px"
-                />
-              </div>
-            </div>
-          </div>
-        </div>
-        <div className="mt-4">
-          <h3 className="mb-5">Recent Orders</h3>
-          <div>
-            <Table columns={columns} dataSource={data} />
+            <Column {...config2} />
           </div>
         </div>
       </div>
-    );
-  }
-}
+      <div className="mt-4">
+        <h3 className="mb-5">Recent Orders</h3>
+        <div>
+          <Table columns={columns} dataSource={orderData} />
+        </div>
+      </div>
+    </div>
+  );
+};
 
 export default Dashboard;
