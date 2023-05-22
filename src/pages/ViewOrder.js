@@ -44,7 +44,7 @@ const ViewOrder = () => {
       key: i + 1,
       name: orderState?.orderItems[i]?.product?.title,
       brand: orderState?.orderItems[i]?.product?.brand,
-      count: orderState?.orderItems[i]?.product?.quantity,
+      count: orderState?.orderItems[i]?.quantity,
       price: orderState?.orderItems[i]?.product?.price,
     });
   }
