@@ -37,6 +37,19 @@ const columns = [
 ];
 
 const Dashboard = () => {
+  const getTokenFromLocalStorage = localStorage.getItem('user')
+    ? JSON.parse(localStorage.getItem('user'))
+    : null;
+
+  const config3 = {
+    headers: {
+      Authorization: `Bearer ${
+        getTokenFromLocalStorage !== null ? getTokenFromLocalStorage.token : ''
+      }`,
+      Accept: 'application/json',
+    },
+  };
+
   const dispatch = useDispatch();
   const monthlyDataState = useSelector((state) => state?.auth?.montlyData);
   const yearlyDataState = useSelector((state) => state?.auth?.yearlyData);
@@ -45,9 +58,9 @@ const Dashboard = () => {
   const [dataMonthlySales, setDataMonthlySales] = useState([]);
   const [orderData, setOrderData] = useState([]);
   useEffect(() => {
-    dispatch(getMonthlyData());
-    dispatch(getYearlyData());
-    dispatch(getOrders());
+    dispatch(getMonthlyData(config3));
+    dispatch(getYearlyData(config3));
+    dispatch(getOrders(config3));
   }, []);
 
   useEffect(() => {
@@ -83,7 +96,7 @@ const Dashboard = () => {
     setDataMonthlySales(monthlyOrderCount);
 
     const data1 = [];
-    for (let i = 1; i < orderState?.length; i++) {
+    for (let i = 0; i < orderState?.length; i++) {
       data1.push({
         key: i,
         name: orderState[i]?.user?.name,

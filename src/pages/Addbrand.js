@@ -17,6 +17,18 @@ let schema = yup.object({
 });
 
 const Addbrand = () => {
+  //   const getTokenFromLocalStorage = localStorage.getItem('user')
+  //   ? JSON.parse(localStorage.getItem('user'))
+  //   : null;
+
+  // const config3 = {
+  //   headers: {
+  //     Authorization: `Bearer ${
+  //       getTokenFromLocalStorage !== null ? getTokenFromLocalStorage.token : ''
+  //     }`,
+  //     Accept: 'application/json',
+  //   },}
+
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const location = useLocation();

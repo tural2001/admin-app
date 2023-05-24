@@ -33,12 +33,24 @@ const columns = [
 
 const Orders = () => {
   const dispatch = useDispatch();
+  const getTokenFromLocalStorage = localStorage.getItem('user')
+    ? JSON.parse(localStorage.getItem('user'))
+    : null;
+
+  const config3 = {
+    headers: {
+      Authorization: `Bearer ${
+        getTokenFromLocalStorage !== null ? getTokenFromLocalStorage.token : ''
+      }`,
+      Accept: 'application/json',
+    },
+  };
   useEffect(() => {
-    dispatch(getOrders());
+    dispatch(getOrders(config3));
   }, [dispatch]);
   const orderState = useSelector((state) => state?.auth?.orders?.orders);
   const data = [];
-  for (let i = 1; i < orderState?.length; i++) {
+  for (let i = 0; i < orderState?.length; i++) {
     data.push({
       key: i,
       name: orderState[i].user?.name,
@@ -58,9 +70,7 @@ const Orders = () => {
             className="form-control form-select"
             id=""
           >
-            <option value="Ordered" disabled selected>
-              Ordered
-            </option>
+            <option value="Ordered">Ordered</option>
             <option value="Processed">Processed</option>
             <option value="Shipped">Shipped</option>
             <option value="Out For Delivery">Out For Delivery</option>
@@ -70,6 +80,7 @@ const Orders = () => {
       ),
     });
   }
+  console.log(data);
 
   const updateOrderStatus = (a, b) => {
     dispatch(updateAOrder({ id: a, status: b }));
