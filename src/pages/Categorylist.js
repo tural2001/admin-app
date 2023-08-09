@@ -10,21 +10,8 @@ import {
 } from '../features/pcategory/pcategorySlice';
 import CustomModal from '../components/CustomModal';
 import { resetState } from '../features/pcategory/pcategorySlice';
-
-const columns = [
-  {
-    title: 'SNo',
-    dataIndex: 'key',
-  },
-  {
-    title: 'Name',
-    dataIndex: 'name',
-  },
-  {
-    title: 'Action',
-    dataIndex: 'action',
-  },
-];
+import { VscEdit } from 'react-icons/vsc';
+import { RiDeleteBin5Line } from 'react-icons/ri';
 
 const Categorylist = () => {
   const [open, setOpen] = useState(false);
@@ -47,23 +34,7 @@ const Categorylist = () => {
   for (let i = 0; i < pcategorystate.length; i++) {
     data.push({
       key: i + 1,
-      name: pcategorystate[i].title,
-      action: (
-        <>
-          <Link
-            to={`/admin/category/${pcategorystate[i]._id}`}
-            className="fs-3 text-danger"
-          >
-            <BiEdit />
-          </Link>
-          <button
-            className="ms-3 fs-3 text-danger bg-transparent border-0"
-            onClick={() => showModal(pcategorystate[i]._id)}
-          >
-            <AiFillDelete />
-          </button>
-        </>
-      ),
+      title: pcategorystate[i].title,
     });
   }
 
@@ -79,7 +50,50 @@ const Categorylist = () => {
     <div>
       <h3 className="mb-4 title">Product Categories</h3>
       <div>
-        <Table columns={columns} dataSource={data} />
+        <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
+          <table className="w-full text-sm text-left text-gray-500 dark:text-gray-400">
+            <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+              <tr>
+                <th scope="col" className="px-6 py-3">
+                  Product name
+                </th>
+
+                <th scope="col" className="px-6 py-3"></th>
+              </tr>
+            </thead>
+            <tbody>
+              {data?.map((category, index) => (
+                <tr
+                  key={index}
+                  className="bg-white border-b dark:bg-gray-800 dark:border-gray-700"
+                >
+                  <th
+                    scope="row"
+                    className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"
+                  >
+                    {category.title}
+                  </th>
+
+                  <td className="px-6 py-4 flex gap-2">
+                    <Link
+                      to={`/admin/product/${pcategorystate[0]?._id}`}
+                      className="text-lg text-black dark:text-blue-500 hover:underline"
+                    >
+                      <VscEdit />
+                    </Link>
+
+                    <button
+                      onClick={() => showModal(pcategorystate[0]?._id)}
+                      className="text-lg text-black dark:text-blue-500 hover:text-red-500"
+                    >
+                      <RiDeleteBin5Line />
+                    </button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>{' '}
       </div>
       <CustomModal
         hideModal={hideModal}

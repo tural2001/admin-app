@@ -7,6 +7,9 @@
   --color-3d464d: #3d464d;
   --color-c3d4da: #c3d4da;
 }
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
 .green {
   color: var(--color-47ad24);
@@ -47,7 +50,7 @@
   background-color: inherit;
 }
 .ant-layout-sider-children {
-  background-image: url(https://static.vecteezy.com/system/resources/previews/005/572/340/original/foggy-landscape-forest-in-the-morning-beautiful-sunrise-mist-cover-mountain-background-at-countryside-winter-free-photo.jpg);
+  background-color: #f3f4f6;
   background-size: cover;
 }
 

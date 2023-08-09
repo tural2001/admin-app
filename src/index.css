@@ -2,6 +2,10 @@ body {
   font-family: 'Roboto', sans-serif;
 }
 
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
 .trigger {
   padding: 0 24px;
   font-size: 18px;
@@ -46,7 +50,7 @@ body {
   display: none;
 }
 .logo {
-  background-color: rgb(49, 40, 81);
+  background-color: rgb(120, 91, 223);
   margin: 0;
   height: 64px;
 }
@@ -80,4 +84,8 @@ main::-webkit-scrollbar {
 .error {
   color: red;
   font-size: 12px;
+}
+
+.ant-layout-content {
+  background-color: #f1f1f1 !important;
 }

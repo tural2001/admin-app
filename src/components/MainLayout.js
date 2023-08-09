@@ -19,6 +19,7 @@ import { FaBloggerB, FaClipboardList } from 'react-icons/fa';
 import { Layout, Menu, theme } from 'antd';
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { logo, vector1, vector2, vector3, vector4, vector5 } from '../assets';
 const { Header, Sider, Content } = Layout;
 
 const MainLayout = () => {
@@ -32,12 +33,49 @@ const MainLayout = () => {
       <Sider trigger={null} collapsible collapsed={collapsed}>
         <div className="logo">
           <h2 className="text-white fs-4 text-center py-3 mb-0">
-            <span className="sm-logo">TRS</span>
-            <span className="lg-logo">Turo Store</span>
+            <span className="sm-logo">
+              {' '}
+              {/* <div className="flex items-end mt-7 mb-3 ml-3 ">
+                {' '}
+                <img
+                  src={vector1}
+                  className="absolute ml-2 mt-1 "
+                  alt=""
+                />{' '}
+                <img src={vector2} className="absolute ml-3" alt="" />{' '}
+                <img src={vector3} className="absolute ml-4  " alt="" />{' '}
+                <img src={vector4} className="absolute ml-7 " alt="" />{' '}
+                <img src={vector5} className="absolute ml-7 " alt="" />{' '}
+              </div> */}
+              <img src={logo} alt="" />
+            </span>
+
+            <span className="lg-logo">
+              {' '}
+              <div className="flex items-center justify-center ">
+                <div className="flex items-end mt-7 mb-3 ">
+                  {' '}
+                  <img
+                    src={vector1}
+                    className="absolute ml-2 mt-1 "
+                    alt=""
+                  />{' '}
+                  <img src={vector2} className="absolute ml-3" alt="" />{' '}
+                  <img src={vector3} className="absolute ml-4  " alt="" />{' '}
+                  <img src={vector4} className="absolute ml-7 " alt="" />{' '}
+                  <img src={vector5} className="absolute ml-7 " alt="" />{' '}
+                </div>
+                <div className="">
+                  {' '}
+                  <h1 className="text-white ml-12 text-[27px] font-medium tracking-wide mb-3">
+                    Azeronline
+                  </h1>
+                </div>
+              </div>{' '}
+            </span>
           </h2>
         </div>
         <Menu
-          // theme="dark"
           mode="inline"
           className="Menu"
           defaultSelectedKeys={['']}
@@ -95,16 +133,16 @@ const MainLayout = () => {
                   icon: <BiCategoryAlt className="fs-4" />,
                   label: 'Category List',
                 },
-                {
-                  key: 'color',
-                  icon: <AiOutlineBgColors className="fs-4" />,
-                  label: 'Color',
-                },
-                {
-                  key: 'color-list',
-                  icon: <AiOutlineBgColors className="fs-4" />,
-                  label: 'Color List',
-                },
+                // {
+                //   key: 'color',
+                //   icon: <AiOutlineBgColors className="fs-4" />,
+                //   label: 'Color',
+                // },
+                // {
+                //   key: 'color-list',
+                //   icon: <AiOutlineBgColors className="fs-4" />,
+                //   label: 'Color List',
+                // },
               ],
             },
             {
@@ -185,30 +223,21 @@ const MainLayout = () => {
             }
           )}
           <div className="d-flex gap-3 aling-items-center">
-            <div className="position-relative">
-              <IoMdNotifications className="fs-4" />
-              <span className="badge bg-warning rounded-circle p-1 position-absolute ">
-                3
-              </span>
-            </div>
-
             <div className="d-flex gap-15 align-items-center dropdown ">
-              <div>
+              <div
+                role="button"
+                id="dropdownMenuLink"
+                data-bs-toggle="dropdown"
+                aria-expanded="false"
+                className="mt-3"
+              >
                 <img
                   width={38}
                   height={38}
                   src="https://avatars.githubusercontent.com/u/125383763?v=4"
                   alt=""
                 />
-              </div>
-              <div
-                role="button"
-                id="dropdownMenuLink"
-                data-bs-toggle="dropdown"
-                aria-expanded="false"
-              >
-                <h5 className="mb-0">Admin</h5>
-                <p className="mb-0">Admin@example.com</p>
+                <h5 className="mb-0 text">Admin</h5>
               </div>
               <div className="dropdown-menu" aria-labelledby="dropdownMenuLink">
                 <li>
