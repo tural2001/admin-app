@@ -34,11 +34,11 @@ const Login = () => {
 
   useEffect(() => {
     if (isSuccess) {
-      navigate('admin');
+      navigate('/admin');
     } else {
       navigate('');
     }
-  }, [user, isError, isSuccess, isLoading, message]);
+  }, [user, isError, isSuccess, isLoading, message, navigate]);
 
   return (
     <section className="bg-hero-pattern">
@@ -65,6 +65,11 @@ const Login = () => {
             <h1 className="text-xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl dark:text-white">
               Sign in to your account
             </h1>
+            {isError && (
+              <div className="text-red-600 dark:text-red-400">
+                {message || 'Something went wrong!'}
+              </div>
+            )}
             <form
               className="space-y-4 md:space-y-6"
               action="#"

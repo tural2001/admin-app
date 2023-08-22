@@ -89,3 +89,13 @@ main::-webkit-scrollbar {
 .ant-layout-content {
   background-color: #f1f1f1 !important;
 }
+
+.ant-modal-footer button:first-child {
+  color: black;
+  border-color: rgb(64, 176, 64);
+}
+
+.ant-modal-footer button:last-child {
+  color: black;
+  border-color: rgb(211, 58, 58);
+}

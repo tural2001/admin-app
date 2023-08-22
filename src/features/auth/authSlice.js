@@ -95,6 +95,7 @@ export const authSlice = createSlice({
         state.isSuccess = true;
         state.isError = false;
         state.user = action.payload;
+        state.message = 'Login successful!';
         if (state.isSuccess) {
           toast.success('Login successful');
         }

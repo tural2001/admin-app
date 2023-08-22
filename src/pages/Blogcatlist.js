@@ -3,9 +3,9 @@ import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   deleteAbcategory,
-  getbcategories,
+  getfaqs,
   resetState,
-} from '../features/bcategory/bcategorySlice';
+} from '../features/faq/faqSlice';
 import { BiEdit } from 'react-icons/bi';
 import { AiFillDelete } from 'react-icons/ai';
 import { Link } from 'react-router-dom';
@@ -38,25 +38,26 @@ const Blogcatlist = () => {
   const dispatch = useDispatch();
   useEffect(() => {
     dispatch(resetState());
-    dispatch(getbcategories());
+    dispatch(getfaqs());
   }, [dispatch]);
-  const bcategorystate = useSelector((state) => state.bcategory.bcategories);
+  const faqstate = useSelector((state) => state.faq);
   const data = [];
-  for (let i = 0; i < bcategorystate.length; i++) {
+
+  for (let i = 0; i < faqstate.length; i++) {
     data.push({
       key: i,
-      name: bcategorystate[i].title,
+      name: faqstate[i].title,
       action: (
         <>
           <Link
-            to={`/admin/blog-category/${bcategorystate[i]._id}`}
+            to={`/admin/blog-category/${faqstate[i]._id}`}
             className="fs-3 text-danger"
           >
             <BiEdit />
           </Link>
           <button
             className="ms-3 fs-3 text-danger bg-transparent border-0"
-            onClick={() => showModal(bcategorystate[i]._id)}
+            onClick={() => showModal(faqstate[i]._id)}
           >
             <AiFillDelete />
           </button>
@@ -65,13 +66,13 @@ const Blogcatlist = () => {
     });
   }
 
-  const deletebcategory = (e) => {
-    setOpen(false);
-    dispatch(deleteAbcategory(e));
-    setTimeout(() => {
-      dispatch(getbcategories());
-    }, 100);
-  };
+  // const deletebcategory = (e) => {
+  //   setOpen(false);
+  //   dispatch(deleteAbcategory(e));
+  //   setTimeout(() => {
+  //     dispatch(getfaqs());
+  //   }, 100);
+  // };
 
   return (
     <div>
@@ -79,14 +80,14 @@ const Blogcatlist = () => {
       <div>
         <Table columns={columns} dataSource={data} />
       </div>
-      <CustomModal
+      {/* <CustomModal
         hideModal={hideModal}
         open={open}
         performAction={() => {
           deletebcategory(bcategoryId);
         }}
         title="Are you sure you want to delete this Blog Category?"
-      />
+      /> */}
     </div>
   );
 };

@@ -4,7 +4,7 @@ import Dashboard from './pages/Dashboard';
 import Login from './pages/Login';
 import MainLayout from './components/MainLayout';
 import Enquiries from './pages/Enquiries';
-import Bloglist from './pages/Bloglist';
+import FaqList from './pages/FaqList';
 import Blogcatlist from './pages/Blogcatlist';
 import Orders from './pages/Orders';
 import Customers from './pages/Customers';
@@ -12,7 +12,6 @@ import Colorlist from './pages/Colorlist';
 import Categorylist from './pages/Categorylist';
 import Brandlist from './pages/Brandlist';
 import Productlist from './pages/Productlist';
-import Addblog from './pages/Addblog';
 import Addblogcat from './pages/Addblogcat';
 import Addcolor from './pages/Addcolor';
 import Addcat from './pages/Addcat';
@@ -24,6 +23,7 @@ import ViewEnq from './pages/ViewEnq';
 import ViewOrder from './pages/ViewOrder';
 import { PrivateRoutes } from './routing/PrivateRoutes';
 import { OpenRoutes } from './routing//OpenRoutes';
+import Addfaq from './pages/Addfaq';
 
 function App() {
   return (
@@ -48,9 +48,9 @@ function App() {
           <Route index element={<Dashboard />} />
           <Route path="enquiries" element={<Enquiries />} />
           <Route path="enquiries/:id" element={<ViewEnq />} />
-          <Route path="blog-list" element={<Bloglist />} />
-          <Route path="blog" element={<Addblog />} />
-          <Route path="blog/:id" element={<Addblog />} />
+          <Route path="faq-list" element={<FaqList />} />
+          <Route path="faq" element={<Addfaq />} />
+          <Route path="faq/:id" element={<Addfaq />} />
           <Route path="coupon-list" element={<Couponlist />} />
           <Route path="coupon" element={<AddCoupon />} />
           <Route path="coupon/:id" element={<AddCoupon />} />

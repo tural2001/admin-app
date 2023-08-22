@@ -1,11 +1,15 @@
-import { Navigate } from 'react-router-dom';
+import { useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 export const PrivateRoutes = ({ children }) => {
   const getTokenFromLocalStorage = JSON.parse(localStorage.getItem('user'));
-  console.log(getTokenFromLocalStorage?.token);
-  return getTokenFromLocalStorage?.token !== undefined ? (
-    children
-  ) : (
-    <Navigate to="/" replace={true} />
-  );
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (getTokenFromLocalStorage?.data.token === undefined) {
+      navigate('/', { replace: true });
+    }
+  }, [getTokenFromLocalStorage, navigate]);
+
+  return getTokenFromLocalStorage?.data.token !== undefined ? children : null;
 };

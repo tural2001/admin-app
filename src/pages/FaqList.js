@@ -1,60 +1,101 @@
+import { Table } from 'antd';
 import React, { useEffect, useState } from 'react';
-import { deleteAProduct, getProducts } from '../features/product/productSlice';
 import { useDispatch, useSelector } from 'react-redux';
+import { deleteABlog, getBlogs, resetState } from '../features/blogs/blogSlice';
 import { Link } from 'react-router-dom';
+import { AiFillDelete } from 'react-icons/ai';
+import { BiEdit } from 'react-icons/bi';
+import CustomModal from '../components/CustomModal';
+import { deleteAfaq, getfaqs } from '../features/faq/faqSlice';
 import { RiDeleteBin5Line } from 'react-icons/ri';
 import { VscEdit } from 'react-icons/vsc';
-import CustomModal from '../components/CustomModal';
+const columns = [
+  {
+    title: 'SNo',
+    dataIndex: 'key',
+  },
+  {
+    title: 'Question',
+    dataIndex: 'question',
+  },
+  {
+    title: 'Answer',
+    dataIndex: 'answer',
+  },
 
-const Productlist = () => {
+  {
+    title: 'Action',
+    dataIndex: 'action',
+  },
+];
+
+const FaqList = () => {
   const [open, setOpen] = useState(false);
-  const [prodId, setprodId] = useState('');
+  const [faqId, setFaqId] = useState('');
   const showModal = (e) => {
     setOpen(true);
-    setprodId(e);
+    setFaqId(e);
   };
   const hideModal = () => {
     setOpen(false);
   };
-
-  const dispatch = useDispatch();
+  const dispacth = useDispatch();
   useEffect(() => {
-    dispatch(getProducts());
-  }, [dispatch]);
-  const productstate = useSelector((state) => state.product.products);
+    dispacth(resetState());
+    dispacth(getfaqs());
+  }, [dispacth]);
+
+  const faqstate = useSelector((state) => state.faq.faqs.data);
+  console.log(faqstate);
+
   const data = [];
-  for (let i = 0; i < productstate.length; i++) {
+  for (let i = 0; i < faqstate?.length; i++) {
     data.push({
-      key: i + 1,
-      title: productstate[i].title,
-      brand: productstate[i].brand,
-      category: productstate[i].category,
-      price: `${productstate[i].price}`,
+      key: i,
+      question: faqstate[i].question,
+      answer: faqstate[i].answer,
+      // action: (
+      //   <>
+      //     <Link
+      //       to={`/admin/blog/${faqstate[i]._id}`}
+      //       className="fs-3 text-danger"
+      //     >
+      //       <BiEdit />
+      //     </Link>
+      //     <button
+      //       className="ms-3 fs-3 text-danger bg-transparent border-0"
+      //       onClick={() => showModal(faqstate[i]._id)}
+      //     >
+      //       <AiFillDelete />
+      //     </button>
+      //   </>
+      // ),
     });
   }
 
-  const deleteProduct = (e) => {
+  const deleteFaq = (e) => {
     setOpen(false);
-    dispatch(deleteAProduct(e));
+    dispacth(deleteAfaq(e));
     setTimeout(() => {
-      dispatch(getProducts());
+      dispacth(getfaqs());
     }, 100);
   };
   return (
     <div>
       <h3 className="mb-4 title">Products</h3>
+      <Link to="/admin/faq">Add Faq</Link>
       <div>
         <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
           <table className="w-full text-sm text-left text-gray-500 dark:text-gray-400">
             <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
               <tr>
                 <th scope="col" className="px-6 py-3">
-                  Product name
+                  No
                 </th>
 
                 <th scope="col" className="px-6 py-3">
                   <div class="flex items-center">
-                    Category
+                    Question
                     <a href="#">
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
@@ -70,7 +111,7 @@ const Productlist = () => {
                 </th>
                 <th scope="col" className="px-6 py-3">
                   <div class="flex items-center">
-                    Price
+                    Answer
                     <a href="#">
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
@@ -88,7 +129,7 @@ const Productlist = () => {
               </tr>
             </thead>
             <tbody>
-              {data?.map((product, index) => (
+              {faqstate?.map((faq, index) => (
                 <tr
                   key={index}
                   className="bg-white border-b dark:bg-gray-800 dark:border-gray-700"
@@ -97,20 +138,20 @@ const Productlist = () => {
                     scope="row"
                     className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"
                   >
-                    {product.title}
+                    {faq.id}
                   </th>
-                  <td className="px-6 py-4">{product.category}</td>
-                  <td className="px-6 py-4">{product.price}</td>
+                  <td className="px-6 py-4">{faq.question}</td>
+                  <td className="px-6 py-4">{faq.answer}</td>
                   <td className="px-6 py-4 flex gap-2">
                     <Link
-                      to={`/admin/product/${productstate[0]?._id}`}
+                      to={`/admin/faq/${faqstate[index]?.id}`}
                       className="text-lg text-black dark:text-blue-500 hover:underline"
                     >
                       <VscEdit />
                     </Link>
 
                     <button
-                      onClick={() => showModal(productstate[0]?._id)}
+                      onClick={() => showModal(faqstate[index]?.id)}
                       className="text-lg text-black dark:text-blue-500 hover:text-red-500"
                     >
                       <RiDeleteBin5Line />
@@ -126,12 +167,12 @@ const Productlist = () => {
         hideModal={hideModal}
         open={open}
         performAction={() => {
-          deleteProduct(prodId);
+          deleteFaq(faqId);
         }}
-        title="Are you sure you want to delete this brand?"
+        title={`Are you sure you want to delete  this faq ?`}
       />
     </div>
   );
 };
 
-export default Productlist;
+export default FaqList;
