@@ -9,12 +9,10 @@ import Blogcatlist from './pages/Blogcatlist';
 import Orders from './pages/Orders';
 import Customers from './pages/Customers';
 import Colorlist from './pages/Colorlist';
-import Categorylist from './pages/Categorylist';
 import Brandlist from './pages/Brandlist';
 import Productlist from './pages/Productlist';
 import Addblogcat from './pages/Addblogcat';
 import Addcolor from './pages/Addcolor';
-import Addcat from './pages/Addcat';
 import Addbrand from './pages/Addbrand';
 import Addproduct from './pages/Addproduct';
 import Couponlist from './pages/Couponlist';
@@ -24,6 +22,8 @@ import ViewOrder from './pages/ViewOrder';
 import { PrivateRoutes } from './routing/PrivateRoutes';
 import { OpenRoutes } from './routing//OpenRoutes';
 import Addfaq from './pages/Addfaq';
+import Addreview from './pages/Addreview';
+import ReviewList from './pages/ReviewList';
 
 function App() {
   return (
@@ -63,9 +63,9 @@ function App() {
           {/* <Route path="color-list" element={<Colorlist />} />
           <Route path="color" element={<Addcolor />} />
           <Route path="color/:id" element={<Addcolor />} /> */}
-          <Route path="category-list" element={<Categorylist />} />
-          <Route path="category" element={<Addcat />} />
-          <Route path="category/:id" element={<Addcat />} />
+          <Route path="review-list" element={<ReviewList />} />
+          <Route path="review" element={<Addreview />} />
+          <Route path="review/:id" element={<Addreview />} />
           <Route path="brand-list" element={<Brandlist />} />
           <Route path="brand" element={<Addbrand />} />
           <Route path="brand/:id" element={<Addbrand />} />

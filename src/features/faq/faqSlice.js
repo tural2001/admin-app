@@ -87,7 +87,7 @@ export const faqSlice = createSlice({
         state.isLoading = false;
         state.isSuccess = true;
         state.isError = false;
-        state.createdfaq = action.payload;
+        state.createdFaq = action.payload;
       })
       .addCase(createAfaq.rejected, (state, action) => {
         state.isLoading = false;
@@ -119,7 +119,7 @@ export const faqSlice = createSlice({
         state.isLoading = false;
         state.isSuccess = true;
         state.isError = false;
-        state.updatedfaq = action.payload;
+        state.updatedFaq = action.payload;
       })
       .addCase(updateAfaq.rejected, (state, action) => {
         state.isLoading = false;

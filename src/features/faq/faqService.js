@@ -13,7 +13,15 @@ const createfaq = async (faq) => {
 };
 
 const updatefaq = async (faq) => {
-  const response = await axios.post(`${base_url}/api/faqs/${faq.id}`, config);
+  const response = await axios.put(
+    `${base_url}/api/faqs/${faq.id}`,
+    {
+      question: faq.faqData.question,
+      answer: faq.faqData.answer,
+      active: faq.faqData.active,
+    },
+    config
+  );
   return response.data;
 };
 

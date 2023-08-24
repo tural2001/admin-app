@@ -1,61 +1,61 @@
 import { createSlice, createAsyncThunk, createAction } from '@reduxjs/toolkit';
-import pcategoryService from './pcategoryService';
+import reviewsService from './reviewsService';
 
 const initialState = {
-  pcategories: [],
+  reviews: [],
   isError: false,
   isLoading: false,
   isSuccess: false,
   message: '',
 };
 
-export const getpcategories = createAsyncThunk(
-  'category/get-categories',
+export const getreviews = createAsyncThunk(
+  'reviews/get-reviews',
   async (thunkAPI) => {
     try {
-      return await pcategoryService.getpcategories();
+      return await reviewsService.getReviews();
     } catch (error) {
       return thunkAPI.rejectWithValue(error);
     }
   }
 );
 
-export const getACategory = createAsyncThunk(
-  'category/get-category',
+export const getAreview = createAsyncThunk(
+  'reviews/get-review',
   async (id, thunkAPI) => {
     try {
-      return await pcategoryService.getCategory(id);
+      return await reviewsService.getReview(id);
     } catch (error) {
       return thunkAPI.rejectWithValue(error);
     }
   }
 );
 
-export const createCategory = createAsyncThunk(
-  'pcategory/create-pcategory',
-  async (categoryData, thunkAPI) => {
+export const createAreview = createAsyncThunk(
+  'reviews/create-review',
+  async (reviewData, thunkAPI) => {
     try {
-      return await pcategoryService.createCategory(categoryData);
+      return await reviewsService.createReview(reviewData);
     } catch (error) {
       return thunkAPI.rejectWithValue(error);
     }
   }
 );
-export const deleteACategory = createAsyncThunk(
-  'category/delete-category',
-  async (category, thunkAPI) => {
+export const deleteAreview = createAsyncThunk(
+  'reviews/delete-review',
+  async (review, thunkAPI) => {
     try {
-      return await pcategoryService.deleteCategory(category);
+      return await reviewsService.deleteReview(review);
     } catch (error) {
       return thunkAPI.rejectWithValue(error);
     }
   }
 );
-export const updateACategory = createAsyncThunk(
-  'category/update-category',
-  async (category, thunkAPI) => {
+export const updateAreview = createAsyncThunk(
+  'reviews/update-review',
+  async (review, thunkAPI) => {
     try {
-      return await pcategoryService.updateCategory(category);
+      return await reviewsService.updateReview(review);
     } catch (error) {
       return thunkAPI.rejectWithValue(error);
     }
@@ -64,82 +64,85 @@ export const updateACategory = createAsyncThunk(
 
 export const resetState = createAction('revertAll');
 
-export const pcategorySlice = createSlice({
-  name: 'pcategories',
+export const reviewsSlice = createSlice({
+  name: 'reviews',
   initialState,
   reducers: {},
   extraReducers: (builder) => {
     builder
-      .addCase(getpcategories.pending, (state) => {
+      .addCase(getreviews.pending, (state) => {
         state.isLoading = true;
       })
-      .addCase(getpcategories.fulfilled, (state, action) => {
+      .addCase(getreviews.fulfilled, (state, action) => {
         state.isLoading = false;
         state.isSuccess = true;
         state.isError = false;
-        state.pcategories = action.payload;
+        state.reviews = action.payload;
       })
-      .addCase(getpcategories.rejected, (state, action) => {
+      .addCase(getreviews.rejected, (state, action) => {
         state.isLoading = false;
         state.isSuccess = false;
         state.isError = true;
         state.message = action.error;
       })
-      .addCase(createCategory.pending, (state) => {
+      .addCase(createAreview.pending, (state) => {
         state.isLoading = true;
       })
-      .addCase(createCategory.fulfilled, (state, action) => {
+      .addCase(createAreview.fulfilled, (state, action) => {
         state.isLoading = false;
         state.isSuccess = true;
         state.isError = false;
-        state.createdCategory = action.payload;
+        state.createdReview = action.payload;
       })
-      .addCase(createCategory.rejected, (state, action) => {
+      .addCase(createAreview.rejected, (state, action) => {
         state.isLoading = false;
         state.isSuccess = false;
         state.isError = true;
         state.message = action.error;
       })
-      .addCase(getACategory.pending, (state) => {
+      .addCase(getAreview.pending, (state) => {
         state.isLoading = true;
       })
-      .addCase(getACategory.fulfilled, (state, action) => {
+      .addCase(getAreview.fulfilled, (state, action) => {
         state.isLoading = false;
         state.isSuccess = true;
         state.isError = false;
-        state.categoryName = action.payload.title;
+        state.reviewActive = action.payload.data?.active;
+        state.reviewShow_on_home_page = action.payload.data?.show_on_home_page;
+        state.reviewReviewer_name = action.payload.data?.reviewer_name;
+        state.reviewComment = action.payload.data?.comment;
       })
-      .addCase(getACategory.rejected, (state, action) => {
+      .addCase(getAreview.rejected, (state, action) => {
         state.isLoading = false;
         state.isSuccess = false;
         state.isError = true;
         state.message = action.error;
       })
-      .addCase(updateACategory.pending, (state) => {
+      .addCase(updateAreview.pending, (state) => {
         state.isLoading = true;
       })
-      .addCase(updateACategory.fulfilled, (state, action) => {
+      .addCase(updateAreview.fulfilled, (state, action) => {
         state.isLoading = false;
         state.isSuccess = true;
         state.isError = false;
-        state.updatedCategory = action.payload;
+        state.updatedReview = action.payload;
       })
-      .addCase(updateACategory.rejected, (state, action) => {
+      .addCase(updateAreview.rejected, (state, action) => {
         state.isLoading = false;
         state.isSuccess = false;
         state.isError = true;
         state.message = action.error;
       })
-      .addCase(deleteACategory.pending, (state) => {
+      .addCase(deleteAreview.pending, (state) => {
         state.isLoading = true;
       })
-      .addCase(deleteACategory.fulfilled, (state, action) => {
+      .addCase(deleteAreview.fulfilled, (state, action) => {
         state.isLoading = false;
         state.isSuccess = true;
         state.isError = false;
-        state.deletedCategory = action.payload;
+        state.deletedReview = action.payload;
       })
-      .addCase(deleteACategory.rejected, (state, action) => {
+      .addCase(deleteAreview.rejected, (state, action) => {
         state.isLoading = false;
         state.isSuccess = false;
         state.isError = true;
@@ -149,4 +152,4 @@ export const pcategorySlice = createSlice({
   },
 });
 
-export default pcategorySlice.reducer;
+export default reviewsSlice.reducer;

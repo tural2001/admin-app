@@ -4,12 +4,7 @@ import { useFormik } from 'formik';
 import * as yup from 'yup';
 import { toast } from 'react-toastify';
 import { useDispatch, useSelector } from 'react-redux';
-import {
-  createAfaq,
-  getAfaq,
-  getfaqs,
-  updateAfaq,
-} from '../features/faq/faqSlice';
+import { createAfaq, getAfaq, updateAfaq } from '../features/faq/faqSlice';
 
 import { resetState } from '../features/faq/faqSlice';
 import { useLocation, useNavigate } from 'react-router-dom';
@@ -17,7 +12,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 let schema = yup.object({
   question: yup.string().required('Title is Required'),
   answer: yup.string().required('Description is Required'),
-  active: yup.string().required('Active'),
+  active: yup.string().required('Required'),
 });
 
 const Addfaq = (e) => {
@@ -25,25 +20,17 @@ const Addfaq = (e) => {
   const navigate = useNavigate();
   const location = useLocation();
   const getFaqId = location.pathname.split('/')[3];
-
-  // useEffect(() => {
-  //   dispatch(getfaqs());
-  // }, [dispatch]);
-
   const newFaq = useSelector((state) => state.faq);
-  const faqstate = useSelector((state) => state.faq.faqs.data);
-  console.log(faqstate);
   const {
     isSuccess,
     isError,
     isLoading,
     createdFaq,
-    updatedFaq,
     faqQuestion,
     faqAnswer,
     faqActive,
+    updatedFaq,
   } = newFaq;
-  console.log(newFaq);
 
   useEffect(() => {
     if (getFaqId !== undefined) {
@@ -56,10 +43,12 @@ const Addfaq = (e) => {
   useEffect(() => {
     if (isSuccess && createdFaq) {
       toast.success('Faq Added Successfully!');
+      navigate('/admin/faq-list');
+      window.location.reload();
     }
     if (isSuccess && updatedFaq !== undefined) {
       toast.success('Faq Updated Successfully!');
-      navigate('/admin/blog-list');
+      navigate('/admin/faq-list');
     }
     if (isError) {
       toast.error('Something Went Wrong!');
@@ -69,12 +58,14 @@ const Addfaq = (e) => {
     isError,
     isLoading,
     createdFaq,
-    updatedFaq,
     faqQuestion,
     faqActive,
     faqAnswer,
+    updatedFaq,
     navigate,
   ]);
+
+  console.log(newFaq);
 
   const formik = useFormik({
     enableReinitialize: true,
@@ -104,7 +95,6 @@ const Addfaq = (e) => {
       <h3 className="mb-4 title">
         {getFaqId !== undefined ? 'Edit' : 'Add'} Faq
       </h3>
-
       <div className="">
         <form onSubmit={formik.handleSubmit}>
           <div className="mt-4">
@@ -130,17 +120,35 @@ const Addfaq = (e) => {
             <div className="error">
               {formik.touched.answer && formik.errors.answer}
             </div>
-            <select
-              name="active"
-              onChange={formik.handleChange('active')}
-              onBlur={formik.handleBlur('active')}
-              value={formik.values.active}
-              className="my-2 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-              id=""
-            >
-              <option value="1">Active</option>
-              <option value="0">No Active</option>
-            </select>
+            <div className="my-4">
+              <div className="mt-1">
+                <label className="inline-flex items-center">
+                  <input
+                    type="radio"
+                    name="active"
+                    onChange={formik.handleChange}
+                    onBlur={formik.handleBlur}
+                    value="1"
+                    checked={formik.values.active === '1'}
+                    className="text-blue-500 form-radio h-4 w-4"
+                  />
+                  <span className="ml-2">Active</span>
+                </label>
+                <label className="inline-flex items-center ml-6">
+                  <input
+                    type="radio"
+                    name="active"
+                    onChange={formik.handleChange}
+                    onBlur={formik.handleBlur}
+                    value="0"
+                    checked={formik.values.active === '0'}
+                    className="text-blue-500 form-radio h-4 w-4"
+                  />
+                  <span className="ml-2">Not Active</span>
+                </label>
+              </div>
+            </div>
+
             <div className="error">
               {formik.touched.active && formik.errors.active}
             </div>

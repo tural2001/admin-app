@@ -1,55 +1,60 @@
 import { Table } from 'antd';
+import { Link } from 'react-router-dom';
 import React, { useEffect, useState } from 'react';
+import { AiFillDelete } from 'react-icons/ai';
+import { BiEdit } from 'react-icons/bi';
 import { useDispatch, useSelector } from 'react-redux';
 
-import { Link } from 'react-router-dom';
 import CustomModal from '../components/CustomModal';
-import { deleteAfaq, getfaqs, resetState } from '../features/faq/faqSlice';
-import { RiDeleteBin5Line } from 'react-icons/ri';
-import { VscEdit } from 'react-icons/vsc';
-import { toast } from 'react-toastify';
 
-const FaqList = () => {
+import { VscEdit } from 'react-icons/vsc';
+import { RiDeleteBin5Line } from 'react-icons/ri';
+import {
+  deleteAreview,
+  getreviews,
+  resetState,
+} from '../features/reviews/reviewsSlice';
+
+const ReviewList = () => {
   const [open, setOpen] = useState(false);
-  const [faqId, setFaqId] = useState('');
+  const [reviewId, setreviewId] = useState('');
   const showModal = (e) => {
     setOpen(true);
-    setFaqId(e);
+    setreviewId(e);
   };
   const hideModal = () => {
     setOpen(false);
   };
   const dispatch = useDispatch();
-
   useEffect(() => {
     dispatch(resetState());
-    dispatch(getfaqs());
+    dispatch(getreviews());
   }, [dispatch]);
+  // const pcategorystate = useSelector((state) => state.pcategory.pcategories);
+  const reviewstate = useSelector((state) => state.reviews.reviews.data);
+  console.log(reviewstate);
 
-  const faqstate = useSelector((state) => state.faq.faqs.data);
-  console.log(faqstate);
+  // const data = [];
+  // for (let i = 0; i < reviewstate.length; i++) {
+  //   data.push({
+  //     key: i + 1,
+  //     title: reviewstate[i].title,
+  //   });
+  // }
 
-  const data = [];
-  for (let i = 0; i < faqstate?.length; i++) {
-    data.push({
-      key: i,
-      question: faqstate[i].question,
-      answer: faqstate[i].answer,
-    });
-  }
-
-  const deleteFaq = (e) => {
+  const deleteReview = (e) => {
     setOpen(false);
-    dispatch(deleteAfaq(e));
-    toast.success('Faq deleted successfully');
+    dispatch(deleteAreview(e));
     setTimeout(() => {
-      dispatch(getfaqs());
+      dispatch(getreviews());
     }, 100);
   };
+
   return (
     <div>
-      <h3 className="mb-4 title">Products</h3>
-      <Link to="/admin/faq">Add Faq</Link>
+      <h3 className="mb-4 title">Reviews</h3>
+      <Link to="/admin/review">Add Review</Link>
+
       <div>
         <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
           <table className="w-full text-sm text-left text-gray-500 dark:text-gray-400">
@@ -61,7 +66,7 @@ const FaqList = () => {
 
                 <th scope="col" className="px-6 py-3">
                   <div className="flex items-center">
-                    Question
+                    reviewer name
                     <a href="#/">
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
@@ -77,7 +82,7 @@ const FaqList = () => {
                 </th>
                 <th scope="col" className="px-6 py-3">
                   <div className="flex items-center">
-                    Answer
+                    comment
                     <a href="#/">
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
@@ -95,7 +100,7 @@ const FaqList = () => {
               </tr>
             </thead>
             <tbody>
-              {faqstate?.map((faq, index) => (
+              {reviewstate?.map((review, index) => (
                 <tr
                   key={index}
                   className="bg-white border-b dark:bg-gray-800 dark:border-gray-700"
@@ -104,20 +109,21 @@ const FaqList = () => {
                     scope="row"
                     className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"
                   >
-                    {faq.id}
+                    {review.id}
                   </th>
-                  <td className="px-6 py-4">{faq.question}</td>
-                  <td className="px-6 py-4">{faq.answer}</td>
+                  <td className="px-6 py-4">{review.reviewer_name}</td>
+
+                  <td className="px-6 py-4">{review.comment}</td>
                   <td className="px-6 py-4 flex gap-2">
                     <Link
-                      to={`/admin/faq/${faqstate[index]?.id}`}
+                      to={`/admin/review/${reviewstate[index]?.id}`}
                       className="text-lg text-black dark:text-blue-500 hover:underline"
                     >
                       <VscEdit />
                     </Link>
 
                     <button
-                      onClick={() => showModal(faqstate[index]?.id)}
+                      onClick={() => showModal(reviewstate[index]?.id)}
                       className="text-lg text-black dark:text-blue-500 hover:text-red-500"
                     >
                       <RiDeleteBin5Line />
@@ -127,18 +133,18 @@ const FaqList = () => {
               ))}
             </tbody>
           </table>
-        </div>
+        </div>{' '}
       </div>
       <CustomModal
         hideModal={hideModal}
         open={open}
         performAction={() => {
-          deleteFaq(faqId);
+          deleteReview(reviewId);
         }}
-        title={`Are you sure you want to delete  this faq ?`}
+        title="Are you sure you want to delete this category?"
       />
     </div>
   );
 };
 
-export default FaqList;
+export default ReviewList;

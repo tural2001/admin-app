@@ -123,15 +123,15 @@ const MainLayout = () => {
                   icon: <SiBrandfolder className="fs-4" />,
                   label: 'Brand List',
                 },
+                // {
+                //   key: 'review',
+                //   icon: <BiCategoryAlt className="fs-4" />,
+                //   label: 'Review',
+                // },
                 {
-                  key: 'category',
+                  key: 'review-list',
                   icon: <BiCategoryAlt className="fs-4" />,
-                  label: 'Category',
-                },
-                {
-                  key: 'category-list',
-                  icon: <BiCategoryAlt className="fs-4" />,
-                  label: 'Category List',
+                  label: 'review List',
                 },
                 // {
                 //   key: 'color',
@@ -168,31 +168,31 @@ const MainLayout = () => {
               ],
             },
             {
-              key: 'blogs',
+              key: 'faq-list',
               icon: <FaBloggerB className="fs-4" />,
-              label: 'Blogs',
-              children: [
-                // {
-                //   key: 'blog',
-                //   icon: <ImBlog className="fs-4" />,
-                //   label: 'Add Blog',
-                // },
-                {
-                  key: 'faq-list',
-                  icon: <FaBloggerB className="fs-4" />,
-                  label: 'Blog List',
-                },
-                {
-                  key: 'blog-category',
-                  icon: <ImBlog className="fs-4" />,
-                  label: 'Add Blog Category',
-                },
-                {
-                  key: 'blog-category-list',
-                  icon: <FaBloggerB className="fs-4" />,
-                  label: 'Blog Category List',
-                },
-              ],
+              label: 'Faq List',
+              // children: [
+              //   // {
+              //   //   key: 'blog',
+              //   //   icon: <ImBlog className="fs-4" />,
+              //   //   label: 'Add Blog',
+              //   // },
+              //   {
+              //     key: 'faq-list',
+              //     icon: <FaBloggerB className="fs-4" />,
+              //     label: 'Blog List',
+              //   },
+              //   {
+              //     key: 'blog-category',
+              //     icon: <ImBlog className="fs-4" />,
+              //     label: 'Add Blog Category',
+              //   },
+              //   {
+              //     key: 'blog-category-list',
+              //     icon: <FaBloggerB className="fs-4" />,
+              //     label: 'Blog Category List',
+              //   },
+              // ],
             },
             {
               key: 'enquiries',
