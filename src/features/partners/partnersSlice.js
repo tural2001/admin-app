@@ -41,7 +41,6 @@ export const updateApartner = createAsyncThunk(
   'partners/update-partner',
   async (partnerData, thunkAPI) => {
     try {
-      console.log(partnerData);
       const formdata = new FormData();
       formdata.append('active', partnerData.partner.active);
       formdata.append(
@@ -84,17 +83,6 @@ export const deleteApartner = createAsyncThunk(
     }
   }
 );
-
-// export const updateApartner = createAsyncThunk(
-//   'partners/update-partner',
-//   async (partner, thunkAPI) => {
-//     try {
-//       return await partnerService.updatepartner(partner);
-//     } catch (error) {
-//       return thunkAPI.rejectWithValue(error);
-//     }
-//   }
-// );
 
 export const resetState = createAction('Reset_all');
 

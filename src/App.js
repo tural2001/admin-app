@@ -5,13 +5,11 @@ import Login from './pages/Login';
 import MainLayout from './components/MainLayout';
 import Enquiries from './pages/Enquiries';
 import FaqList from './pages/FaqList';
-import Blogcatlist from './pages/Blogcatlist';
 import Orders from './pages/Orders';
 import Customers from './pages/Customers';
 import Colorlist from './pages/Colorlist';
-
 import Productlist from './pages/Productlist';
-import Addblogcat from './pages/Addblogcat';
+
 import Addcolor from './pages/Addcolor';
 
 import Addproduct from './pages/Addproduct';
@@ -26,6 +24,8 @@ import AddPartner from './pages/AddPartner';
 import Partnerlist from './pages/Partnerlist';
 import Addpopup from './pages/Addpopup';
 import Popuplist from './pages/Popuplist';
+import TariffList from './pages/TariffList';
+import AddTariff from './pages/AddTariff';
 
 function App() {
   return (
@@ -56,9 +56,9 @@ function App() {
           <Route path="partner-list" element={<Partnerlist />} />
           <Route path="partner" element={<AddPartner />} />
           <Route path="partner/:id" element={<AddPartner />} />
-          <Route path="blog-category-list" element={<Blogcatlist />} />
-          <Route path="blog-category" element={<Addblogcat />} />
-          <Route path="blog-category/:id" element={<Addblogcat />} />
+          <Route path="tariff-list" element={<TariffList />} />
+          <Route path="tariff" element={<AddTariff />} />
+          <Route path="tariff/:id" element={<AddTariff />} />
           <Route path="orders" element={<Orders />} />
           <Route path="order/:id" element={<ViewOrder />} />
           <Route path="customers" element={<Customers />} />

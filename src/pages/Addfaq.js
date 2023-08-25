@@ -65,14 +65,14 @@ const Addfaq = (e) => {
     navigate,
   ]);
 
-  console.log(newFaq);
+  console.log(newFaq.faqActive);
 
   const formik = useFormik({
     enableReinitialize: true,
     initialValues: {
       question: faqQuestion || '',
       answer: faqAnswer || '',
-      active: faqActive || '',
+      active: faqActive ? 1 : 0,
     },
     validationSchema: schema,
     onSubmit: (values) => {
@@ -126,10 +126,12 @@ const Addfaq = (e) => {
                   <input
                     type="radio"
                     name="active"
-                    onChange={formik.handleChange}
+                    onChange={() => formik.setFieldValue('active', '1')}
                     onBlur={formik.handleBlur}
                     value="1"
-                    checked={formik.values.active === '1'}
+                    checked={
+                      newFaq.faqActive ? 1 : 0 || formik.values.active === '1'
+                    }
                     className="text-blue-500 form-radio h-4 w-4"
                   />
                   <span className="ml-2">Active</span>
@@ -138,12 +140,13 @@ const Addfaq = (e) => {
                   <input
                     type="radio"
                     name="active"
-                    onChange={formik.handleChange}
+                    onChange={() => formik.setFieldValue('active', '0')}
                     onBlur={formik.handleBlur}
                     value="0"
                     checked={formik.values.active === '0'}
                     className="text-blue-500 form-radio h-4 w-4"
                   />
+
                   <span className="ml-2">Not Active</span>
                 </label>
               </div>

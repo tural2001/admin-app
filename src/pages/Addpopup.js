@@ -53,100 +53,53 @@ const Addpopup = () => {
     }
   }, [dispatch, getPopupId]);
 
-  // useEffect(() => {
-  //   if (isSuccess && createdPopup) {
-  //     toast.success('Brand Added Successfully!');
-  //     navigate('/admin/brand-list');
-  //   }
-  //   if (isSuccess && updatedPopup !== undefined) {
-  //     toast.success('Brand Updated Successfully!');
-  //     navigate('/admin/brand-list');
-  //   }
-  //   if (isError) {
-  //     toast.error('Something Went Wrong!');
-  //   }
-  // }, [
-  //   isSuccess,
-  //   isError,
-  //   isLoading,
-  //   createdPopup,
-  //   popupContent,
-  //   popupActive,
-  //   popupHandle,
-  //   popupImage,
-  //   updatedPopup,
-  //   navigate,
-  // ]);
-
-  const onSubmit = async (values) => {
-    const apiUrl =
-      getPopupId !== undefined
-        ? `http://127.0.0.1:8000/api/popups/${getPopupId}`
-        : 'http://127.0.0.1:8000/api/popups';
-
-    const formdata = new FormData();
-    if (getPopupId !== undefined) {
-      formdata.append('_method', 'PUT');
+  useEffect(() => {
+    if (isSuccess && createdPopup) {
+      toast.success('Brand Added Successfully!');
+      navigate('/admin/popup-list');
     }
-    formdata.append('active', values.active);
-    formdata.append('content', values.content);
-    formdata.append('image', values.image[0]);
-    formdata.append('handle', values.handle);
-
-    const requestOptions = {
-      method: 'POST',
-      headers: { ...config.headers },
-      body: formdata,
-      redirect: 'follow',
-    };
-
-    try {
-      const response = await fetch(apiUrl, requestOptions);
-      const result = await response.text();
-      console.log(result);
-
-      if (response.ok) {
-        if (getPopupId !== undefined) {
-          toast.success('Coupon Updated Successfully!');
-          navigate('/admin/partner-list');
-        } else {
-          toast.success('Coupon Added Successfully!');
-          formik.resetForm();
-          setTimeout(() => {
-            dispatch(resetState());
-          }, 300);
-        }
-      } else {
-        toast.error('Something Went Wrong!');
-      }
-    } catch (error) {
-      console.log('error', error);
+    if (isSuccess && updatedPopup !== undefined) {
+      toast.success('Brand Updated Successfully!');
+      navigate('/admin/popup-list');
+    }
+    if (isError) {
       toast.error('Something Went Wrong!');
     }
-  };
+  }, [
+    isSuccess,
+    isError,
+    isLoading,
+    createdPopup,
+    popupContent,
+    popupActive,
+    popupHandle,
+    popupImage,
+    updatedPopup,
+    navigate,
+  ]);
 
   const formik = useFormik({
     enableReinitialize: true,
     initialValues: {
       content: popupContent || '',
-      active: popupActive || '',
+      active: popupActive ? 1 : 0,
       handle: popupHandle || '',
       image: popupImage || '',
     },
     validationSchema: schema,
-    // onSubmit: (values) => {
-    //   if (getPopupId !== undefined) {
-    //     const data = { id: getPopupId, popupData: values };
-    //     dispatch(updateApopup(data));
-    //   } else {
-    //     dispatch(createApopup(values));
-    //     formik.resetForm();
-    //     setTimeout(() => {
-    //       dispatch(resetState());
-    //     }, 1000);
-    //   }
-    // },
-    onSubmit: onSubmit,
+    onSubmit: (values) => {
+      if (getPopupId !== undefined) {
+        const data = { id: getPopupId, popup: values };
+        console.log(data);
+        dispatch(updateApopup(data));
+      } else {
+        dispatch(createApopup(values));
+        formik.resetForm();
+        setTimeout(() => {
+          dispatch(resetState());
+        }, 1000);
+      }
+    },
   });
 
   return (
@@ -242,7 +195,9 @@ const Addpopup = () => {
                   onChange={formik.handleChange}
                   onBlur={formik.handleBlur}
                   value="1"
-                  checked={formik.values.active === '1'}
+                  checked={
+                    newPopup.popupActive ? 1 : 0 || formik.values.active === '1'
+                  }
                   className="text-blue-500 form-radio h-4 w-4"
                 />
                 <span className="ml-2">Active</span>

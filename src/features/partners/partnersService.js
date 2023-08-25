@@ -26,22 +26,6 @@ const deletepartner = async (id) => {
   return response.data;
 };
 
-// const updatepartner = async (partner) => {
-//   console.log(partner);
-
-//   const response = await axios.put(
-//     `${base_url}/api/partners/${partner.id}`,
-//     {
-//       name: partner.partner.name,
-//       active: partner.partner.active,
-//       logo: partner.partner.logo,
-//       _method: 'PUT',
-//     },
-//     config
-//   );
-//   return response.data;
-// };
-
 const updatepartner = async (partner, id) => {
   const response = await axios.post(
     `${base_url}/api/partners/${id}`,

@@ -99,52 +99,14 @@ const MainLayout = () => {
               label: 'Customers',
             },
             {
-              key: 'Catalog',
+              key: 'popup-list',
               icon: <AiOutlineShoppingCart className="fs-4" />,
-              label: 'Catalog',
-              children: [
-                {
-                  key: 'product',
-                  icon: <AiOutlineShoppingCart className="fs-4" />,
-                  label: 'Add product',
-                },
-                {
-                  key: 'product-list',
-                  icon: <AiOutlineShoppingCart className="fs-4" />,
-                  label: 'Product List',
-                },
-
-                {
-                  key: 'popup-list',
-                  icon: <SiBrandfolder className="fs-4" />,
-                  label: 'Popup List',
-                },
-                // {
-                //   key: 'review',
-                //   icon: <BiCategoryAlt className="fs-4" />,
-                //   label: 'Review',
-                // },
-                {
-                  key: 'review-list',
-                  icon: <BiCategoryAlt className="fs-4" />,
-                  label: 'review List',
-                },
-                // {
-                //   key: 'color',
-                //   icon: <AiOutlineBgColors className="fs-4" />,
-                //   label: 'Color',
-                // },
-                // {
-                //   key: 'color-list',
-                //   icon: <AiOutlineBgColors className="fs-4" />,
-                //   label: 'Color List',
-                // },
-              ],
+              label: 'Popup List',
             },
             {
-              key: 'orders',
+              key: 'tariff-list',
               icon: <TbListCheck className="fs-4" />,
-              label: 'Orders',
+              label: 'Tariff List',
             },
             {
               key: 'partner-list',

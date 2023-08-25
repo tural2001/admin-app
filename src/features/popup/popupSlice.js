@@ -46,7 +46,6 @@ export const deleteApopup = createAsyncThunk(
 export const createApopup = createAsyncThunk(
   'popups/create-popup',
   async (popupData, thunkAPI) => {
-    console.log(popupData);
     try {
       const formdata = new FormData();
       formdata.append('active', popupData.active);
@@ -63,10 +62,22 @@ export const createApopup = createAsyncThunk(
 );
 export const updateApopup = createAsyncThunk(
   'popups/update-popup',
-  async (popup, thunkAPI) => {
+  async (popupData, thunkAPI) => {
+    console.log(popupData);
     try {
-      const response = await popupService.updatepopup(popup); // Call your updatepopup function
-      return response.data; // Assuming the response contains the updated data
+      const formdata = new FormData();
+      formdata.append('active', popupData.popup.active);
+      formdata.append('content', popupData.popup.content);
+      formdata.append(
+        'image',
+        popupData.popup.image[0],
+        popupData.popup.image[0].name
+      );
+      formdata.append('handle', popupData.popup.handle);
+      formdata.append('_method', 'PUT');
+
+      const response = await popupService.updatepopup(formdata, popupData.id);
+      return response.data;
     } catch (error) {
       return thunkAPI.rejectWithValue(error);
     }

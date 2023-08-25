@@ -11,14 +11,10 @@ const createpopup = async (popup) => {
   const response = await axios.post(`${base_url}/api/popups`, popup, config);
   return response.data;
 };
-const updatepopup = async (popup) => {
-  const response = await axios.put(
-    `${base_url}/api/popups/${popup.id}`,
-    {
-      content: popup.popupData.content,
-      handle: popup.popupData.handle,
-      active: popup.popupData.active,
-    },
+const updatepopup = async (popup, id) => {
+  const response = await axios.post(
+    `${base_url}/api/popups/${id}`,
+    popup,
     config
   );
   return response.data;

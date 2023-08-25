@@ -5,7 +5,6 @@ import { toast } from 'react-toastify';
 import { useFormik } from 'formik';
 import * as yup from 'yup';
 import Dropzone from 'react-dropzone';
-
 import { useLocation, useNavigate } from 'react-router-dom';
 import {
   createApartner,
@@ -13,8 +12,6 @@ import {
   resetState,
   updateApartner,
 } from '../features/partners/partnersSlice';
-import { uploadImg } from '../features/upload/uploadSlice';
-import { config } from '../utils/axiosconfig';
 
 let schema = yup.object({
   name: yup.string().required('Brand name is Required'),
@@ -55,10 +52,10 @@ const AddPartner = () => {
 
   useEffect(() => {
     if (isSuccess && createdPartner) {
-      toast.success('Coupon Added Successfully!');
+      toast.success('Partner Added Successfully!');
     }
     if (isSuccess && updatedPartner) {
-      toast.success('Coupon Updated Successfully!');
+      toast.success('Partner Updated Successfully!');
       navigate('/admin/partner-list');
     }
     if (isError) {
@@ -75,58 +72,13 @@ const AddPartner = () => {
     updatedPartner,
     navigate,
   ]);
-  // const onSubmit = async (values) => {
-  //   const apiUrl =
-  //     getPartnerId !== undefined
-  //       ? `http://127.0.0.1:8000/api/partners/${getPartnerId}`
-  //       : 'http://127.0.0.1:8000/api/partners';
-
-  //   const formdata = new FormData();
-  //   if (getPartnerId !== undefined) {
-  //     formdata.append('_method', 'PUT');
-  //   }
-  //   formdata.append('active', values.active);
-  //   formdata.append('logo', values.logo[0]);
-  //   formdata.append('name', values.name);
-
-  //   const requestOptions = {
-  //     method: 'POST',
-  //     headers: { ...config.headers },
-  //     body: formdata,
-  //     redirect: 'follow',
-  //   };
-
-  //   try {
-  //     const response = await fetch(apiUrl, requestOptions);
-  //     const result = await response.text();
-  //     console.log(result);
-
-  //     if (response.ok) {
-  //       if (getPartnerId !== undefined) {
-  //         toast.success('Coupon Updated Successfully!');
-  //         navigate('/admin/partner-list');
-  //       } else {
-  //         toast.success('Coupon Added Successfully!');
-  //         formik.resetForm();
-  //         setTimeout(() => {
-  //           dispatch(resetState());
-  //         }, 300);
-  //       }
-  //     } else {
-  //       toast.error('Something Went Wrong!');
-  //     }
-  //   } catch (error) {
-  //     console.log('error', error);
-  //     toast.error('Something Went Wrong!');
-  //   }
-  // };
 
   const formik = useFormik({
     enableReinitialize: true,
     initialValues: {
       name: partnerName || '',
       logo: partnerLogo || '',
-      active: partnerActive || '',
+      active: partnerActive ? 1 : 0,
     },
     validationSchema: schema,
     onSubmit: (values) => {
@@ -142,8 +94,6 @@ const AddPartner = () => {
         }, 300);
       }
     },
-
-    // onSubmit: onSubmit,
   });
 
   const partnerState = useSelector((state) => state.partner?.partners?.data);
@@ -221,7 +171,6 @@ const AddPartner = () => {
               </Dropzone>
             </div>
           </div>
-
           <div className="my-4">
             <div className="mt-1">
               <label className="inline-flex items-center">
@@ -231,7 +180,11 @@ const AddPartner = () => {
                   onChange={formik.handleChange}
                   onBlur={formik.handleBlur}
                   value="1"
-                  checked={formik.values.active === '1'}
+                  checked={
+                    newPartner.partnerActive
+                      ? 1
+                      : 0 || formik.values.active === '1'
+                  }
                   className="text-blue-500 form-radio h-4 w-4"
                 />
                 <span className="ml-2">Active</span>
@@ -250,7 +203,6 @@ const AddPartner = () => {
               </label>
             </div>
           </div>
-
           <div className="error">
             {formik.touched.active && formik.errors.active}
           </div>
