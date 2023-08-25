@@ -113,15 +113,11 @@ const MainLayout = () => {
                   icon: <AiOutlineShoppingCart className="fs-4" />,
                   label: 'Product List',
                 },
+
                 {
-                  key: 'brand',
+                  key: 'popup-list',
                   icon: <SiBrandfolder className="fs-4" />,
-                  label: 'Brand',
-                },
-                {
-                  key: 'brand-list',
-                  icon: <SiBrandfolder className="fs-4" />,
-                  label: 'Brand List',
+                  label: 'Popup List',
                 },
                 // {
                 //   key: 'review',
@@ -151,21 +147,9 @@ const MainLayout = () => {
               label: 'Orders',
             },
             {
-              key: 'marketing',
+              key: 'partner-list',
               icon: <RiCouponLine className="fs-4" />,
-              label: 'Marketing',
-              children: [
-                {
-                  key: 'coupon',
-                  icon: <ImBlog className="fs-4" />,
-                  label: 'Add Coupon',
-                },
-                {
-                  key: 'coupon-list',
-                  icon: <RiCouponLine className="fs-4" />,
-                  label: 'Coupon List',
-                },
-              ],
+              label: 'Partner List',
             },
             {
               key: 'faq-list',

@@ -9,14 +9,12 @@ import Blogcatlist from './pages/Blogcatlist';
 import Orders from './pages/Orders';
 import Customers from './pages/Customers';
 import Colorlist from './pages/Colorlist';
-import Brandlist from './pages/Brandlist';
+
 import Productlist from './pages/Productlist';
 import Addblogcat from './pages/Addblogcat';
 import Addcolor from './pages/Addcolor';
-import Addbrand from './pages/Addbrand';
+
 import Addproduct from './pages/Addproduct';
-import Couponlist from './pages/Couponlist';
-import AddCoupon from './pages/AddCoupon';
 import ViewEnq from './pages/ViewEnq';
 import ViewOrder from './pages/ViewOrder';
 import { PrivateRoutes } from './routing/PrivateRoutes';
@@ -24,6 +22,10 @@ import { OpenRoutes } from './routing//OpenRoutes';
 import Addfaq from './pages/Addfaq';
 import Addreview from './pages/Addreview';
 import ReviewList from './pages/ReviewList';
+import AddPartner from './pages/AddPartner';
+import Partnerlist from './pages/Partnerlist';
+import Addpopup from './pages/Addpopup';
+import Popuplist from './pages/Popuplist';
 
 function App() {
   return (
@@ -51,9 +53,9 @@ function App() {
           <Route path="faq-list" element={<FaqList />} />
           <Route path="faq" element={<Addfaq />} />
           <Route path="faq/:id" element={<Addfaq />} />
-          <Route path="coupon-list" element={<Couponlist />} />
-          <Route path="coupon" element={<AddCoupon />} />
-          <Route path="coupon/:id" element={<AddCoupon />} />
+          <Route path="partner-list" element={<Partnerlist />} />
+          <Route path="partner" element={<AddPartner />} />
+          <Route path="partner/:id" element={<AddPartner />} />
           <Route path="blog-category-list" element={<Blogcatlist />} />
           <Route path="blog-category" element={<Addblogcat />} />
           <Route path="blog-category/:id" element={<Addblogcat />} />
@@ -66,9 +68,9 @@ function App() {
           <Route path="review-list" element={<ReviewList />} />
           <Route path="review" element={<Addreview />} />
           <Route path="review/:id" element={<Addreview />} />
-          <Route path="brand-list" element={<Brandlist />} />
-          <Route path="brand" element={<Addbrand />} />
-          <Route path="brand/:id" element={<Addbrand />} />
+          <Route path="popup-list" element={<Popuplist />} />
+          <Route path="popup" element={<Addpopup />} />
+          <Route path="popup/:id" element={<Addpopup />} />
           <Route path="product-list" element={<Productlist />} />
           <Route path="product" element={<Addproduct />} />
           <Route path="product/:id" element={<Addproduct />} />
