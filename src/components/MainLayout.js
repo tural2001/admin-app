@@ -90,17 +90,17 @@ const MainLayout = () => {
           items={[
             {
               key: '',
-              icon: <AiOutlineDashboard className="fs-4" />,
+              icon: <TbListCheck className="fs-4" />,
               label: 'Dashboard',
             },
             {
               key: 'customers',
-              icon: <AiOutlineUser className="fs-4" />,
+              icon: <TbListCheck className="fs-4" />,
               label: 'Customers',
             },
             {
               key: 'popup-list',
-              icon: <AiOutlineShoppingCart className="fs-4" />,
+              icon: <TbListCheck className="fs-4" />,
               label: 'Popup List',
             },
             {
@@ -109,13 +109,23 @@ const MainLayout = () => {
               label: 'Tariff List',
             },
             {
+              key: 'structure-list',
+              icon: <TbListCheck className="fs-4" />,
+              label: 'Structure List',
+            },
+            {
+              key: 'service-list',
+              icon: <TbListCheck className="fs-4" />,
+              label: 'Service List',
+            },
+            {
               key: 'partner-list',
-              icon: <RiCouponLine className="fs-4" />,
+              icon: <TbListCheck className="fs-4" />,
               label: 'Partner List',
             },
             {
               key: 'faq-list',
-              icon: <FaBloggerB className="fs-4" />,
+              icon: <TbListCheck className="fs-4" />,
               label: 'Faq List',
               // children: [
               //   // {

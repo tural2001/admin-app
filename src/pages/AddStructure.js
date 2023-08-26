@@ -4,63 +4,64 @@ import { useDispatch, useSelector } from 'react-redux';
 import { toast } from 'react-toastify';
 import { useFormik } from 'formik';
 import * as yup from 'yup';
-import Dropzone from 'react-dropzone';
 import { useLocation, useNavigate } from 'react-router-dom';
+import Dropzone from 'react-dropzone';
 import {
-  createApartner,
-  getApartner,
+  createAstructure,
+  getAstructure,
   resetState,
-  updateApartner,
-} from '../features/partners/partnersSlice';
+  updateAstructure,
+} from '../features/structures/structuresSlice';
 
 let schema = yup.object({
-  name: yup.string().required('Brand name is Required'),
-  logo: yup.array().required('Images is Required'),
-  active: yup.string().required('Required'),
+  name: yup.string().required('Brand s is Required'),
+  profession: yup.string().required('Brand namse is Required'),
+  image: yup.array().required('Brand namswe is Required'),
+  active: yup.string().required('Brand nawsme is Required'),
 });
 
-const AddPartner = () => {
+const AddStructure = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const location = useLocation();
-  const getPartnerId = location.pathname.split('/')[3];
-
-  const newPartner = useSelector((state) => state.partner);
+  const getStructureId = location.pathname.split('/')[3];
+  const newStructure = useSelector((state) => state.structure);
 
   const {
     isSuccess,
     isError,
     isLoading,
-    createdPartner,
-    partnerName,
-    partnerLogo,
-    partnerActive,
-    updatedPartner,
-  } = newPartner;
-
-  useEffect(() => {
-    if (getPartnerId !== undefined) {
-      dispatch(getApartner(getPartnerId));
-    } else {
-      dispatch(resetState());
-    }
-  }, [dispatch, getPartnerId]);
+    createdStructure,
+    structureName,
+    structureActive,
+    structureProfession,
+    structureImage,
+    updatedStructure,
+  } = newStructure;
 
   const onDrop = useCallback((acceptedFiles) => {
-    formik.setFieldValue('logo', acceptedFiles);
+    formik.setFieldValue('image', acceptedFiles);
   }, []);
 
   useEffect(() => {
-    if (isSuccess && createdPartner) {
-      toast.success('Partner Added Successfully!');
-      navigate('/admin/partner-list');
+    if (getStructureId !== undefined) {
+      dispatch(getAstructure(getStructureId));
+    } else {
+      dispatch(resetState());
+    }
+  }, [dispatch, getStructureId]);
+
+  useEffect(() => {
+    if (isSuccess && createdStructure) {
+      toast.success('Brand Added Successfully!');
+      navigate('/admin/structure-list');
       setTimeout(() => {
         window.location.reload();
       }, 10);
     }
-    if (isSuccess && updatedPartner) {
-      toast.success('Partner Updated Successfully!');
-      navigate('/admin/partner-list');
+    if (isSuccess && updatedStructure !== undefined) {
+      toast.success('Brand Updated Successfully!');
+      navigate('/admin/structure-list');
       setTimeout(() => {
         window.location.reload();
       }, 10);
@@ -72,58 +73,66 @@ const AddPartner = () => {
     isSuccess,
     isError,
     isLoading,
-    createdPartner,
-    partnerName,
-    partnerLogo,
-    partnerActive,
-    updatedPartner,
+    createdStructure,
+    structureName,
+    structureActive,
+    structureProfession,
+    structureImage,
+    updatedStructure,
     navigate,
   ]);
 
   const formik = useFormik({
     enableReinitialize: true,
     initialValues: {
-      name: partnerName || '',
-      logo: partnerLogo || '',
-      active: partnerActive ? 1 : 0,
+      name: structureName || '',
+      active: structureActive ? 1 : 0,
+      profession: structureProfession || '',
+      image: structureImage || '',
     },
     validationSchema: schema,
     onSubmit: (values) => {
-      if (getPartnerId !== undefined) {
-        const data = { id: getPartnerId, partner: values };
-        console.log(data);
-        dispatch(updateApartner(data));
+      if (getStructureId !== undefined) {
+        const data = { id: getStructureId, structure: values };
+        dispatch(updateAstructure(data));
       } else {
-        dispatch(createApartner(values));
+        dispatch(createAstructure(values));
         formik.resetForm();
         setTimeout(() => {
           dispatch(resetState());
-        }, 300);
+        }, 1000);
       }
     },
   });
 
-  const partnerState = useSelector((state) => state.partner?.partners?.data);
-  console.log(partnerState);
-
   return (
     <div>
       <h3 className="mb-4 title">
-        {getPartnerId !== undefined ? 'Edit' : 'Add'} Partner
+        {getStructureId !== undefined ? 'Edit' : 'Add'} Structure
       </h3>
       <div>
-        <form action="" onSubmit={formik.handleSubmit}>
+        <form onSubmit={formik.handleSubmit}>
           <CustomInput
             type="text"
-            label="Enter Coupon Name"
+            label="Enter name"
             name="name"
             onCh={formik.handleChange('name')}
             onBl={formik.handleBlur('name')}
             val={formik.values.name}
-            id="coupon"
           />
           <div className="error">
             {formik.touched.name && formik.errors.name}
+          </div>
+          <CustomInput
+            type="text"
+            label="Enter profession"
+            name="profession"
+            onCh={formik.handleChange('profession')}
+            onBl={formik.handleBlur('profession')}
+            val={formik.values.profession}
+          />
+          <div className="error">
+            {formik.touched.profession && formik.errors.profession}
           </div>
 
           <div className="">
@@ -188,7 +197,7 @@ const AddPartner = () => {
                   onBlur={formik.handleBlur}
                   value="1"
                   checked={
-                    newPartner.partnerActive
+                    newStructure.structureActive
                       ? 1
                       : 0 || formik.values.active === '1'
                   }
@@ -210,6 +219,7 @@ const AddPartner = () => {
               </label>
             </div>
           </div>
+
           <div className="error">
             {formik.touched.active && formik.errors.active}
           </div>
@@ -218,7 +228,7 @@ const AddPartner = () => {
             className="btn btn-success border-0 rounded-3 my-5"
             type="submit"
           >
-            {getPartnerId !== undefined ? 'Edit' : 'Add'} Partner
+            {getStructureId !== undefined ? 'Edit' : 'Add'} Structure
           </button>
         </form>
       </div>
@@ -226,4 +236,4 @@ const AddPartner = () => {
   );
 };
 
-export default AddPartner;
+export default AddStructure;

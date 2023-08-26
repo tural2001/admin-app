@@ -44,11 +44,16 @@ const Addfaq = (e) => {
     if (isSuccess && createdFaq) {
       toast.success('Faq Added Successfully!');
       navigate('/admin/faq-list');
-      window.location.reload();
+      setTimeout(() => {
+        window.location.reload();
+      }, 10);
     }
     if (isSuccess && updatedFaq !== undefined) {
       toast.success('Faq Updated Successfully!');
       navigate('/admin/faq-list');
+      setTimeout(() => {
+        window.location.reload();
+      }, 10);
     }
     if (isError) {
       toast.error('Something Went Wrong!');

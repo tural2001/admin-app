@@ -12,7 +12,6 @@ import {
   updateApopup,
 } from '../features/popup/popupSlice';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { config } from '../utils/axiosconfig';
 import Dropzone from 'react-dropzone';
 
 let schema = yup.object({
@@ -28,7 +27,6 @@ const Addpopup = () => {
   const location = useLocation();
   const getPopupId = location.pathname.split('/')[3];
   const newPopup = useSelector((state) => state.popup);
-  console.log(newPopup);
   const {
     isSuccess,
     isError,
@@ -57,10 +55,16 @@ const Addpopup = () => {
     if (isSuccess && createdPopup) {
       toast.success('Brand Added Successfully!');
       navigate('/admin/popup-list');
+      setTimeout(() => {
+        window.location.reload();
+      }, 10);
     }
     if (isSuccess && updatedPopup !== undefined) {
       toast.success('Brand Updated Successfully!');
       navigate('/admin/popup-list');
+      setTimeout(() => {
+        window.location.reload();
+      }, 10);
     }
     if (isError) {
       toast.error('Something Went Wrong!');

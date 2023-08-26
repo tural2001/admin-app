@@ -10,6 +10,8 @@ import colorReducer from '../features/color/colorSlice';
 import enquiryReducer from '../features/enquiry/enquirySlice';
 import uploadReducer from '../features/upload/uploadSlice';
 import partnerReducer from '../features/partners/partnersSlice';
+import structureReducer from '../features/structures/structuresSlice';
+import serviceReducer from '../features/services/servicesSlice';
 
 export const store = configureStore({
   reducer: {
@@ -19,6 +21,8 @@ export const store = configureStore({
     popup: popupReducer,
     reviews: reviewsReducer,
     tariff: tariffReducer,
+    structure: structureReducer,
+    service: serviceReducer,
     faq: faqReducer,
     color: colorReducer,
     enquiry: enquiryReducer,

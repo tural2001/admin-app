@@ -4,63 +4,67 @@ import { useDispatch, useSelector } from 'react-redux';
 import { toast } from 'react-toastify';
 import { useFormik } from 'formik';
 import * as yup from 'yup';
-import Dropzone from 'react-dropzone';
 import { useLocation, useNavigate } from 'react-router-dom';
+import Dropzone from 'react-dropzone';
 import {
-  createApartner,
-  getApartner,
+  createAservice,
+  getAservice,
+  getservices,
   resetState,
-  updateApartner,
-} from '../features/partners/partnersSlice';
+  updateAservice,
+} from '../features/services/servicesSlice';
 
 let schema = yup.object({
-  name: yup.string().required('Brand name is Required'),
-  logo: yup.array().required('Images is Required'),
-  active: yup.string().required('Required'),
+  title: yup.string().required('Brand s is Required'),
+  description: yup.string().required('Brand namse is Required'),
+  link: yup.string().required('Brand nawsme is Required'),
+  icon: yup.array().required('Brand namswe is Required'),
+  active: yup.string().required('Brand nawsme is Required'),
 });
 
-const AddPartner = () => {
+const AddService = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const location = useLocation();
-  const getPartnerId = location.pathname.split('/')[3];
-
-  const newPartner = useSelector((state) => state.partner);
+  const getServiceId = location.pathname.split('/')[3];
+  const newService = useSelector((state) => state.service);
 
   const {
     isSuccess,
     isError,
     isLoading,
-    createdPartner,
-    partnerName,
-    partnerLogo,
-    partnerActive,
-    updatedPartner,
-  } = newPartner;
-
-  useEffect(() => {
-    if (getPartnerId !== undefined) {
-      dispatch(getApartner(getPartnerId));
-    } else {
-      dispatch(resetState());
-    }
-  }, [dispatch, getPartnerId]);
+    createdService,
+    serviceTitle,
+    serviceActive,
+    serviceDescription,
+    serviceLink,
+    serviceIcon,
+    updatedService,
+  } = newService;
 
   const onDrop = useCallback((acceptedFiles) => {
-    formik.setFieldValue('logo', acceptedFiles);
+    formik.setFieldValue('icon', acceptedFiles);
   }, []);
 
   useEffect(() => {
-    if (isSuccess && createdPartner) {
-      toast.success('Partner Added Successfully!');
-      navigate('/admin/partner-list');
+    if (getServiceId !== undefined) {
+      dispatch(getAservice(getServiceId));
+    } else {
+      dispatch(resetState());
+    }
+  }, [dispatch, getServiceId]);
+
+  useEffect(() => {
+    if (isSuccess && createdService) {
+      toast.success('Service Added Successfully!');
+      navigate('/admin/service-list');
       setTimeout(() => {
         window.location.reload();
       }, 10);
     }
-    if (isSuccess && updatedPartner) {
-      toast.success('Partner Updated Successfully!');
-      navigate('/admin/partner-list');
+    if (isSuccess && updatedService !== undefined) {
+      toast.success('Service Updated Successfully!');
+      navigate('/admin/service-list');
       setTimeout(() => {
         window.location.reload();
       }, 10);
@@ -72,58 +76,79 @@ const AddPartner = () => {
     isSuccess,
     isError,
     isLoading,
-    createdPartner,
-    partnerName,
-    partnerLogo,
-    partnerActive,
-    updatedPartner,
+    createdService,
+    serviceTitle,
+    serviceActive,
+    serviceDescription,
+    serviceLink,
+    serviceIcon,
+    updatedService,
     navigate,
   ]);
 
   const formik = useFormik({
     enableReinitialize: true,
     initialValues: {
-      name: partnerName || '',
-      logo: partnerLogo || '',
-      active: partnerActive ? 1 : 0,
+      title: serviceTitle || '',
+      active: serviceActive ? 1 : 0,
+      description: serviceDescription || '',
+      link: serviceLink || '',
+      icon: serviceIcon || '',
     },
     validationSchema: schema,
     onSubmit: (values) => {
-      if (getPartnerId !== undefined) {
-        const data = { id: getPartnerId, partner: values };
-        console.log(data);
-        dispatch(updateApartner(data));
+      if (getServiceId !== undefined) {
+        const data = { id: getServiceId, service: values };
+        dispatch(updateAservice(data));
       } else {
-        dispatch(createApartner(values));
+        dispatch(createAservice(values));
         formik.resetForm();
         setTimeout(() => {
           dispatch(resetState());
-        }, 300);
+        }, 1000);
       }
     },
   });
 
-  const partnerState = useSelector((state) => state.partner?.partners?.data);
-  console.log(partnerState);
-
   return (
     <div>
       <h3 className="mb-4 title">
-        {getPartnerId !== undefined ? 'Edit' : 'Add'} Partner
+        {getServiceId !== undefined ? 'Edit' : 'Add'} Service
       </h3>
       <div>
-        <form action="" onSubmit={formik.handleSubmit}>
+        <form onSubmit={formik.handleSubmit}>
           <CustomInput
             type="text"
-            label="Enter Coupon Name"
-            name="name"
-            onCh={formik.handleChange('name')}
-            onBl={formik.handleBlur('name')}
-            val={formik.values.name}
-            id="coupon"
+            label="Enter title"
+            name="title"
+            onCh={formik.handleChange('title')}
+            onBl={formik.handleBlur('title')}
+            val={formik.values.title}
           />
           <div className="error">
-            {formik.touched.name && formik.errors.name}
+            {formik.touched.title && formik.errors.title}
+          </div>
+          <CustomInput
+            type="text"
+            label="Enter description"
+            name="description"
+            onCh={formik.handleChange('description')}
+            onBl={formik.handleBlur('description')}
+            val={formik.values.description}
+          />
+          <div className="error">
+            {formik.touched.description && formik.errors.description}
+          </div>
+          <CustomInput
+            type="text"
+            label="Enter link"
+            name="link"
+            onCh={formik.handleChange('link')}
+            onBl={formik.handleBlur('link')}
+            val={formik.values.link}
+          />
+          <div className="error">
+            {formik.touched.link && formik.errors.link}
           </div>
 
           <div className="">
@@ -188,7 +213,7 @@ const AddPartner = () => {
                   onBlur={formik.handleBlur}
                   value="1"
                   checked={
-                    newPartner.partnerActive
+                    newService.serviceActive
                       ? 1
                       : 0 || formik.values.active === '1'
                   }
@@ -210,6 +235,7 @@ const AddPartner = () => {
               </label>
             </div>
           </div>
+
           <div className="error">
             {formik.touched.active && formik.errors.active}
           </div>
@@ -218,7 +244,7 @@ const AddPartner = () => {
             className="btn btn-success border-0 rounded-3 my-5"
             type="submit"
           >
-            {getPartnerId !== undefined ? 'Edit' : 'Add'} Partner
+            {getServiceId !== undefined ? 'Edit' : 'Add'} Service
           </button>
         </form>
       </div>
@@ -226,4 +252,4 @@ const AddPartner = () => {
   );
 };
 
-export default AddPartner;
+export default AddService;

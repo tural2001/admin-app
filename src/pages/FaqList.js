@@ -1,7 +1,5 @@
-import { Table } from 'antd';
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-
 import { Link } from 'react-router-dom';
 import CustomModal from '../components/CustomModal';
 import { deleteAfaq, getfaqs, resetState } from '../features/faq/faqSlice';
@@ -28,15 +26,6 @@ const FaqList = () => {
 
   const faqstate = useSelector((state) => state.faq.faqs.data);
   console.log(faqstate);
-
-  const data = [];
-  for (let i = 0; i < faqstate?.length; i++) {
-    data.push({
-      key: i,
-      question: faqstate[i].question,
-      answer: faqstate[i].answer,
-    });
-  }
 
   const deleteFaq = (e) => {
     setOpen(false);

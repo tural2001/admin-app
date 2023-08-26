@@ -1,21 +1,12 @@
-import { Table } from 'antd';
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { BiEdit } from 'react-icons/bi';
-import { AiFillDelete } from 'react-icons/ai';
 import { Link } from 'react-router-dom';
-import {
-  deleteABrand,
-  deleteApopup,
-  getBrands,
-  getpopups,
-} from '../features/popup/popupSlice';
+import { deleteApopup, getpopups } from '../features/popup/popupSlice';
 import { resetState } from '../features/popup/popupSlice';
 import CustomModal from '../components/CustomModal';
 import { VscEdit } from 'react-icons/vsc';
 import { RiDeleteBin5Line } from 'react-icons/ri';
 import { toast } from 'react-toastify';
-import { useLocation, useNavigate } from 'react-router-dom';
 
 const Popuplist = () => {
   const [open, setOpen] = useState(false);

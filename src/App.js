@@ -9,9 +9,7 @@ import Orders from './pages/Orders';
 import Customers from './pages/Customers';
 import Colorlist from './pages/Colorlist';
 import Productlist from './pages/Productlist';
-
 import Addcolor from './pages/Addcolor';
-
 import Addproduct from './pages/Addproduct';
 import ViewEnq from './pages/ViewEnq';
 import ViewOrder from './pages/ViewOrder';
@@ -26,6 +24,10 @@ import Addpopup from './pages/Addpopup';
 import Popuplist from './pages/Popuplist';
 import TariffList from './pages/TariffList';
 import AddTariff from './pages/AddTariff';
+import StructureList from './pages/StructureList';
+import AddStructure from './pages/AddStructure';
+import ServiceList from './pages/ServiceList';
+import AddService from './pages/AddService';
 
 function App() {
   return (
@@ -68,6 +70,12 @@ function App() {
           <Route path="review-list" element={<ReviewList />} />
           <Route path="review" element={<Addreview />} />
           <Route path="review/:id" element={<Addreview />} />
+          <Route path="service-list" element={<ServiceList />} />
+          <Route path="service" element={<AddService />} />
+          <Route path="service/:id" element={<AddService />} />
+          <Route path="structure-list" element={<StructureList />} />
+          <Route path="structure" element={<AddStructure />} />
+          <Route path="structure/:id" element={<AddStructure />} />
           <Route path="popup-list" element={<Popuplist />} />
           <Route path="popup" element={<Addpopup />} />
           <Route path="popup/:id" element={<Addpopup />} />

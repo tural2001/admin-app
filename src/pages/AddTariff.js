@@ -55,10 +55,16 @@ const AddTariff = () => {
     if (isSuccess && createdTariff) {
       toast.success('Tariff Added Successfully!');
       navigate('/admin/tariff-list');
+      setTimeout(() => {
+        window.location.reload();
+      }, 10);
     }
     if (isSuccess && updatedTariff !== undefined) {
       toast.success('Tariff Updated Successfully!');
       navigate('/admin/tariff-list');
+      setTimeout(() => {
+        window.location.reload();
+      }, 10);
     }
     if (isError) {
       toast.error('Something Went Wrong!');
