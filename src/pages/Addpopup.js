@@ -40,10 +40,14 @@ const Addpopup = () => {
     updatedPopup,
   } = newPopup;
 
-  const onDrop = useCallback((acceptedFiles) => {
-    formik.setFieldValue('image', acceptedFiles);
-    setIsFileDetected(true);
-  }, []);
+  const onDrop = useCallback(
+    (acceptedFiles) => {
+      formik.setFieldValue('image', acceptedFiles);
+      setIsFileDetected(true);
+    },
+    // eslint-disable-next-line no-use-before-define
+    [formik]
+  );
 
   useEffect(() => {
     if (getPopupId !== undefined) {

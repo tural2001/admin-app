@@ -1,21 +1,10 @@
 import { MenuFoldOutlined, MenuUnfoldOutlined } from '@ant-design/icons';
-import {
-  AiOutlineBgColors,
-  AiOutlineDashboard,
-  AiOutlineLogout,
-  AiOutlineShoppingCart,
-  AiOutlineUser,
-} from 'react-icons/ai';
-import { RiCouponLine } from 'react-icons/ri';
+import { AiOutlineLogout } from 'react-icons/ai';
 import { TbListCheck } from 'react-icons/tb';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { Link, Outlet } from 'react-router-dom';
-import { ImBlog } from 'react-icons/im';
-import { IoMdNotifications } from 'react-icons/io';
-import { SiBrandfolder } from 'react-icons/si';
-import { BiCategoryAlt } from 'react-icons/bi';
-import { FaBloggerB, FaClipboardList } from 'react-icons/fa';
+import { FaClipboardList } from 'react-icons/fa';
 import { Layout, Menu, theme } from 'antd';
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';

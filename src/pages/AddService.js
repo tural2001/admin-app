@@ -42,10 +42,13 @@ const AddService = () => {
     updatedService,
   } = newService;
 
-  const onDrop = useCallback((acceptedFiles) => {
-    formik.setFieldValue('icon', acceptedFiles);
-    setIsFileDetected(true);
-  }, []);
+  const onDrop = useCallback(
+    (acceptedFiles) => {
+      formik.setFieldValue('icon', acceptedFiles);
+      setIsFileDetected(true);
+    }, // eslint-disable-next-line no-use-before-define
+    [formik]
+  );
 
   useEffect(() => {
     if (getServiceId !== undefined) {

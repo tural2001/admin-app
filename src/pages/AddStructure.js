@@ -40,10 +40,13 @@ const AddStructure = () => {
     updatedStructure,
   } = newStructure;
 
-  const onDrop = useCallback((acceptedFiles) => {
-    formik.setFieldValue('image', acceptedFiles);
-    setIsFileDetected(true);
-  }, []);
+  const onDrop = useCallback(
+    (acceptedFiles) => {
+      formik.setFieldValue('image', acceptedFiles);
+      setIsFileDetected(true);
+    }, // eslint-disable-next-line no-use-before-define
+    [formik]
+  );
 
   useEffect(() => {
     if (getStructureId !== undefined) {

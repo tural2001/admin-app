@@ -76,7 +76,6 @@ const Addfaq = (e) => {
     },
     validationSchema: schema,
     onSubmit: (values) => {
-      // alert(JSON.stringify(values));
       if (getFaqId !== undefined) {
         const data = { id: getFaqId, faqData: values };
         dispatch(updateAfaq(data));

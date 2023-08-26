@@ -1,7 +1,4 @@
 import { createSlice, createAsyncThunk, createAction } from '@reduxjs/toolkit';
-
-import popupService from './vacanciesService';
-import vacanciesService from './vacanciesService';
 import vacancyService from './vacanciesService';
 
 const initialState = {

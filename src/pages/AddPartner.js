@@ -47,12 +47,13 @@ const AddPartner = () => {
     }
   }, [dispatch, getPartnerId]);
 
-  console.log();
-
-  const onDrop = useCallback((acceptedFiles) => {
-    formik.setFieldValue('logo', acceptedFiles);
-    setIsFileDetected(true);
-  }, []);
+  const onDrop = useCallback(
+    (acceptedFiles) => {
+      formik.setFieldValue('logo', acceptedFiles);
+      setIsFileDetected(true);
+    }, // eslint-disable-next-line no-use-before-define
+    [formik]
+  );
 
   useEffect(() => {
     if (isSuccess && createdPartner) {
