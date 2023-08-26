@@ -25,17 +25,9 @@ const ReviewList = () => {
     dispatch(resetState());
     dispatch(getreviews());
   }, [dispatch]);
-  // const pcategorystate = useSelector((state) => state.pcategory.pcategories);
+
   const reviewstate = useSelector((state) => state.reviews.reviews.data);
   console.log(reviewstate);
-
-  // const data = [];
-  // for (let i = 0; i < reviewstate.length; i++) {
-  //   data.push({
-  //     key: i + 1,
-  //     title: reviewstate[i].title,
-  //   });
-  // }
 
   const deleteReview = (e) => {
     setOpen(false);

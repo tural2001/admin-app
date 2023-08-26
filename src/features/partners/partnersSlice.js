@@ -43,11 +43,13 @@ export const updateApartner = createAsyncThunk(
     try {
       const formdata = new FormData();
       formdata.append('active', partnerData.partner.active);
-      formdata.append(
-        'logo',
-        partnerData.partner.logo[0],
-        partnerData.partner.logo[0].name
-      );
+      if (partnerData.partner.logo[0] instanceof File) {
+        formdata.append(
+          'logo',
+          partnerData.partner.logo[0],
+          partnerData.partner.logo[0].name
+        );
+      }
       formdata.append('name', partnerData.partner.name);
       formdata.append('_method', 'PUT');
 

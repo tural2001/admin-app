@@ -51,14 +51,11 @@ const Addreview = () => {
       navigate('/admin/review-list');
       setTimeout(() => {
         window.location.reload();
-      }, 10);
+      }, 500);
     }
     if (isSuccess && updatedReview !== undefined) {
       toast.success('Review Updated Successfully!');
       navigate('/admin/review-list');
-      setTimeout(() => {
-        window.location.reload();
-      }, 10);
     }
     if (isError) {
       toast.error('Something went wrong');

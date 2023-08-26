@@ -2,45 +2,47 @@ import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 import CustomModal from '../components/CustomModal';
-import {
-  deleteApartner,
-  getpartners,
-  resetState,
-} from '../features/partners/partnersSlice';
 import { RiDeleteBin5Line } from 'react-icons/ri';
 import { VscEdit } from 'react-icons/vsc';
+import { toast } from 'react-toastify';
+import {
+  deleteAvacancy,
+  getvacancies,
+  resetState,
+} from '../features/vacancies/vacaciesSlice';
 
-const Partnerlist = () => {
+const VacancyList = () => {
   const [open, setOpen] = useState(false);
-  const [partnerId, setpartnerId] = useState('');
+  const [vacancyId, setvacancyId] = useState('');
   const showModal = (e) => {
     setOpen(true);
-    setpartnerId(e);
+    setvacancyId(e);
   };
   const hideModal = () => {
     setOpen(false);
   };
   const dispatch = useDispatch();
+
   useEffect(() => {
     dispatch(resetState());
-    dispatch(getpartners());
+    dispatch(getvacancies());
   }, [dispatch]);
-  const partnerState = useSelector((state) => state.partner.partners.data);
 
-  console.log(partnerState);
+  const vacancystate = useSelector((state) => state.vacancy.vacancies.data);
+  console.log(vacancystate);
 
-  const deletePartner = (e) => {
+  const deleteVacancy = (e) => {
     setOpen(false);
-    dispatch(deleteApartner(e));
+    dispatch(deleteAvacancy(e));
+    toast.success('Vacancy deleted successfully');
     setTimeout(() => {
-      dispatch(getpartners());
+      dispatch(getvacancies());
     }, 100);
   };
-
   return (
     <div>
-      <h3 className="mb-4 title">Partners</h3>
-      <Link to="/admin/partner">Add Partner</Link>
+      <h3 className="mb-4 title">Products</h3>
+      <Link to="/admin/faq">Add Faq</Link>
       <div>
         <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
           <table className="w-full text-sm text-left text-gray-500 dark:text-gray-400">
@@ -52,7 +54,7 @@ const Partnerlist = () => {
 
                 <th scope="col" className="px-6 py-3">
                   <div className="flex items-center">
-                    Name
+                    title
                     <a href="#/">
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
@@ -68,7 +70,7 @@ const Partnerlist = () => {
                 </th>
                 <th scope="col" className="px-6 py-3">
                   <div className="flex items-center">
-                    Logo
+                    Description
                     <a href="#/">
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
@@ -83,11 +85,10 @@ const Partnerlist = () => {
                   </div>
                 </th>
                 <th scope="col" className="px-6 py-3"></th>
-                <th scope="col" className="px-6 py-3"></th>
               </tr>
             </thead>
             <tbody>
-              {partnerState?.map((partner, index) => (
+              {vacancystate?.map((vacancy, index) => (
                 <tr
                   key={index}
                   className="bg-white border-b dark:bg-gray-800 dark:border-gray-700"
@@ -96,28 +97,20 @@ const Partnerlist = () => {
                     scope="row"
                     className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"
                   >
-                    {partner.id}
+                    {vacancy.id}
                   </th>
-                  <td className="px-6 py-4">{partner.name}</td>
-                  <td className="px-6 py-4">{partner.logo}</td>
-                  <td className="px-6 py-4">
-                    <img
-                      src="https://azeronline.netlify.app/static/media/blog2.891d84e7b5ab348201fd.png"
-                      alt=""
-                      width={150}
-                      height={50}
-                    />{' '}
-                  </td>
-                  <td className="px-6 py-16 flex  gap-2">
+                  <td className="px-6 py-4">{vacancy.title}</td>
+                  <td className="px-6 py-4">{vacancy.description}</td>
+                  <td className="px-6 py-4 flex gap-2">
                     <Link
-                      to={`/admin/partner/${partnerState[index]?.id}`}
+                      to={`/admin/vacancy/${vacancystate[index]?.id}`}
                       className="text-lg text-black dark:text-blue-500 hover:underline"
                     >
                       <VscEdit />
                     </Link>
 
                     <button
-                      onClick={() => showModal(partnerState[index]?.id)}
+                      onClick={() => showModal(vacancystate[index]?.id)}
                       className="text-lg text-black dark:text-blue-500 hover:text-red-500"
                     >
                       <RiDeleteBin5Line />
@@ -133,12 +126,12 @@ const Partnerlist = () => {
         hideModal={hideModal}
         open={open}
         performAction={() => {
-          deletePartner(partnerId);
+          deleteVacancy(vacancyId);
         }}
-        title={`Are you sure you want to delete  this faq ?`}
+        title={`Are you sure you want to delete  this vacancy?`}
       />
     </div>
   );
 };
 
-export default Partnerlist;
+export default VacancyList;

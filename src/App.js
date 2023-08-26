@@ -28,6 +28,8 @@ import StructureList from './pages/StructureList';
 import AddStructure from './pages/AddStructure';
 import ServiceList from './pages/ServiceList';
 import AddService from './pages/AddService';
+import VacancyList from './pages/VacancyList';
+import AddVacancy from './pages/AddVacancy';
 
 function App() {
   return (
@@ -77,6 +79,9 @@ function App() {
           <Route path="structure" element={<AddStructure />} />
           <Route path="structure/:id" element={<AddStructure />} />
           <Route path="popup-list" element={<Popuplist />} />
+          <Route path="vacancy-list" element={<VacancyList />} />
+          <Route path="vacancy" element={<AddVacancy />} />
+          <Route path="vacancy/:id" element={<AddVacancy />} />
           <Route path="popup" element={<Addpopup />} />
           <Route path="popup/:id" element={<Addpopup />} />
           <Route path="product-list" element={<Productlist />} />

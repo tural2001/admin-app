@@ -117,6 +117,7 @@ const ServiceList = () => {
                   </div>
                 </th>
                 <th scope="col" className="px-6 py-3"></th>
+                <th scope="col" className="px-6 py-3"></th>
               </tr>
             </thead>
             <tbody>
@@ -133,9 +134,33 @@ const ServiceList = () => {
                   </th>
                   <td className="px-6 py-4">{service.title}</td>
                   <td className="px-6 py-4">{service.description}</td>
-                  <td className="px-6 py-4">{service.link}</td>
-                  <td className="px-6 py-4">{service.icon}</td>
-                  <td className="px-6 py-4 flex gap-2">
+                  <td className="px-6 py-4">
+                    <a
+                      href={service.link}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      {service.link}
+                    </a>
+                  </td>
+                  <td className="px-6 py-4">
+                    <a
+                      href={service.icon}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      {service.icon}
+                    </a>
+                  </td>
+                  <td className="px-6 py-4">
+                    <img
+                      src="https://azeronline.netlify.app/static/media/blog2.891d84e7b5ab348201fd.png"
+                      alt=""
+                      width={150}
+                      height={50}
+                    />
+                  </td>
+                  <td className="px-6 py-16 flex gap-2">
                     <Link
                       to={`/admin/service/${servicestate[index]?.id}`}
                       className="text-lg text-black dark:text-blue-500 hover:underline"

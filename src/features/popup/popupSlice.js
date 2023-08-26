@@ -68,11 +68,13 @@ export const updateApopup = createAsyncThunk(
       const formdata = new FormData();
       formdata.append('active', popupData.popup.active);
       formdata.append('content', popupData.popup.content);
-      formdata.append(
-        'image',
-        popupData.popup.image[0],
-        popupData.popup.image[0].name
-      );
+      if (popupData.popup.image[0] instanceof File) {
+        formdata.append(
+          'image',
+          popupData.popup.image[0],
+          popupData.popup.image[0].name
+        );
+      }
       formdata.append('handle', popupData.popup.handle);
       formdata.append('_method', 'PUT');
 

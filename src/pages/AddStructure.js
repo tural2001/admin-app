@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import CustomInput from '../components/CustomInput';
 import { useDispatch, useSelector } from 'react-redux';
 import { toast } from 'react-toastify';
@@ -14,13 +14,14 @@ import {
 } from '../features/structures/structuresSlice';
 
 let schema = yup.object({
-  name: yup.string().required('Brand s is Required'),
-  profession: yup.string().required('Brand namse is Required'),
-  image: yup.array().required('Brand namswe is Required'),
-  active: yup.string().required('Brand nawsme is Required'),
+  name: yup.string().required('Name is Required'),
+  profession: yup.string().required('Profession namse is Required'),
+  image: yup.mixed().required('Image is Required'),
+  active: yup.string().required('Active status is Required'),
 });
 
 const AddStructure = () => {
+  const [isFileDetected, setIsFileDetected] = useState(false);
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const location = useLocation();
@@ -41,6 +42,7 @@ const AddStructure = () => {
 
   const onDrop = useCallback((acceptedFiles) => {
     formik.setFieldValue('image', acceptedFiles);
+    setIsFileDetected(true);
   }, []);
 
   useEffect(() => {
@@ -53,18 +55,15 @@ const AddStructure = () => {
 
   useEffect(() => {
     if (isSuccess && createdStructure) {
-      toast.success('Brand Added Successfully!');
       navigate('/admin/structure-list');
       setTimeout(() => {
         window.location.reload();
-      }, 10);
+      }, 500);
+      toast.success('Structure Added Successfully!');
     }
     if (isSuccess && updatedStructure !== undefined) {
-      toast.success('Brand Updated Successfully!');
+      toast.success('Structure Updated Successfully!');
       navigate('/admin/structure-list');
-      setTimeout(() => {
-        window.location.reload();
-      }, 10);
     }
     if (isError) {
       toast.error('Something Went Wrong!');
@@ -88,7 +87,7 @@ const AddStructure = () => {
       name: structureName || '',
       active: structureActive ? 1 : 0,
       profession: structureProfession || '',
-      image: structureImage || '',
+      image: typeof structureImage === 'string' ? structureImage : null,
     },
     validationSchema: schema,
     onSubmit: (values) => {
@@ -104,6 +103,8 @@ const AddStructure = () => {
       }
     },
   });
+
+  console.log(newStructure.structureImage);
 
   return (
     <div>
@@ -135,7 +136,7 @@ const AddStructure = () => {
             {formik.touched.profession && formik.errors.profession}
           </div>
 
-          <div className="">
+          <div className="flex justify-space w-full gap-10">
             <div className="mt-10 text-center">
               <Dropzone onDrop={onDrop}>
                 {({ getRootProps, getInputProps }) => (
@@ -143,12 +144,32 @@ const AddStructure = () => {
                     <div {...getRootProps()}>
                       <input {...getInputProps()} />
 
-                      <div className="flex items-center justify-center w-full">
+                      <div
+                        className={`flex items-center justify-center w-[800px]
+                        `}
+                      >
                         <label
                           htmlFor="dropzone-file"
-                          className="flex flex-col items-center justify-center w-full h-64 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 dark:hover:bg-bray-800 dark:bg-gray-700 hover:bg-gray-100 dark:border-gray-600 dark:hover:border-gray-500 dark:hover:bg-gray-600"
+                          className={`flex flex-col items-center justify-center w-full h-64 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 ${
+                            isFileDetected
+                              ? 'bg-green-200'
+                              : 'dark:hover:bg-bray-800 dark:bg-gray-700 hover:bg-gray-100'
+                          } dark:border-gray-600 dark:hover:border-gray-500 dark:hover:bg-gray-600`}
                         >
                           <div className="flex flex-col items-center justify-center pt-5 pb-6">
+                            {isFileDetected ? (
+                              <p className="mb-2 text-sm text-yellow-600 dark:text-yellow-400">
+                                File detected
+                              </p>
+                            ) : (
+                              <p className="mb-2 text-sm text-gray-500 dark:text-gray-400">
+                                <span className="font-semibold">
+                                  Click to upload
+                                </span>{' '}
+                                or drag and drop
+                              </p>
+                            )}
+
                             <svg
                               aria-hidden="true"
                               className="w-10 h-10 mb-3 text-gray-400"
@@ -185,8 +206,18 @@ const AddStructure = () => {
                   </section>
                 )}
               </Dropzone>
+              <div className="error">
+                {formik.touched.image && formik.errors.image}
+              </div>
+            </div>
+            <div className="mt-[70px] w-[200px]">
+              <img
+                src="https://img.freepik.com/free-psd/google-icon-isolated-3d-render-illustration_47987-9777.jpg?w=2000"
+                alt=""
+              />
             </div>
           </div>
+
           <div className="my-4">
             <div className="mt-1">
               <label className="inline-flex items-center">

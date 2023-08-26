@@ -46,14 +46,11 @@ const Addfaq = (e) => {
       navigate('/admin/faq-list');
       setTimeout(() => {
         window.location.reload();
-      }, 10);
+      }, 500);
     }
     if (isSuccess && updatedFaq !== undefined) {
       toast.success('Faq Updated Successfully!');
       navigate('/admin/faq-list');
-      setTimeout(() => {
-        window.location.reload();
-      }, 10);
     }
     if (isError) {
       toast.error('Something Went Wrong!');
@@ -69,8 +66,6 @@ const Addfaq = (e) => {
     updatedFaq,
     navigate,
   ]);
-
-  console.log(newFaq.faqActive);
 
   const formik = useFormik({
     enableReinitialize: true,

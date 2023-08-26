@@ -67,11 +67,13 @@ export const updateAservice = createAsyncThunk(
       const formdata = new FormData();
       formdata.append('active', serviceData.service.active);
       formdata.append('title', serviceData.service.title);
-      formdata.append(
-        'icon',
-        serviceData.service.icon[0],
-        serviceData.service.icon[0].name
-      );
+      if (serviceData.service.icon[0] instanceof File) {
+        formdata.append(
+          'icon',
+          serviceData.service.icon[0],
+          serviceData.service.icon[0].name
+        );
+      }
       formdata.append('description', serviceData.service.description);
       formdata.append('link', serviceData.service.link);
       formdata.append('_method', 'PUT');

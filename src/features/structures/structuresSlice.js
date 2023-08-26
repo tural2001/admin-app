@@ -71,11 +71,13 @@ export const updateAstructure = createAsyncThunk(
       const formdata = new FormData();
       formdata.append('active', structureData.structure.active);
       formdata.append('name', structureData.structure.name);
-      formdata.append(
-        'image',
-        structureData.structure.image[0],
-        structureData.structure.image[0].name
-      );
+      if (structureData.structure.image[0] instanceof File) {
+        formdata.append(
+          'image',
+          structureData.structure.image[0],
+          structureData.structure.image[0].name
+        );
+      }
       formdata.append('profession', structureData.structure.profession);
       formdata.append('_method', 'PUT');
 

@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import CustomInput from '../components/CustomInput';
 import { useDispatch, useSelector } from 'react-redux';
 import { toast } from 'react-toastify';
@@ -15,13 +15,14 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import Dropzone from 'react-dropzone';
 
 let schema = yup.object({
-  content: yup.string().required('Brand s is Required'),
-  handle: yup.string().required('Brand namse is Required'),
-  image: yup.array().required('Brand namswe is Required'),
-  active: yup.string().required('Brand nawsme is Required'),
+  content: yup.string().required('Content is Required'),
+  handle: yup.string().required('Handle is Required'),
+  image: yup.mixed().required('Image is Required'),
+  active: yup.string().required('Active status is Required'),
 });
 
 const Addpopup = () => {
+  const [isFileDetected, setIsFileDetected] = useState(false);
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const location = useLocation();
@@ -41,6 +42,7 @@ const Addpopup = () => {
 
   const onDrop = useCallback((acceptedFiles) => {
     formik.setFieldValue('image', acceptedFiles);
+    setIsFileDetected(true);
   }, []);
 
   useEffect(() => {
@@ -53,18 +55,15 @@ const Addpopup = () => {
 
   useEffect(() => {
     if (isSuccess && createdPopup) {
-      toast.success('Brand Added Successfully!');
+      toast.success('Popup Added Successfully!');
       navigate('/admin/popup-list');
       setTimeout(() => {
         window.location.reload();
-      }, 10);
+      }, 500);
     }
     if (isSuccess && updatedPopup !== undefined) {
-      toast.success('Brand Updated Successfully!');
+      toast.success('Popup Updated Successfully!');
       navigate('/admin/popup-list');
-      setTimeout(() => {
-        window.location.reload();
-      }, 10);
     }
     if (isError) {
       toast.error('Something Went Wrong!');
@@ -88,13 +87,13 @@ const Addpopup = () => {
       content: popupContent || '',
       active: popupActive ? 1 : 0,
       handle: popupHandle || '',
-      image: popupImage || '',
+      image: typeof popupImage === 'string' ? popupImage : null,
     },
     validationSchema: schema,
     onSubmit: (values) => {
+      alert(JSON.stringify(values));
       if (getPopupId !== undefined) {
         const data = { id: getPopupId, popup: values };
-        console.log(data);
         dispatch(updateApopup(data));
       } else {
         dispatch(createApopup(values));
@@ -105,6 +104,7 @@ const Addpopup = () => {
       }
     },
   });
+  console.log(newPopup.popupImage);
 
   return (
     <div>
@@ -137,7 +137,7 @@ const Addpopup = () => {
             {formik.touched.handle && formik.errors.handle}
           </div>
 
-          <div className="">
+          <div className="flex justify-space w-full gap-10">
             <div className="mt-10 text-center">
               <Dropzone onDrop={onDrop}>
                 {({ getRootProps, getInputProps }) => (
@@ -145,12 +145,31 @@ const Addpopup = () => {
                     <div {...getRootProps()}>
                       <input {...getInputProps()} />
 
-                      <div className="flex items-center justify-center w-full">
+                      <div
+                        className={`flex items-center justify-center w-[800px]`}
+                      >
                         <label
                           htmlFor="dropzone-file"
-                          className="flex flex-col items-center justify-center w-full h-64 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 dark:hover:bg-bray-800 dark:bg-gray-700 hover:bg-gray-100 dark:border-gray-600 dark:hover:border-gray-500 dark:hover:bg-gray-600"
+                          className={`flex flex-col items-center justify-center w-full h-64 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 ${
+                            isFileDetected
+                              ? 'bg-green-200'
+                              : 'dark:hover:bg-bray-800 dark:bg-gray-700 hover:bg-gray-100'
+                          } dark:border-gray-600 dark:hover:border-gray-500 dark:hover:bg-gray-600`}
                         >
                           <div className="flex flex-col items-center justify-center pt-5 pb-6">
+                            {isFileDetected ? (
+                              <p className="mb-2 text-sm text-yellow-600 dark:text-yellow-400">
+                                File detected
+                              </p>
+                            ) : (
+                              <p className="mb-2 text-sm text-gray-500 dark:text-gray-400">
+                                <span className="font-semibold">
+                                  Click to upload
+                                </span>{' '}
+                                or drag and drop
+                              </p>
+                            )}
+
                             <svg
                               aria-hidden="true"
                               className="w-10 h-10 mb-3 text-gray-400"
@@ -187,6 +206,12 @@ const Addpopup = () => {
                   </section>
                 )}
               </Dropzone>
+              <div className="error">
+                {formik.touched.image && formik.errors.image}
+              </div>
+            </div>
+            <div className="mt-[70px] w-[200px]">
+              <img src={newPopup.popupImage} alt="" />
             </div>
           </div>
 

@@ -124,6 +124,11 @@ const MainLayout = () => {
               label: 'Partner List',
             },
             {
+              key: 'vacancy-list',
+              icon: <TbListCheck className="fs-4" />,
+              label: 'Vacancy List',
+            },
+            {
               key: 'faq-list',
               icon: <TbListCheck className="fs-4" />,
               label: 'Faq List',

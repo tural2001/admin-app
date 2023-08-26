@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import CustomInput from '../components/CustomInput';
 import { useDispatch, useSelector } from 'react-redux';
 import { toast } from 'react-toastify';
@@ -15,11 +15,12 @@ import {
 
 let schema = yup.object({
   name: yup.string().required('Brand name is Required'),
-  logo: yup.array().required('Images is Required'),
+  logo: yup.mixed().required('Images is Required'),
   active: yup.string().required('Required'),
 });
 
 const AddPartner = () => {
+  const [isFileDetected, setIsFileDetected] = useState(false);
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const location = useLocation();
@@ -46,8 +47,11 @@ const AddPartner = () => {
     }
   }, [dispatch, getPartnerId]);
 
+  console.log();
+
   const onDrop = useCallback((acceptedFiles) => {
     formik.setFieldValue('logo', acceptedFiles);
+    setIsFileDetected(true);
   }, []);
 
   useEffect(() => {
@@ -56,14 +60,11 @@ const AddPartner = () => {
       navigate('/admin/partner-list');
       setTimeout(() => {
         window.location.reload();
-      }, 10);
+      }, 500);
     }
     if (isSuccess && updatedPartner) {
       toast.success('Partner Updated Successfully!');
       navigate('/admin/partner-list');
-      setTimeout(() => {
-        window.location.reload();
-      }, 10);
     }
     if (isError) {
       toast.error('Something Went Wrong!');
@@ -84,7 +85,7 @@ const AddPartner = () => {
     enableReinitialize: true,
     initialValues: {
       name: partnerName || '',
-      logo: partnerLogo || '',
+      logo: typeof partnerLogo === 'string' ? partnerLogo : null,
       active: partnerActive ? 1 : 0,
     },
     validationSchema: schema,
@@ -102,9 +103,6 @@ const AddPartner = () => {
       }
     },
   });
-
-  const partnerState = useSelector((state) => state.partner?.partners?.data);
-  console.log(partnerState);
 
   return (
     <div>
@@ -126,7 +124,7 @@ const AddPartner = () => {
             {formik.touched.name && formik.errors.name}
           </div>
 
-          <div className="">
+          <div className="flex justify-space w-full gap-10">
             <div className="mt-10 text-center">
               <Dropzone onDrop={onDrop}>
                 {({ getRootProps, getInputProps }) => (
@@ -134,12 +132,32 @@ const AddPartner = () => {
                     <div {...getRootProps()}>
                       <input {...getInputProps()} />
 
-                      <div className="flex items-center justify-center w-full">
+                      <div
+                        className={`flex items-center justify-center w-[800px]
+                        `}
+                      >
                         <label
                           htmlFor="dropzone-file"
-                          className="flex flex-col items-center justify-center w-full h-64 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 dark:hover:bg-bray-800 dark:bg-gray-700 hover:bg-gray-100 dark:border-gray-600 dark:hover:border-gray-500 dark:hover:bg-gray-600"
+                          className={`flex flex-col items-center justify-center w-full h-64 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 ${
+                            isFileDetected
+                              ? 'bg-green-200'
+                              : 'dark:hover:bg-bray-800 dark:bg-gray-700 hover:bg-gray-100'
+                          } dark:border-gray-600 dark:hover:border-gray-500 dark:hover:bg-gray-600`}
                         >
                           <div className="flex flex-col items-center justify-center pt-5 pb-6">
+                            {isFileDetected ? (
+                              <p className="mb-2 text-sm text-yellow-600 dark:text-yellow-400">
+                                File detected
+                              </p>
+                            ) : (
+                              <p className="mb-2 text-sm text-gray-500 dark:text-gray-400">
+                                <span className="font-semibold">
+                                  Click to upload
+                                </span>{' '}
+                                or drag and drop
+                              </p>
+                            )}
+
                             <svg
                               aria-hidden="true"
                               className="w-10 h-10 mb-3 text-gray-400"
@@ -176,6 +194,17 @@ const AddPartner = () => {
                   </section>
                 )}
               </Dropzone>
+              <div className="error">
+                {formik.touched.logo && formik.errors.logo}
+              </div>
+            </div>
+            <div className="mt-[90px]">
+              <img
+                src="https://azeronline.netlify.app/static/media/blog2.891d84e7b5ab348201fd.png"
+                alt=""
+                width={250}
+                height={50}
+              />
             </div>
           </div>
           <div className="my-4">

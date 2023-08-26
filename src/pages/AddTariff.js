@@ -57,14 +57,11 @@ const AddTariff = () => {
       navigate('/admin/tariff-list');
       setTimeout(() => {
         window.location.reload();
-      }, 10);
+      }, 500);
     }
     if (isSuccess && updatedTariff !== undefined) {
       toast.success('Tariff Updated Successfully!');
       navigate('/admin/tariff-list');
-      setTimeout(() => {
-        window.location.reload();
-      }, 10);
     }
     if (isError) {
       toast.error('Something Went Wrong!');

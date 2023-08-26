@@ -5,6 +5,7 @@ import productReducer from '../features/product/productSlice';
 import popupReducer from '../features/popup/popupSlice';
 import reviewsReducer from '../features/reviews/reviewsSlice';
 import tariffReducer from '../features/tariffs/tariffSlice';
+import vacancyReducer from '../features/vacancies/vacaciesSlice';
 import faqReducer from '../features/faq/faqSlice';
 import colorReducer from '../features/color/colorSlice';
 import enquiryReducer from '../features/enquiry/enquirySlice';
@@ -21,6 +22,7 @@ export const store = configureStore({
     popup: popupReducer,
     reviews: reviewsReducer,
     tariff: tariffReducer,
+    vacancy: vacancyReducer,
     structure: structureReducer,
     service: serviceReducer,
     faq: faqReducer,

@@ -31,8 +31,7 @@ const Popuplist = () => {
   const deletePopup = (e) => {
     setOpen(false);
     dispatch(deleteApopup(e));
-    toast.success('Brand Deleted Successfully!');
-
+    toast.success('Popup Deleted Successfully!');
     setTimeout(() => {
       dispatch(getpopups());
     }, 1000);
@@ -100,6 +99,7 @@ const Popuplist = () => {
                   </div>
                 </th>
                 <th scope="col" className="px-6 py-3"></th>
+                <th scope="col" className="px-6 py-3"></th>
               </tr>
             </thead>
             <tbody>
@@ -117,6 +117,14 @@ const Popuplist = () => {
                   <td className="px-6 py-4">{popup.content}</td>
                   <td className="px-6 py-4">{popup.handle}</td>
                   <td className="px-6 py-4">{popup.image}</td>
+                  <td className="px-6 py-4">
+                    <img
+                      src="https://azeronline.netlify.app/static/media/blog2.891d84e7b5ab348201fd.png"
+                      alt=""
+                      width={150}
+                      height={50}
+                    />
+                  </td>
                   <td className="px-6 py-4 flex gap-2">
                     <Link
                       to={`/admin/popup/${popupstate[index]?.id}`}

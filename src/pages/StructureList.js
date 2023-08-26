@@ -104,6 +104,7 @@ const StructureList = () => {
                   </div>
                 </th>
                 <th scope="col" className="px-6 py-3"></th>
+                <th scope="col" className="px-6 py-3"></th>
               </tr>
             </thead>
             <tbody>
@@ -120,8 +121,24 @@ const StructureList = () => {
                   </th>
                   <td className="px-6 py-4">{structure.name}</td>
                   <td className="px-6 py-4">{structure.profession}</td>
-                  <td className="px-6 py-4">{structure.image}</td>
-                  <td className="px-6 py-4 flex gap-2">
+                  <td className="px-6 py-4">
+                    <a
+                      href={structure.icon}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      {structure.image}
+                    </a>
+                  </td>
+                  <td className="px-6 py-4">
+                    <img
+                      src="https://azeronline.netlify.app/static/media/blog2.891d84e7b5ab348201fd.png"
+                      alt=""
+                      width={150}
+                      height={50}
+                    />
+                  </td>
+                  <td className="px-6 py-16 flex  gap-2">
                     <Link
                       to={`/admin/structure/${structurestate[index]?.id}`}
                       className="text-lg text-black dark:text-blue-500 hover:underline"
