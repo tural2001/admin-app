@@ -28,6 +28,14 @@ import ServiceList from './pages/ServiceList';
 import AddService from './pages/AddService';
 import VacancyList from './pages/VacancyList';
 import AddVacancy from './pages/AddVacancy';
+import PaymentList from './pages/PaymentList';
+import AddPayment from './pages/AddPayment';
+import CampaignList from './pages/CampaignList';
+import AddCampaign from './pages/AddCampaign';
+import ChannelList from './pages/ChannelList';
+import Addchannel from './pages/AddChannel';
+import CountryList from './pages/CountryList';
+import AddCountry from './pages/AddCountry';
 
 function App() {
   return (
@@ -64,13 +72,22 @@ function App() {
           <Route path="orders" element={<Orders />} />
           <Route path="order/:id" element={<ViewOrder />} />
           <Route path="customers" element={<Customers />} />
-          {/* <Route path="color-list" element={<Colorlist />} />
-          <Route path="color" element={<Addcolor />} />
-          <Route path="color/:id" element={<Addcolor />} /> */}
           <Route path="review-list" element={<ReviewList />} />
           <Route path="review" element={<Addreview />} />
           <Route path="review/:id" element={<Addreview />} />
           <Route path="service-list" element={<ServiceList />} />
+          <Route path="payment-list" element={<PaymentList />} />
+          <Route path="campaign-list" element={<CampaignList />} />
+          <Route path="campaign" element={<AddCampaign />} />
+          <Route path="campaign/:id" element={<AddCampaign />} />
+          <Route path="channel-list" element={<ChannelList />} />
+          <Route path="channel" element={<AddCountry />} />
+          <Route path="channel/:id" element={<AddCountry />} />
+          <Route path="country-list" element={<CountryList />} />
+          <Route path="country" element={<AddCountry />} />
+          <Route path="country/:id" element={<AddCountry />} />
+          <Route path="payment" element={<AddPayment />} />
+          <Route path="payment/:id" element={<AddPayment />} />
           <Route path="service" element={<AddService />} />
           <Route path="service/:id" element={<AddService />} />
           <Route path="structure-list" element={<StructureList />} />

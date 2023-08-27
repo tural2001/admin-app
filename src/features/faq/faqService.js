@@ -3,7 +3,10 @@ import { base_url } from '../../utils/base_url';
 import { config } from '../../utils/axiosconfig';
 
 const getfaqs = async () => {
-  const response = await axios.get(`${base_url}/api/faqs`, config);
+  const response = await axios.get(
+    `${base_url}/api/faqs?inactive=true`,
+    config
+  );
   return response.data;
 };
 

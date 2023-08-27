@@ -45,8 +45,8 @@ const Addpopup = () => {
       formik.setFieldValue('image', acceptedFiles);
       setIsFileDetected(true);
     },
-    // eslint-disable-next-line no-use-before-define
-    [formik]
+    // eslint-disable-next-line no-use-before-define, react-hooks/exhaustive-deps
+    []
   );
 
   useEffect(() => {
@@ -95,7 +95,6 @@ const Addpopup = () => {
     },
     validationSchema: schema,
     onSubmit: (values) => {
-      alert(JSON.stringify(values));
       if (getPopupId !== undefined) {
         const data = { id: getPopupId, popup: values };
         dispatch(updateApopup(data));
@@ -108,7 +107,6 @@ const Addpopup = () => {
       }
     },
   });
-  console.log(newPopup.popupImage);
 
   return (
     <div>
@@ -117,9 +115,53 @@ const Addpopup = () => {
       </h3>
       <div>
         <form onSubmit={formik.handleSubmit}>
+          <div className="my-4">
+            <div className="mt-1">
+              <label className="inline-flex items-center">
+                <input
+                  type="radio"
+                  name="active"
+                  onChange={formik.handleChange}
+                  onBlur={formik.handleBlur}
+                  value="1"
+                  checked={
+                    newPopup.popupActive ? 1 : 0 || formik.values.active === '1'
+                  }
+                  className="text-blue-500 form-radio h-4 w-4"
+                />
+                <span className="ml-2">Active</span>
+              </label>
+              <label className="inline-flex items-center ml-6">
+                <input
+                  type="radio"
+                  name="active"
+                  onChange={formik.handleChange}
+                  onBlur={formik.handleBlur}
+                  value="0"
+                  checked={formik.values.active === '0'}
+                  className="text-blue-500 form-radio h-4 w-4"
+                />
+                <span className="ml-2">Not Active</span>
+              </label>
+            </div>
+          </div>
+          <div className="error">
+            {formik.touched.active && formik.errors.active}
+          </div>
           <CustomInput
             type="text"
-            label="Enter"
+            label="Enter Handle"
+            name="handle"
+            onCh={formik.handleChange('handle')}
+            onBl={formik.handleBlur('handle')}
+            val={formik.values.handle}
+          />
+          <div className="error">
+            {formik.touched.handle && formik.errors.handle}
+          </div>
+          <CustomInput
+            type="text"
+            label="Enter Contnent"
             name="content"
             onCh={formik.handleChange('content')}
             onBl={formik.handleBlur('content')}
@@ -129,18 +171,6 @@ const Addpopup = () => {
           <div className="error">
             {formik.touched.content && formik.errors.content}
           </div>
-          <CustomInput
-            type="text"
-            label="Enter Coupon Name"
-            name="handle"
-            onCh={formik.handleChange('handle')}
-            onBl={formik.handleBlur('handle')}
-            val={formik.values.handle}
-          />
-          <div className="error">
-            {formik.touched.handle && formik.errors.handle}
-          </div>
-
           <div className="flex justify-space w-full gap-10">
             <div className="mt-10 text-center">
               <Dropzone onDrop={onDrop}>
@@ -218,42 +248,6 @@ const Addpopup = () => {
               <img src={newPopup.popupImage} alt="" />
             </div>
           </div>
-
-          <div className="my-4">
-            <div className="mt-1">
-              <label className="inline-flex items-center">
-                <input
-                  type="radio"
-                  name="active"
-                  onChange={formik.handleChange}
-                  onBlur={formik.handleBlur}
-                  value="1"
-                  checked={
-                    newPopup.popupActive ? 1 : 0 || formik.values.active === '1'
-                  }
-                  className="text-blue-500 form-radio h-4 w-4"
-                />
-                <span className="ml-2">Active</span>
-              </label>
-              <label className="inline-flex items-center ml-6">
-                <input
-                  type="radio"
-                  name="active"
-                  onChange={formik.handleChange}
-                  onBlur={formik.handleBlur}
-                  value="0"
-                  checked={formik.values.active === '0'}
-                  className="text-blue-500 form-radio h-4 w-4"
-                />
-                <span className="ml-2">Not Active</span>
-              </label>
-            </div>
-          </div>
-
-          <div className="error">
-            {formik.touched.active && formik.errors.active}
-          </div>
-
           <button
             className="btn btn-success border-0 rounded-3 my-5"
             type="submit"

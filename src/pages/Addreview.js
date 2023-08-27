@@ -81,7 +81,7 @@ const Addreview = () => {
       reviewer_name: reviewReviewer_name || '',
       comment: reviewComment || '',
       show_on_home_page: reviewShow_on_home_page || 1,
-      active: reviewActive || 1,
+      active: reviewActive ? 1 : 0,
     },
     validationSchema: schema,
     onSubmit: (values) => {
@@ -104,30 +104,6 @@ const Addreview = () => {
       </h3>
       <div>
         <form action="" onSubmit={formik.handleSubmit}>
-          <CustomInput
-            type="text"
-            label="Enter Review Name"
-            name="reviewer_name"
-            onCh={formik.handleChange('reviewer_name')}
-            onBl={formik.handleBlur('reviewer_name')}
-            val={formik.values.reviewer_name}
-            id="reviews"
-          />
-          <div className="error">
-            {formik.touched.reviewer_name && formik.errors.reviewer_name}
-          </div>
-          <CustomInput
-            type="text"
-            label="Enter Comment"
-            name="comment"
-            onCh={formik.handleChange('comment')}
-            onBl={formik.handleBlur('comment')}
-            val={formik.values.comment}
-            id="reviews"
-          />
-          <div className="error">
-            {formik.touched.comment && formik.errors.comment}
-          </div>
           <div className="my-4">
             <div className="mt-1">
               <label className="inline-flex items-center">
@@ -137,7 +113,11 @@ const Addreview = () => {
                   onChange={formik.handleChange}
                   onBlur={formik.handleBlur}
                   value="1"
-                  checked={formik.values.active === '1'}
+                  checked={
+                    newReview.reviewActive
+                      ? 1
+                      : 0 || formik.values.active === '1'
+                  }
                   className="text-blue-500 form-radio h-4 w-4"
                 />
                 <span className="ml-2">Active</span>
@@ -168,7 +148,11 @@ const Addreview = () => {
                   onChange={formik.handleChange}
                   onBlur={formik.handleBlur}
                   value="1"
-                  checked={formik.values.show_on_home_page === '1'}
+                  checked={
+                    newReview.reviewShow_on_home_page
+                      ? 1
+                      : 0 || formik.values.show_on_home_page === '1'
+                  }
                   className="text-blue-500 form-radio h-4 w-4"
                 />
                 <span className="ml-2">Show</span>
@@ -188,7 +172,32 @@ const Addreview = () => {
             </div>
           </div>
           <div className="error">
-            {formik.touched.active && formik.errors.active}
+            {formik.touched.show_on_home_page &&
+              formik.errors.show_on_home_page}
+          </div>
+          <CustomInput
+            type="text"
+            label="Enter Review Name"
+            name="reviewer_name"
+            onCh={formik.handleChange('reviewer_name')}
+            onBl={formik.handleBlur('reviewer_name')}
+            val={formik.values.reviewer_name}
+            id="reviews"
+          />
+          <div className="error">
+            {formik.touched.reviewer_name && formik.errors.reviewer_name}
+          </div>
+          <CustomInput
+            type="text"
+            label="Enter Comment"
+            name="comment"
+            onCh={formik.handleChange('comment')}
+            onBl={formik.handleBlur('comment')}
+            val={formik.values.comment}
+            id="reviews"
+          />
+          <div className="error">
+            {formik.touched.comment && formik.errors.comment}
           </div>
           <button
             className="btn btn-success border-0 rounded-3 my-5"

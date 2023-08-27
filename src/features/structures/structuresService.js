@@ -3,7 +3,10 @@ import { base_url } from '../../utils/base_url';
 import { config } from '../../utils/axiosconfig';
 
 const getstructures = async () => {
-  const response = await axios.get(`${base_url}/api/structures`, config);
+  const response = await axios.get(
+    `${base_url}/api/structures?inactive=true`,
+    config
+  );
   return response.data;
 };
 

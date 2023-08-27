@@ -112,50 +112,6 @@ const AddTariff = () => {
       </h3>
       <div>
         <form action="" onSubmit={formik.handleSubmit}>
-          <CustomInput
-            type="text"
-            label="Enter "
-            name="name"
-            onCh={formik.handleChange('name')}
-            onBl={formik.handleBlur('name')}
-            val={formik.values.name}
-          />
-          <div className="error">
-            {formik.touched.name && formik.errors.name}
-          </div>
-          <CustomInput
-            type="text"
-            label="Enter "
-            name="description"
-            onCh={formik.handleChange('description')}
-            onBl={formik.handleBlur('description')}
-            val={formik.values.description}
-          />
-          <div className="error">
-            {formik.touched.description && formik.errors.description}
-          </div>
-          <CustomInput
-            type="number"
-            label="Number"
-            name="price"
-            onCh={formik.handleChange('price')}
-            onBl={formik.handleBlur('price')}
-            val={formik.values.price}
-          />
-          <div className="error">
-            {formik.touched.price && formik.errors.price}
-          </div>
-          <CustomInput
-            type="number"
-            label="Number"
-            name="speed"
-            onCh={formik.handleChange('speed')}
-            onBl={formik.handleBlur('speed')}
-            val={formik.values.speed}
-          />
-          <div className="error">
-            {formik.touched.speed && formik.errors.speed}
-          </div>
           <div className="my-4">
             <div className="mt-1">
               <label className="inline-flex items-center">
@@ -225,6 +181,50 @@ const AddTariff = () => {
           </div>
           <div className="error">
             {formik.touched.most_wanted && formik.errors.most_wanted}
+          </div>
+          <CustomInput
+            type="text"
+            label="Enter "
+            name="name"
+            onCh={formik.handleChange('name')}
+            onBl={formik.handleBlur('name')}
+            val={formik.values.name}
+          />
+          <div className="error">
+            {formik.touched.name && formik.errors.name}
+          </div>
+          <CustomInput
+            type="text"
+            label="Enter "
+            name="description"
+            onCh={formik.handleChange('description')}
+            onBl={formik.handleBlur('description')}
+            val={formik.values.description}
+          />
+          <div className="error">
+            {formik.touched.description && formik.errors.description}
+          </div>
+          <CustomInput
+            type="number"
+            label="Number"
+            name="speed"
+            onCh={formik.handleChange('speed')}
+            onBl={formik.handleBlur('speed')}
+            val={formik.values.speed}
+          />
+          <div className="error">
+            {formik.touched.speed && formik.errors.speed}
+          </div>
+          <CustomInput
+            type="number"
+            label="Number"
+            name="price"
+            onCh={formik.handleChange('price')}
+            onBl={formik.handleBlur('price')}
+            val={formik.values.price}
+          />
+          <div className="error">
+            {formik.touched.price && formik.errors.price}
           </div>
           <button
             className="btn btn-success border-0 rounded-3 my-5"

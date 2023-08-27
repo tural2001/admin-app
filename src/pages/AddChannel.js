@@ -7,68 +7,66 @@ import * as yup from 'yup';
 import { useLocation, useNavigate } from 'react-router-dom';
 import Dropzone from 'react-dropzone';
 import {
-  createAservice,
-  getAservice,
+  createAchannel,
+  getAchannel,
   resetState,
-  updateAservice,
-} from '../features/services/servicesSlice';
+  updateAchannel,
+} from '../features/channels/channelsSlice';
 
 let schema = yup.object({
-  title: yup.string().required('Title s is Required'),
-  description: yup.string().required('Description is Required'),
-  link: yup.string().required('Link is Required'),
-  icon: yup.mixed().required('Icon is Required'),
+  name: yup.string().required('Name s is Required'),
+  country_id: yup.number().required('Description is Required'),
+  image: yup.mixed().required('Icon is Required'),
   active: yup.string().required('Active status is Required'),
 });
 
-const AddService = () => {
+const Addchannel = () => {
   const [isFileDetected, setIsFileDetected] = useState(false);
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const location = useLocation();
-  const getServiceId = location.pathname.split('/')[3];
-  const newService = useSelector((state) => state.service);
+  const getchannelId = location.pathname.split('/')[3];
+  const newchannel = useSelector((state) => state.channel);
 
   const {
     isSuccess,
     isError,
     isLoading,
-    createdService,
-    serviceTitle,
-    serviceActive,
-    serviceDescription,
-    serviceLink,
-    serviceIcon,
-    updatedService,
-  } = newService;
+    createdChannel,
+    channelName,
+    channelActive,
+    channelCountry_id,
+    channelImage,
+    updatedChannel,
+  } = newchannel;
 
   const onDrop = useCallback(
     (acceptedFiles) => {
-      formik.setFieldValue('icon', acceptedFiles);
+      formik.setFieldValue('image', acceptedFiles);
       setIsFileDetected(true);
     }, // eslint-disable-next-line no-use-before-define, react-hooks/exhaustive-deps
     []
   );
 
   useEffect(() => {
-    if (getServiceId !== undefined) {
-      dispatch(getAservice(getServiceId));
+    if (getchannelId !== undefined) {
+      dispatch(getAchannel(getchannelId));
     } else {
       dispatch(resetState());
     }
-  }, [dispatch, getServiceId]);
+  }, [dispatch, getchannelId]);
 
   useEffect(() => {
-    if (isSuccess && createdService) {
-      toast.success('Service Added Successfully!');
-      navigate('/admin/service-list');
+    if (isSuccess && createdChannel) {
+      toast.success('Channel Added Successfully!');
+      navigate('/admin/channel-list');
       setTimeout(() => {
         window.location.reload();
       }, 500);
     }
-    if (isSuccess && updatedService !== undefined) {
-      toast.success('Service Updated Successfully!');
-      navigate('/admin/service-list');
+    if (isSuccess && updatedChannel !== undefined) {
+      toast.success('Channel Updated Successfully!');
+      navigate('/admin/channel-list');
     }
     if (isError) {
       toast.error('Something Went Wrong!');
@@ -77,32 +75,30 @@ const AddService = () => {
     isSuccess,
     isError,
     isLoading,
-    createdService,
-    serviceTitle,
-    serviceActive,
-    serviceDescription,
-    serviceLink,
-    serviceIcon,
-    updatedService,
+    createdChannel,
+    channelName,
+    channelActive,
+    channelCountry_id,
+    channelImage,
+    updatedChannel,
     navigate,
   ]);
 
   const formik = useFormik({
     enableReinitialize: true,
     initialValues: {
-      title: serviceTitle || '',
-      active: serviceActive ? 1 : 0,
-      description: serviceDescription || '',
-      link: serviceLink || '',
-      icon: serviceIcon || null,
+      name: channelName || '',
+      active: channelActive ? 1 : 0,
+      country_id: channelCountry_id || '',
+      image: channelImage || null,
     },
     validationSchema: schema,
     onSubmit: (values) => {
-      if (getServiceId !== undefined) {
-        const data = { id: getServiceId, service: values };
-        dispatch(updateAservice(data));
+      if (getchannelId !== undefined) {
+        const data = { id: getchannelId, channel: values };
+        dispatch(updateAchannel(data));
       } else {
-        dispatch(createAservice(values));
+        dispatch(createAchannel(values));
         formik.resetForm();
         setTimeout(() => {
           dispatch(resetState());
@@ -111,10 +107,12 @@ const AddService = () => {
     },
   });
 
+  console.log(newchannel);
+
   return (
     <div>
       <h3 className="mb-4 title">
-        {getServiceId !== undefined ? 'Edit' : 'Add'} Service
+        {getchannelId !== undefined ? 'Edit' : 'Add'} channel
       </h3>
       <div>
         <form onSubmit={formik.handleSubmit}>
@@ -128,7 +126,7 @@ const AddService = () => {
                   onBlur={formik.handleBlur}
                   value="1"
                   checked={
-                    newService.serviceActive
+                    newchannel.channelActive
                       ? 1
                       : 0 || formik.values.active === '1'
                   }
@@ -153,39 +151,28 @@ const AddService = () => {
           <div className="error">
             {formik.touched.active && formik.errors.active}
           </div>
-
           <CustomInput
             type="text"
-            label="Enter title"
-            name="title"
-            onCh={formik.handleChange('title')}
-            onBl={formik.handleBlur('title')}
-            val={formik.values.title}
+            label="Enter name"
+            name="name"
+            onCh={formik.handleChange('name')}
+            onBl={formik.handleBlur('name')}
+            val={formik.values.name}
           />
           <div className="error">
-            {formik.touched.title && formik.errors.title}
+            {formik.touched.name && formik.errors.name}
           </div>
           <CustomInput
             type="text"
-            label="Enter description"
-            name="description"
-            onCh={formik.handleChange('description')}
-            onBl={formik.handleBlur('description')}
-            val={formik.values.description}
+            label="Enter country_id"
+            name="country_id"
+            onCh={formik.handleChange('country_id')}
+            onBl={formik.handleBlur('country_id')}
+            val={formik.values.country_id}
+            readOnly={'readOnly'}
           />
           <div className="error">
-            {formik.touched.description && formik.errors.description}
-          </div>
-          <CustomInput
-            type="text"
-            label="Enter link"
-            name="link"
-            onCh={formik.handleChange('link')}
-            onBl={formik.handleBlur('link')}
-            val={formik.values.link}
-          />
-          <div className="error">
-            {formik.touched.link && formik.errors.link}
+            {formik.touched.country_id && formik.errors.country_id}
           </div>
           <div className="">
             <div className="mt-10 text-center">
@@ -260,7 +247,7 @@ const AddService = () => {
                     )}
                   </Dropzone>
                   <div className="error">
-                    {formik.touched.icon && formik.errors.icon}
+                    {formik.touched.image && formik.errors.image}
                   </div>
                 </div>
                 <div className="mt-[70px] w-[200px]">
@@ -276,7 +263,7 @@ const AddService = () => {
             className="btn btn-success border-0 rounded-3 my-5"
             type="submit"
           >
-            {getServiceId !== undefined ? 'Edit' : 'Add'} Service
+            {getchannelId !== undefined ? 'Edit' : 'Add'} channel
           </button>
         </form>
       </div>
@@ -284,4 +271,4 @@ const AddService = () => {
   );
 };
 
-export default AddService;
+export default Addchannel;

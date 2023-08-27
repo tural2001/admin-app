@@ -3,7 +3,10 @@ import { base_url } from '../../utils/base_url';
 import { config } from '../../utils/axiosconfig';
 
 const getTariffs = async () => {
-  const response = await axios.get(`${base_url}/api/tariffs`, config);
+  const response = await axios.get(
+    `${base_url}/api/tariffs?inactive=true`,
+    config
+  );
   return response.data;
 };
 

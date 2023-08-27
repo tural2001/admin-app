@@ -6,17 +6,17 @@ import { VscEdit } from 'react-icons/vsc';
 import { RiDeleteBin5Line } from 'react-icons/ri';
 import { toast } from 'react-toastify';
 import {
-  deleteAstructure,
-  getstructures,
+  deleteAcampaign,
+  getcampaigns,
   resetState,
-} from '../features/structures/structuresSlice';
+} from '../features/campaigns/campaignsSlice';
 
-const StructureList = () => {
+const CampaignList = () => {
   const [open, setOpen] = useState(false);
-  const [structureId, setstructureId] = useState('');
+  const [campaignId, setcampaignId] = useState('');
   const showModal = (e) => {
     setOpen(true);
-    setstructureId(e);
+    setcampaignId(e);
   };
   const hideModal = () => {
     setOpen(false);
@@ -25,27 +25,25 @@ const StructureList = () => {
   const dispatch = useDispatch();
   useEffect(() => {
     dispatch(resetState());
-    dispatch(getstructures());
+    dispatch(getcampaigns());
   }, [dispatch]);
 
-  const structurestate = useSelector(
-    (state) => state.structure.structures.data
-  );
+  const campaignstate = useSelector((state) => state.campaign.campaigns.data);
+  console.log(campaignstate);
 
-  const deleteStructure = (e) => {
+  const deleteCampaign = (e) => {
     setOpen(false);
-    dispatch(deleteAstructure(e));
-    toast.success('Structure Deleted Successfully!');
-
+    dispatch(deleteAcampaign(e));
+    toast.success('Campaign Deleted Successfully!');
     setTimeout(() => {
-      dispatch(getstructures());
+      dispatch(getcampaigns());
     }, 1000);
   };
 
   return (
     <div>
-      <h3 className="mb-4 title">Structures</h3>
-      <Link to="/admin/structure">Add Structure</Link>
+      <h3 className="mb-4 title">Campaign</h3>
+      <Link to="/admin/campaign">Add Campaign</Link>
       <div>
         <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
           <table className="w-full text-sm text-left text-gray-500 dark:text-gray-400">
@@ -88,7 +86,7 @@ const StructureList = () => {
                 </th>
                 <th scope="col" className="px-6 py-3">
                   <div className="flex items-center">
-                    Profession
+                    Description
                     <a href="#/">
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
@@ -123,7 +121,7 @@ const StructureList = () => {
               </tr>
             </thead>
             <tbody>
-              {structurestate?.map((structure, index) => (
+              {campaignstate?.map((campaign, index) => (
                 <tr
                   key={index}
                   className="bg-white border-b dark:bg-gray-800 dark:border-gray-700"
@@ -132,26 +130,26 @@ const StructureList = () => {
                     scope="row"
                     className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"
                   >
-                    {structure.id}
+                    {campaign.id}
                   </th>
                   <td
                     className={`px-6 py-4 ${
-                      structure.active === true
+                      campaign.active === true
                         ? 'text-green-500'
                         : 'text-red-500'
                     }`}
                   >
-                    {structure.active === true ? 'Active' : 'Not Active'}
+                    {campaign.active === true ? 'Active' : 'Not Active'}
                   </td>
-                  <td className="px-6 py-4">{structure.name}</td>
-                  <td className="px-6 py-4">{structure.profession}</td>
+                  <td className="px-6 py-4">{campaign.name}</td>
+                  <td className="px-6 py-4">{campaign.description}</td>
                   <td className="px-6 py-4">
                     <a
-                      href={structure.icon}
+                      href={campaign.image}
                       target="_blank"
                       rel="noopener noreferrer"
                     >
-                      {structure.image}
+                      {campaign.image}
                     </a>
                   </td>
                   <td className="px-6 py-4">
@@ -162,16 +160,16 @@ const StructureList = () => {
                       height={50}
                     />
                   </td>
-                  <td className="px-6 py-16 flex  gap-2">
+                  <td className="px-6 py-16 flex gap-2">
                     <Link
-                      to={`/admin/structure/${structurestate[index]?.id}`}
+                      to={`/admin/campaign/${campaignstate[index]?.id}`}
                       className="text-lg text-black dark:text-blue-500 hover:underline"
                     >
                       <VscEdit />
                     </Link>
 
                     <button
-                      onClick={() => showModal(structurestate[index]?.id)}
+                      onClick={() => showModal(campaignstate[index]?.id)}
                       className="text-lg text-black dark:text-blue-500 hover:text-red-500"
                     >
                       <RiDeleteBin5Line />
@@ -187,12 +185,12 @@ const StructureList = () => {
         hideModal={hideModal}
         open={open}
         performAction={() => {
-          deleteStructure(structureId);
+          deleteCampaign(campaignId);
         }}
-        title={`Are you sure you want to delete  this structure ?`}
+        title={`Are you sure you want to delete  this campaign?`}
       />
     </div>
   );
 };
 
-export default StructureList;
+export default CampaignList;

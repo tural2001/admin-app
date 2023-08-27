@@ -3,7 +3,10 @@ import { base_url } from '../../utils/base_url';
 import { config } from '../../utils/axiosconfig';
 
 const getvacancies = async () => {
-  const response = await axios.get(`${base_url}/api/vacancies`, config);
+  const response = await axios.get(
+    `${base_url}/api/vacancies?inactive=true`,
+    config
+  );
   return response.data;
 };
 

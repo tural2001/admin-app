@@ -7,68 +7,66 @@ import * as yup from 'yup';
 import { useLocation, useNavigate } from 'react-router-dom';
 import Dropzone from 'react-dropzone';
 import {
-  createAservice,
-  getAservice,
+  createAcampaign,
+  getAcampaign,
   resetState,
-  updateAservice,
-} from '../features/services/servicesSlice';
+  updateAcampaign,
+} from '../features/campaigns/campaignsSlice';
 
 let schema = yup.object({
-  title: yup.string().required('Title s is Required'),
+  name: yup.string().required('Name s is Required'),
   description: yup.string().required('Description is Required'),
-  link: yup.string().required('Link is Required'),
-  icon: yup.mixed().required('Icon is Required'),
+  image: yup.mixed().required('Icon is Required'),
   active: yup.string().required('Active status is Required'),
 });
 
-const AddService = () => {
+const AddCampaign = () => {
   const [isFileDetected, setIsFileDetected] = useState(false);
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const location = useLocation();
-  const getServiceId = location.pathname.split('/')[3];
-  const newService = useSelector((state) => state.service);
+  const getCampaignId = location.pathname.split('/')[3];
+  const newCampaign = useSelector((state) => state.campaign);
 
   const {
     isSuccess,
     isError,
     isLoading,
-    createdService,
-    serviceTitle,
-    serviceActive,
-    serviceDescription,
-    serviceLink,
-    serviceIcon,
-    updatedService,
-  } = newService;
+    createdCampaign,
+    campaignName,
+    campaignActive,
+    campaignDescription,
+    campaignImage,
+    updatedCampaign,
+  } = newCampaign;
 
   const onDrop = useCallback(
     (acceptedFiles) => {
-      formik.setFieldValue('icon', acceptedFiles);
+      formik.setFieldValue('image', acceptedFiles);
       setIsFileDetected(true);
     }, // eslint-disable-next-line no-use-before-define, react-hooks/exhaustive-deps
     []
   );
 
   useEffect(() => {
-    if (getServiceId !== undefined) {
-      dispatch(getAservice(getServiceId));
+    if (getCampaignId !== undefined) {
+      dispatch(getAcampaign(getCampaignId));
     } else {
       dispatch(resetState());
     }
-  }, [dispatch, getServiceId]);
+  }, [dispatch, getCampaignId]);
 
   useEffect(() => {
-    if (isSuccess && createdService) {
-      toast.success('Service Added Successfully!');
-      navigate('/admin/service-list');
+    if (isSuccess && createdCampaign) {
+      toast.success('campaign Added Successfully!');
+      navigate('/admin/campaign-list');
       setTimeout(() => {
         window.location.reload();
       }, 500);
     }
-    if (isSuccess && updatedService !== undefined) {
-      toast.success('Service Updated Successfully!');
-      navigate('/admin/service-list');
+    if (isSuccess && updatedCampaign !== undefined) {
+      toast.success('campaign Updated Successfully!');
+      navigate('/admin/campaign-list');
     }
     if (isError) {
       toast.error('Something Went Wrong!');
@@ -77,32 +75,30 @@ const AddService = () => {
     isSuccess,
     isError,
     isLoading,
-    createdService,
-    serviceTitle,
-    serviceActive,
-    serviceDescription,
-    serviceLink,
-    serviceIcon,
-    updatedService,
+    createdCampaign,
+    campaignName,
+    campaignActive,
+    campaignDescription,
+    campaignImage,
+    updatedCampaign,
     navigate,
   ]);
 
   const formik = useFormik({
     enableReinitialize: true,
     initialValues: {
-      title: serviceTitle || '',
-      active: serviceActive ? 1 : 0,
-      description: serviceDescription || '',
-      link: serviceLink || '',
-      icon: serviceIcon || null,
+      name: campaignName || '',
+      active: campaignActive ? 1 : 0,
+      description: campaignDescription || '',
+      image: campaignImage || null,
     },
     validationSchema: schema,
     onSubmit: (values) => {
-      if (getServiceId !== undefined) {
-        const data = { id: getServiceId, service: values };
-        dispatch(updateAservice(data));
+      if (getCampaignId !== undefined) {
+        const data = { id: getCampaignId, campaign: values };
+        dispatch(updateAcampaign(data));
       } else {
-        dispatch(createAservice(values));
+        dispatch(createAcampaign(values));
         formik.resetForm();
         setTimeout(() => {
           dispatch(resetState());
@@ -111,10 +107,12 @@ const AddService = () => {
     },
   });
 
+  console.log(newCampaign);
+
   return (
     <div>
       <h3 className="mb-4 title">
-        {getServiceId !== undefined ? 'Edit' : 'Add'} Service
+        {getCampaignId !== undefined ? 'Edit' : 'Add'} campaign
       </h3>
       <div>
         <form onSubmit={formik.handleSubmit}>
@@ -128,7 +126,7 @@ const AddService = () => {
                   onBlur={formik.handleBlur}
                   value="1"
                   checked={
-                    newService.serviceActive
+                    newCampaign.campaignActive
                       ? 1
                       : 0 || formik.values.active === '1'
                   }
@@ -153,17 +151,16 @@ const AddService = () => {
           <div className="error">
             {formik.touched.active && formik.errors.active}
           </div>
-
           <CustomInput
             type="text"
-            label="Enter title"
-            name="title"
-            onCh={formik.handleChange('title')}
-            onBl={formik.handleBlur('title')}
-            val={formik.values.title}
+            label="Enter name"
+            name="name"
+            onCh={formik.handleChange('name')}
+            onBl={formik.handleBlur('name')}
+            val={formik.values.name}
           />
           <div className="error">
-            {formik.touched.title && formik.errors.title}
+            {formik.touched.name && formik.errors.name}
           </div>
           <CustomInput
             type="text"
@@ -175,17 +172,6 @@ const AddService = () => {
           />
           <div className="error">
             {formik.touched.description && formik.errors.description}
-          </div>
-          <CustomInput
-            type="text"
-            label="Enter link"
-            name="link"
-            onCh={formik.handleChange('link')}
-            onBl={formik.handleBlur('link')}
-            val={formik.values.link}
-          />
-          <div className="error">
-            {formik.touched.link && formik.errors.link}
           </div>
           <div className="">
             <div className="mt-10 text-center">
@@ -260,7 +246,7 @@ const AddService = () => {
                     )}
                   </Dropzone>
                   <div className="error">
-                    {formik.touched.icon && formik.errors.icon}
+                    {formik.touched.image && formik.errors.image}
                   </div>
                 </div>
                 <div className="mt-[70px] w-[200px]">
@@ -276,7 +262,7 @@ const AddService = () => {
             className="btn btn-success border-0 rounded-3 my-5"
             type="submit"
           >
-            {getServiceId !== undefined ? 'Edit' : 'Add'} Service
+            {getCampaignId !== undefined ? 'Edit' : 'Add'} campaign
           </button>
         </form>
       </div>
@@ -284,4 +270,4 @@ const AddService = () => {
   );
 };
 
-export default AddService;
+export default AddCampaign;

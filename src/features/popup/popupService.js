@@ -3,7 +3,10 @@ import { base_url } from '../../utils/base_url';
 import { config } from '../../utils/axiosconfig';
 
 const getpopups = async () => {
-  const response = await axios.get(`${base_url}/api/popups`, config);
+  const response = await axios.get(
+    `${base_url}/api/popups?inactive=true`,
+    config
+  );
   return response.data;
 };
 

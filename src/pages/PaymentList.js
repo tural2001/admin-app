@@ -6,17 +6,17 @@ import { VscEdit } from 'react-icons/vsc';
 import { RiDeleteBin5Line } from 'react-icons/ri';
 import { toast } from 'react-toastify';
 import {
-  deleteAstructure,
-  getstructures,
+  deleteApayment,
+  getpayments,
   resetState,
-} from '../features/structures/structuresSlice';
+} from '../features/payments/paymentsSlice';
 
-const StructureList = () => {
+const PaymentList = () => {
   const [open, setOpen] = useState(false);
-  const [structureId, setstructureId] = useState('');
+  const [paymentId, setpaymentId] = useState('');
   const showModal = (e) => {
     setOpen(true);
-    setstructureId(e);
+    setpaymentId(e);
   };
   const hideModal = () => {
     setOpen(false);
@@ -25,27 +25,25 @@ const StructureList = () => {
   const dispatch = useDispatch();
   useEffect(() => {
     dispatch(resetState());
-    dispatch(getstructures());
+    dispatch(getpayments());
   }, [dispatch]);
 
-  const structurestate = useSelector(
-    (state) => state.structure.structures.data
-  );
+  const paymentstate = useSelector((state) => state.payment.payments.data);
+  console.log(paymentstate);
 
-  const deleteStructure = (e) => {
+  const deletePayment = (e) => {
     setOpen(false);
-    dispatch(deleteAstructure(e));
-    toast.success('Structure Deleted Successfully!');
-
+    dispatch(deleteApayment(e));
+    toast.success('Payment Deleted Successfully!');
     setTimeout(() => {
-      dispatch(getstructures());
+      dispatch(getpayments());
     }, 1000);
   };
 
   return (
     <div>
-      <h3 className="mb-4 title">Structures</h3>
-      <Link to="/admin/structure">Add Structure</Link>
+      <h3 className="mb-4 title">Payment</h3>
+      <Link to="/admin/payment">Add Payment</Link>
       <div>
         <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
           <table className="w-full text-sm text-left text-gray-500 dark:text-gray-400">
@@ -88,7 +86,23 @@ const StructureList = () => {
                 </th>
                 <th scope="col" className="px-6 py-3">
                   <div className="flex items-center">
-                    Profession
+                    Description
+                    <a href="#/">
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        className="w-3 h-3 ml-1"
+                        aria-hidden="true"
+                        fill="currentColor"
+                        viewBox="0 0 320 512"
+                      >
+                        <path d="M27.66 224h264.7c24.6 0 36.89-29.78 19.54-47.12l-132.3-136.8c-5.406-5.406-12.47-8.107-19.53-8.107c-7.055 0-14.09 2.701-19.45 8.107L8.119 176.9C-9.229 194.2 3.055 224 27.66 224zM292.3 288H27.66c-24.6 0-36.89 29.77-19.54 47.12l132.5 136.8C145.9 477.3 152.1 480 160 480c7.053 0 14.12-2.703 19.53-8.109l132.3-136.8C329.2 317.8 316.9 288 292.3 288z" />
+                      </svg>
+                    </a>
+                  </div>
+                </th>
+                <th scope="col" className="px-6 py-3">
+                  <div className="flex items-center">
+                    Redirect_link
                     <a href="#/">
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
@@ -123,7 +137,7 @@ const StructureList = () => {
               </tr>
             </thead>
             <tbody>
-              {structurestate?.map((structure, index) => (
+              {paymentstate?.map((payment, index) => (
                 <tr
                   key={index}
                   className="bg-white border-b dark:bg-gray-800 dark:border-gray-700"
@@ -132,26 +146,35 @@ const StructureList = () => {
                     scope="row"
                     className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"
                   >
-                    {structure.id}
+                    {payment.id}
                   </th>
                   <td
                     className={`px-6 py-4 ${
-                      structure.active === true
+                      payment.active === true
                         ? 'text-green-500'
                         : 'text-red-500'
                     }`}
                   >
-                    {structure.active === true ? 'Active' : 'Not Active'}
+                    {payment.active === true ? 'Active' : 'Not Active'}
                   </td>
-                  <td className="px-6 py-4">{structure.name}</td>
-                  <td className="px-6 py-4">{structure.profession}</td>
+                  <td className="px-6 py-4">{payment.name}</td>
+                  <td className="px-6 py-4">{payment.description}</td>
                   <td className="px-6 py-4">
                     <a
-                      href={structure.icon}
+                      href={payment.redirect_link}
                       target="_blank"
                       rel="noopener noreferrer"
                     >
-                      {structure.image}
+                      {payment.redirect_link}
+                    </a>
+                  </td>
+                  <td className="px-6 py-4">
+                    <a
+                      href={payment.image}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      {payment.image}
                     </a>
                   </td>
                   <td className="px-6 py-4">
@@ -162,16 +185,16 @@ const StructureList = () => {
                       height={50}
                     />
                   </td>
-                  <td className="px-6 py-16 flex  gap-2">
+                  <td className="px-6 py-16 flex gap-2">
                     <Link
-                      to={`/admin/structure/${structurestate[index]?.id}`}
+                      to={`/admin/payment/${paymentstate[index]?.id}`}
                       className="text-lg text-black dark:text-blue-500 hover:underline"
                     >
                       <VscEdit />
                     </Link>
 
                     <button
-                      onClick={() => showModal(structurestate[index]?.id)}
+                      onClick={() => showModal(paymentstate[index]?.id)}
                       className="text-lg text-black dark:text-blue-500 hover:text-red-500"
                     >
                       <RiDeleteBin5Line />
@@ -187,7 +210,7 @@ const StructureList = () => {
         hideModal={hideModal}
         open={open}
         performAction={() => {
-          deleteStructure(structureId);
+          deletePayment(paymentId);
         }}
         title={`Are you sure you want to delete  this structure ?`}
       />
@@ -195,4 +218,4 @@ const StructureList = () => {
   );
 };
 
-export default StructureList;
+export default PaymentList;

@@ -93,6 +93,11 @@ const MainLayout = () => {
               label: 'Popup List',
             },
             {
+              key: 'review-list',
+              icon: <TbListCheck className="fs-4" />,
+              label: 'Review List',
+            },
+            {
               key: 'tariff-list',
               icon: <TbListCheck className="fs-4" />,
               label: 'Tariff List',
@@ -106,6 +111,26 @@ const MainLayout = () => {
               key: 'service-list',
               icon: <TbListCheck className="fs-4" />,
               label: 'Service List',
+            },
+            {
+              key: 'payment-list',
+              icon: <TbListCheck className="fs-4" />,
+              label: 'Payment List',
+            },
+            {
+              key: 'campaign-list',
+              icon: <TbListCheck className="fs-4" />,
+              label: 'Campaign List',
+            },
+            {
+              key: 'channel-list',
+              icon: <TbListCheck className="fs-4" />,
+              label: 'Channel List',
+            },
+            {
+              key: 'country-list',
+              icon: <TbListCheck className="fs-4" />,
+              label: 'Country List',
             },
             {
               key: 'partner-list',

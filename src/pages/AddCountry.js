@@ -4,53 +4,55 @@ import { useFormik } from 'formik';
 import * as yup from 'yup';
 import { toast } from 'react-toastify';
 import { useDispatch, useSelector } from 'react-redux';
-import { createAfaq, getAfaq, updateAfaq } from '../features/faq/faqSlice';
 
-import { resetState } from '../features/faq/faqSlice';
 import { useLocation, useNavigate } from 'react-router-dom';
+import {
+  createAcountry,
+  getAcountry,
+  updateAcountry,
+  resetState,
+} from '../features/countries/countriesSlice';
 
 let schema = yup.object({
-  question: yup.string().required('Title is Required'),
-  answer: yup.string().required('Description is Required'),
+  name: yup.string().required('Name is Required'),
   active: yup.string().required('Required'),
 });
 
-const Addfaq = (e) => {
+const AddCountry = (e) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const location = useLocation();
-  const getFaqId = location.pathname.split('/')[3];
-  const newFaq = useSelector((state) => state.faq);
+  const getcountryId = location.pathname.split('/')[3];
+  const newCountry = useSelector((state) => state.country);
   const {
     isSuccess,
     isError,
     isLoading,
-    createdFaq,
-    faqQuestion,
-    faqAnswer,
-    faqActive,
-    updatedFaq,
-  } = newFaq;
+    createdCountry,
+    countryName,
+    countryActive,
+    updatedCountry,
+  } = newCountry;
 
   useEffect(() => {
-    if (getFaqId !== undefined) {
-      dispatch(getAfaq(getFaqId));
+    if (getcountryId !== undefined) {
+      dispatch(getAcountry(getcountryId));
     } else {
       dispatch(resetState());
     }
-  }, [dispatch, getFaqId]);
+  }, [dispatch, getcountryId]);
 
   useEffect(() => {
-    if (isSuccess && createdFaq) {
-      toast.success('Faq Added Successfully!');
-      navigate('/admin/faq-list');
+    if (isSuccess && createdCountry) {
+      toast.success('Country Added Successfully!');
+      navigate('/admin/country-list');
       setTimeout(() => {
         window.location.reload();
       }, 500);
     }
-    if (isSuccess && updatedFaq !== undefined) {
-      toast.success('Faq Updated Successfully!');
-      navigate('/admin/faq-list');
+    if (isSuccess && updatedCountry !== undefined) {
+      toast.success('Country Updated Successfully!');
+      navigate('/admin/country-list');
     }
     if (isError) {
       toast.error('Something Went Wrong!');
@@ -59,28 +61,26 @@ const Addfaq = (e) => {
     isSuccess,
     isError,
     isLoading,
-    createdFaq,
-    faqQuestion,
-    faqActive,
-    faqAnswer,
-    updatedFaq,
+    createdCountry,
+    countryActive,
+    countryName,
+    updatedCountry,
     navigate,
   ]);
 
   const formik = useFormik({
     enableReinitialize: true,
     initialValues: {
-      question: faqQuestion || '',
-      answer: faqAnswer || '',
-      active: faqActive ? 1 : 0,
+      name: countryName || '',
+      active: countryActive ? 1 : 0,
     },
     validationSchema: schema,
     onSubmit: (values) => {
-      if (getFaqId !== undefined) {
-        const data = { id: getFaqId, faqData: values };
-        dispatch(updateAfaq(data));
+      if (getcountryId !== undefined) {
+        const data = { id: getcountryId, countryData: values };
+        dispatch(updateAcountry(data));
       } else {
-        dispatch(createAfaq(values));
+        dispatch(createAcountry(values));
         formik.resetForm();
         setTimeout(() => {
           dispatch(resetState());
@@ -92,7 +92,7 @@ const Addfaq = (e) => {
   return (
     <div>
       <h3 className="mb-4 title">
-        {getFaqId !== undefined ? 'Edit' : 'Add'} Faq
+        {getcountryId !== undefined ? 'Edit' : 'Add'} Country
       </h3>
       <div className="">
         <form onSubmit={formik.handleSubmit}>
@@ -107,7 +107,9 @@ const Addfaq = (e) => {
                     onBlur={formik.handleBlur}
                     value="1"
                     checked={
-                      newFaq.faqActive ? 1 : 0 || formik.values.active === '1'
+                      newCountry.countryActive
+                        ? 1
+                        : 0 || formik.values.active === '1'
                     }
                     className="text-blue-500 form-radio h-4 w-4"
                   />
@@ -133,29 +135,18 @@ const Addfaq = (e) => {
             </div>
             <CustomInput
               type="text"
-              label="Enter Faq Question"
-              name="question"
-              onCh={formik.handleChange('question')}
-              onBl={formik.handleBlur('question')}
-              val={formik.values.question}
+              label="Enter country Name"
+              name="name"
+              onCh={formik.handleChange('name')}
+              onBl={formik.handleBlur('name')}
+              val={formik.values.name}
             />
             <div className="error">
-              {formik.touched.question && formik.errors.question}
-            </div>
-            <CustomInput
-              type="text"
-              label="Enter Faq Answer"
-              name="answer"
-              onCh={formik.handleChange('answer')}
-              onBl={formik.handleBlur('answer')}
-              val={formik.values.answer}
-            />
-            <div className="error">
-              {formik.touched.answer && formik.errors.answer}
+              {formik.touched.name && formik.errors.name}
             </div>
           </div>
           <button className="bg-blue-300 p-3  rounded-xl my-5" type="submit">
-            {getFaqId !== undefined ? 'Edit' : 'Add'} Faq
+            {getcountryId !== undefined ? 'Edit' : 'Add'} Country
           </button>
         </form>
       </div>
@@ -163,4 +154,4 @@ const Addfaq = (e) => {
   );
 };
 
-export default Addfaq;
+export default AddCountry;

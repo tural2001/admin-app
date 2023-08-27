@@ -3,7 +3,10 @@ import { base_url } from '../../utils/base_url';
 import { config } from '../../utils/axiosconfig';
 
 const getpartners = async () => {
-  const response = await axios.get(`${base_url}/api/partners`, config);
+  const response = await axios.get(
+    `${base_url}/api/partners?inactive=true`,
+    config
+  );
   return response.data;
 };
 
