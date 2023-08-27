@@ -36,6 +36,19 @@ import ChannelList from './pages/ChannelList';
 import Addchannel from './pages/AddChannel';
 import CountryList from './pages/CountryList';
 import AddCountry from './pages/AddCountry';
+import UserList from './pages/UserList';
+import AddUser from './pages/AddUser';
+import SlideList from './pages/SlideList';
+import AddSlide from './pages/AddSlide';
+import PageList from './pages/PageList';
+import AddPage from './pages/AddPage';
+import RegionList from './pages/RegionList';
+import AddRegion from './pages/AddRegion';
+import PostList from './pages/PostList';
+import AddPost from './pages/AddPost';
+import FormList from './pages/FormList';
+import AddForm from './pages/AddForm';
+import FieldList from './pages/FieldList';
 
 function App() {
   return (
@@ -58,11 +71,30 @@ function App() {
           }
         >
           <Route index element={<Dashboard />} />
+          <Route path="user-list" element={<UserList />} />
+          <Route path="user" element={<AddUser />} />
+          <Route path="user/:id" element={<AddUser />} />
           <Route path="enquiries" element={<Enquiries />} />
           <Route path="enquiries/:id" element={<ViewEnq />} />
           <Route path="faq-list" element={<FaqList />} />
           <Route path="faq" element={<Addfaq />} />
           <Route path="faq/:id" element={<Addfaq />} />
+          <Route path="region-list" element={<RegionList />} />
+          <Route path="region" element={<AddRegion />} />
+          <Route path="region/:id" element={<AddRegion />} />
+          <Route path="post-list" element={<PostList />} />
+          <Route path="post" element={<AddPost />} />
+          <Route path="post/:id" element={<AddPost />} />
+          <Route path="form-list" element={<FormList />} />
+          <Route path="field-list/:id" element={<FieldList />} />
+          <Route path="form" element={<AddForm />} />
+          <Route path="form/:id" element={<AddForm />} />
+          <Route path="slide-list" element={<SlideList />} />
+          <Route path="slide" element={<AddSlide />} />
+          <Route path="slide/:id" element={<AddSlide />} />
+          <Route path="page-list" element={<PageList />} />
+          <Route path="page" element={<AddPage />} />
+          <Route path="page/:id" element={<AddPage />} />
           <Route path="partner-list" element={<Partnerlist />} />
           <Route path="partner" element={<AddPartner />} />
           <Route path="partner/:id" element={<AddPartner />} />

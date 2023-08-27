@@ -23,44 +23,10 @@ const MainLayout = () => {
         <div className="logo">
           <h2 className="text-white fs-4 text-center py-3 mb-0">
             <span className="sm-logo">
-              {' '}
-              {/* <div className="flex items-end mt-7 mb-3 ml-3 ">
-                {' '}
-                <img
-                  src={vector1}
-                  className="absolute ml-2 mt-1 "
-                  alt=""
-                />{' '}
-                <img src={vector2} className="absolute ml-3" alt="" />{' '}
-                <img src={vector3} className="absolute ml-4  " alt="" />{' '}
-                <img src={vector4} className="absolute ml-7 " alt="" />{' '}
-                <img src={vector5} className="absolute ml-7 " alt="" />{' '}
-              </div> */}
               <img src={logo} alt="" />
             </span>
-
             <span className="lg-logo">
-              {' '}
-              <div className="flex items-center justify-center ">
-                <div className="flex items-end mt-7 mb-3 ">
-                  {' '}
-                  <img
-                    src={vector1}
-                    className="absolute ml-2 mt-1 "
-                    alt=""
-                  />{' '}
-                  <img src={vector2} className="absolute ml-3" alt="" />{' '}
-                  <img src={vector3} className="absolute ml-4  " alt="" />{' '}
-                  <img src={vector4} className="absolute ml-7 " alt="" />{' '}
-                  <img src={vector5} className="absolute ml-7 " alt="" />{' '}
-                </div>
-                <div className="">
-                  {' '}
-                  <h1 className="text-white ml-12 text-[27px] font-medium tracking-wide mb-3">
-                    Azeronline
-                  </h1>
-                </div>
-              </div>{' '}
+              <img src={logo} width={150} height={100} alt="" />
             </span>
           </h2>
         </div>
@@ -81,11 +47,6 @@ const MainLayout = () => {
               key: '',
               icon: <TbListCheck className="fs-4" />,
               label: 'Dashboard',
-            },
-            {
-              key: 'customers',
-              icon: <TbListCheck className="fs-4" />,
-              label: 'Customers',
             },
             {
               key: 'popup-list',
@@ -113,6 +74,31 @@ const MainLayout = () => {
               label: 'Service List',
             },
             {
+              key: 'slide-list',
+              icon: <TbListCheck className="fs-4" />,
+              label: 'Slide List',
+            },
+            {
+              key: 'page-list',
+              icon: <TbListCheck className="fs-4" />,
+              label: 'Page List',
+            },
+            {
+              key: 'region-list',
+              icon: <TbListCheck className="fs-4" />,
+              label: 'Region List',
+            },
+            {
+              key: 'post-list',
+              icon: <TbListCheck className="fs-4" />,
+              label: 'Post List',
+            },
+            {
+              key: 'form-list',
+              icon: <TbListCheck className="fs-4" />,
+              label: 'Form List',
+            },
+            {
               key: 'payment-list',
               icon: <TbListCheck className="fs-4" />,
               label: 'Payment List',
@@ -131,6 +117,11 @@ const MainLayout = () => {
               key: 'country-list',
               icon: <TbListCheck className="fs-4" />,
               label: 'Country List',
+            },
+            {
+              key: 'user-list',
+              icon: <TbListCheck className="fs-4" />,
+              label: 'User List',
             },
             {
               key: 'partner-list',

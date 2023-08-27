@@ -81,7 +81,7 @@ export const updateAtariff = createAsyncThunk(
 
 export const resetState = createAction('Reset_all');
 
-export const blogSlice = createSlice({
+export const tariffSlice = createSlice({
   name: 'tariffs',
   initialState,
   reducers: {},
@@ -171,4 +171,4 @@ export const blogSlice = createSlice({
   },
 });
 
-export default blogSlice.reducer;
+export default tariffSlice.reducer;
