@@ -49,6 +49,7 @@ import AddPost from './pages/AddPost';
 import FormList from './pages/FormList';
 import AddForm from './pages/AddForm';
 import FieldList from './pages/FieldList';
+import AddField from './pages/AddField';
 
 function App() {
   return (
@@ -85,8 +86,10 @@ function App() {
           <Route path="post-list" element={<PostList />} />
           <Route path="post" element={<AddPost />} />
           <Route path="post/:id" element={<AddPost />} />
+          <Route path="form/:id/field-list" element={<FieldList />} />
+          <Route path="form/:id/field-list/:id" element={<AddField />} />
+          <Route path="form/:id/field" element={<AddField />} />
           <Route path="form-list" element={<FormList />} />
-          <Route path="field-list/:id" element={<FieldList />} />
           <Route path="form" element={<AddForm />} />
           <Route path="form/:id" element={<AddForm />} />
           <Route path="slide-list" element={<SlideList />} />

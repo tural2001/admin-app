@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import CustomModal from '../components/CustomModal';
 import { VscEdit } from 'react-icons/vsc';
 import { RiDeleteBin5Line } from 'react-icons/ri';
+import { AiOutlineFieldNumber } from 'react-icons/ai';
 import {
   deleteAform,
   getfields,
@@ -134,19 +135,18 @@ const FormList = () => {
                   <td className="px-6 py-4">{form.handle}</td>
                   <td className="px-6 py-4 flex gap-2">
                     <Link
+                      to={`/admin/form/${form.id}/field-list`}
+                      onClick={() => click(formstate[index]?.id)}
+                      className="text-lg text-black dark:text-blue-500 hover:underline"
+                    >
+                      <AiOutlineFieldNumber />
+                    </Link>
+                    <Link
                       to={`/admin/form/${formstate[index]?.id}`}
                       className="text-lg text-black dark:text-blue-500 hover:underline"
                     >
                       <VscEdit />
                     </Link>
-                    <Link
-                      to={`/admin/field-list/${formstate[index]?.id}`}
-                      onClick={() => click(formstate[index]?.id)}
-                      className="text-lg text-black dark:text-blue-500 hover:underline"
-                    >
-                      ID
-                    </Link>
-
                     <button
                       onClick={() => showModal(formstate[index]?.id)}
                       className="text-lg text-black dark:text-blue-500 hover:text-red-500"

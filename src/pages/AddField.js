@@ -6,56 +6,64 @@ import * as yup from 'yup';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import {
-  createAform,
-  getAform,
+  createAfield,
+  getAfield,
+  getfields,
   resetState,
-  updateAform,
-} from '../features/form/formFieldSlice';
-import { getfields } from '../features/form/formSlice';
+  updateAfield,
+} from '../features/form/formSlice';
 
 let schema = yup.object({
-  name: yup.string().required('form name is Required'),
-  handle: yup.string().required('form comment is Required'),
-  active: yup.string(),
+  label: yup.string().required('form name is Required'),
+  type: yup.string().required('form comment is Required'),
+  name: yup.string().required('form comment is Required'),
+  rules: yup.string().required('form comment is Required'),
+  data: yup.string().required('form comment is Required'),
 });
 
 const AddForm = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const location = useLocation();
-  const getformId = location.pathname.split('/')[3];
-  const newForm = useSelector((state) => state.form);
+  const getfieldId = location.pathname.split('/')[5];
+  const getformdId = location.pathname.split('/')[3];
+
+  const newField = useSelector((state) => state.form);
   const {
     isSuccess,
     isError,
     isLoading,
-    createdForm,
-    formActive,
-    formName,
-    formHandle,
-    updatedForm,
-  } = newForm;
+    createdField,
+    fieldLabel,
+    fieldName,
+    fielddata,
+    fieldType,
+    fieldRules,
+    updatedField,
+  } = newField;
+  console.log(newField);
+  console.log(getfieldId);
 
   useEffect(() => {
-    if (getformId !== undefined) {
-      dispatch(getAform(getformId));
-      dispatch(getfields(getformId));
+    if (getfieldId !== undefined) {
+      dispatch(getAfield({ id: getfieldId, formId: getformdId }));
+      dispatch(getfields(getformdId));
     } else {
       dispatch(resetState());
     }
-  }, [dispatch, getformId]);
+  }, [dispatch, getfieldId, getformdId]);
 
   useEffect(() => {
-    if (isSuccess && createdForm) {
-      toast.success('form added successfully');
-      navigate('/admin/form-list');
+    if (isSuccess && createdField) {
+      toast.success('Field added successfully');
+      navigate('/admin/field-list');
       setTimeout(() => {
         window.location.reload();
       }, 500);
     }
-    if (isSuccess && updatedForm !== undefined) {
-      toast.success('form Updated Successfully!');
-      navigate('/admin/form-list');
+    if (isSuccess && updatedField !== undefined) {
+      toast.success('Field Updated Successfully!');
+      navigate(`/admin/form/${getformdId}/field-list`);
     }
     if (isError) {
       toast.error('Something went wrong');
@@ -64,30 +72,35 @@ const AddForm = () => {
     isSuccess,
     isError,
     isLoading,
-    createdForm,
-    formActive,
-    formName,
-    formHandle,
-    updatedForm,
+    createdField,
+    fieldLabel,
+    fieldName,
+    fielddata,
+    fieldType,
+    fieldRules,
+    updatedField,
+    getformdId,
     navigate,
   ]);
-
-  console.log(newForm);
 
   const formik = useFormik({
     enableReinitialize: true,
     initialValues: {
-      name: formName || '',
-      handle: formHandle || '',
-      active: formActive ? 1 : 0,
+      label: fieldLabel || '',
+      type: fieldType || '',
+      name: fieldName || '',
+      rules: fieldRules || '',
+      data: fielddata || '',
     },
     validationSchema: schema,
     onSubmit: (values) => {
-      if (getformId !== undefined) {
-        const data = { id: getformId, formData: values };
-        dispatch(updateAform(data));
+      if (getfieldId !== undefined) {
+        const data = { id: getfieldId, field: values, formId: getformdId };
+        console.log(data);
+        dispatch(updateAfield(data));
       } else {
-        dispatch(createAform(values));
+        values.id = getformdId;
+        dispatch(createAfield(values));
         formik.resetForm();
         setTimeout(() => {
           dispatch(resetState());
@@ -95,47 +108,25 @@ const AddForm = () => {
       }
     },
   });
+
   return (
     <div>
       <h3 className="mb-4 title">
-        {getformId !== undefined ? 'Edit' : 'Add'} form
+        {getfieldId !== undefined ? 'Edit' : 'Add'} form
       </h3>
       <div>
         <form action="" onSubmit={formik.handleSubmit}>
-          <div className="my-4">
-            <div className="mt-1">
-              <label className="inline-flex items-center">
-                <input
-                  type="radio"
-                  name="active"
-                  onChange={formik.handleChange}
-                  onBlur={formik.handleBlur}
-                  value="1"
-                  checked={
-                    newForm.formActive ? 1 : 0 || formik.values.active === '1'
-                  }
-                  className="text-blue-500 form-radio h-4 w-4"
-                />
-                <span className="ml-2">Active</span>
-              </label>
-              <label className="inline-flex items-center ml-6">
-                <input
-                  type="radio"
-                  name="active"
-                  onChange={formik.handleChange}
-                  onBlur={formik.handleBlur}
-                  value="0"
-                  checked={formik.values.active === '0'}
-                  className="text-blue-500 form-radio h-4 w-4"
-                />
-                <span className="ml-2">Not Active</span>
-              </label>
-            </div>
-          </div>
+          <CustomInput
+            type="text"
+            label="Enter form Name"
+            name="label"
+            onCh={formik.handleChange('label')}
+            onBl={formik.handleBlur('label')}
+            val={formik.values.label}
+          />
           <div className="error">
-            {formik.touched.active && formik.errors.active}
+            {formik.touched.label && formik.errors.label}
           </div>
-
           <CustomInput
             type="text"
             label="Enter form Name"
@@ -143,28 +134,48 @@ const AddForm = () => {
             onCh={formik.handleChange('name')}
             onBl={formik.handleBlur('name')}
             val={formik.values.name}
-            id="forms"
           />
           <div className="error">
-            {formik.touched.former_name && formik.errors.former_name}
+            {formik.touched.name && formik.errors.name}
           </div>
           <CustomInput
             type="text"
-            label="Enter Handle"
-            name="handle"
-            onCh={formik.handleChange('handle')}
-            onBl={formik.handleBlur('handle')}
-            val={formik.values.handle}
-            id="forms"
+            label="Enter type"
+            name="type"
+            onCh={formik.handleChange('type')}
+            onBl={formik.handleBlur('type')}
+            val={formik.values.type}
           />
           <div className="error">
-            {formik.touched.handle && formik.errors.handle}
+            {formik.touched.type && formik.errors.type}
+          </div>
+          <CustomInput
+            type="text"
+            label="Enter type"
+            name="rules"
+            onCh={formik.handleChange('rules')}
+            onBl={formik.handleBlur('rules')}
+            val={formik.values.rules}
+          />
+          <div className="error">
+            {formik.touched.rules && formik.errors.rules}
+          </div>
+          <CustomInput
+            type="text"
+            label="Enter data"
+            name="data"
+            onCh={formik.handleChange('data')}
+            onBl={formik.handleBlur('data')}
+            val={formik.values.data}
+          />
+          <div className="error">
+            {formik.touched.data && formik.errors.data}
           </div>
           <button
             className="btn btn-success border-0 rounded-3 my-5"
             type="submit"
           >
-            {getformId !== undefined ? 'Edit' : 'Add'} form
+            {getfieldId !== undefined ? 'Edit' : 'Add'} form
           </button>
         </form>
       </div>

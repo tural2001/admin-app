@@ -4,8 +4,12 @@ import { useDispatch, useSelector } from 'react-redux';
 import CustomModal from '../components/CustomModal';
 import { VscEdit } from 'react-icons/vsc';
 import { RiDeleteBin5Line } from 'react-icons/ri';
-import { deleteAfield, resetState } from '../features/form/formFieldSlice';
-import { getfields, getforms } from '../features/form/formSlice';
+import {
+  deleteAfield,
+  getfields,
+  getforms,
+  resetState,
+} from '../features/form/formSlice';
 
 const FieldList = () => {
   const location = useLocation();
@@ -30,20 +34,20 @@ const FieldList = () => {
   }, [dispatch, getformId]);
 
   const fieldstate = useSelector((state) => state.form.fields?.data);
-  console.log(fieldstate);
+  const formstate = useSelector((state) => state.form.fields?.data[0]?.form_id);
 
   const deleteField = (e) => {
     setOpen(false);
-    dispatch(deleteAfield(e));
+    dispatch(deleteAfield({ id: e, formId: formstate }));
     setTimeout(() => {
-      dispatch(getfields());
+      dispatch(getfields(getformId));
     }, 100);
   };
 
   return (
     <div>
       <h3 className="mb-4 title">Fields</h3>
-      <Link to="/admin/form">Add Field</Link>
+      <Link to={`/admin/form/${getformId}/field`}>Add Field</Link>
 
       <div>
         <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
@@ -155,7 +159,7 @@ const FieldList = () => {
                   <td className="px-6 py-4">{field.data}</td>
                   <td className="px-6 py-4 flex gap-2">
                     <Link
-                      to={`/admin/field/${fieldstate[index]?.id}`}
+                      to={`/admin/form/${getformId}/field-list/${fieldstate[index]?.id}`}
                       className="text-lg text-black dark:text-blue-500 hover:underline"
                     >
                       <VscEdit />
