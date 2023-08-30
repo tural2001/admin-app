@@ -10,6 +10,7 @@ import {
   getvacancies,
   resetState,
 } from '../features/vacancies/vacaciesSlice';
+import { plus } from '../assets';
 
 const VacancyList = () => {
   const [open, setOpen] = useState(false);
@@ -41,8 +42,16 @@ const VacancyList = () => {
   };
   return (
     <div>
-      <h3 className="mb-4 title">Products</h3>
-      <Link to="/admin/faq">Add Faq</Link>
+      <div className="flex justify-between gap-3 mb-4">
+        <h3 className="title">Vacancies</h3>
+        <Link
+          to={`/admin/vacancy`}
+          className="flex justify-center items-center pr-3 gap-1 rounded-lg add_button_2"
+        >
+          <img src={plus} width={25} alt="" />
+          Add vacancy
+        </Link>
+      </div>
       <div>
         <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
           <table className="w-full text-sm text-left text-gray-500 dark:text-gray-400">

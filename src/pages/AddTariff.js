@@ -227,10 +227,10 @@ const AddTariff = () => {
             {formik.touched.price && formik.errors.price}
           </div>
           <button
-            className="btn btn-success border-0 rounded-3 my-5"
             type="submit"
+            className="mt-10 text-purple-700 hover:text-white border border-purple-700 hover:bg-purple-800 focus:ring-4 focus:outline-none focus:ring-purple-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center mr-2 mb-2 add_button"
           >
-            {getTariffId !== undefined ? 'Edit' : 'Add'} Tariff
+            {getTariffId !== undefined ? 'Edit' : 'Add'} tariff
           </button>
         </form>
       </div>

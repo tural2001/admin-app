@@ -6,6 +6,7 @@ import { deleteAfaq, getfaqs, resetState } from '../features/faq/faqSlice';
 import { RiDeleteBin5Line } from 'react-icons/ri';
 import { VscEdit } from 'react-icons/vsc';
 import { toast } from 'react-toastify';
+import { plus } from '../assets';
 
 const FaqList = () => {
   const [open, setOpen] = useState(false);
@@ -37,8 +38,17 @@ const FaqList = () => {
   };
   return (
     <div>
-      <h3 className="mb-4 title">Products</h3>
-      <Link to="/admin/faq">Add Faq</Link>
+      <div className="flex justify-between gap-3 mb-4">
+        <h3 className="title">Faqs</h3>{' '}
+        <Link
+          to="/admin/faq"
+          className="flex justify-center items-center pr-3 gap-1 rounded-lg add_button_2"
+        >
+          {' '}
+          <img src={plus} width={25} alt="" />
+          Add Faq
+        </Link>
+      </div>
       <div>
         <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
           <table className="w-full text-sm text-left text-gray-500 dark:text-gray-400">

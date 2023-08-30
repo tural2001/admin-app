@@ -9,6 +9,8 @@ import {
 } from '../features/partners/partnersSlice';
 import { RiDeleteBin5Line } from 'react-icons/ri';
 import { VscEdit } from 'react-icons/vsc';
+import { plus } from '../assets';
+import Popup from 'reactjs-popup';
 
 const Partnerlist = () => {
   const [open, setOpen] = useState(false);
@@ -39,8 +41,16 @@ const Partnerlist = () => {
 
   return (
     <div>
-      <h3 className="mb-4 title">Partners</h3>
-      <Link to="/admin/partner">Add Partner</Link>
+      <div className="flex justify-between gap-3 mb-4">
+        <h3 className="title">Partners</h3>
+        <Link
+          to={`/admin/partner`}
+          className="flex justify-center items-center pr-3 gap-1 rounded-lg add_button_2"
+        >
+          <img src={plus} width={25} alt="" />
+          Add Partner
+        </Link>
+      </div>
       <div>
         <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
           <table className="w-full text-sm text-left text-gray-500 dark:text-gray-400">
@@ -98,7 +108,6 @@ const Partnerlist = () => {
                   </div>
                 </th>
                 <th scope="col" className="px-6 py-3"></th>
-                <th scope="col" className="px-6 py-3"></th>
               </tr>
             </thead>
             <tbody>
@@ -123,14 +132,40 @@ const Partnerlist = () => {
                     {partner.active === true ? 'Active' : 'Not Active'}
                   </td>
                   <td className="px-6 py-4">{partner.name}</td>
-                  <td className="px-6 py-4">{partner.logo}</td>
+                  {/* <td className="px-6 py-4">{partner.logo}</td> */}
                   <td className="px-6 py-4">
-                    <img
-                      src="https://azeronline.netlify.app/static/media/blog2.891d84e7b5ab348201fd.png"
-                      alt=""
-                      width={150}
-                      height={50}
-                    />{' '}
+                    <Popup
+                      trigger={
+                        <button>
+                          {' '}
+                          <img
+                            src="https://azeronline.netlify.app/static/media/blog2.891d84e7b5ab348201fd.png"
+                            alt=""
+                            width={150}
+                            height={50}
+                          />{' '}
+                        </button>
+                      }
+                      modal
+                      nested
+                      contentStyle={{
+                        padding: '0px',
+                        borderRadius: '50px',
+                        borderColor: 'white',
+                        width: '1110px',
+                        height: '575px',
+                        overflow: 'hidden',
+                      }}
+                    >
+                      <div>
+                        <img
+                          src="https://azeronline.netlify.app/static/media/blog2.891d84e7b5ab348201fd.png"
+                          alt=""
+                          width={1110}
+                          height={50}
+                        />{' '}
+                      </div>
+                    </Popup>
                   </td>
                   <td className="px-6 py-16 flex  gap-2">
                     <Link

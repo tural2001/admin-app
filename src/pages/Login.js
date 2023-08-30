@@ -1,12 +1,12 @@
 import React, { useEffect } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import CustomInput from '../components/CustomInput';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import { useDispatch, useSelector } from 'react-redux';
 import { login } from '../features/auth/authSlice';
 import { toast } from 'react-toastify';
-import { vector1, vector2, vector3, vector4, vector5 } from '../assets';
+import { logo, vector1, vector2, vector3, vector4, vector5 } from '../assets';
 
 let schema = Yup.object({
   email: Yup.string()
@@ -47,11 +47,7 @@ const Login = () => {
         <div className="flex items-center ">
           <div className="flex items-end mt-7 mb-3 ">
             {' '}
-            <img src={vector1} className="absolute ml-2 mt-1 " alt="" />{' '}
-            <img src={vector2} className="absolute ml-3" alt="" />{' '}
-            <img src={vector3} className="absolute ml-4  " alt="" />{' '}
-            <img src={vector4} className="absolute ml-7 " alt="" />{' '}
-            <img src={vector5} className="absolute ml-7 " alt="" />{' '}
+            <img src={logo} alt="" />
           </div>
           <div className="">
             {' '}

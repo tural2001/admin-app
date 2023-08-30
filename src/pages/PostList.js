@@ -6,6 +6,8 @@ import { VscEdit } from 'react-icons/vsc';
 import { RiDeleteBin5Line } from 'react-icons/ri';
 import { toast } from 'react-toastify';
 import { deleteApost, getposts, resetState } from '../features/posts/postSlice';
+import { plus } from '../assets';
+import Popup from 'reactjs-popup';
 
 const PostList = () => {
   const [open, setOpen] = useState(false);
@@ -38,8 +40,16 @@ const PostList = () => {
 
   return (
     <div>
-      <h3 className="mb-4 title">Post</h3>
-      <Link to="/admin/post">Add ServiPostce</Link>
+      <div className="flex justify-between gap-3 mb-4">
+        <h3 className="title">Posts</h3>
+        <Link
+          to={`/admin/post`}
+          className="flex justify-center items-center pr-3 gap-1 rounded-lg add_button_2"
+        >
+          <img src={plus} width={25} alt="" />
+          Add Post
+        </Link>
+      </div>
       <div>
         <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
           <table className="w-full text-sm text-left text-gray-500 dark:text-gray-400">
@@ -47,22 +57,6 @@ const PostList = () => {
               <tr>
                 <th scope="col" className="px-6 py-3">
                   No
-                </th>
-                <th scope="col" className="px-6 py-3">
-                  <div className="flex items-center">
-                    Status
-                    <a href="#/">
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        className="w-3 h-3 ml-1"
-                        aria-hidden="true"
-                        fill="currentColor"
-                        viewBox="0 0 320 512"
-                      >
-                        <path d="M27.66 224h264.7c24.6 0 36.89-29.78 19.54-47.12l-132.3-136.8c-5.406-5.406-12.47-8.107-19.53-8.107c-7.055 0-14.09 2.701-19.45 8.107L8.119 176.9C-9.229 194.2 3.055 224 27.66 224zM292.3 288H27.66c-24.6 0-36.89 29.77-19.54 47.12l132.5 136.8C145.9 477.3 152.1 480 160 480c7.053 0 14.12-2.703 19.53-8.109l132.3-136.8C329.2 317.8 316.9 288 292.3 288z" />
-                      </svg>
-                    </a>
-                  </div>
                 </th>
                 <th scope="col" className="px-6 py-3">
                   <div className="flex items-center">
@@ -98,7 +92,7 @@ const PostList = () => {
                 </th>
                 <th scope="col" className="px-6 py-3">
                   <div className="flex items-center">
-                    Link
+                    SLug
                     <a href="#/">
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
@@ -114,7 +108,7 @@ const PostList = () => {
                 </th>
                 <th scope="col" className="px-6 py-3">
                   <div className="flex items-center">
-                    Icon
+                    Image
                     <a href="#/">
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
@@ -128,7 +122,7 @@ const PostList = () => {
                     </a>
                   </div>
                 </th>
-                <th scope="col" className="px-6 py-3"></th>
+
                 <th scope="col" className="px-6 py-3"></th>
               </tr>
             </thead>
@@ -148,7 +142,7 @@ const PostList = () => {
                   <td className="px-6 py-4">{post.title}</td>
                   <td className="px-6 py-4">{post.description}</td>
                   <td className="px-6 py-4">{post.slug}</td>
-                  <td className="px-6 py-4">
+                  {/* <td className="px-6 py-4">
                     <a
                       href={post.image}
                       target="_blank"
@@ -156,14 +150,40 @@ const PostList = () => {
                     >
                       {post.image}
                     </a>
-                  </td>
+                  </td> */}
                   <td className="px-6 py-4">
-                    <img
-                      src="https://azeronline.netlify.app/static/media/blog2.891d84e7b5ab348201fd.png"
-                      alt=""
-                      width={150}
-                      height={50}
-                    />
+                    <Popup
+                      trigger={
+                        <button>
+                          {' '}
+                          <img
+                            src="https://azeronline.netlify.app/static/media/blog2.891d84e7b5ab348201fd.png"
+                            alt=""
+                            width={150}
+                            height={50}
+                          />{' '}
+                        </button>
+                      }
+                      modal
+                      nested
+                      contentStyle={{
+                        padding: '0px',
+                        borderRadius: '50px',
+                        borderColor: 'white',
+                        width: '1110px',
+                        height: '575px',
+                        overflow: 'hidden',
+                      }}
+                    >
+                      <div>
+                        <img
+                          src="https://azeronline.netlify.app/static/media/blog2.891d84e7b5ab348201fd.png"
+                          alt=""
+                          width={1110}
+                          height={50}
+                        />{' '}
+                      </div>
+                    </Popup>
                   </td>
                   <td className="px-6 py-16 flex gap-2">
                     <Link

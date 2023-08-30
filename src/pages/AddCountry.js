@@ -145,8 +145,11 @@ const AddCountry = (e) => {
               {formik.touched.name && formik.errors.name}
             </div>
           </div>
-          <button className="bg-blue-300 p-3  rounded-xl my-5" type="submit">
-            {getcountryId !== undefined ? 'Edit' : 'Add'} Country
+          <button
+            type="submit"
+            className="mt-10 text-purple-700 hover:text-white border border-purple-700 hover:bg-purple-800 focus:ring-4 focus:outline-none focus:ring-purple-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center mr-2 mb-2 add_button"
+          >
+            {getcountryId !== undefined ? 'Edit' : 'Add'} country
           </button>
         </form>
       </div>

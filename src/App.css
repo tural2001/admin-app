@@ -49,9 +49,14 @@
 .Menu {
   background-color: inherit;
 }
+
 .ant-layout-sider-children {
   background-color: #f3f4f6;
   background-size: cover;
+}
+
+.ant-layout-header {
+  border-bottom: 1px solid rgb(193, 188, 188) !important;
 }
 
 .ant-menu-item:hover {

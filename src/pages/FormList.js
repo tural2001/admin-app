@@ -11,6 +11,7 @@ import {
   getforms,
   resetState,
 } from '../features/form/formSlice';
+import { plus } from '../assets';
 
 const FormList = () => {
   const [open, setOpen] = useState(false);
@@ -50,8 +51,16 @@ const FormList = () => {
 
   return (
     <div>
-      <h3 className="mb-4 title">Forms</h3>
-      <Link to="/admin/form">Add Form</Link>
+      <div className="flex justify-between gap-3 mb-4">
+        <h3 className="title">Forms</h3>{' '}
+        <Link
+          to={`/admin/form`}
+          className="flex justify-center items-center pr-3 gap-1 rounded-lg add_button_2"
+        >
+          <img src={plus} width={25} alt="" />
+          Add Form
+        </Link>
+      </div>
 
       <div>
         <div className="relative overflow-x-auto shadow-md sm:rounded-lg">

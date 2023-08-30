@@ -135,8 +135,11 @@ const AddUser = () => {
               {formik.touched.password && formik.errors.password}
             </div>
           </div>
-          <button className="bg-blue-300 p-3  rounded-xl my-5" type="submit">
-            {getuserId !== undefined ? 'Edit' : 'Add'} User
+          <button
+            type="submit"
+            className="mt-10 text-purple-700 hover:text-white border border-purple-700 hover:bg-purple-800 focus:ring-4 focus:outline-none focus:ring-purple-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center mr-2 mb-2 add_button"
+          >
+            {getuserId !== undefined ? 'Edit' : 'Add'} user
           </button>
         </form>
       </div>

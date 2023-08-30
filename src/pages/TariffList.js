@@ -10,6 +10,7 @@ import {
   resetState,
 } from '../features/tariffs/tariffSlice';
 import { toast } from 'react-toastify';
+import { plus } from '../assets';
 
 const TariffList = () => {
   const [open, setOpen] = useState(false);
@@ -40,8 +41,16 @@ const TariffList = () => {
 
   return (
     <div>
-      <h3 className="mb-4 title">Products</h3>
-      <Link to="/admin/tariff">Add Tariff</Link>
+      <div className="flex justify-between gap-3 mb-4">
+        <h3 className="title">Tariffs</h3>
+        <Link
+          to={`/admin/tariff`}
+          className="flex justify-center items-center pr-3 gap-1 rounded-lg add_button_2"
+        >
+          <img src={plus} width={25} alt="" />
+          Add Tariff
+        </Link>
+      </div>
       <div>
         <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
           <table className="w-full text-sm text-left text-gray-500 dark:text-gray-400">

@@ -1,14 +1,30 @@
 import { MenuFoldOutlined, MenuUnfoldOutlined } from '@ant-design/icons';
-import { AiOutlineLogout } from 'react-icons/ai';
+import { AiOutlineForm, AiOutlineLogout } from 'react-icons/ai';
 import { TbListCheck } from 'react-icons/tb';
+import { GrChannel } from 'react-icons/gr';
+import {
+  MdOutlineCampaign,
+  MdOutlineMiscellaneousServices,
+  MdPayment,
+  MdOutlineRateReview,
+  MdOutline6FtApart,
+  MdWorkOutline,
+  MdOutlinePriceCheck,
+} from 'react-icons/md';
+import { FaUserCog } from 'react-icons/fa';
+import { GiModernCity } from 'react-icons/gi';
+import { RiFileList3Line, RiPagesLine } from 'react-icons/ri';
+import { FcFaq, FcTreeStructure } from 'react-icons/fc';
+import { CgUserList } from 'react-icons/cg';
+import { TfiLayoutSlider, TfiMapAlt } from 'react-icons/tfi';
+import { BsFileEarmarkPost } from 'react-icons/bs';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { Link, Outlet } from 'react-router-dom';
-import { FaClipboardList } from 'react-icons/fa';
 import { Layout, Menu, theme } from 'antd';
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { logo, vector1, vector2, vector3, vector4, vector5 } from '../assets';
+import { logo, smlogo } from '../assets';
 const { Header, Sider, Content } = Layout;
 
 const MainLayout = () => {
@@ -21,12 +37,18 @@ const MainLayout = () => {
     <Layout>
       <Sider trigger={null} collapsible collapsed={collapsed}>
         <div className="logo">
-          <h2 className="text-white fs-4 text-center py-3 mb-0">
-            <span className="sm-logo">
-              <img src={logo} alt="" />
+          <h2 className="flex justify-center ">
+            <span className="sm-logo ">
+              <img src={smlogo} width={50} className="mt-3" alt="" />
             </span>
-            <span className="lg-logo">
-              <img src={logo} width={150} height={100} alt="" />
+            <span className="lg-logo ">
+              <img
+                src={logo}
+                className="mt-3 h-[30px] w-[190px]"
+                width={130}
+                height={130}
+                alt=""
+              />
             </span>
           </h2>
         </div>
@@ -50,120 +72,95 @@ const MainLayout = () => {
             },
             {
               key: 'popup-list',
-              icon: <TbListCheck className="fs-4" />,
+              icon: <RiFileList3Line className="fs-4" />,
+
               label: 'Popup List',
             },
             {
               key: 'review-list',
-              icon: <TbListCheck className="fs-4" />,
+              icon: <MdOutlineRateReview className="fs-4" />,
               label: 'Review List',
             },
             {
               key: 'tariff-list',
-              icon: <TbListCheck className="fs-4" />,
+              icon: <MdOutlinePriceCheck className="fs-4" />,
               label: 'Tariff List',
             },
             {
               key: 'structure-list',
-              icon: <TbListCheck className="fs-4" />,
+              icon: <FcTreeStructure className="fs-4" />,
               label: 'Structure List',
             },
             {
               key: 'service-list',
-              icon: <TbListCheck className="fs-4" />,
+              icon: <MdOutlineMiscellaneousServices className="fs-4" />,
               label: 'Service List',
             },
             {
               key: 'slide-list',
-              icon: <TbListCheck className="fs-4" />,
+              icon: <TfiLayoutSlider className="fs-4" />,
               label: 'Slide List',
             },
             {
               key: 'page-list',
-              icon: <TbListCheck className="fs-4" />,
+              icon: <RiPagesLine className="fs-4" />,
               label: 'Page List',
             },
             {
               key: 'region-list',
-              icon: <TbListCheck className="fs-4" />,
+              icon: <GiModernCity className="fs-4" />,
               label: 'Region List',
             },
             {
               key: 'post-list',
-              icon: <TbListCheck className="fs-4" />,
+              icon: <BsFileEarmarkPost className="fs-4" />,
               label: 'Post List',
             },
             {
               key: 'form-list',
-              icon: <TbListCheck className="fs-4" />,
+              icon: <AiOutlineForm className="fs-4" />,
               label: 'Form List',
             },
             {
               key: 'payment-list',
-              icon: <TbListCheck className="fs-4" />,
+              icon: <MdPayment className="fs-4" />,
               label: 'Payment List',
             },
             {
               key: 'campaign-list',
-              icon: <TbListCheck className="fs-4" />,
+              icon: <MdOutlineCampaign className="fs-4" />,
               label: 'Campaign List',
             },
             {
               key: 'channel-list',
-              icon: <TbListCheck className="fs-4" />,
+              icon: <GrChannel className="fs-4" />,
               label: 'Channel List',
             },
             {
               key: 'country-list',
-              icon: <TbListCheck className="fs-4" />,
+              icon: <TfiMapAlt className="fs-4" />,
               label: 'Country List',
             },
             {
               key: 'user-list',
-              icon: <TbListCheck className="fs-4" />,
+              icon: <CgUserList className="fs-4" />,
               label: 'User List',
             },
             {
               key: 'partner-list',
-              icon: <TbListCheck className="fs-4" />,
+              icon: <MdOutline6FtApart className="fs-4" />,
               label: 'Partner List',
             },
+
             {
               key: 'vacancy-list',
-              icon: <TbListCheck className="fs-4" />,
+              icon: <MdWorkOutline className="fs-4" />,
               label: 'Vacancy List',
             },
             {
               key: 'faq-list',
-              icon: <TbListCheck className="fs-4" />,
+              icon: <FcFaq className="fs-4" />,
               label: 'Faq List',
-              // children: [
-              //   // {
-              //   //   key: 'blog',
-              //   //   icon: <ImBlog className="fs-4" />,
-              //   //   label: 'Add Blog',
-              //   // },
-              //   {
-              //     key: 'faq-list',
-              //     icon: <FaBloggerB className="fs-4" />,
-              //     label: 'Blog List',
-              //   },
-              //   {
-              //     key: 'blog-category',
-              //     icon: <ImBlog className="fs-4" />,
-              //     label: 'Add Blog Category',
-              //   },
-              //   {
-              //     key: 'blog-category-list',
-              //     icon: <FaBloggerB className="fs-4" />,
-              //     label: 'Blog Category List',
-              //   },
-              // ],
-            },
-            {
-              key: 'enquiries',
-              icon: <FaClipboardList className="fs-4" />,
-              label: 'Enquiries',
             },
             {
               key: 'signout',
@@ -197,13 +194,7 @@ const MainLayout = () => {
                 aria-expanded="false"
                 className="mt-3"
               >
-                <img
-                  width={38}
-                  height={38}
-                  src="https://avatars.githubusercontent.com/u/125383763?v=4"
-                  alt=""
-                />
-                <h5 className="mb-0 text">Admin</h5>
+                <FaUserCog className="fs-3 mr-2" />
               </div>
               <div className="dropdown-menu" aria-labelledby="dropdownMenuLink">
                 <li>
