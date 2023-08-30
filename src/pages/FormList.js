@@ -11,7 +11,7 @@ import {
   getforms,
   resetState,
 } from '../features/form/formSlice';
-import { plus } from '../assets';
+import { active, notactive, plus } from '../assets';
 
 const FormList = () => {
   const [open, setOpen] = useState(false);
@@ -138,6 +138,11 @@ const FormList = () => {
                       form.active === true ? 'text-green-500' : 'text-red-500'
                     }`}
                   >
+                    {form.active === true ? (
+                      <img src={active} alt="" />
+                    ) : (
+                      <img src={notactive} alt="" />
+                    )}
                     {form.active === true ? 'Active' : 'Not Active'}
                   </td>
                   <td className="px-6 py-4">{form.name}</td>

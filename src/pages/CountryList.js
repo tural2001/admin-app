@@ -11,7 +11,7 @@ import {
   deleteAcountry,
   getcountries,
 } from '../features/countries/countriesSlice';
-import { plus } from '../assets';
+import { active, notactive, plus } from '../assets';
 
 const CountryList = () => {
   const [open, setOpen] = useState(false);
@@ -116,6 +116,11 @@ const CountryList = () => {
                         : 'text-red-500'
                     }`}
                   >
+                    {country.active === true ? (
+                      <img src={active} alt="" />
+                    ) : (
+                      <img src={notactive} alt="" />
+                    )}
                     {country.active === true ? 'Active' : 'Not Active'}
                   </td>
                   <td className="px-6 py-4">{country.name}</td>

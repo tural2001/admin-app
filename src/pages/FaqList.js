@@ -6,7 +6,7 @@ import { deleteAfaq, getfaqs, resetState } from '../features/faq/faqSlice';
 import { RiDeleteBin5Line } from 'react-icons/ri';
 import { VscEdit } from 'react-icons/vsc';
 import { toast } from 'react-toastify';
-import { plus } from '../assets';
+import { active, notactive, plus } from '../assets';
 
 const FaqList = () => {
   const [open, setOpen] = useState(false);
@@ -125,6 +125,11 @@ const FaqList = () => {
                       faq.active === true ? 'text-green-500' : 'text-red-500'
                     }`}
                   >
+                    {faq.active === true ? (
+                      <img src={active} alt="" />
+                    ) : (
+                      <img src={notactive} alt="" />
+                    )}
                     {faq.active === true ? 'Active' : 'Not Active'}
                   </td>
                   <td className="px-6 py-4">{faq.question}</td>

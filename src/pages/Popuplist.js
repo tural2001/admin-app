@@ -7,7 +7,7 @@ import CustomModal from '../components/CustomModal';
 import { VscEdit } from 'react-icons/vsc';
 import { RiDeleteBin5Line } from 'react-icons/ri';
 import { toast } from 'react-toastify';
-import { plus } from '../assets';
+import { active, notactive, plus } from '../assets';
 import Popup from 'reactjs-popup';
 
 const Popuplist = () => {
@@ -143,6 +143,11 @@ const Popuplist = () => {
                       popup.active === true ? 'text-green-500' : 'text-red-500'
                     }`}
                   >
+                    {popup.active === true ? (
+                      <img src={active} alt="" />
+                    ) : (
+                      <img src={notactive} alt="" />
+                    )}
                     {popup.active === true ? 'Active' : 'Not Active'}
                   </td>
                   <td className="px-6 py-4">{popup.content}</td>

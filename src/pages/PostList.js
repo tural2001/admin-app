@@ -138,7 +138,6 @@ const PostList = () => {
                   >
                     {post.id}
                   </th>
-
                   <td className="px-6 py-4">{post.title}</td>
                   <td className="px-6 py-4">{post.description}</td>
                   <td className="px-6 py-4">{post.slug}</td>

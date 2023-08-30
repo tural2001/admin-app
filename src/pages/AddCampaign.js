@@ -148,6 +148,7 @@ const AddCampaign = () => {
               </label>
             </div>
           </div>
+
           <div className="error">
             {formik.touched.active && formik.errors.active}
           </div>

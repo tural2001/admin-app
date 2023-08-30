@@ -9,7 +9,7 @@ import {
 } from '../features/partners/partnersSlice';
 import { RiDeleteBin5Line } from 'react-icons/ri';
 import { VscEdit } from 'react-icons/vsc';
-import { plus } from '../assets';
+import { active, notactive, plus } from '../assets';
 import Popup from 'reactjs-popup';
 
 const Partnerlist = () => {
@@ -129,6 +129,11 @@ const Partnerlist = () => {
                         : 'text-red-500'
                     }`}
                   >
+                    {partner.active === true ? (
+                      <img src={active} alt="" />
+                    ) : (
+                      <img src={notactive} alt="" />
+                    )}
                     {partner.active === true ? 'Active' : 'Not Active'}
                   </td>
                   <td className="px-6 py-4">{partner.name}</td>

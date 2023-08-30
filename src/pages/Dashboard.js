@@ -167,7 +167,10 @@ const Dashboard = () => {
   };
   return (
     <div>
-      <h3 className="mb-4 title">Dashboard</h3>
+      <div className="flex justify-between gap-3 mb-4">
+        <h3 className="title">Dashboard</h3>{' '}
+      </div>
+
       <div className="d-flex justify-content-between align-items-center gap-3">
         <div className="d-flex justify-content-between align-items-end flex-grow-1 bg-white p-3 rounded-3">
           <div>

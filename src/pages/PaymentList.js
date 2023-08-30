@@ -10,7 +10,7 @@ import {
   getpayments,
   resetState,
 } from '../features/payments/paymentsSlice';
-import { plus } from '../assets';
+import { active, notactive, plus } from '../assets';
 import Popup from 'reactjs-popup';
 
 const PaymentList = () => {
@@ -165,6 +165,11 @@ const PaymentList = () => {
                         : 'text-red-500'
                     }`}
                   >
+                    {payment.active === true ? (
+                      <img src={active} alt="" />
+                    ) : (
+                      <img src={notactive} alt="" />
+                    )}
                     {payment.active === true ? 'Active' : 'Not Active'}
                   </td>
                   <td className="px-6 py-4">{payment.name}</td>

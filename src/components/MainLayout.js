@@ -12,7 +12,7 @@ import {
   MdOutlinePriceCheck,
 } from 'react-icons/md';
 import { FaUserCog } from 'react-icons/fa';
-import { GiModernCity } from 'react-icons/gi';
+import { GiExitDoor, GiModernCity } from 'react-icons/gi';
 import { RiFileList3Line, RiPagesLine } from 'react-icons/ri';
 import { FcFaq, FcTreeStructure } from 'react-icons/fc';
 import { CgUserList } from 'react-icons/cg';
@@ -24,7 +24,28 @@ import { Link, Outlet } from 'react-router-dom';
 import { Layout, Menu, theme } from 'antd';
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { logo, smlogo } from '../assets';
+import {
+  campaign,
+  channel,
+  country,
+  dashboard,
+  form,
+  logo,
+  page,
+  partner,
+  payment,
+  popup,
+  post,
+  region,
+  review,
+  service,
+  signout,
+  slide,
+  smlogo,
+  tariff,
+  users,
+  vacancy,
+} from '../assets';
 const { Header, Sider, Content } = Layout;
 
 const MainLayout = () => {
@@ -33,6 +54,10 @@ const MainLayout = () => {
     token: { colorBgContainer },
   } = theme.useToken();
   const navigate = useNavigate();
+  const handleSignoutClick = () => {
+    localStorage.clear();
+    window.location.reload();
+  };
   return (
     <Layout>
       <Sider trigger={null} collapsible collapsed={collapsed}>
@@ -67,23 +92,23 @@ const MainLayout = () => {
           items={[
             {
               key: '',
-              icon: <TbListCheck className="fs-4" />,
+              icon: <img src={dashboard} className="w-6" alt="" />,
               label: 'Dashboard',
             },
             {
               key: 'popup-list',
-              icon: <RiFileList3Line className="fs-4" />,
+              icon: <img src={popup} className="w-6" alt="" />,
 
               label: 'Popup List',
             },
             {
               key: 'review-list',
-              icon: <MdOutlineRateReview className="fs-4" />,
+              icon: <img src={review} className="w-6" alt="" />,
               label: 'Review List',
             },
             {
               key: 'tariff-list',
-              icon: <MdOutlinePriceCheck className="fs-4" />,
+              icon: <img src={tariff} className="w-6" alt="" />,
               label: 'Tariff List',
             },
             {
@@ -93,79 +118,69 @@ const MainLayout = () => {
             },
             {
               key: 'service-list',
-              icon: <MdOutlineMiscellaneousServices className="fs-4" />,
+              icon: <img src={service} className="w-6" alt="" />,
               label: 'Service List',
             },
             {
               key: 'slide-list',
-              icon: <TfiLayoutSlider className="fs-4" />,
+              icon: <img src={slide} className="w-6" alt="" />,
               label: 'Slide List',
             },
             {
               key: 'page-list',
-              icon: <RiPagesLine className="fs-4" />,
+              icon: <img src={page} className="w-6" alt="" />,
               label: 'Page List',
             },
             {
               key: 'region-list',
-              icon: <GiModernCity className="fs-4" />,
+              icon: <img src={region} className="w-6" alt="" />,
               label: 'Region List',
             },
             {
               key: 'post-list',
-              icon: <BsFileEarmarkPost className="fs-4" />,
+              icon: <img src={post} className="w-6" alt="" />,
               label: 'Post List',
             },
             {
               key: 'form-list',
-              icon: <AiOutlineForm className="fs-4" />,
+              icon: <img src={form} className="w-6" alt="" />,
               label: 'Form List',
             },
             {
               key: 'payment-list',
-              icon: <MdPayment className="fs-4" />,
+              icon: <img src={payment} className="w-6" alt="" />,
               label: 'Payment List',
             },
             {
               key: 'campaign-list',
-              icon: <MdOutlineCampaign className="fs-4" />,
+              icon: <img src={campaign} className="w-6" alt="" />,
               label: 'Campaign List',
             },
             {
               key: 'channel-list',
-              icon: <GrChannel className="fs-4" />,
+              icon: <img src={channel} className="w-6" alt="" />,
               label: 'Channel List',
             },
             {
               key: 'country-list',
-              icon: <TfiMapAlt className="fs-4" />,
+              icon: <img src={country} className="w-6" alt="" />,
               label: 'Country List',
             },
             {
-              key: 'user-list',
-              icon: <CgUserList className="fs-4" />,
-              label: 'User List',
-            },
-            {
               key: 'partner-list',
-              icon: <MdOutline6FtApart className="fs-4" />,
+              icon: <img src={partner} className="w-6" alt="" />,
               label: 'Partner List',
             },
 
             {
               key: 'vacancy-list',
-              icon: <MdWorkOutline className="fs-4" />,
+              icon: <img src={vacancy} className="w-6" alt="" />,
               label: 'Vacancy List',
             },
             {
               key: 'faq-list',
               icon: <FcFaq className="fs-4" />,
               label: 'Faq List',
-            },
-            {
-              key: 'signout',
-              icon: <AiOutlineLogout className="fs-4" />,
-              label: 'Sign Out',
             },
           ]}
         />
@@ -208,12 +223,23 @@ const MainLayout = () => {
                 </li>
                 <li>
                   <Link
-                    className="dropdown-item py-1 mb-1"
+                    className="dropdown-item py-1 mb-1 flex  items-center gap-1"
                     style={{ height: 'auto', lineHeight: '20px' }}
-                    to="/"
                   >
-                    Signout
+                    {' '}
+                    <img src={users} alt="" className="w-6" />
+                    User List
                   </Link>
+                </li>
+                <li>
+                  <button
+                    className="dropdown-item py-1 mb-1 flex  items-center gap-1"
+                    onClick={handleSignoutClick}
+                    style={{ height: 'auto', lineHeight: '20px' }}
+                  >
+                    {' '}
+                    <img src={signout} alt="" className="w-6" /> Signout
+                  </button>
                 </li>
               </div>
             </div>
@@ -236,7 +262,7 @@ const MainLayout = () => {
             rtl={false}
             pauseOnFocusLoss
             draggable
-            theme="light"
+            theme="dark"
           />
           <Outlet />
         </Content>

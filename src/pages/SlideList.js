@@ -7,7 +7,7 @@ import { RiDeleteBin5Line } from 'react-icons/ri';
 import { toast } from 'react-toastify';
 import { deleteAslide, resetState } from '../features/slides/slidesSlice';
 import { getslides } from '../features/slides/slidesSlice';
-import { plus } from '../assets';
+import { active, notactive, plus } from '../assets';
 import Popup from 'reactjs-popup';
 
 const SlideList = () => {
@@ -207,6 +207,11 @@ const SlideList = () => {
                       slide.active === true ? 'text-green-500' : 'text-red-500'
                     }`}
                   >
+                    {slide.active === true ? (
+                      <img src={active} alt="" />
+                    ) : (
+                      <img src={notactive} alt="" />
+                    )}
                     {slide.active === true ? 'Active' : 'Not Active'}
                   </td>
                   <td className="px-6 py-4">{slide.order}</td>

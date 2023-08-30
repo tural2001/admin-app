@@ -10,7 +10,7 @@ import {
   getstructures,
   resetState,
 } from '../features/structures/structuresSlice';
-import { plus } from '../assets';
+import { active, notactive, plus } from '../assets';
 import Popup from 'reactjs-popup';
 
 const StructureList = () => {
@@ -150,6 +150,11 @@ const StructureList = () => {
                         : 'text-red-500'
                     }`}
                   >
+                    {structure.active === true ? (
+                      <img src={active} alt="" />
+                    ) : (
+                      <img src={notactive} alt="" />
+                    )}
                     {structure.active === true ? 'Active' : 'Not Active'}
                   </td>
                   <td className="px-6 py-4">{structure.name}</td>

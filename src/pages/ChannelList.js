@@ -10,7 +10,7 @@ import {
   getchannels,
   resetState,
 } from '../features/channels/channelsSlice';
-import { plus } from '../assets';
+import { active, notactive, plus } from '../assets';
 import Popup from 'reactjs-popup';
 
 const ChannelList = () => {
@@ -149,6 +149,12 @@ const ChannelList = () => {
                         : 'text-red-500'
                     }`}
                   >
+                    {' '}
+                    {channel.active === true ? (
+                      <img src={active} alt="" />
+                    ) : (
+                      <img src={notactive} alt="" />
+                    )}
                     {channel.active === true ? 'Active' : 'Not Active'}
                   </td>
                   <td className="px-6 py-4">{channel.country_id}</td>

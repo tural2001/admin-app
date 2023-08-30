@@ -10,7 +10,7 @@ import {
   getcampaigns,
   resetState,
 } from '../features/campaigns/campaignsSlice';
-import { plus } from '../assets';
+import { active, notactive, plus } from '../assets';
 import Popup from 'reactjs-popup';
 
 const CampaignList = () => {
@@ -150,6 +150,11 @@ const CampaignList = () => {
                         : 'text-red-500'
                     }`}
                   >
+                    {campaign.active === true ? (
+                      <img src={active} alt="" />
+                    ) : (
+                      <img src={notactive} alt="" />
+                    )}
                     {campaign.active === true ? 'Active' : 'Not Active'}
                   </td>
                   <td className="px-6 py-4">{campaign.name}</td>

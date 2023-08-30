@@ -10,7 +10,7 @@ import {
   getvacancies,
   resetState,
 } from '../features/vacancies/vacaciesSlice';
-import { plus } from '../assets';
+import { active, notactive, plus } from '../assets';
 
 const VacancyList = () => {
   const [open, setOpen] = useState(false);
@@ -130,6 +130,11 @@ const VacancyList = () => {
                         : 'text-red-500'
                     }`}
                   >
+                    {vacancy.active === true ? (
+                      <img src={active} alt="" />
+                    ) : (
+                      <img src={notactive} alt="" />
+                    )}
                     {vacancy.active === true ? 'Active' : 'Not Active'}
                   </td>
                   <td className="px-6 py-4">{vacancy.title}</td>

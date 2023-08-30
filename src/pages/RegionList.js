@@ -10,7 +10,7 @@ import {
   resetState,
 } from '../features/regions/regionSlice';
 import { toast } from 'react-toastify';
-import { plus } from '../assets';
+import { active, notactive, plus } from '../assets';
 
 const RegionList = () => {
   const [open, setOpen] = useState(false);
@@ -143,6 +143,11 @@ const RegionList = () => {
                       region.active === true ? 'text-green-500' : 'text-red-500'
                     }`}
                   >
+                    {region.active === true ? (
+                      <img src={active} alt="" />
+                    ) : (
+                      <img src={notactive} alt="" />
+                    )}
                     {region.active === true ? 'Active' : 'Not Active'}
                   </td>
                   <td className="px-6 py-4">{region.name}</td>

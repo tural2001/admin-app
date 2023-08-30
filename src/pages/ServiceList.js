@@ -10,7 +10,7 @@ import {
   getservices,
   resetState,
 } from '../features/services/servicesSlice';
-import { plus } from '../assets';
+import { active, notactive, plus } from '../assets';
 import Popup from 'reactjs-popup';
 
 const ServiceList = () => {
@@ -163,6 +163,11 @@ const ServiceList = () => {
                         : 'text-red-500'
                     }`}
                   >
+                    {service.active === true ? (
+                      <img src={active} alt="" />
+                    ) : (
+                      <img src={notactive} alt="" />
+                    )}
                     {service.active === true ? 'Active' : 'Not Active'}
                   </td>
                   <td className="px-6 py-4">{service.title}</td>

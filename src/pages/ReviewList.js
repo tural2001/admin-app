@@ -9,7 +9,7 @@ import {
   getreviews,
   resetState,
 } from '../features/reviews/reviewsSlice';
-import { plus } from '../assets';
+import { active, notactive, plus } from '../assets';
 
 const ReviewList = () => {
   const [open, setOpen] = useState(false);
@@ -126,6 +126,11 @@ const ReviewList = () => {
                       review.active === true ? 'text-green-500' : 'text-red-500'
                     }`}
                   >
+                    {review.active === true ? (
+                      <img src={active} alt="" />
+                    ) : (
+                      <img src={notactive} alt="" />
+                    )}
                     {review.active === true ? 'Active' : 'Not Active'}
                   </td>
                   <td className="px-6 py-4">{review.reviewer_name}</td>

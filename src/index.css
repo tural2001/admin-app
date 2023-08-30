@@ -146,4 +146,10 @@ main::-webkit-scrollbar {
   text-transform: capitalize;
   text-shadow: rgba(0, 0, 0, 0.25) 0px 14px 28px,
     rgba(0, 0, 0, 0.22) 0px 10px 10px;
+  padding-bottom: 10px;
+  border-bottom: 0.3px solid rgb(164, 163, 163);
+  border-radius: 5px;
+}
+.ant-menu .ant-menu-item .ant-menu-item-icon {
+  min-width: 25px !important;
 }

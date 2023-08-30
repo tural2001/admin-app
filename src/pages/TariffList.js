@@ -10,7 +10,7 @@ import {
   resetState,
 } from '../features/tariffs/tariffSlice';
 import { toast } from 'react-toastify';
-import { plus } from '../assets';
+import { active, notactive, plus } from '../assets';
 
 const TariffList = () => {
   const [open, setOpen] = useState(false);
@@ -159,6 +159,11 @@ const TariffList = () => {
                       tariff.active === true ? 'text-green-500' : 'text-red-500'
                     }`}
                   >
+                    {tariff.active === true ? (
+                      <img src={active} alt="" />
+                    ) : (
+                      <img src={notactive} alt="" />
+                    )}
                     {tariff.active === true ? 'Active' : 'Not Active'}
                   </td>
                   <td className="px-6 py-4">{tariff.name}</td>
