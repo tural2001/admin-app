@@ -165,7 +165,7 @@ const FieldList = () => {
                   <td className="px-6 py-4">{field.name}</td>
                   <td className="px-6 py-4">{field.rules}</td>
                   <td className="px-6 py-4">{field.data}</td>
-                  <td className="px-6 py-4 flex gap-2">
+                  <td className="px-6 py-16 flex gap-2">
                     <Link
                       to={`/admin/form/${getformId}/field-list/${fieldstate[index]?.id}`}
                       className="text-lg text-black dark:text-blue-500 hover:underline"

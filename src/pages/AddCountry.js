@@ -95,7 +95,23 @@ const AddCountry = (e) => {
         {getcountryId !== undefined ? 'Edit' : 'Add'} Country
       </h3>
       <div className="">
-        <form onSubmit={formik.handleSubmit}>
+        <form
+          onSubmit={(e) => {
+            e.preventDefault();
+            const requiredFields = ['name', 'active'];
+            const errors = {};
+            requiredFields.forEach((fieldName) => {
+              if (formik.touched[fieldName] && !formik.values[fieldName]) {
+                errors[fieldName] = 'This field is Required';
+              }
+            });
+            if (Object.keys(errors).length > 0) {
+              toast.error('Please fill in the required fields.');
+              return;
+            }
+            formik.handleSubmit(e);
+          }}
+        >
           <div className="mt-4">
             <div className="my-4">
               <div className="mt-1">

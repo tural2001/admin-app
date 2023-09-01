@@ -187,7 +187,7 @@ const Popuplist = () => {
                       </div>
                     </Popup>
                   </td>
-                  <td className="px-6 py-4 flex gap-2">
+                  <td className="px-6 py-16 flex gap-2">
                     <Link
                       to={`/admin/popup/${popupstate[index]?.id}`}
                       className="text-lg text-black dark:text-blue-500 hover:underline"

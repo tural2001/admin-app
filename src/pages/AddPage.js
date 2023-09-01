@@ -98,7 +98,23 @@ const AddPage = () => {
         {getpageId !== undefined ? 'Edit' : 'Add'} page
       </h3>
       <div>
-        <form action="" onSubmit={formik.handleSubmit}>
+        <form
+          onSubmit={(e) => {
+            e.preventDefault();
+            const requiredFields = ['title', 'slug', 'content'];
+            const errors = {};
+            requiredFields.forEach((fieldName) => {
+              if (formik.touched[fieldName] && !formik.values[fieldName]) {
+                errors[fieldName] = 'This field is Required';
+              }
+            });
+            if (Object.keys(errors).length > 0) {
+              toast.error('Please fill in the required fields.');
+              return;
+            }
+            formik.handleSubmit(e);
+          }}
+        >
           <CustomInput
             type="text"
             label="Enter Slug"

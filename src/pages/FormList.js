@@ -147,7 +147,7 @@ const FormList = () => {
                   </td>
                   <td className="px-6 py-4">{form.name}</td>
                   <td className="px-6 py-4">{form.handle}</td>
-                  <td className="px-6 py-4 flex gap-2">
+                  <td className="px-6 py-16 flex gap-2">
                     <Link
                       to={`/admin/form/${form.id}/field-list`}
                       onClick={() => click(formstate[index]?.id)}

@@ -116,8 +116,8 @@ function App() {
           <Route path="campaign" element={<AddCampaign />} />
           <Route path="campaign/:id" element={<AddCampaign />} />
           <Route path="channel-list" element={<ChannelList />} />
-          <Route path="channel" element={<AddCountry />} />
-          <Route path="channel/:id" element={<AddCountry />} />
+          <Route path="channel" element={<Addchannel />} />
+          <Route path="channel/:id" element={<Addchannel />} />
           <Route path="country-list" element={<CountryList />} />
           <Route path="country" element={<AddCountry />} />
           <Route path="country/:id" element={<AddCountry />} />

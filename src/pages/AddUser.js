@@ -16,7 +16,7 @@ import {
 let schema = yup.object({
   name: yup.string().required('Name is Required'),
   email: yup.string().required('Email is Required'),
-  password: yup.string().required('Passwords are Required'),
+  password: yup.string().required('Password is Required'),
 });
 
 const AddUser = () => {
@@ -79,6 +79,7 @@ const AddUser = () => {
       password: userPassword || '',
     },
     validationSchema: schema,
+
     onSubmit: (values) => {
       if (getuserId !== undefined) {
         const data = { id: getuserId, userData: values };
@@ -99,7 +100,32 @@ const AddUser = () => {
         {getuserId !== undefined ? 'Edit' : 'Add'} User
       </h3>
       <div className="">
-        <form onSubmit={formik.handleSubmit}>
+        <form
+          onSubmit={(e) => {
+            e.preventDefault();
+            const isNameTouched = formik.touched.name;
+            const isEmailTouched = formik.touched.email;
+            const isPasswordTouched = formik.touched.password;
+            const nameValue = formik.values.name;
+            const emailValue = formik.values.email;
+            const passwordValue = formik.values.password;
+            const errors = {};
+            if (isNameTouched && !nameValue) {
+              errors.name = 'Name is Required';
+            }
+            if (isPasswordTouched && !passwordValue) {
+              errors.password = 'Passwords are Required';
+            }
+            if (isEmailTouched && !emailValue) {
+              errors.email = 'Email is Required';
+            }
+            if (Object.keys(errors).length > 0) {
+              toast.error('Please fill in the required fields.');
+              return;
+            }
+            formik.handleSubmit(e);
+          }}
+        >
           <div className="mt-4">
             <CustomInput
               type="text"

@@ -134,7 +134,7 @@ const FaqList = () => {
                   </td>
                   <td className="px-6 py-4">{faq.question}</td>
                   <td className="px-6 py-4">{faq.answer}</td>
-                  <td className="px-6 py-4 flex gap-2">
+                  <td className="px-6 py-16 flex gap-2">
                     <Link
                       to={`/admin/faq/${faqstate[index]?.id}`}
                       className="text-lg text-black dark:text-blue-500 hover:underline"

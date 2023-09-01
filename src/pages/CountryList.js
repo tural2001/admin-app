@@ -124,7 +124,7 @@ const CountryList = () => {
                     {country.active === true ? 'Active' : 'Not Active'}
                   </td>
                   <td className="px-6 py-4">{country.name}</td>
-                  <td className="px-6 py-4 flex gap-2">
+                  <td className="px-6 py-16 flex gap-2">
                     <Link
                       to={`/admin/country/${countrystate[index]?.id}`}
                       className="text-lg text-black dark:text-blue-500 hover:underline"

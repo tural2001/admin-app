@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { BsArrowDownRight } from 'react-icons/bs';
+// import { BsArrowDownRight } from 'react-icons/bs';
 import { useDispatch, useSelector } from 'react-redux';
 import { Table } from 'antd';
 import {
@@ -171,7 +171,7 @@ const Dashboard = () => {
         <h3 className="title">Dashboard</h3>{' '}
       </div>
 
-      <div className="d-flex justify-content-between align-items-center gap-3">
+      {/* <div className="d-flex justify-content-between align-items-center gap-3">
         <div className="d-flex justify-content-between align-items-end flex-grow-1 bg-white p-3 rounded-3">
           <div>
             <p className="desc">Total Income</p> <br />{' '}
@@ -209,7 +209,7 @@ const Dashboard = () => {
             <p className="mb-0 desc">Yearly Total Sales</p>
           </div>
         </div>
-      </div>
+      </div> */}
       <div className="d-flex justify-content-between gap-3">
         <div className="mt-4">
           <h3 className="mb-5">Income Statics</h3>

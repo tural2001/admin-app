@@ -41,12 +41,12 @@ const Addfaq = (e) => {
   }, [dispatch, getFaqId]);
 
   useEffect(() => {
-    if (isSuccess && createdFaq) {
+    if (isSuccess && createdFaq !== undefined) {
       toast.success('Faq Added Successfully!');
       navigate('/admin/faq-list');
       setTimeout(() => {
         window.location.reload();
-      }, 500);
+      }, 1000);
     }
     if (isSuccess && updatedFaq !== undefined) {
       toast.success('Faq Updated Successfully!');
@@ -95,7 +95,23 @@ const Addfaq = (e) => {
         {getFaqId !== undefined ? 'Edit' : 'Add'} Faq
       </h3>
       <div className="">
-        <form onSubmit={formik.handleSubmit}>
+        <form
+          onSubmit={(e) => {
+            e.preventDefault();
+            const requiredFields = ['question', 'answer', 'active'];
+            const errors = {};
+            requiredFields.forEach((fieldName) => {
+              if (formik.touched[fieldName] && !formik.values[fieldName]) {
+                errors[fieldName] = 'This field is Required';
+              }
+            });
+            if (Object.keys(errors).length > 0) {
+              toast.error('Please fill in the required fields.');
+              return;
+            }
+            formik.handleSubmit(e);
+          }}
+        >
           <div className="mt-4">
             <div className="my-4">
               <div className="mt-1">

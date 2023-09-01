@@ -117,7 +117,29 @@ const AddService = () => {
         {getServiceId !== undefined ? 'Edit' : 'Add'} Service
       </h3>
       <div>
-        <form onSubmit={formik.handleSubmit}>
+        <form
+          onSubmit={(e) => {
+            e.preventDefault();
+            const requiredFields = [
+              'title',
+              'description',
+              'link',
+              'icon',
+              'active',
+            ];
+            const errors = {};
+            requiredFields.forEach((fieldName) => {
+              if (formik.touched[fieldName] && !formik.values[fieldName]) {
+                errors[fieldName] = 'This field is Required';
+              }
+            });
+            if (Object.keys(errors).length > 0) {
+              toast.error('Please fill in the required fields.');
+              return;
+            }
+            formik.handleSubmit(e);
+          }}
+        >
           <div className="my-4">
             <div className="mt-1">
               <label className="inline-flex items-center">
@@ -188,9 +210,9 @@ const AddService = () => {
             {formik.touched.link && formik.errors.link}
           </div>
           <div className="">
-            <div className="mt-10 text-center">
+            <div className="text-center">
               <div className="flex justify-space w-full gap-10">
-                <div className="mt-10 text-center">
+                <div className="mt-4 text-center">
                   <Dropzone onDrop={onDrop}>
                     {({ getRootProps, getInputProps }) => (
                       <section>

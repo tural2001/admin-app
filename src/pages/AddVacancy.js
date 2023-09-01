@@ -100,7 +100,26 @@ const AddVacancy = (e) => {
         {getVacancyId !== undefined ? 'Edit' : 'Add'} Vacancy
       </h3>
       <div className="">
-        <form onSubmit={formik.handleSubmit}>
+        <form
+          onSubmit={(e) => {
+            e.preventDefault();
+            const requiredFields = ['title', 'description', 'active'];
+            const errors = {};
+
+            requiredFields.forEach((fieldName) => {
+              if (formik.touched[fieldName] && !formik.values[fieldName]) {
+                errors[fieldName] = 'This field is Required';
+              }
+            });
+
+            if (Object.keys(errors).length > 0) {
+              toast.error('Please fill in the required fields.');
+              return;
+            }
+
+            formik.handleSubmit(e);
+          }}
+        >
           <div className="my-4">
             <div className="mt-1">
               <label className="inline-flex items-center">
