@@ -77,6 +77,7 @@ const MainLayout = () => {
       '/admin/slide-list': 'slide-list',
       '/admin/user-list': 'user-list',
       '/admin/form-list': 'form-list',
+      '/admin/post-list': 'post-list',
       '/admin/field-list': 'field-list',
       '/admin/faq-list': 'faq-list',
       '/admin/channel-list': 'channel-list',
