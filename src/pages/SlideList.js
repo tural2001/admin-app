@@ -9,6 +9,8 @@ import { deleteAslide, resetState } from '../features/slides/slidesSlice';
 import { getslides } from '../features/slides/slidesSlice';
 import { active, notactive, plus } from '../assets';
 import Popup from 'reactjs-popup';
+import ReactPaginate from 'react-paginate';
+import { BsArrowLeft, BsArrowRight, BsArrowRightShort } from 'react-icons/bs';
 
 const SlideList = () => {
   const [open, setOpen] = useState(false);
@@ -39,6 +41,20 @@ const SlideList = () => {
     }, 1000);
   };
 
+  const [currentPage, setCurrentPage] = useState(0); // Sayfa numarasını saklar
+  const itemsPerPage = 7; // Her sayfada kaç yapı gösterileceği
+
+  const filteredSlide = slidestate?.slice(
+    currentPage * itemsPerPage,
+    (currentPage + 1) * itemsPerPage
+  );
+
+  const pageCount = Math.ceil(slidestate?.length / itemsPerPage); // Toplam sayfa sayısını hesaplar
+
+  const handlePageClick = (data) => {
+    setCurrentPage(data.selected); // Sayfa numarasını günceller
+  };
+
   return (
     <div>
       <div className="flex justify-between gap-3 mb-4">
@@ -47,7 +63,7 @@ const SlideList = () => {
           to={`/admin/slide`}
           className="flex justify-center items-center pr-3 gap-1 rounded-lg add_button_2"
         >
-          <img src={plus} width={25} alt="" />
+          <span className="mb-1 ml-2 text-[30px] hover:text-white">+</span> Add
           Add slide
         </Link>
       </div>
@@ -191,7 +207,7 @@ const SlideList = () => {
               </tr>
             </thead>
             <tbody>
-              {slidestate?.map((slide, index) => (
+              {filteredSlide?.map((slide, index) => (
                 <tr
                   key={index}
                   className="bg-white border-b dark:bg-gray-800 dark:border-gray-700"
@@ -207,11 +223,11 @@ const SlideList = () => {
                       slide.active === true ? 'text-green-500' : 'text-red-500'
                     }`}
                   >
-                    {slide.active === true ? (
+                    {/* {slide.active === true ? (
                       <img src={active} alt="" />
                     ) : (
                       <img src={notactive} alt="" />
-                    )}
+                    )} */}
                     {slide.active === true ? 'Active' : 'Not Active'}
                   </td>
                   <td className="px-6 py-4">{slide.order}</td>
@@ -269,14 +285,14 @@ const SlideList = () => {
                   <td className="px-6 py-16 flex gap-2">
                     <Link
                       to={`/admin/slide/${slidestate[index]?.id}`}
-                      className="text-lg text-black dark:text-blue-500 hover:underline"
+                      className="text-[25px] text-blue-500 "
                     >
                       <VscEdit />
                     </Link>
 
                     <button
                       onClick={() => showModal(slidestate[index]?.id)}
-                      className="text-lg text-black dark:text-blue-500 hover:text-red-500"
+                      className="text-[25px] text-red-500 "
                     >
                       <RiDeleteBin5Line />
                     </button>
@@ -287,6 +303,17 @@ const SlideList = () => {
           </table>
         </div>
       </div>
+      <ReactPaginate
+        previousLabel={<BsArrowLeft />}
+        nextLabel={<BsArrowRight />}
+        breakLabel={'...'}
+        pageCount={pageCount}
+        marginPagesDisplayed={2}
+        pageRangeDisplayed={5}
+        onPageChange={handlePageClick}
+        containerClassName={'pagination'}
+        activeClassName={'active'}
+      />
       <CustomModal
         hideModal={hideModal}
         open={open}

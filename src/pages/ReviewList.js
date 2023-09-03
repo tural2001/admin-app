@@ -10,6 +10,8 @@ import {
   resetState,
 } from '../features/reviews/reviewsSlice';
 import { active, notactive, plus } from '../assets';
+import ReactPaginate from 'react-paginate';
+import { BsArrowLeft, BsArrowRight, BsArrowRightShort } from 'react-icons/bs';
 
 const ReviewList = () => {
   const [open, setOpen] = useState(false);
@@ -37,6 +39,19 @@ const ReviewList = () => {
       dispatch(getreviews());
     }, 100);
   };
+  const [currentPage, setCurrentPage] = useState(0); // Sayfa numarasını saklar
+  const itemsPerPage = 7; // Her sayfada kaç yapı gösterileceği
+
+  const filteredReview = reviewstate?.slice(
+    currentPage * itemsPerPage,
+    (currentPage + 1) * itemsPerPage
+  );
+
+  const pageCount = Math.ceil(reviewstate?.length / itemsPerPage); // Toplam sayfa sayısını hesaplar
+
+  const handlePageClick = (data) => {
+    setCurrentPage(data.selected); // Sayfa numarasını günceller
+  };
 
   return (
     <div>
@@ -46,7 +61,7 @@ const ReviewList = () => {
           to={`/admin/review`}
           className="flex justify-center items-center pr-3 gap-1 rounded-lg add_button_2"
         >
-          <img src={plus} width={25} alt="" />
+          <span className="mb-1 ml-2 text-[30px] hover:text-white">+</span> Add
           Add Review
         </Link>
       </div>
@@ -110,7 +125,7 @@ const ReviewList = () => {
               </tr>
             </thead>
             <tbody>
-              {reviewstate?.map((review, index) => (
+              {filteredReview?.map((review, index) => (
                 <tr
                   key={index}
                   className="bg-white border-b dark:bg-gray-800 dark:border-gray-700"
@@ -126,11 +141,11 @@ const ReviewList = () => {
                       review.active === true ? 'text-green-500' : 'text-red-500'
                     }`}
                   >
-                    {review.active === true ? (
+                    {/* {review.active === true ? (
                       <img src={active} alt="" />
                     ) : (
                       <img src={notactive} alt="" />
-                    )}
+                    )} */}
                     {review.active === true ? 'Active' : 'Not Active'}
                   </td>
                   <td className="px-6 py-4">{review.reviewer_name}</td>
@@ -138,14 +153,14 @@ const ReviewList = () => {
                   <td className="px-6 py-4 flex gap-2">
                     <Link
                       to={`/admin/review/${reviewstate[index]?.id}`}
-                      className="text-lg text-black dark:text-blue-500 hover:underline"
+                      className="text-[25px] text-blue-500 "
                     >
                       <VscEdit />
                     </Link>
 
                     <button
                       onClick={() => showModal(reviewstate[index]?.id)}
-                      className="text-lg text-black dark:text-blue-500 hover:text-red-500"
+                      className="text-[25px] text-red-500 "
                     >
                       <RiDeleteBin5Line />
                     </button>
@@ -156,6 +171,17 @@ const ReviewList = () => {
           </table>
         </div>{' '}
       </div>
+      <ReactPaginate
+        previousLabel={<BsArrowLeft />}
+        nextLabel={<BsArrowRight />}
+        breakLabel={'...'}
+        pageCount={pageCount}
+        marginPagesDisplayed={2}
+        pageRangeDisplayed={5}
+        onPageChange={handlePageClick}
+        containerClassName={'pagination'}
+        activeClassName={'active'}
+      />
       <CustomModal
         hideModal={hideModal}
         open={open}

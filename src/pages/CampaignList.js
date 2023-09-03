@@ -10,8 +10,9 @@ import {
   getcampaigns,
   resetState,
 } from '../features/campaigns/campaignsSlice';
-import { active, notactive, plus } from '../assets';
 import Popup from 'reactjs-popup';
+import ReactPaginate from 'react-paginate';
+import { BsArrowLeft, BsArrowRight, BsArrowRightShort } from 'react-icons/bs';
 
 const CampaignList = () => {
   const [open, setOpen] = useState(false);
@@ -42,6 +43,20 @@ const CampaignList = () => {
     }, 1000);
   };
 
+  const [currentPage, setCurrentPage] = useState(0); // Sayfa numarasını saklar
+  const itemsPerPage = 7; // Her sayfada kaç yapı gösterileceği
+
+  const filteredCampaign = campaignstate?.slice(
+    currentPage * itemsPerPage,
+    (currentPage + 1) * itemsPerPage
+  );
+
+  const pageCount = Math.ceil(campaignstate?.length / itemsPerPage); // Toplam sayfa sayısını hesaplar
+
+  const handlePageClick = (data) => {
+    setCurrentPage(data.selected); // Sayfa numarasını günceller
+  };
+
   return (
     <div>
       <div className="flex justify-between gap-3 mb-4">
@@ -51,7 +66,7 @@ const CampaignList = () => {
           className="flex justify-center items-center pr-3 gap-1 rounded-lg add_button_2"
         >
           {' '}
-          <img src={plus} width={25} alt="" />
+          <span className="mb-1 ml-2 text-[30px] hover:text-white">+</span> Add
           Add Campaign
         </Link>
       </div>
@@ -132,7 +147,7 @@ const CampaignList = () => {
               </tr>
             </thead>
             <tbody>
-              {campaignstate?.map((campaign, index) => (
+              {filteredCampaign?.map((campaign, index) => (
                 <tr
                   key={index}
                   className="bg-white border-b dark:bg-gray-800 dark:border-gray-700"
@@ -150,11 +165,6 @@ const CampaignList = () => {
                         : 'text-red-500'
                     }`}
                   >
-                    {campaign.active === true ? (
-                      <img src={active} alt="" />
-                    ) : (
-                      <img src={notactive} alt="" />
-                    )}
                     {campaign.active === true ? 'Active' : 'Not Active'}
                   </td>
                   <td className="px-6 py-4">{campaign.name}</td>
@@ -205,14 +215,14 @@ const CampaignList = () => {
                   <td className="px-6 py-16 flex gap-2">
                     <Link
                       to={`/admin/campaign/${campaignstate[index]?.id}`}
-                      className="text-lg text-black dark:text-blue-500 hover:underline"
+                      className="text-[25px] text-red-500 "
                     >
                       <VscEdit />
                     </Link>
 
                     <button
                       onClick={() => showModal(campaignstate[index]?.id)}
-                      className="text-lg text-black dark:text-blue-500 hover:text-red-500"
+                      className="text-[25px] text-red-500 "
                     >
                       <RiDeleteBin5Line />
                     </button>
@@ -223,6 +233,17 @@ const CampaignList = () => {
           </table>
         </div>
       </div>
+      <ReactPaginate
+        previousLabel={<BsArrowLeft />}
+        nextLabel={<BsArrowRight />}
+        breakLabel={'...'}
+        pageCount={pageCount}
+        marginPagesDisplayed={2}
+        pageRangeDisplayed={5}
+        onPageChange={handlePageClick}
+        containerClassName={'pagination'}
+        activeClassName={'active'}
+      />
       <CustomModal
         hideModal={hideModal}
         open={open}

@@ -11,10 +11,15 @@ import {
   resetState,
 } from '../features/users/usersSlice';
 import { plus } from '../assets';
+import ReactPaginate from 'react-paginate';
+import { BsArrowLeft, BsArrowRight, BsArrowRightShort } from 'react-icons/bs';
 
 const UserList = () => {
   const [open, setOpen] = useState(false);
   const [userId, setuserId] = useState('');
+  const [currentPage, setCurrentPage] = useState(0); // Sayfa numarasını saklar
+  const itemsPerPage = 7; // Her sayfada kaç yapı gösterileceği
+
   const showModal = (e) => {
     setOpen(true);
     setuserId(e);
@@ -40,6 +45,17 @@ const UserList = () => {
       dispatch(getusers());
     }, 100);
   };
+
+  const filteredTariff = userstate?.slice(
+    currentPage * itemsPerPage,
+    (currentPage + 1) * itemsPerPage
+  );
+
+  const pageCount = Math.ceil(userstate?.length / itemsPerPage); // Toplam sayfa sayısını hesaplar
+
+  const handlePageClick = (data) => {
+    setCurrentPage(data.selected); // Sayfa numarasını günceller
+  };
   return (
     <div>
       <div className="flex justify-between gap-3 mb-4">
@@ -48,7 +64,7 @@ const UserList = () => {
           to={`/admin/user`}
           className="flex justify-center items-center pr-3 gap-1 rounded-lg add_button_2"
         >
-          <img src={plus} width={25} alt="" />
+          <span className="mb-1 ml-2 text-[30px] hover:text-white">+</span> Add
           Add user
         </Link>
       </div>
@@ -113,14 +129,14 @@ const UserList = () => {
                   <td className="px-6 py-4 flex gap-2">
                     <Link
                       to={`/admin/user/${userstate[index]?.id}`}
-                      className="text-lg text-black dark:text-blue-500 hover:underline"
+                      className="text-[25px] text-blue-500 "
                     >
                       <VscEdit />
                     </Link>
 
                     <button
                       onClick={() => showModal(userstate[index]?.id)}
-                      className="text-lg text-black dark:text-blue-500 hover:text-red-500"
+                      className="text-[25px] text-red-500 "
                     >
                       <RiDeleteBin5Line />
                     </button>
@@ -131,6 +147,17 @@ const UserList = () => {
           </table>
         </div>
       </div>
+      <ReactPaginate
+        previousLabel={<BsArrowLeft />}
+        nextLabel={<BsArrowRight />}
+        breakLabel={'...'}
+        pageCount={pageCount}
+        marginPagesDisplayed={2}
+        pageRangeDisplayed={5}
+        onPageChange={handlePageClick}
+        containerClassName={'pagination'}
+        activeClassName={'active'}
+      />
       <CustomModal
         hideModal={hideModal}
         open={open}

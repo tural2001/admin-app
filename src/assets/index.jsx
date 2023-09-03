@@ -22,8 +22,10 @@ import dashboard from './dashboard.png';
 import active from './active.png';
 import notactive from './notactive.png';
 import menu from './menu.png';
+import user from './user.png';
 
 export {
+  user,
   menu,
   active,
   notactive,

@@ -7,6 +7,8 @@ import { RiDeleteBin5Line } from 'react-icons/ri';
 import { VscEdit } from 'react-icons/vsc';
 import { toast } from 'react-toastify';
 import { active, notactive, plus } from '../assets';
+import ReactPaginate from 'react-paginate';
+import { BsArrowLeft, BsArrowRight, BsArrowRightShort } from 'react-icons/bs';
 
 const FaqList = () => {
   const [open, setOpen] = useState(false);
@@ -36,6 +38,19 @@ const FaqList = () => {
       dispatch(getfaqs());
     }, 100);
   };
+  const [currentPage, setCurrentPage] = useState(0); // Sayfa numarasını saklar
+  const itemsPerPage = 7; // Her sayfada kaç yapı gösterileceği
+
+  const filteredFaq = faqstate?.slice(
+    currentPage * itemsPerPage,
+    (currentPage + 1) * itemsPerPage
+  );
+
+  const pageCount = Math.ceil(faqstate?.length / itemsPerPage); // Toplam sayfa sayısını hesaplar
+
+  const handlePageClick = (data) => {
+    setCurrentPage(data.selected); // Sayfa numarasını günceller
+  };
   return (
     <div>
       <div className="flex justify-between gap-3 mb-4">
@@ -45,7 +60,7 @@ const FaqList = () => {
           className="flex justify-center items-center pr-3 gap-1 rounded-lg add_button_2"
         >
           {' '}
-          <img src={plus} width={25} alt="" />
+          <span className="mb-1 ml-2 text-[30px] hover:text-white">+</span> Add
           Add Faq
         </Link>
       </div>
@@ -109,7 +124,7 @@ const FaqList = () => {
               </tr>
             </thead>
             <tbody>
-              {faqstate?.map((faq, index) => (
+              {filteredFaq?.map((faq, index) => (
                 <tr
                   key={index}
                   className="bg-white border-b dark:bg-gray-800 dark:border-gray-700"
@@ -125,11 +140,6 @@ const FaqList = () => {
                       faq.active === true ? 'text-green-500' : 'text-red-500'
                     }`}
                   >
-                    {faq.active === true ? (
-                      <img src={active} alt="" />
-                    ) : (
-                      <img src={notactive} alt="" />
-                    )}
                     {faq.active === true ? 'Active' : 'Not Active'}
                   </td>
                   <td className="px-6 py-4">{faq.question}</td>
@@ -137,14 +147,14 @@ const FaqList = () => {
                   <td className="px-6 py-16 flex gap-2">
                     <Link
                       to={`/admin/faq/${faqstate[index]?.id}`}
-                      className="text-lg text-black dark:text-blue-500 hover:underline"
+                      className="text-[25px] text-blue-500 "
                     >
                       <VscEdit />
                     </Link>
 
                     <button
                       onClick={() => showModal(faqstate[index]?.id)}
-                      className="text-lg text-black dark:text-blue-500 hover:text-red-500"
+                      className="text-[25px] text-red-500 "
                     >
                       <RiDeleteBin5Line />
                     </button>
@@ -155,6 +165,17 @@ const FaqList = () => {
           </table>
         </div>
       </div>
+      <ReactPaginate
+        previousLabel={<BsArrowLeft />}
+        nextLabel={<BsArrowRight />}
+        breakLabel={'...'}
+        pageCount={pageCount}
+        marginPagesDisplayed={2}
+        pageRangeDisplayed={5}
+        onPageChange={handlePageClick}
+        containerClassName={'pagination'}
+        activeClassName={'active'}
+      />
       <CustomModal
         hideModal={hideModal}
         open={open}

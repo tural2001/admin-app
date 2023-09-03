@@ -128,6 +128,10 @@ main::-webkit-scrollbar {
   border-color: #5e3989 !important;
 }
 
+.add_button:hover {
+  background-color: #5e3989 !important;
+}
+
 .add_button_2 {
   color: #a088bc;
   border: 1px solid;
@@ -152,4 +156,41 @@ main::-webkit-scrollbar {
 }
 .ant-menu .ant-menu-item .ant-menu-item-icon {
   min-width: 25px !important;
+}
+
+/* .text-red-500 {
+  font-size: 22px !important;
+}
+.text-blue-500 {
+  font-size: 22px !important;
+} */
+
+canvas {
+  width: 1000px !important;
+  height: 500px !important;
+}
+
+.pagination {
+  margin-top: 15px !important;
+  display: flex !important;
+  gap: 10px !important;
+  font-size: 20px !important;
+  justify-content: flex-end !important;
+  margin-right: 15px;
+  justify-items: center !important;
+  align-items: center !important;
+}
+
+.pagination a {
+  display: flex !important;
+  gap: 10px !important;
+  font-size: 20px !important;
+  justify-content: flex-end !important;
+  margin-right: 10px;
+  justify-items: center !important;
+  align-items: center !important;
+}
+
+.active a {
+  color: #9548b3 !important;
 }

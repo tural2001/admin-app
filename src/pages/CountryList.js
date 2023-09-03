@@ -12,6 +12,8 @@ import {
   getcountries,
 } from '../features/countries/countriesSlice';
 import { active, notactive, plus } from '../assets';
+import ReactPaginate from 'react-paginate';
+import { BsArrowLeft, BsArrowRight, BsArrowRightShort } from 'react-icons/bs';
 
 const CountryList = () => {
   const [open, setOpen] = useState(false);
@@ -41,6 +43,21 @@ const CountryList = () => {
       dispatch(getcountries());
     }, 100);
   };
+
+  const [currentPage, setCurrentPage] = useState(0); // Sayfa numarasını saklar
+  const itemsPerPage = 7; // Her sayfada kaç yapı gösterileceği
+
+  const filteredCountry = countrystate?.slice(
+    currentPage * itemsPerPage,
+    (currentPage + 1) * itemsPerPage
+  );
+
+  const pageCount = Math.ceil(countrystate?.length / itemsPerPage); // Toplam sayfa sayısını hesaplar
+
+  const handlePageClick = (data) => {
+    setCurrentPage(data.selected); // Sayfa numarasını günceller
+  };
+
   return (
     <div>
       <div className="flex justify-between gap-3 mb-4">
@@ -50,7 +67,7 @@ const CountryList = () => {
           className="flex justify-center items-center pr-3 gap-1 rounded-lg add_button_2"
         >
           {' '}
-          <img src={plus} width={25} alt="" />
+          <span className="mb-1 ml-2 text-[30px] hover:text-white">+</span> Add
           Add Countries
         </Link>
       </div>
@@ -98,7 +115,7 @@ const CountryList = () => {
               </tr>
             </thead>
             <tbody>
-              {countrystate?.map((country, index) => (
+              {filteredCountry?.map((country, index) => (
                 <tr
                   key={index}
                   className="bg-white border-b dark:bg-gray-800 dark:border-gray-700"
@@ -116,25 +133,20 @@ const CountryList = () => {
                         : 'text-red-500'
                     }`}
                   >
-                    {country.active === true ? (
-                      <img src={active} alt="" />
-                    ) : (
-                      <img src={notactive} alt="" />
-                    )}
                     {country.active === true ? 'Active' : 'Not Active'}
                   </td>
                   <td className="px-6 py-4">{country.name}</td>
                   <td className="px-6 py-16 flex gap-2">
                     <Link
                       to={`/admin/country/${countrystate[index]?.id}`}
-                      className="text-lg text-black dark:text-blue-500 hover:underline"
+                      className="text-[25px] text-blue-500 "
                     >
                       <VscEdit />
                     </Link>
 
                     <button
                       onClick={() => showModal(countrystate[index]?.id)}
-                      className="text-lg text-black dark:text-blue-500 hover:text-red-500"
+                      className="text-[25px] text-red-500 "
                     >
                       <RiDeleteBin5Line />
                     </button>
@@ -144,7 +156,18 @@ const CountryList = () => {
             </tbody>
           </table>
         </div>
-      </div>
+      </div>{' '}
+      <ReactPaginate
+        previousLabel={<BsArrowLeft />}
+        nextLabel={<BsArrowRight />}
+        breakLabel={'...'}
+        pageCount={pageCount}
+        marginPagesDisplayed={2}
+        pageRangeDisplayed={5}
+        onPageChange={handlePageClick}
+        containerClassName={'pagination'}
+        activeClassName={'active'}
+      />
       <CustomModal
         hideModal={hideModal}
         open={open}

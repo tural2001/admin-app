@@ -10,11 +10,15 @@ import {
   resetState,
 } from '../features/tariffs/tariffSlice';
 import { toast } from 'react-toastify';
-import { active, notactive, plus } from '../assets';
+import ReactPaginate from 'react-paginate';
+import { BsArrowLeft, BsArrowRight, BsArrowRightShort } from 'react-icons/bs';
 
 const TariffList = () => {
   const [open, setOpen] = useState(false);
   const [tariffId, settariffId] = useState('');
+  const [currentPage, setCurrentPage] = useState(0); // Sayfa numarasını saklar
+  const itemsPerPage = 7; // Her sayfada kaç yapı gösterileceği
+
   const showModal = (e) => {
     setOpen(true);
     settariffId(e);
@@ -39,6 +43,17 @@ const TariffList = () => {
     }, 100);
   };
 
+  const filteredTariff = tariffstate?.slice(
+    currentPage * itemsPerPage,
+    (currentPage + 1) * itemsPerPage
+  );
+
+  const pageCount = Math.ceil(tariffstate?.length / itemsPerPage); // Toplam sayfa sayısını hesaplar
+
+  const handlePageClick = (data) => {
+    setCurrentPage(data.selected); // Sayfa numarasını günceller
+  };
+
   return (
     <div>
       <div className="flex justify-between gap-3 mb-4">
@@ -47,7 +62,7 @@ const TariffList = () => {
           to={`/admin/tariff`}
           className="flex justify-center items-center pr-3 gap-1 rounded-lg add_button_2"
         >
-          <img src={plus} width={25} alt="" />
+          <span className="mb-1 ml-2 text-[30px] hover:text-white">+</span> Add
           Add Tariff
         </Link>
       </div>
@@ -143,7 +158,7 @@ const TariffList = () => {
               </tr>
             </thead>
             <tbody>
-              {tariffstate?.map((tariff, index) => (
+              {filteredTariff?.map((tariff, index) => (
                 <tr
                   key={index}
                   className="bg-white border-b dark:bg-gray-800 dark:border-gray-700"
@@ -159,11 +174,11 @@ const TariffList = () => {
                       tariff.active === true ? 'text-green-500' : 'text-red-500'
                     }`}
                   >
-                    {tariff.active === true ? (
+                    {/* {tariff.active === true ? (
                       <img src={active} alt="" />
                     ) : (
                       <img src={notactive} alt="" />
-                    )}
+                    )} */}
                     {tariff.active === true ? 'Active' : 'Not Active'}
                   </td>
                   <td className="px-6 py-4">{tariff.name}</td>
@@ -173,14 +188,14 @@ const TariffList = () => {
                   <td className="px-6 py-16 flex gap-2">
                     <Link
                       to={`/admin/tariff/${tariffstate[index]?.id}`}
-                      className="text-lg text-black dark:text-blue-500 hover:underline"
+                      className="text-[25px] text-blue-500 "
                     >
                       <VscEdit />
                     </Link>
 
                     <button
                       onClick={() => showModal(tariffstate[index]?.id)}
-                      className="text-lg text-black dark:text-blue-500 hover:text-red-500"
+                      className="text-[25px] text-red-500 "
                     >
                       <RiDeleteBin5Line />
                     </button>
@@ -191,6 +206,18 @@ const TariffList = () => {
           </table>
         </div>
       </div>
+
+      <ReactPaginate
+        previousLabel={<BsArrowLeft />}
+        nextLabel={<BsArrowRight />}
+        breakLabel={'...'}
+        pageCount={pageCount}
+        marginPagesDisplayed={2}
+        pageRangeDisplayed={5}
+        onPageChange={handlePageClick}
+        containerClassName={'pagination'}
+        activeClassName={'active'}
+      />
       <CustomModal
         hideModal={hideModal}
         open={open}

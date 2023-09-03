@@ -7,8 +7,9 @@ import CustomModal from '../components/CustomModal';
 import { VscEdit } from 'react-icons/vsc';
 import { RiDeleteBin5Line } from 'react-icons/ri';
 import { toast } from 'react-toastify';
-import { active, notactive, plus } from '../assets';
+import { BsArrowLeft, BsArrowRight, BsArrowRightShort } from 'react-icons/bs';
 import Popup from 'reactjs-popup';
+import ReactPaginate from 'react-paginate';
 
 const Popuplist = () => {
   const [open, setOpen] = useState(false);
@@ -39,6 +40,20 @@ const Popuplist = () => {
     }, 1000);
   };
 
+  const [currentPage, setCurrentPage] = useState(0);
+  const itemsPerPage = 7;
+
+  const filteredPopup = popupstate?.slice(
+    currentPage * itemsPerPage,
+    (currentPage + 1) * itemsPerPage
+  );
+
+  const pageCount = Math.ceil(popupstate?.length / itemsPerPage);
+
+  const handlePageClick = (data) => {
+    setCurrentPage(data.selected); // Sayfa numarasını günceller
+  };
+
   return (
     <div>
       <div className="flex justify-between gap-3 mb-4">
@@ -47,7 +62,7 @@ const Popuplist = () => {
           to={`/admin/popup`}
           className="flex justify-center items-center pr-3 gap-1 rounded-lg add_button_2"
         >
-          <img src={plus} width={25} alt="" />
+          <span className="mb-1 ml-2 text-[30px] hover:text-white">+</span> Add
           Add Popup
         </Link>
       </div>
@@ -127,7 +142,7 @@ const Popuplist = () => {
               </tr>
             </thead>
             <tbody>
-              {popupstate?.map((popup, index) => (
+              {filteredPopup?.map((popup, index) => (
                 <tr
                   key={index}
                   className="bg-white border-b dark:bg-gray-800 dark:border-gray-700"
@@ -143,11 +158,11 @@ const Popuplist = () => {
                       popup.active === true ? 'text-green-500' : 'text-red-500'
                     }`}
                   >
-                    {popup.active === true ? (
+                    {/* {popup.active === true ? (
                       <img src={active} alt="" />
                     ) : (
                       <img src={notactive} alt="" />
-                    )}
+                    )} */}
                     {popup.active === true ? 'Active' : 'Not Active'}
                   </td>
                   <td className="px-6 py-4">{popup.content}</td>
@@ -190,14 +205,14 @@ const Popuplist = () => {
                   <td className="px-6 py-16 flex gap-2">
                     <Link
                       to={`/admin/popup/${popupstate[index]?.id}`}
-                      className="text-lg text-black dark:text-blue-500 hover:underline"
+                      className="text-[25px] text-blue-500 "
                     >
                       <VscEdit />
                     </Link>
 
                     <button
                       onClick={() => showModal(popupstate[index]?.id)}
-                      className="text-lg text-black dark:text-blue-500 hover:text-red-500"
+                      className="text-[25px] text-red-500 "
                     >
                       <RiDeleteBin5Line />
                     </button>
@@ -208,6 +223,17 @@ const Popuplist = () => {
           </table>
         </div>
       </div>
+      <ReactPaginate
+        previousLabel={<BsArrowLeft />}
+        nextLabel={<BsArrowRight />}
+        breakLabel={'...'}
+        pageCount={pageCount}
+        marginPagesDisplayed={2}
+        pageRangeDisplayed={5}
+        onPageChange={handlePageClick}
+        containerClassName={'pagination'}
+        activeClassName={'active'}
+      />
       <CustomModal
         hideModal={hideModal}
         open={open}

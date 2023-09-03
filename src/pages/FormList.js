@@ -12,6 +12,8 @@ import {
   resetState,
 } from '../features/form/formSlice';
 import { active, notactive, plus } from '../assets';
+import ReactPaginate from 'react-paginate';
+import { BsArrowLeft, BsArrowRight, BsArrowRightShort } from 'react-icons/bs';
 
 const FormList = () => {
   const [open, setOpen] = useState(false);
@@ -49,6 +51,20 @@ const FormList = () => {
     }, 100);
   };
 
+  const [currentPage, setCurrentPage] = useState(0); // Sayfa numarasını saklar
+  const itemsPerPage = 7; // Her sayfada kaç yapı gösterileceği
+
+  const filteredForm = formstate?.slice(
+    currentPage * itemsPerPage,
+    (currentPage + 1) * itemsPerPage
+  );
+
+  const pageCount = Math.ceil(formstate?.length / itemsPerPage); // Toplam sayfa sayısını hesaplar
+
+  const handlePageClick = (data) => {
+    setCurrentPage(data.selected); // Sayfa numarasını günceller
+  };
+
   return (
     <div>
       <div className="flex justify-between gap-3 mb-4">
@@ -57,7 +73,7 @@ const FormList = () => {
           to={`/admin/form`}
           className="flex justify-center items-center pr-3 gap-1 rounded-lg add_button_2"
         >
-          <img src={plus} width={25} alt="" />
+          <span className="mb-1 ml-2 text-[30px] hover:text-white">+</span> Add
           Add Form
         </Link>
       </div>
@@ -122,7 +138,7 @@ const FormList = () => {
               </tr>
             </thead>
             <tbody>
-              {formstate?.map((form, index) => (
+              {filteredForm?.map((form, index) => (
                 <tr
                   key={index}
                   className="bg-white border-b dark:bg-gray-800 dark:border-gray-700"
@@ -138,11 +154,11 @@ const FormList = () => {
                       form.active === true ? 'text-green-500' : 'text-red-500'
                     }`}
                   >
-                    {form.active === true ? (
+                    {/* {form.active === true ? (
                       <img src={active} alt="" />
                     ) : (
                       <img src={notactive} alt="" />
-                    )}
+                    )} */}
                     {form.active === true ? 'Active' : 'Not Active'}
                   </td>
                   <td className="px-6 py-4">{form.name}</td>
@@ -151,19 +167,19 @@ const FormList = () => {
                     <Link
                       to={`/admin/form/${form.id}/field-list`}
                       onClick={() => click(formstate[index]?.id)}
-                      className="text-lg text-black dark:text-blue-500 hover:underline"
+                      className="text-[25px] text-redblue-500 "
                     >
                       <AiOutlineFieldNumber />
                     </Link>
                     <Link
                       to={`/admin/form/${formstate[index]?.id}`}
-                      className="text-lg text-black dark:text-blue-500 hover:underline"
+                      className="text-[25px] text-blue-500 "
                     >
                       <VscEdit />
                     </Link>
                     <button
                       onClick={() => showModal(formstate[index]?.id)}
-                      className="text-lg text-black dark:text-blue-500 hover:text-red-500"
+                      className="text-[25px] text-red-500 "
                     >
                       <RiDeleteBin5Line />
                     </button>
@@ -174,6 +190,17 @@ const FormList = () => {
           </table>
         </div>{' '}
       </div>
+      <ReactPaginate
+        previousLabel={<BsArrowLeft />}
+        nextLabel={<BsArrowRight />}
+        breakLabel={'...'}
+        pageCount={pageCount}
+        marginPagesDisplayed={2}
+        pageRangeDisplayed={5}
+        onPageChange={handlePageClick}
+        containerClassName={'pagination'}
+        activeClassName={'active'}
+      />
       <CustomModal
         hideModal={hideModal}
         open={open}

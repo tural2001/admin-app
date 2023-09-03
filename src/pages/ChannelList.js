@@ -12,6 +12,8 @@ import {
 } from '../features/channels/channelsSlice';
 import { active, notactive, plus } from '../assets';
 import Popup from 'reactjs-popup';
+import ReactPaginate from 'react-paginate';
+import { BsArrowLeft, BsArrowRight, BsArrowRightShort } from 'react-icons/bs';
 
 const ChannelList = () => {
   const [open, setOpen] = useState(false);
@@ -42,6 +44,20 @@ const ChannelList = () => {
     }, 1000);
   };
 
+  const [currentPage, setCurrentPage] = useState(0); // Sayfa numarasını saklar
+  const itemsPerPage = 7; // Her sayfada kaç yapı gösterileceği
+
+  const filteredChannel = channelstate?.slice(
+    currentPage * itemsPerPage,
+    (currentPage + 1) * itemsPerPage
+  );
+
+  const pageCount = Math.ceil(channelstate?.length / itemsPerPage); // Toplam sayfa sayısını hesaplar
+
+  const handlePageClick = (data) => {
+    setCurrentPage(data.selected); // Sayfa numarasını günceller
+  };
+
   return (
     <div>
       <div className="flex justify-between gap-3 mb-4">
@@ -51,7 +67,7 @@ const ChannelList = () => {
           className="flex justify-center items-center pr-3 gap-1 rounded-lg add_button_2"
         >
           {' '}
-          <img src={plus} width={25} alt="" />
+          <span className="mb-1 ml-2 text-[30px] hover:text-white">+</span> Add
           Add Channel
         </Link>
       </div>
@@ -131,7 +147,7 @@ const ChannelList = () => {
               </tr>
             </thead>
             <tbody>
-              {channelstate?.map((channel, index) => (
+              {filteredChannel?.map((channel, index) => (
                 <tr
                   key={index}
                   className="bg-white border-b dark:bg-gray-800 dark:border-gray-700"
@@ -149,12 +165,6 @@ const ChannelList = () => {
                         : 'text-red-500'
                     }`}
                   >
-                    {' '}
-                    {channel.active === true ? (
-                      <img src={active} alt="" />
-                    ) : (
-                      <img src={notactive} alt="" />
-                    )}
                     {channel.active === true ? 'Active' : 'Not Active'}
                   </td>
                   <td className="px-6 py-4">{channel.country_id}</td>
@@ -205,14 +215,14 @@ const ChannelList = () => {
                   <td className="px-6 py-16 flex gap-2">
                     <Link
                       to={`/admin/channel/${channelstate[index]?.id}`}
-                      className="text-lg text-black dark:text-blue-500 hover:underline"
+                      className="text-[25px] text-blue-500 "
                     >
                       <VscEdit />
                     </Link>
 
                     <button
                       onClick={() => showModal(channelstate[index]?.id)}
-                      className="text-lg text-black dark:text-blue-500 hover:text-red-500"
+                      className="text-[25px] text-red-500 "
                     >
                       <RiDeleteBin5Line />
                     </button>
@@ -223,6 +233,17 @@ const ChannelList = () => {
           </table>
         </div>
       </div>
+      <ReactPaginate
+        previousLabel={<BsArrowLeft />}
+        nextLabel={<BsArrowRight />}
+        breakLabel={'...'}
+        pageCount={pageCount}
+        marginPagesDisplayed={2}
+        pageRangeDisplayed={5}
+        onPageChange={handlePageClick}
+        containerClassName={'pagination'}
+        activeClassName={'active'}
+      />
       <CustomModal
         hideModal={hideModal}
         open={open}

@@ -43,6 +43,7 @@ import {
   slide,
   smlogo,
   tariff,
+  user,
   users,
   vacancy,
 } from '../assets';
@@ -209,7 +210,7 @@ const MainLayout = () => {
                 aria-expanded="false"
                 className="mt-3"
               >
-                <FaUserCog className="fs-3 mr-2" />
+                <img src={user} className="w-10" alt="" />
               </div>
               <div className="dropdown-menu" aria-labelledby="dropdownMenuLink">
                 <li>
