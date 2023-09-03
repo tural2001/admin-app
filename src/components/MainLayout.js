@@ -20,7 +20,7 @@ import { TfiLayoutSlider, TfiMapAlt } from 'react-icons/tfi';
 import { BsFileEarmarkPost } from 'react-icons/bs';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { Link, Outlet } from 'react-router-dom';
+import { Link, Outlet, useLocation } from 'react-router-dom';
 import { Layout, Menu, theme } from 'antd';
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
@@ -63,6 +63,35 @@ const MainLayout = () => {
     ? JSON.parse(localStorage.getItem('user'))
     : null;
 
+  const location = useLocation();
+
+  const getDefaultSelectedKey = () => {
+    const path = location.pathname;
+    const keyMap = {
+      '/admin/popup-list': 'popup-list',
+      '/admin/review-list': 'review-list',
+      '/admin/structure-list': 'structure-list',
+      '/admin/page-list': 'page-list',
+      '/admin/tariff-list': 'tariff-list',
+      '/admin/vacancy-list': 'vacancy-list',
+      '/admin/slide-list': 'slide-list',
+      '/admin/user-list': 'user-list',
+      '/admin/form-list': 'form-list',
+      '/admin/field-list': 'field-list',
+      '/admin/faq-list': 'faq-list',
+      '/admin/channel-list': 'channel-list',
+      '/admin/campaign-list': 'campaign-list',
+      '/admin/partner-list': 'partner-list',
+      '/admin/payment-list': 'payment-list',
+      '/admin/region-list': 'region-list',
+      '/admin/county-list': 'county-list',
+    };
+
+    return keyMap[path] || '';
+  };
+
+  const defaultSelectedKey = getDefaultSelectedKey();
+
   return (
     <Layout>
       <Sider trigger={null} collapsible collapsed={collapsed}>
@@ -85,7 +114,7 @@ const MainLayout = () => {
         <Menu
           mode="inline"
           className="Menu"
-          defaultSelectedKeys={['']}
+          defaultSelectedKeys={[defaultSelectedKey]}
           onClick={({ key }) => {
             if (key === 'signout') {
               localStorage.clear();
