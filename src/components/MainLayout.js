@@ -59,6 +59,10 @@ const MainLayout = () => {
     localStorage.clear();
     window.location.reload();
   };
+  const getIdFromLocalStorage = localStorage.getItem('user')
+    ? JSON.parse(localStorage.getItem('user'))
+    : null;
+
   return (
     <Layout>
       <Sider trigger={null} collapsible collapsed={collapsed}>
@@ -217,7 +221,7 @@ const MainLayout = () => {
                   <Link
                     className="dropdown-item py-1 mb-1"
                     style={{ height: 'auto', lineHeight: '20px' }}
-                    to="/"
+                    to={`/admin/user/${getIdFromLocalStorage?.data?.id}`}
                   >
                     View Profile
                   </Link>

@@ -166,7 +166,9 @@ main::-webkit-scrollbar {
 } */
 
 canvas {
-  width: 1000px !important;
+  margin-top: 30px;
+  margin-bottom: 30px;
+  width: 1150px !important;
   height: 500px !important;
 }
 
