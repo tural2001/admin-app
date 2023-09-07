@@ -15,9 +15,9 @@ const createregion = async (region) => {
   return response.data;
 };
 
-const updateregion = async (region, id) => {
+const updateregion = async (region, handle) => {
   const response = await axios.post(
-    `${base_url}/api/regions/${id}`,
+    `${base_url}/api/regions/${handle}`,
     region,
     config
   );
@@ -29,8 +29,11 @@ const getregion = async (id) => {
   return response.data;
 };
 
-const deleteregion = async (id) => {
-  const response = await axios.delete(`${base_url}/api/regions/${id}`, config);
+const deleteregion = async (handle) => {
+  const response = await axios.delete(
+    `${base_url}/api/regions/${handle}`,
+    config
+  );
   return response.data;
 };
 

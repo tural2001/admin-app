@@ -10,10 +10,9 @@ import {
   getpayments,
   resetState,
 } from '../features/payments/paymentsSlice';
-import { active, notactive, plus } from '../assets';
 import Popup from 'reactjs-popup';
 import ReactPaginate from 'react-paginate';
-import { BsArrowLeft, BsArrowRight, BsArrowRightShort } from 'react-icons/bs';
+import { BsArrowLeft, BsArrowRight } from 'react-icons/bs';
 
 const PaymentList = () => {
   const [open, setOpen] = useState(false);
@@ -32,8 +31,8 @@ const PaymentList = () => {
     dispatch(getpayments());
   }, [dispatch]);
 
-  const paymentstate = useSelector((state) => state.payment.payments.data);
-  console.log(paymentstate);
+  const paymentstate =
+    useSelector((state) => state.payment.payments.data) || [];
 
   const deletePayment = (e) => {
     setOpen(false);
@@ -44,18 +43,17 @@ const PaymentList = () => {
     }, 1000);
   };
 
-  const [currentPage, setCurrentPage] = useState(0); // Sayfa numarasını saklar
-  const itemsPerPage = 7; // Her sayfada kaç yapı gösterileceği
-
+  const [currentPage, setCurrentPage] = useState(0);
+  const itemsPerPage = 7;
   const filteredPayment = paymentstate?.slice(
     currentPage * itemsPerPage,
     (currentPage + 1) * itemsPerPage
   );
 
-  const pageCount = Math.ceil(paymentstate?.length / itemsPerPage); // Toplam sayfa sayısını hesaplar
+  const pageCount = Math.ceil(paymentstate?.length / itemsPerPage);
 
   const handlePageClick = (data) => {
-    setCurrentPage(data.selected); // Sayfa numarasını günceller
+    setCurrentPage(data.selected);
   };
 
   return (
@@ -81,6 +79,38 @@ const PaymentList = () => {
                 <th scope="col" className="px-6 py-3">
                   <div className="flex items-center">
                     Status
+                    <a href="#/">
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        className="w-3 h-3 ml-1"
+                        aria-hidden="true"
+                        fill="currentColor"
+                        viewBox="0 0 320 512"
+                      >
+                        <path d="M27.66 224h264.7c24.6 0 36.89-29.78 19.54-47.12l-132.3-136.8c-5.406-5.406-12.47-8.107-19.53-8.107c-7.055 0-14.09 2.701-19.45 8.107L8.119 176.9C-9.229 194.2 3.055 224 27.66 224zM292.3 288H27.66c-24.6 0-36.89 29.77-19.54 47.12l132.5 136.8C145.9 477.3 152.1 480 160 480c7.053 0 14.12-2.703 19.53-8.109l132.3-136.8C329.2 317.8 316.9 288 292.3 288z" />
+                      </svg>
+                    </a>
+                  </div>
+                </th>
+                <th scope="col" className="px-6 py-3">
+                  <div className="flex items-center">
+                    Meta_title
+                    <a href="#/">
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        className="w-3 h-3 ml-1"
+                        aria-hidden="true"
+                        fill="currentColor"
+                        viewBox="0 0 320 512"
+                      >
+                        <path d="M27.66 224h264.7c24.6 0 36.89-29.78 19.54-47.12l-132.3-136.8c-5.406-5.406-12.47-8.107-19.53-8.107c-7.055 0-14.09 2.701-19.45 8.107L8.119 176.9C-9.229 194.2 3.055 224 27.66 224zM292.3 288H27.66c-24.6 0-36.89 29.77-19.54 47.12l132.5 136.8C145.9 477.3 152.1 480 160 480c7.053 0 14.12-2.703 19.53-8.109l132.3-136.8C329.2 317.8 316.9 288 292.3 288z" />
+                      </svg>
+                    </a>
+                  </div>
+                </th>
+                <th scope="col" className="px-6 py-3">
+                  <div className="flex items-center">
+                    Meta_description
                     <a href="#/">
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
@@ -181,13 +211,10 @@ const PaymentList = () => {
                         : 'text-red-500'
                     }`}
                   >
-                    {/* {payment.active === true ? (
-                      <img src={active} alt="" />
-                    ) : (
-                      <img src={notactive} alt="" />
-                    )} */}
                     {payment.active === true ? 'Active' : 'Not Active'}
                   </td>
+                  <td className="px-6 py-4">{payment.meta_title}</td>
+                  <td className="px-6 py-4">{payment.meta_description}</td>
                   <td className="px-6 py-4">{payment.name}</td>
                   <td className="px-6 py-4">{payment.description}</td>
                   <td className="px-6 py-4">

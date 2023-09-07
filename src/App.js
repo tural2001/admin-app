@@ -7,8 +7,6 @@ import Enquiries from './pages/Enquiries';
 import FaqList from './pages/FaqList';
 import Orders from './pages/Orders';
 import Customers from './pages/Customers';
-import Productlist from './pages/Productlist';
-import Addproduct from './pages/Addproduct';
 import ViewEnq from './pages/ViewEnq';
 import ViewOrder from './pages/ViewOrder';
 import { PrivateRoutes } from './routing/PrivateRoutes';
@@ -46,10 +44,10 @@ import RegionList from './pages/RegionList';
 import AddRegion from './pages/AddRegion';
 import PostList from './pages/PostList';
 import AddPost from './pages/AddPost';
-import FormList from './pages/FormList';
-import AddForm from './pages/AddForm';
 import FieldList from './pages/FieldList';
 import AddField from './pages/AddField';
+import SettingList from './pages/SettingList';
+import Addsetting from './pages/AddSetting';
 
 function App() {
   return (
@@ -77,6 +75,9 @@ function App() {
           <Route path="user/:id" element={<AddUser />} />
           <Route path="enquiries" element={<Enquiries />} />
           <Route path="enquiries/:id" element={<ViewEnq />} />
+          <Route path="setting-list" element={<SettingList />} />
+          <Route path="setting/:id" element={<Addsetting />} />
+          <Route path="setting" element={<Addsetting />} />
           <Route path="faq-list" element={<FaqList />} />
           <Route path="faq" element={<Addfaq />} />
           <Route path="faq/:id" element={<Addfaq />} />
@@ -86,12 +87,9 @@ function App() {
           <Route path="post-list" element={<PostList />} />
           <Route path="post" element={<AddPost />} />
           <Route path="post/:id" element={<AddPost />} />
-          <Route path="form/:id/field-list" element={<FieldList />} />
-          <Route path="form/:id/field-list/:id" element={<AddField />} />
-          <Route path="form/:id/field" element={<AddField />} />
-          <Route path="form-list" element={<FormList />} />
-          <Route path="form" element={<AddForm />} />
-          <Route path="form/:id" element={<AddForm />} />
+          <Route path="field-list" element={<FieldList />} />
+          <Route path="field" element={<AddField />} />
+          <Route path="field-list/:id" element={<AddField />} />
           <Route path="slide-list" element={<SlideList />} />
           <Route path="slide" element={<AddSlide />} />
           <Route path="slide/:id" element={<AddSlide />} />
@@ -134,9 +132,6 @@ function App() {
           <Route path="vacancy/:id" element={<AddVacancy />} />
           <Route path="popup" element={<Addpopup />} />
           <Route path="popup/:id" element={<Addpopup />} />
-          <Route path="product-list" element={<Productlist />} />
-          <Route path="product" element={<Addproduct />} />
-          <Route path="product/:id" element={<Addproduct />} />
         </Route>
       </Routes>
     </Router>

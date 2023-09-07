@@ -8,6 +8,7 @@ import tariffReducer from '../features/tariffs/tariffSlice';
 import pageReducer from '../features/pagess/pagesSlice';
 import vacancyReducer from '../features/vacancies/vacaciesSlice';
 import faqReducer from '../features/faq/faqSlice';
+import settingReducer from '../features/settings/settingSlice';
 import userReducer from '../features/users/usersSlice';
 import countryReducer from '../features/countries/countriesSlice';
 import colorReducer from '../features/color/colorSlice';
@@ -33,7 +34,7 @@ export const store = configureStore({
     reviews: reviewsReducer,
     tariff: tariffReducer,
     region: regionReducer,
-    form: formReducer,
+    field: formReducer,
     post: postReducer,
     page: pageReducer,
     vacancy: vacancyReducer,
@@ -44,6 +45,7 @@ export const store = configureStore({
     campaign: campaignReducer,
     slide: slideReducer,
     faq: faqReducer,
+    setting: settingReducer,
     user: userReducer,
     country: countryReducer,
     color: colorReducer,

@@ -63,6 +63,7 @@ export const updateAregion = createAsyncThunk(
       formdata.append('active', regionData.regionData.active);
       formdata.append('name', regionData.regionData.name);
       formdata.append('description', regionData.regionData.description);
+      formdata.append('handle', regionData.regionData.handle);
       formdata.append('color', regionData.regionData.color);
       formdata.append('_method', 'PUT');
 
@@ -126,6 +127,7 @@ export const regionSlice = createSlice({
         state.regionActive = action.payload.data.active;
         state.regionColor = action.payload.data.color;
         state.regionDescription = action.payload.data.description;
+        state.regionHandle = action.payload.data.handle;
       })
       .addCase(getAregion.rejected, (state, action) => {
         state.isLoading = false;

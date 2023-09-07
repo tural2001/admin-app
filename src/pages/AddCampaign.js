@@ -12,6 +12,8 @@ import {
   resetState,
   updateAcampaign,
 } from '../features/campaigns/campaignsSlice';
+import ReactQuill from 'react-quill';
+import 'react-quill/dist/quill.snow.css';
 
 let schema = yup.object({
   name: yup.string().required('Name s is Required'),
@@ -106,6 +108,27 @@ const AddCampaign = () => {
       }
     },
   });
+  var toolbarOptions = [
+    ['bold', 'italic', 'underline', 'strike'], // toggled buttons
+    ['blockquote', 'code-block'],
+    [{ header: 1 }, { header: 2 }], // custom button values
+    [{ list: 'ordered' }, { list: 'bullet' }],
+    [{ script: 'sub' }, { script: 'super' }], // superscript/subscript
+    [{ indent: '-1' }, { indent: '+1' }], // outdent/indent
+    [{ direction: 'rtl' }], // text direction
+    [{ size: ['small', false, 'large', 'huge'] }], // custom dropdown
+    [{ header: [1, 2, 3, 4, 5, 6, false] }],
+    [{ color: [] }, { background: [] }], // dropdown with defaults from theme
+    [{ font: [] }],
+    [{ align: [] }],
+    [{ list: 'check' }], // check/uncheck list item
+    ['link', 'image', 'video'], // links, images, and videos
+    ['clean'], // remove formatting button
+  ];
+
+  const module = {
+    toolbar: toolbarOptions,
+  };
 
   console.log(newCampaign);
 
@@ -179,13 +202,13 @@ const AddCampaign = () => {
           <div className="error">
             {formik.touched.name && formik.errors.name}
           </div>
-          <CustomInput
-            type="text"
-            label="Enter description"
+          <ReactQuill
+            theme="snow"
             name="description"
-            onCh={formik.handleChange('description')}
-            onBl={formik.handleBlur('description')}
-            val={formik.values.description}
+            className="mt-3"
+            onChange={formik.handleChange('description')}
+            value={formik.values.description}
+            modules={module}
           />
           <div className="error">
             {formik.touched.description && formik.errors.description}

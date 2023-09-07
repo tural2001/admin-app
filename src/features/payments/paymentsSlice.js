@@ -50,6 +50,8 @@ export const createApayment = createAsyncThunk(
       formdata.append('active', paymentData.active);
       formdata.append('image', paymentData.image[0], paymentData.image[0].name);
       formdata.append('name', paymentData.name);
+      formdata.append('meta_title', paymentData.meta_title);
+      formdata.append('meta_description', paymentData.meta_description);
       formdata.append('redirect_link', paymentData.redirect_link);
       formdata.append('description', paymentData.description);
       const response = await paymentService.createpayment(formdata);
@@ -67,6 +69,8 @@ export const updateApayment = createAsyncThunk(
       const formdata = new FormData();
       formdata.append('active', paymentData.payment.active);
       formdata.append('name', paymentData.payment.name);
+      formdata.append('meta_title', paymentData.payment.meta_title);
+      formdata.append('meta_description', paymentData.payment.meta_description);
       if (paymentData.payment.image[0] instanceof File) {
         formdata.append(
           'image',
@@ -134,6 +138,8 @@ export const paymentSlice = createSlice({
         state.isSuccess = true;
         state.isError = false;
         state.paymentName = action.payload.data.name;
+        state.paymentMeta_title = action.payload.data.meta_title;
+        state.paymentMeta_description = action.payload.data.meta_description;
         state.paymentActive = action.payload.data.active;
         state.paymentDescription = action.payload.data.description;
         state.paymentRedirect_link = action.payload.data.redirect_link;

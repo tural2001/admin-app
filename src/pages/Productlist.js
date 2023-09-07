@@ -21,7 +21,7 @@ const Productlist = () => {
   useEffect(() => {
     dispatch(getProducts());
   }, [dispatch]);
-  const productstate = useSelector((state) => state.product.products);
+  const productstate = useSelector((state) => state.product.products) || [];
   const data = [];
   for (let i = 0; i < productstate.length; i++) {
     data.push({
@@ -55,7 +55,7 @@ const Productlist = () => {
                 <th scope="col" className="px-6 py-3">
                   <div class="flex items-center">
                     Category
-                    <a href="#">
+                    <a href="/#">
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
                         class="w-3 h-3 ml-1"
@@ -71,7 +71,7 @@ const Productlist = () => {
                 <th scope="col" className="px-6 py-3">
                   <div class="flex items-center">
                     Price
-                    <a href="#">
+                    <a href="/#">
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
                         class="w-3 h-3 ml-1"

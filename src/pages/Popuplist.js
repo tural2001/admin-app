@@ -7,7 +7,7 @@ import CustomModal from '../components/CustomModal';
 import { VscEdit } from 'react-icons/vsc';
 import { RiDeleteBin5Line } from 'react-icons/ri';
 import { toast } from 'react-toastify';
-import { BsArrowLeft, BsArrowRight, BsArrowRightShort } from 'react-icons/bs';
+import { BsArrowLeft, BsArrowRight } from 'react-icons/bs';
 import Popup from 'reactjs-popup';
 import ReactPaginate from 'react-paginate';
 
@@ -28,8 +28,7 @@ const Popuplist = () => {
     dispatch(getpopups());
   }, [dispatch]);
 
-  const popupstate = useSelector((state) => state.popup.popups.data);
-  console.log(popupstate);
+  const popupstate = useSelector((state) => state.popup.popups.data) || [];
 
   const deletePopup = (e) => {
     setOpen(false);
@@ -51,7 +50,7 @@ const Popuplist = () => {
   const pageCount = Math.ceil(popupstate?.length / itemsPerPage);
 
   const handlePageClick = (data) => {
-    setCurrentPage(data.selected); // Sayfa numarasını günceller
+    setCurrentPage(data.selected);
   };
 
   return (
@@ -158,11 +157,6 @@ const Popuplist = () => {
                       popup.active === true ? 'text-green-500' : 'text-red-500'
                     }`}
                   >
-                    {/* {popup.active === true ? (
-                      <img src={active} alt="" />
-                    ) : (
-                      <img src={notactive} alt="" />
-                    )} */}
                     {popup.active === true ? 'Active' : 'Not Active'}
                   </td>
                   <td className="px-6 py-4">{popup.content}</td>

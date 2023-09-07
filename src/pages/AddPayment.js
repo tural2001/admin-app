@@ -16,6 +16,8 @@ import {
 
 let schema = yup.object({
   name: yup.string().required('Name s is Required'),
+  meta_title: yup.string(),
+  meta_description: yup.string(),
   description: yup.string().required('Description is Required'),
   redirect_link: yup.string().required('Link is Required'),
   image: yup.mixed().required('Icon is Required'),
@@ -41,6 +43,8 @@ const AddPayment = () => {
     paymentRedirect_link,
     paymentImage,
     updatedPayment,
+    paymentMeta_title,
+    paymentMeta_description,
   } = newPayment;
 
   const onDrop = useCallback(
@@ -83,6 +87,8 @@ const AddPayment = () => {
     paymentActive,
     paymentDescription,
     paymentRedirect_link,
+    paymentMeta_title,
+    paymentMeta_description,
     paymentImage,
     updatedPayment,
     navigate,
@@ -92,6 +98,8 @@ const AddPayment = () => {
     enableReinitialize: true,
     initialValues: {
       name: paymentName || '',
+      meta_title: paymentMeta_title || '',
+      meta_description: paymentMeta_description || '',
       active: paymentActive ? 1 : 0,
       description: paymentDescription || '',
       redirect_link: paymentRedirect_link || '',
@@ -175,6 +183,28 @@ const AddPayment = () => {
           </div>
           <div className="error">
             {formik.touched.active && formik.errors.active}
+          </div>
+          <CustomInput
+            type="text"
+            label="Enter meta_title"
+            name="meta_title"
+            onCh={formik.handleChange('meta_title')}
+            onBl={formik.handleBlur('meta_title')}
+            val={formik.values.meta_title}
+          />
+          <div className="error">
+            {formik.touched.meta_title && formik.errors.meta_title}
+          </div>
+          <CustomInput
+            type="text"
+            label="Enter meta_description"
+            name="meta_description"
+            onCh={formik.handleChange('meta_description')}
+            onBl={formik.handleBlur('meta_description')}
+            val={formik.values.meta_description}
+          />
+          <div className="error">
+            {formik.touched.meta_description && formik.errors.meta_description}
           </div>
           <CustomInput
             type="text"

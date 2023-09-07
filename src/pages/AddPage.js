@@ -11,11 +11,15 @@ import {
   resetState,
   updateApage,
 } from '../features/pagess/pagesSlice';
+import ReactQuill from 'react-quill';
+import 'react-quill/dist/quill.snow.css';
 
 let schema = yup.object({
   title: yup.string().required(' Required'),
-  slug: yup.string().required(' Required'),
+  slug: yup.string(),
   content: yup.string().required(' Required'),
+  meta_title: yup.string(),
+  meta_description: yup.string(),
 });
 const AddPage = () => {
   const dispatch = useDispatch();
@@ -24,7 +28,6 @@ const AddPage = () => {
   const getpageId = location.pathname.split('/')[3];
   const newPage = useSelector((state) => state.page);
 
-  console.log(newPage);
   const {
     isSuccess,
     isError,
@@ -34,6 +37,8 @@ const AddPage = () => {
     pageSlug,
     pageContent,
     updatedPage,
+    pageMeta_title,
+    pagelMeta_description,
   } = newPage;
 
   useEffect(() => {
@@ -67,6 +72,8 @@ const AddPage = () => {
     pageTitle,
     pageSlug,
     pageContent,
+    pageMeta_title,
+    pagelMeta_description,
     updatedPage,
     navigate,
   ]);
@@ -77,6 +84,8 @@ const AddPage = () => {
       title: pageTitle || '',
       slug: pageSlug || '',
       content: pageContent || '',
+      meta_title: pageContent || '',
+      meta_description: pageContent || '',
     },
     validationSchema: schema,
     onSubmit: (values) => {
@@ -92,6 +101,29 @@ const AddPage = () => {
       }
     },
   });
+
+  var toolbarOptions = [
+    ['bold', 'italic', 'underline', 'strike'], // toggled buttons
+    ['blockquote', 'code-block'],
+    [{ header: 1 }, { header: 2 }], // custom button values
+    [{ list: 'ordered' }, { list: 'bullet' }],
+    [{ script: 'sub' }, { script: 'super' }], // superscript/subscript
+    [{ indent: '-1' }, { indent: '+1' }], // outdent/indent
+    [{ direction: 'rtl' }], // text direction
+    [{ size: ['small', false, 'large', 'huge'] }], // custom dropdown
+    [{ header: [1, 2, 3, 4, 5, 6, false] }],
+    [{ color: [] }, { background: [] }], // dropdown with defaults from theme
+    [{ font: [] }],
+    [{ align: [] }],
+    [{ list: 'check' }], // check/uncheck list item
+    ['link', 'image', 'video'], // links, images, and videos
+    ['clean'], // remove formatting button
+  ];
+
+  const module = {
+    toolbar: toolbarOptions,
+  };
+
   return (
     <div>
       <h3 className="mb-4 title">
@@ -117,15 +149,35 @@ const AddPage = () => {
         >
           <CustomInput
             type="text"
+            label="Enter meta_title"
+            name="meta_title"
+            onCh={formik.handleChange('meta_title')}
+            onBl={formik.handleBlur('meta_title')}
+            val={formik.values.meta_title}
+          />
+          <div className="error">
+            {formik.touched.meta_title && formik.errors.meta_title}
+          </div>
+          <CustomInput
+            type="text"
+            label="Enter meta_description"
+            name="meta_description"
+            onCh={formik.handleChange('meta_description')}
+            onBl={formik.handleBlur('meta_description')}
+            val={formik.values.meta_description}
+          />
+          <div className="error">
+            {formik.touched.meta_description && formik.errors.meta_description}
+          </div>
+          <CustomInput
+            type="text"
             label="Enter Slug"
             name="slug"
             onCh={formik.handleChange('slug')}
             onBl={formik.handleBlur('slug')}
             val={formik.values.slug}
+            readOnly={'readOnly'}
           />
-          <div className="error">
-            {formik.touched.slug && formik.errors.slug}
-          </div>
           <CustomInput
             type="text"
             label="Enter "
@@ -137,13 +189,13 @@ const AddPage = () => {
           <div className="error">
             {formik.touched.title && formik.errors.title}
           </div>
-          <CustomInput
-            type="text"
-            label="Enter Content"
-            name="content"
-            onCh={formik.handleChange('content')}
-            onBl={formik.handleBlur('content')}
-            val={formik.values.content}
+          <ReactQuill
+            theme="snow"
+            name="description"
+            className="mt-3"
+            onChange={formik.handleChange('content')}
+            value={formik.values.content}
+            modules={module}
           />
           <div className="error">
             {formik.touched.content && formik.errors.content}

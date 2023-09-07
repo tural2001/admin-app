@@ -22,9 +22,9 @@ export const getpages = createAsyncThunk(
 
 export const getApage = createAsyncThunk(
   'pages/get-page',
-  async (id, thunkAPI) => {
+  async (slug, thunkAPI) => {
     try {
-      return await pageService.getpage(id);
+      return await pageService.getpage(slug);
     } catch (error) {
       return thunkAPI.rejectWithValue(error);
     }
@@ -33,9 +33,9 @@ export const getApage = createAsyncThunk(
 
 export const deleteApage = createAsyncThunk(
   'pages/delete-page',
-  async (id, thunkAPI) => {
+  async (slug, thunkAPI) => {
     try {
-      return await pageService.deletepage(id);
+      return await pageService.deletepage(slug);
     } catch (error) {
       return thunkAPI.rejectWithValue(error);
     }
@@ -62,10 +62,12 @@ export const updateApage = createAsyncThunk(
       const formdata = new FormData();
       formdata.append('title', pageData.pageData.title);
       formdata.append('slug', pageData.pageData.slug);
+      formdata.append('meta_title', pageData.pageData.meta_title);
+      formdata.append('meta_description', pageData.pageData.meta_description);
       formdata.append('content', pageData.pageData.content);
       formdata.append('_method', 'PUT');
 
-      const response = await pageService.updatepage(formdata, pageData.id);
+      const response = await pageService.updatepage(formdata, pageData.slug);
       return response.data;
     } catch (error) {
       return thunkAPI.rejectWithValue(error);
@@ -119,6 +121,8 @@ export const pageSlice = createSlice({
         state.isSuccess = true;
         state.isError = false;
         state.pageTitle = action.payload.data.title;
+        state.pageMeta_title = action.payload.data.meta_title;
+        state.pagelMeta_description = action.payload.data.meta_description;
         state.pageSlug = action.payload.data.slug;
         state.pageContent = action.payload.data.content;
       })

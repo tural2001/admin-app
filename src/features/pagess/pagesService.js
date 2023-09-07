@@ -15,22 +15,22 @@ const createpage = async (page) => {
   return response.data;
 };
 
-const updatepage = async (page, id) => {
+const updatepage = async (page, slug) => {
   const response = await axios.post(
-    `${base_url}/api/pages/${id}`,
+    `${base_url}/api/pages/${slug}`,
     page,
     config
   );
   return response.data;
 };
 
-const getpage = async (id) => {
-  const response = await axios.get(`${base_url}/api/pages/${id}`, config);
+const getpage = async (slug) => {
+  const response = await axios.get(`${base_url}/api/pages/${slug}`, config);
   return response.data;
 };
 
-const deletepage = async (id) => {
-  const response = await axios.delete(`${base_url}/api/pages/${id}`, config);
+const deletepage = async (slug) => {
+  const response = await axios.delete(`${base_url}/api/pages/${slug}`, config);
   return response.data;
 };
 

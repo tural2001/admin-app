@@ -9,10 +9,9 @@ import {
 } from '../features/partners/partnersSlice';
 import { RiDeleteBin5Line } from 'react-icons/ri';
 import { VscEdit } from 'react-icons/vsc';
-import { active, notactive, plus } from '../assets';
 import Popup from 'reactjs-popup';
 import ReactPaginate from 'react-paginate';
-import { BsArrowLeft, BsArrowRight, BsArrowRightShort } from 'react-icons/bs';
+import { BsArrowLeft, BsArrowRight } from 'react-icons/bs';
 
 const Partnerlist = () => {
   const [open, setOpen] = useState(false);
@@ -29,7 +28,8 @@ const Partnerlist = () => {
     dispatch(resetState());
     dispatch(getpartners());
   }, [dispatch]);
-  const partnerState = useSelector((state) => state.partner.partners.data);
+  const partnerState =
+    useSelector((state) => state.partner.partners.data) || [];
 
   console.log(partnerState);
 
@@ -41,18 +41,18 @@ const Partnerlist = () => {
     }, 100);
   };
 
-  const [currentPage, setCurrentPage] = useState(0); // Sayfa numarasını saklar
-  const itemsPerPage = 7; // Her sayfada kaç yapı gösterileceği
+  const [currentPage, setCurrentPage] = useState(0);
+  const itemsPerPage = 7;
 
   const filteredPartner = partnerState?.slice(
     currentPage * itemsPerPage,
     (currentPage + 1) * itemsPerPage
   );
 
-  const pageCount = Math.ceil(partnerState?.length / itemsPerPage); // Toplam sayfa sayısını hesaplar
+  const pageCount = Math.ceil(partnerState?.length / itemsPerPage);
 
   const handlePageClick = (data) => {
-    setCurrentPage(data.selected); // Sayfa numarasını günceller
+    setCurrentPage(data.selected);
   };
 
   return (

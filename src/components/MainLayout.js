@@ -76,7 +76,6 @@ const MainLayout = () => {
       '/admin/vacancy-list': 'vacancy-list',
       '/admin/slide-list': 'slide-list',
       '/admin/user-list': 'user-list',
-      '/admin/form-list': 'form-list',
       '/admin/post-list': 'post-list',
       '/admin/field-list': 'field-list',
       '/admin/faq-list': 'faq-list',
@@ -86,6 +85,7 @@ const MainLayout = () => {
       '/admin/payment-list': 'payment-list',
       '/admin/region-list': 'region-list',
       '/admin/county-list': 'county-list',
+      '/admin/setting-list': 'setting-list',
     };
 
     return keyMap[path] || '';
@@ -131,62 +131,6 @@ const MainLayout = () => {
               label: 'Dashboard',
             },
             {
-              key: 'popup-list',
-              icon: <img src={popup} className="w-6" alt="" />,
-
-              label: 'Popup List',
-            },
-            {
-              key: 'review-list',
-              icon: <img src={review} className="w-6" alt="" />,
-              label: 'Review List',
-            },
-            {
-              key: 'tariff-list',
-              icon: <img src={tariff} className="w-6" alt="" />,
-              label: 'Tariff List',
-            },
-            {
-              key: 'structure-list',
-              icon: <FcTreeStructure className="fs-4" />,
-              label: 'Structure List',
-            },
-            {
-              key: 'service-list',
-              icon: <img src={service} className="w-6" alt="" />,
-              label: 'Service List',
-            },
-            {
-              key: 'slide-list',
-              icon: <img src={slide} className="w-6" alt="" />,
-              label: 'Slide List',
-            },
-            {
-              key: 'page-list',
-              icon: <img src={page} className="w-6" alt="" />,
-              label: 'Page List',
-            },
-            {
-              key: 'region-list',
-              icon: <img src={region} className="w-6" alt="" />,
-              label: 'Region List',
-            },
-            {
-              key: 'post-list',
-              icon: <img src={post} className="w-6" alt="" />,
-              label: 'Post List',
-            },
-            {
-              key: 'form-list',
-              icon: <img src={form} className="w-6" alt="" />,
-              label: 'Form List',
-            },
-            {
-              key: 'payment-list',
-              icon: <img src={payment} className="w-6" alt="" />,
-              label: 'Payment List',
-            },
-            {
               key: 'campaign-list',
               icon: <img src={campaign} className="w-6" alt="" />,
               label: 'Campaign List',
@@ -202,20 +146,76 @@ const MainLayout = () => {
               label: 'Country List',
             },
             {
-              key: 'partner-list',
-              icon: <img src={partner} className="w-6" alt="" />,
-              label: 'Partner List',
-            },
-
-            {
-              key: 'vacancy-list',
-              icon: <img src={vacancy} className="w-6" alt="" />,
-              label: 'Vacancy List',
+              key: 'field-list',
+              icon: <img src={form} className="w-6" alt="" />,
+              label: 'Field List',
             },
             {
               key: 'faq-list',
               icon: <FcFaq className="fs-4" />,
               label: 'Faq List',
+            },
+            {
+              key: 'payment-list',
+              icon: <img src={payment} className="w-6" alt="" />,
+              label: 'Payment List',
+            },
+            {
+              key: 'partner-list',
+              icon: <img src={partner} className="w-6" alt="" />,
+              label: 'Partner List',
+            },
+            {
+              key: 'popup-list',
+              icon: <img src={popup} className="w-6" alt="" />,
+
+              label: 'Popup List',
+            },
+            {
+              key: 'page-list',
+              icon: <img src={page} className="w-6" alt="" />,
+              label: 'Page List',
+            },
+            {
+              key: 'post-list',
+              icon: <img src={post} className="w-6" alt="" />,
+              label: 'Post List',
+            },
+            {
+              key: 'review-list',
+              icon: <img src={review} className="w-6" alt="" />,
+              label: 'Review List',
+            },
+            {
+              key: 'region-list',
+              icon: <img src={region} className="w-6" alt="" />,
+              label: 'Region List',
+            },
+            {
+              key: 'structure-list',
+              icon: <FcTreeStructure className="fs-4" />,
+              label: 'Structure List',
+            },
+            {
+              key: 'service-list',
+              icon: <img src={service} className="w-6" alt="" />,
+              label: 'Service List',
+            },
+
+            {
+              key: 'slide-list',
+              icon: <img src={slide} className="w-6" alt="" />,
+              label: 'Slide List',
+            },
+            {
+              key: 'tariff-list',
+              icon: <img src={tariff} className="w-6" alt="" />,
+              label: 'Tariff List',
+            },
+            {
+              key: 'vacancy-list',
+              icon: <img src={vacancy} className="w-6" alt="" />,
+              label: 'Vacancy List',
             },
           ]}
         />
@@ -265,6 +265,16 @@ const MainLayout = () => {
                     {' '}
                     <img src={users} alt="" className="w-6" />
                     User List
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    className="dropdown-item py-1 mb-1 flex  items-center gap-1"
+                    style={{ height: 'auto', lineHeight: '20px' }}
+                    to="setting-list"
+                  >
+                    <img src={page} alt="" className="w-6" />
+                    Setting List
                   </Link>
                 </li>
                 <li>

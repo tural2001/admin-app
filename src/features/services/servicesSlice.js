@@ -50,6 +50,8 @@ export const createAservice = createAsyncThunk(
       formdata.append('active', serviceData.active);
       formdata.append('icon', serviceData.icon[0], serviceData.icon[0].name);
       formdata.append('title', serviceData.title);
+      formdata.append('meta_title', serviceData.meta_title);
+      formdata.append('meta_description', serviceData.meta_description);
       formdata.append('link', serviceData.link);
       formdata.append('description', serviceData.description);
       const response = await serviceService.createservice(formdata);
@@ -67,6 +69,8 @@ export const updateAservice = createAsyncThunk(
       const formdata = new FormData();
       formdata.append('active', serviceData.service.active);
       formdata.append('title', serviceData.service.title);
+      formdata.append('meta_title', serviceData.service.meta_title);
+      formdata.append('meta_description', serviceData.service.meta_description);
       if (serviceData.service.icon[0] instanceof File) {
         formdata.append(
           'icon',
@@ -134,6 +138,8 @@ export const servicesSlice = createSlice({
         state.isSuccess = true;
         state.isError = false;
         state.serviceTitle = action.payload.data.title;
+        state.serviceMeta_title = action.payload.data.meta_title;
+        state.serviceMeta_description = action.payload.data.meta_description;
         state.serviceActive = action.payload.data.active;
         state.serviceDescription = action.payload.data.description;
         state.serviceLink = action.payload.data.link;

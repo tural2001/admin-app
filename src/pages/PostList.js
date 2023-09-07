@@ -8,13 +8,13 @@ import { toast } from 'react-toastify';
 import { deleteApost, getposts, resetState } from '../features/posts/postSlice';
 import Popup from 'reactjs-popup';
 import ReactPaginate from 'react-paginate';
-import { BsArrowLeft, BsArrowRight, BsArrowRightShort } from 'react-icons/bs';
+import { BsArrowLeft, BsArrowRight } from 'react-icons/bs';
 
 const PostList = () => {
   const [open, setOpen] = useState(false);
   const [postId, setpostId] = useState('');
-  const [currentPage, setCurrentPage] = useState(0); // Sayfa numarasını saklar
-  const itemsPerPage = 7; // Her sayfada kaç yapı gösterileceği
+  const [currentPage, setCurrentPage] = useState(0);
+  const itemsPerPage = 7;
 
   const showModal = (e) => {
     setOpen(true);
@@ -30,8 +30,7 @@ const PostList = () => {
     dispatch(getposts());
   }, [dispatch]);
 
-  const poststate = useSelector((state) => state.post.posts.data);
-  console.log(poststate);
+  const poststate = useSelector((state) => state.post.posts.data) || [];
 
   const deletePost = (e) => {
     setOpen(false);
@@ -47,10 +46,10 @@ const PostList = () => {
     (currentPage + 1) * itemsPerPage
   );
 
-  const pageCount = Math.ceil(poststate?.length / itemsPerPage); // Toplam sayfa sayısını hesaplar
+  const pageCount = Math.ceil(poststate?.length / itemsPerPage);
 
   const handlePageClick = (data) => {
-    setCurrentPage(data.selected); // Sayfa numarasını günceller
+    setCurrentPage(data.selected);
   };
 
   return (
@@ -72,6 +71,38 @@ const PostList = () => {
               <tr>
                 <th scope="col" className="px-6 py-3">
                   No
+                </th>
+                <th scope="col" className="px-6 py-3">
+                  <div className="flex items-center">
+                    Meta_title
+                    <a href="#/">
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        className="w-3 h-3 ml-1"
+                        aria-hidden="true"
+                        fill="currentColor"
+                        viewBox="0 0 320 512"
+                      >
+                        <path d="M27.66 224h264.7c24.6 0 36.89-29.78 19.54-47.12l-132.3-136.8c-5.406-5.406-12.47-8.107-19.53-8.107c-7.055 0-14.09 2.701-19.45 8.107L8.119 176.9C-9.229 194.2 3.055 224 27.66 224zM292.3 288H27.66c-24.6 0-36.89 29.77-19.54 47.12l132.5 136.8C145.9 477.3 152.1 480 160 480c7.053 0 14.12-2.703 19.53-8.109l132.3-136.8C329.2 317.8 316.9 288 292.3 288z" />
+                      </svg>
+                    </a>
+                  </div>
+                </th>
+                <th scope="col" className="px-6 py-3">
+                  <div className="flex items-center">
+                    Meta_description
+                    <a href="#/">
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        className="w-3 h-3 ml-1"
+                        aria-hidden="true"
+                        fill="currentColor"
+                        viewBox="0 0 320 512"
+                      >
+                        <path d="M27.66 224h264.7c24.6 0 36.89-29.78 19.54-47.12l-132.3-136.8c-5.406-5.406-12.47-8.107-19.53-8.107c-7.055 0-14.09 2.701-19.45 8.107L8.119 176.9C-9.229 194.2 3.055 224 27.66 224zM292.3 288H27.66c-24.6 0-36.89 29.77-19.54 47.12l132.5 136.8C145.9 477.3 152.1 480 160 480c7.053 0 14.12-2.703 19.53-8.109l132.3-136.8C329.2 317.8 316.9 288 292.3 288z" />
+                      </svg>
+                    </a>
+                  </div>
                 </th>
                 <th scope="col" className="px-6 py-3">
                   <div className="flex items-center">
@@ -107,7 +138,23 @@ const PostList = () => {
                 </th>
                 <th scope="col" className="px-6 py-3">
                   <div className="flex items-center">
-                    SLug
+                    Slug
+                    <a href="#/">
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        className="w-3 h-3 ml-1"
+                        aria-hidden="true"
+                        fill="currentColor"
+                        viewBox="0 0 320 512"
+                      >
+                        <path d="M27.66 224h264.7c24.6 0 36.89-29.78 19.54-47.12l-132.3-136.8c-5.406-5.406-12.47-8.107-19.53-8.107c-7.055 0-14.09 2.701-19.45 8.107L8.119 176.9C-9.229 194.2 3.055 224 27.66 224zM292.3 288H27.66c-24.6 0-36.89 29.77-19.54 47.12l132.5 136.8C145.9 477.3 152.1 480 160 480c7.053 0 14.12-2.703 19.53-8.109l132.3-136.8C329.2 317.8 316.9 288 292.3 288z" />
+                      </svg>
+                    </a>
+                  </div>
+                </th>
+                <th scope="col" className="px-6 py-3">
+                  <div className="flex items-center">
+                    Published
                     <a href="#/">
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
@@ -153,18 +200,12 @@ const PostList = () => {
                   >
                     {post.id}
                   </th>
+                  <td className="px-6 py-4">{post.meta_title}</td>
+                  <td className="px-6 py-4">{post.meta_description}</td>
                   <td className="px-6 py-4">{post.title}</td>
                   <td className="px-6 py-4">{post.description}</td>
                   <td className="px-6 py-4">{post.slug}</td>
-                  {/* <td className="px-6 py-4">
-                    <a
-                      href={post.image}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                    >
-                      {post.image}
-                    </a>
-                  </td> */}
+                  <td className="px-6 py-4">{post.published_at}</td>
                   <td className="px-6 py-4">
                     <Popup
                       trigger={
@@ -201,14 +242,13 @@ const PostList = () => {
                   </td>
                   <td className="px-6 py-16 flex gap-2">
                     <Link
-                      to={`/admin/post/${poststate[index]?.id}`}
+                      to={`/admin/post/${poststate[index]?.slug}`}
                       className="text-[25px] text-blue-500 "
                     >
                       <VscEdit />
                     </Link>
-
                     <button
-                      onClick={() => showModal(poststate[index]?.id)}
+                      onClick={() => showModal(poststate[index]?.slug)}
                       className="text-[25px] text-red-500 "
                     >
                       <RiDeleteBin5Line />

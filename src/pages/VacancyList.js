@@ -11,13 +11,13 @@ import {
   resetState,
 } from '../features/vacancies/vacaciesSlice';
 import ReactPaginate from 'react-paginate';
-import { BsArrowLeft, BsArrowRight, BsArrowRightShort } from 'react-icons/bs';
+import { BsArrowLeft, BsArrowRight } from 'react-icons/bs';
 
 const VacancyList = () => {
   const [open, setOpen] = useState(false);
   const [vacancyId, setvacancyId] = useState('');
-  const [currentPage, setCurrentPage] = useState(0); // Sayfa numarasını saklar
-  const itemsPerPage = 7; // Her sayfada kaç yapı gösterileceği
+  const [currentPage, setCurrentPage] = useState(0);
+  const itemsPerPage = 7;
 
   const showModal = (e) => {
     setOpen(true);
@@ -33,8 +33,8 @@ const VacancyList = () => {
     dispatch(getvacancies());
   }, [dispatch]);
 
-  const vacancystate = useSelector((state) => state.vacancy.vacancies.data);
-  console.log(vacancystate);
+  const vacancystate =
+    useSelector((state) => state.vacancy.vacancies.data) || [];
 
   const deleteVacancy = (e) => {
     setOpen(false);
@@ -50,10 +50,10 @@ const VacancyList = () => {
     (currentPage + 1) * itemsPerPage
   );
 
-  const pageCount = Math.ceil(vacancystate?.length / itemsPerPage); // Toplam sayfa sayısını hesaplar
+  const pageCount = Math.ceil(vacancystate?.length / itemsPerPage);
 
   const handlePageClick = (data) => {
-    setCurrentPage(data.selected); // Sayfa numarasını günceller
+    setCurrentPage(data.selected);
   };
 
   return (

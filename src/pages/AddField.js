@@ -25,10 +25,9 @@ const AddForm = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const location = useLocation();
-  const getfieldId = location.pathname.split('/')[5];
-  const getformdId = location.pathname.split('/')[3];
-
-  const newField = useSelector((state) => state.form);
+  const getfieldId = location.pathname.split('/')[3];
+  const newField = useSelector((state) => state.field);
+  console.log(newField);
   const {
     isSuccess,
     isError,
@@ -42,16 +41,15 @@ const AddForm = () => {
     updatedField,
   } = newField;
   console.log(newField);
-  console.log(getfieldId);
 
   useEffect(() => {
     if (getfieldId !== undefined) {
-      dispatch(getAfield({ id: getfieldId, formId: getformdId }));
-      dispatch(getfields(getformdId));
+      dispatch(getAfield(getfieldId));
+      dispatch(getfields());
     } else {
       dispatch(resetState());
     }
-  }, [dispatch, getfieldId, getformdId]);
+  }, [dispatch, getfieldId]);
 
   useEffect(() => {
     if (isSuccess && createdField) {
@@ -63,7 +61,7 @@ const AddForm = () => {
     }
     if (isSuccess && updatedField !== undefined) {
       toast.success('Field Updated Successfully!');
-      navigate(`/admin/form/${getformdId}/field-list`);
+      navigate(`/admin/field-list`);
     }
     if (isError) {
       toast.error('Something went wrong');
@@ -79,7 +77,6 @@ const AddForm = () => {
     fieldType,
     fieldRules,
     updatedField,
-    getformdId,
     navigate,
   ]);
 
@@ -95,11 +92,10 @@ const AddForm = () => {
     validationSchema: schema,
     onSubmit: (values) => {
       if (getfieldId !== undefined) {
-        const data = { id: getfieldId, field: values, formId: getformdId };
+        const data = { id: getfieldId, field: values };
         console.log(data);
         dispatch(updateAfield(data));
       } else {
-        values.id = getformdId;
         dispatch(createAfield(values));
         formik.resetForm();
         setTimeout(() => {

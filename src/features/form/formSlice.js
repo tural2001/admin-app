@@ -9,17 +9,6 @@ const initialState = {
   message: '',
 };
 
-export const getforms = createAsyncThunk(
-  'forms/get-forms',
-  async (thunkAPI) => {
-    try {
-      return await formService.getforms();
-    } catch (error) {
-      return thunkAPI.rejectWithValue(error);
-    }
-  }
-);
-
 export const getfields = createAsyncThunk(
   'fields/get-fields',
   async (id, thunkAPI) => {
@@ -31,35 +20,11 @@ export const getfields = createAsyncThunk(
   }
 );
 
-export const getAform = createAsyncThunk(
-  'forms/get-form',
-  async (id, thunkAPI) => {
-    try {
-      return await formService.getform(id);
-    } catch (error) {
-      return thunkAPI.rejectWithValue(error);
-    }
-  }
-);
-
 export const getAfield = createAsyncThunk(
   'fields/get-field',
-  async ({ formId, id }, thunkAPI) => {
-    try {
-      const fieldData = await formService.getfield(formId, id);
-      console.log(fieldData);
-      return { id, formId, fieldData };
-    } catch (error) {
-      return thunkAPI.rejectWithValue(error);
-    }
-  }
-);
-
-export const deleteAform = createAsyncThunk(
-  'forms/delete-form',
   async (id, thunkAPI) => {
     try {
-      return await formService.deleteform(id);
+      return await formService.getfield(id);
     } catch (error) {
       return thunkAPI.rejectWithValue(error);
     }
@@ -68,24 +33,9 @@ export const deleteAform = createAsyncThunk(
 
 export const deleteAfield = createAsyncThunk(
   'fields/delete-field',
-  async ({ formId, id }, thunkAPI) => {
-    console.log(id);
+  async (id, thunkAPI) => {
     try {
-      await formService.deletefield(formId, id);
-      return { id, formId };
-    } catch (error) {
-      console.log(error);
-      return thunkAPI.rejectWithValue(error);
-    }
-  }
-);
-
-export const createAform = createAsyncThunk(
-  'forms/create-form',
-  async (formData, thunkAPI) => {
-    try {
-      const response = await formService.createform(formData);
-      return response.data;
+      return await formService.deletefield(id);
     } catch (error) {
       return thunkAPI.rejectWithValue(error);
     }
@@ -98,25 +48,6 @@ export const createAfield = createAsyncThunk(
     console.log(fieldData);
     try {
       const response = await formService.createfield(fieldData, id);
-      return response.data;
-    } catch (error) {
-      return thunkAPI.rejectWithValue(error);
-    }
-  }
-);
-
-export const updateAform = createAsyncThunk(
-  'forms/update-form',
-  async (formData, thunkAPI) => {
-    console.log(formData);
-    try {
-      const formdata = new FormData();
-      formdata.append('active', formData.formData.active);
-      formdata.append('name', formData.formData.name);
-      formdata.append('handle', formData.formData.handle);
-      formdata.append('_method', 'PUT');
-
-      const response = await formService.updateform(formdata, formData.id);
       return response.data;
     } catch (error) {
       return thunkAPI.rejectWithValue(error);
@@ -172,36 +103,6 @@ export const formSlice = createSlice({
         state.isError = true;
         state.message = action.error;
       })
-      .addCase(getforms.pending, (state) => {
-        state.isLoading = true;
-      })
-      .addCase(getforms.fulfilled, (state, action) => {
-        state.isLoading = false;
-        state.isSuccess = true;
-        state.isError = false;
-        state.forms = action.payload;
-      })
-      .addCase(getforms.rejected, (state, action) => {
-        state.isLoading = false;
-        state.isSuccess = false;
-        state.isError = true;
-        state.message = action.error;
-      })
-      .addCase(createAform.pending, (state) => {
-        state.isLoading = true;
-      })
-      .addCase(createAform.fulfilled, (state, action) => {
-        state.isLoading = false;
-        state.isSuccess = true;
-        state.isError = false;
-        state.createdForm = action.payload;
-      })
-      .addCase(createAform.rejected, (state, action) => {
-        state.isLoading = false;
-        state.isSuccess = false;
-        state.isError = true;
-        state.message = action.error;
-      })
       .addCase(createAfield.pending, (state) => {
         state.isLoading = true;
       })
@@ -217,23 +118,6 @@ export const formSlice = createSlice({
         state.isError = true;
         state.message = action.error;
       })
-      .addCase(getAform.pending, (state) => {
-        state.isLoading = true;
-      })
-      .addCase(getAform.fulfilled, (state, action) => {
-        state.isLoading = false;
-        state.isSuccess = true;
-        state.isError = false;
-        state.formName = action.payload.data.name;
-        state.formActive = action.payload.data.active;
-        state.formHandle = action.payload.data.handle;
-      })
-      .addCase(getAform.rejected, (state, action) => {
-        state.isLoading = false;
-        state.isSuccess = false;
-        state.isError = true;
-        state.message = action.error;
-      })
       .addCase(getAfield.pending, (state) => {
         state.isLoading = true;
       })
@@ -241,28 +125,13 @@ export const formSlice = createSlice({
         state.isLoading = false;
         state.isSuccess = true;
         state.isError = false;
-        state.fieldLabel = action.payload.fieldData.label;
-        state.fieldRules = action.payload.fieldData.rules;
-        state.fielddata = action.payload.fieldData.data;
-        state.fieldName = action.payload.fieldData.name;
-        state.fieldType = action.payload.fieldData.type;
+        state.fieldLabel = action.payload.label;
+        state.fieldRules = action.payload.rules;
+        state.fielddata = action.payload.data;
+        state.fieldName = action.payload.name;
+        state.fieldType = action.payload.type;
       })
       .addCase(getAfield.rejected, (state, action) => {
-        state.isLoading = false;
-        state.isSuccess = false;
-        state.isError = true;
-        state.message = action.error;
-      })
-      .addCase(updateAform.pending, (state) => {
-        state.isLoading = true;
-      })
-      .addCase(updateAform.fulfilled, (state, action) => {
-        state.isLoading = false;
-        state.isSuccess = true;
-        state.isError = false;
-        state.updatedForm = action.payload;
-      })
-      .addCase(updateAform.rejected, (state, action) => {
         state.isLoading = false;
         state.isSuccess = false;
         state.isError = true;
@@ -283,21 +152,6 @@ export const formSlice = createSlice({
         state.isError = true;
         state.message = action.error;
       })
-      .addCase(deleteAform.pending, (state) => {
-        state.isLoading = true;
-      })
-      .addCase(deleteAform.fulfilled, (state, action) => {
-        state.isLoading = false;
-        state.isSuccess = true;
-        state.isError = false;
-        state.deleteForm = action.payload;
-      })
-      .addCase(deleteAform.rejected, (state, action) => {
-        state.isLoading = false;
-        state.isSuccess = false;
-        state.isError = true;
-        state.message = action.error;
-      })
       .addCase(deleteAfield.pending, (state) => {
         state.isLoading = true;
       })
@@ -305,7 +159,7 @@ export const formSlice = createSlice({
         state.isLoading = false;
         state.isSuccess = true;
         state.isError = false;
-        state.deleteField = action.payload;
+        state.deletedField = action.payload;
       })
       .addCase(deleteAfield.rejected, (state, action) => {
         state.isLoading = false;

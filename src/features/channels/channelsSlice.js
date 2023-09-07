@@ -50,6 +50,8 @@ export const createAchannel = createAsyncThunk(
       formdata.append('active', channelData.active);
       formdata.append('image', channelData.image[0], channelData.image[0].name);
       formdata.append('name', channelData.name);
+      formdata.append('meta_title', channelData.meta_title);
+      formdata.append('meta_description', channelData.meta_description);
       formdata.append('country_id', channelData.country_id);
       const response = await channelService.createchannel(formdata);
       return response.data;
@@ -66,6 +68,8 @@ export const updateAchannel = createAsyncThunk(
       const formdata = new FormData();
       formdata.append('active', channelData.channel.active);
       formdata.append('name', channelData.channel.name);
+      formdata.append('meta_title', channelData.channel.meta_title);
+      formdata.append('meta_description', channelData.channel.meta_description);
       if (channelData.channel.image[0] instanceof File) {
         formdata.append(
           'image',
@@ -131,6 +135,8 @@ export const channelSlice = createSlice({
         state.isSuccess = true;
         state.isError = false;
         state.channelName = action.payload.data.name;
+        state.channelMeta_title = action.payload.data.meta_title;
+        state.channelMeta_description = action.payload.data.meta_description;
         state.channelActive = action.payload.data.active;
         state.channelCountry_id = action.payload.data.country_id;
         state.channelImage = action.payload.data.image;

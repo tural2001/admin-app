@@ -22,9 +22,9 @@ export const getposts = createAsyncThunk(
 
 export const getApost = createAsyncThunk(
   'posts/get-post',
-  async (id, thunkAPI) => {
+  async (slug, thunkAPI) => {
     try {
-      return await postService.getpost(id);
+      return await postService.getpost(slug);
     } catch (error) {
       return thunkAPI.rejectWithValue(error);
     }
@@ -33,9 +33,9 @@ export const getApost = createAsyncThunk(
 
 export const deleteApost = createAsyncThunk(
   'posts/delete-post',
-  async (id, thunkAPI) => {
+  async (slug, thunkAPI) => {
     try {
-      return await postService.deletepost(id);
+      return await postService.deletepost(slug);
     } catch (error) {
       return thunkAPI.rejectWithValue(error);
     }
@@ -49,8 +49,11 @@ export const createApost = createAsyncThunk(
       const formdata = new FormData();
       formdata.append('title', postData.title);
       formdata.append('description', postData.description);
-      formdata.append('image', postData.image[0], postData.image[0].name);
+      formdata.append('meta_title', postData.meta_title);
       formdata.append('slug', postData.slug);
+      formdata.append('meta_description', postData.meta_description);
+      formdata.append('published_at', postData.published_at);
+      formdata.append('image', postData.image[0], postData.image[0].name);
       const response = await postService.createpost(formdata);
       return response.data;
     } catch (error) {
@@ -66,7 +69,10 @@ export const updateApost = createAsyncThunk(
       const formdata = new FormData();
       formdata.append('title', postData.post.title);
       formdata.append('description', postData.post.description);
+      formdata.append('meta_title', postData.post.meta_title);
       formdata.append('slug', postData.post.slug);
+      formdata.append('published_at', postData.post.published_at);
+      formdata.append('meta_description', postData.post.meta_description);
       if (postData.post.image[0] instanceof File) {
         formdata.append(
           'image',
@@ -75,7 +81,7 @@ export const updateApost = createAsyncThunk(
         );
       }
       formdata.append('_method', 'PUT');
-      const response = await postService.updatepost(formdata, postData.id);
+      const response = await postService.updatepost(formdata, postData.slug);
       return response.data;
     } catch (error) {
       return thunkAPI.rejectWithValue(error);
@@ -128,9 +134,12 @@ export const postsSlice = createSlice({
         state.isSuccess = true;
         state.isError = false;
         state.postTitle = action.payload.data.title;
-        state.postSlug = action.payload.data.slug;
+        state.postMeta_title = action.payload.data.meta_title;
+        state.postMeta_description = action.payload.data.meta_description;
         state.postDescription = action.payload.data.description;
+        state.postPublished = action.payload.data.published_at;
         state.postImage = action.payload.data.image;
+        state.postSlug = action.payload.data.slug;
       })
       .addCase(getApost.rejected, (state, action) => {
         state.isLoading = false;

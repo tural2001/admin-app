@@ -6,9 +6,8 @@ import { deleteAfaq, getfaqs, resetState } from '../features/faq/faqSlice';
 import { RiDeleteBin5Line } from 'react-icons/ri';
 import { VscEdit } from 'react-icons/vsc';
 import { toast } from 'react-toastify';
-import { active, notactive, plus } from '../assets';
 import ReactPaginate from 'react-paginate';
-import { BsArrowLeft, BsArrowRight, BsArrowRightShort } from 'react-icons/bs';
+import { BsArrowLeft, BsArrowRight } from 'react-icons/bs';
 
 const FaqList = () => {
   const [open, setOpen] = useState(false);
@@ -27,7 +26,7 @@ const FaqList = () => {
     dispatch(getfaqs());
   }, [dispatch]);
 
-  const faqstate = useSelector((state) => state.faq.faqs.data);
+  const faqstate = useSelector((state) => state.faq.faqs.data) || [];
   console.log(faqstate);
 
   const deleteFaq = (e) => {

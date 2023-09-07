@@ -19,6 +19,8 @@ let schema = yup.object({
   link: yup.string().required('Link is Required'),
   icon: yup.mixed().required('Icon is Required'),
   active: yup.string().required('Active status is Required'),
+  meta_title: yup.string(),
+  meta_description: yup.string(),
 });
 
 const AddService = () => {
@@ -40,6 +42,8 @@ const AddService = () => {
     serviceLink,
     serviceIcon,
     updatedService,
+    serviceMeta_title,
+    serviceMeta_description,
   } = newService;
 
   const onDrop = useCallback(
@@ -84,6 +88,8 @@ const AddService = () => {
     serviceLink,
     serviceIcon,
     updatedService,
+    serviceMeta_title,
+    serviceMeta_description,
     navigate,
   ]);
 
@@ -95,6 +101,8 @@ const AddService = () => {
       description: serviceDescription || '',
       link: serviceLink || '',
       icon: serviceIcon || null,
+      meta_title: serviceMeta_title || '',
+      meta_description: serviceMeta_description || '',
     },
     validationSchema: schema,
     onSubmit: (values) => {
@@ -175,7 +183,28 @@ const AddService = () => {
           <div className="error">
             {formik.touched.active && formik.errors.active}
           </div>
-
+          <CustomInput
+            type="text"
+            label="Enter meta_title"
+            name="meta_title"
+            onCh={formik.handleChange('meta_title')}
+            onBl={formik.handleBlur('meta_title')}
+            val={formik.values.meta_title}
+          />
+          <div className="error">
+            {formik.touched.meta_title && formik.errors.meta_title}
+          </div>
+          <CustomInput
+            type="text"
+            label="Enter meta_description"
+            name="meta_description"
+            onCh={formik.handleChange('meta_description')}
+            onBl={formik.handleBlur('meta_description')}
+            val={formik.values.meta_description}
+          />
+          <div className="error">
+            {formik.touched.meta_description && formik.errors.meta_description}
+          </div>
           <CustomInput
             type="text"
             label="Enter title"

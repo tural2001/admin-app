@@ -1,4 +1,4 @@
-import { Link, useLocation } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import CustomModal from '../components/CustomModal';
@@ -7,23 +7,18 @@ import { RiDeleteBin5Line } from 'react-icons/ri';
 import {
   deleteAfield,
   getfields,
-  getforms,
   resetState,
 } from '../features/form/formSlice';
-import { plus } from '../assets';
 import ReactPaginate from 'react-paginate';
-import { BsArrowLeft, BsArrowRight, BsArrowRightShort } from 'react-icons/bs';
+import { BsArrowLeft, BsArrowRight } from 'react-icons/bs';
 
 const FieldList = () => {
-  const location = useLocation();
-
   const [open, setOpen] = useState(false);
-  const [formId, setformId] = useState('');
-  const getformId = location.pathname.split('/')[3];
+  const [fieldId, setFieldId] = useState('');
 
   const showModal = (e) => {
     setOpen(true);
-    setformId(e);
+    setFieldId(e);
   };
   const hideModal = () => {
     setOpen(false);
@@ -32,32 +27,31 @@ const FieldList = () => {
 
   useEffect(() => {
     dispatch(resetState());
-    dispatch(getforms());
-    dispatch(getfields(getformId));
-  }, [dispatch, getformId]);
+    dispatch(getfields());
+  }, [dispatch]);
 
-  const fieldstate = useSelector((state) => state.form.fields?.data);
-  const formstate = useSelector((state) => state.form.fields?.data[0]?.form_id);
+  const fieldstate = useSelector((state) => state.field?.fields?.data) || [];
 
   const deleteField = (e) => {
     setOpen(false);
-    dispatch(deleteAfield({ id: e, formId: formstate }));
+    dispatch(deleteAfield(e));
     setTimeout(() => {
-      dispatch(getfields(getformId));
+      dispatch(getfields());
     }, 100);
   };
-  const [currentPage, setCurrentPage] = useState(0); // Sayfa numarasını saklar
-  const itemsPerPage = 7; // Her sayfada kaç yapı gösterileceği
+
+  const [currentPage, setCurrentPage] = useState(0);
+  const itemsPerPage = 7;
 
   const filteredField = fieldstate?.slice(
     currentPage * itemsPerPage,
     (currentPage + 1) * itemsPerPage
   );
 
-  const pageCount = Math.ceil(fieldstate?.length / itemsPerPage); // Toplam sayfa sayısını hesaplar
+  const pageCount = Math.ceil(fieldstate?.length / itemsPerPage);
 
   const handlePageClick = (data) => {
-    setCurrentPage(data.selected); // Sayfa numarasını günceller
+    setCurrentPage(data.selected);
   };
 
   return (
@@ -65,11 +59,11 @@ const FieldList = () => {
       <div className="flex justify-between gap-3 mb-4">
         <h3 className="title">Fields</h3>{' '}
         <Link
-          to={`/admin/form/${getformId}/field`}
+          to="/admin/field"
           className="flex justify-center items-center pr-3 gap-1 rounded-lg add_button_2"
         >
           <span className="mb-1 ml-2 text-[30px] hover:text-white">+</span> Add
-          Add Faq
+          Add Field
         </Link>
       </div>
       <div>
@@ -174,7 +168,7 @@ const FieldList = () => {
                     className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"
                   >
                     {field.id}
-                  </th>{' '}
+                  </th>
                   <td className="px-6 py-4">{field.label}</td>
                   <td className="px-6 py-4">{field.type}</td>
                   <td className="px-6 py-4">{field.name}</td>
@@ -182,7 +176,7 @@ const FieldList = () => {
                   <td className="px-6 py-4">{field.data}</td>
                   <td className="px-6 py-16 flex gap-2">
                     <Link
-                      to={`/admin/form/${getformId}/field-list/${fieldstate[index]?.id}`}
+                      to={`/admin/field-list/${fieldstate[index]?.id}`}
                       className="text-[25px] text-blue-500 "
                     >
                       <VscEdit />
@@ -198,7 +192,7 @@ const FieldList = () => {
               ))}
             </tbody>
           </table>
-        </div>{' '}
+        </div>
       </div>
       <ReactPaginate
         previousLabel={<BsArrowLeft />}
@@ -215,7 +209,7 @@ const FieldList = () => {
         hideModal={hideModal}
         open={open}
         performAction={() => {
-          deleteField(formId);
+          deleteField(fieldId);
         }}
         title="Are you sure you want to delete this category?"
       />

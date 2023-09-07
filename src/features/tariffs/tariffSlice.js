@@ -63,6 +63,7 @@ export const updateAtariff = createAsyncThunk(
       formdata.append('active', tariffData.tariffData.active);
       formdata.append('name', tariffData.tariffData.name);
       formdata.append('price', tariffData.tariffData.price);
+      formdata.append('service_id', tariffData.tariffData.service_id);
       formdata.append('description', tariffData.tariffData.description);
       formdata.append('most_wanted', tariffData.tariffData.most_wanted);
       formdata.append('speed', tariffData.tariffData.speed);
@@ -127,6 +128,7 @@ export const tariffSlice = createSlice({
         state.tariffName = action.payload.data.name;
         state.tariffSpeed = action.payload.data.speed;
         state.tariffPrice = action.payload.data.price;
+        state.tariffService_id = action.payload.data.service_id;
         state.tariffDescription = action.payload.data.description;
         state.tariffActive = action.payload.data.active;
         state.tariffMostWanted = action.payload.data.most_wanted;

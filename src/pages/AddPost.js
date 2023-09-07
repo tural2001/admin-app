@@ -12,11 +12,17 @@ import {
   resetState,
   updateApost,
 } from '../features/posts/postSlice';
+import ReactQuill from 'react-quill';
+import 'react-quill/dist/quill.snow.css';
+
 let schema = yup.object({
   title: yup.string().required('Title s is Required'),
   description: yup.string().required('Description is Required'),
-  slug: yup.string().required('Link is Required'),
+  slug: yup.string(),
   image: yup.mixed().required('Icon is Required'),
+  meta_title: yup.string(),
+  meta_description: yup.string(),
+  published_at: yup.date(),
 });
 
 const AddPost = () => {
@@ -33,10 +39,13 @@ const AddPost = () => {
     isLoading,
     createdPost,
     postTitle,
-    postSlug,
     postDescription,
     postImage,
     updatedPost,
+    postMeta_title,
+    postMeta_description,
+    postSlug,
+    postPublished,
   } = newPost;
 
   const onDrop = useCallback(
@@ -76,28 +85,53 @@ const AddPost = () => {
     isLoading,
     createdPost,
     postTitle,
-    postSlug,
     postDescription,
     postImage,
+    postMeta_title,
+    postSlug,
+    postMeta_description,
+    postPublished,
     updatedPost,
     navigate,
   ]);
+
+  const formatDateTimeForServer = (dateTimeString) => {
+    const date = new Date(dateTimeString);
+    const formattedDate = `${String(date.getDate()).padStart(2, '0')}.${String(
+      date.getMonth() + 1
+    ).padStart(2, '0')}.${date.getFullYear()} ${String(
+      date.getHours()
+    ).padStart(2, '0')}:${String(date.getMinutes()).padStart(2, '0')}`;
+
+    return formattedDate;
+  };
 
   const formik = useFormik({
     enableReinitialize: true,
     initialValues: {
       title: postTitle || '',
       description: postDescription || '',
-      slug: postSlug || '',
       image: postImage || null,
+      meta_title: postMeta_title || '',
+      meta_description: postMeta_description || '',
+      slug: postSlug || '',
+      published_at: postPublished || '',
     },
     validationSchema: schema,
     onSubmit: (values) => {
+      const formattedPublishedAt = formatDateTimeForServer(values.published_at);
+
+      // Create a new object with updated values
+      const updatedValues = {
+        ...values,
+        published_at: formattedPublishedAt,
+      };
+      // alert(JSON.stringify(updatedValues));
       if (getpostId !== undefined) {
         const data = { id: getpostId, post: values };
         dispatch(updateApost(data));
       } else {
-        dispatch(createApost(values));
+        dispatch(createApost(updatedValues));
         formik.resetForm();
         setTimeout(() => {
           dispatch(resetState());
@@ -105,6 +139,28 @@ const AddPost = () => {
       }
     },
   });
+
+  var toolbarOptions = [
+    ['bold', 'italic', 'underline', 'strike'], // toggled buttons
+    ['blockquote', 'code-block'],
+    [{ header: 1 }, { header: 2 }], // custom button values
+    [{ list: 'ordered' }, { list: 'bullet' }],
+    [{ script: 'sub' }, { script: 'super' }], // superscript/subscript
+    [{ indent: '-1' }, { indent: '+1' }], // outdent/indent
+    [{ direction: 'rtl' }], // text direction
+    [{ size: ['small', false, 'large', 'huge'] }], // custom dropdown
+    [{ header: [1, 2, 3, 4, 5, 6, false] }],
+    [{ color: [] }, { background: [] }], // dropdown with defaults from theme
+    [{ font: [] }],
+    [{ align: [] }],
+    [{ list: 'check' }], // check/uncheck list item
+    ['image'], // links, images, and videos
+    ['clean'], // remove formatting button
+  ];
+
+  const module = {
+    toolbar: toolbarOptions,
+  };
 
   return (
     <div>
@@ -129,6 +185,36 @@ const AddPost = () => {
             formik.handleSubmit(e);
           }}
         >
+          <CustomInput
+            type="text"
+            label="Enter meta_title"
+            name="meta_title"
+            onCh={formik.handleChange('meta_title')}
+            onBl={formik.handleBlur('meta_title')}
+            val={formik.values.meta_title}
+          />
+          <div className="error">
+            {formik.touched.meta_title && formik.errors.meta_title}
+          </div>
+          <CustomInput
+            type="text"
+            label="Enter meta_description"
+            name="meta_description"
+            onCh={formik.handleChange('meta_description')}
+            onBl={formik.handleBlur('meta_description')}
+            val={formik.values.meta_description}
+          />
+          <ReactQuill
+            theme="snow"
+            name="description"
+            className="mt-3"
+            onChange={formik.handleChange('content')}
+            value={formik.values.content}
+            modules={module}
+          />
+          <div className="error">
+            {formik.touched.meta_description && formik.errors.meta_description}
+          </div>
           <CustomInput
             type="text"
             label="Enter title"
@@ -159,9 +245,14 @@ const AddPost = () => {
             onBl={formik.handleBlur('slug')}
             val={formik.values.slug}
           />
-          <div className="error">
-            {formik.touched.slug && formik.errors.slug}
-          </div>
+          <input
+            type="datetime-local"
+            id="datetime"
+            name="published_at"
+            value={formik.values.published_at || ''}
+            onChange={formik.handleChange('published_at')}
+            onBlur={formik.handleBlur('published_at')}
+          />
           <div className="">
             <div className="text-center">
               <div className="flex justify-space w-full gap-10">

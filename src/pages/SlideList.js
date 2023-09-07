@@ -7,10 +7,9 @@ import { RiDeleteBin5Line } from 'react-icons/ri';
 import { toast } from 'react-toastify';
 import { deleteAslide, resetState } from '../features/slides/slidesSlice';
 import { getslides } from '../features/slides/slidesSlice';
-import { active, notactive, plus } from '../assets';
 import Popup from 'reactjs-popup';
 import ReactPaginate from 'react-paginate';
-import { BsArrowLeft, BsArrowRight, BsArrowRightShort } from 'react-icons/bs';
+import { BsArrowLeft, BsArrowRight } from 'react-icons/bs';
 
 const SlideList = () => {
   const [open, setOpen] = useState(false);
@@ -29,8 +28,7 @@ const SlideList = () => {
     dispatch(getslides());
   }, [dispatch]);
 
-  const slidestate = useSelector((state) => state.slide.slides.data);
-  console.log(slidestate);
+  const slidestate = useSelector((state) => state.slide.slides.data) || [];
 
   const deleteSlide = (e) => {
     setOpen(false);
@@ -41,18 +39,17 @@ const SlideList = () => {
     }, 1000);
   };
 
-  const [currentPage, setCurrentPage] = useState(0); // Sayfa numarasını saklar
-  const itemsPerPage = 7; // Her sayfada kaç yapı gösterileceği
-
+  const [currentPage, setCurrentPage] = useState(0);
+  const itemsPerPage = 7;
   const filteredSlide = slidestate?.slice(
     currentPage * itemsPerPage,
     (currentPage + 1) * itemsPerPage
   );
 
-  const pageCount = Math.ceil(slidestate?.length / itemsPerPage); // Toplam sayfa sayısını hesaplar
+  const pageCount = Math.ceil(slidestate?.length / itemsPerPage);
 
   const handlePageClick = (data) => {
-    setCurrentPage(data.selected); // Sayfa numarasını günceller
+    setCurrentPage(data.selected);
   };
 
   return (
@@ -223,11 +220,6 @@ const SlideList = () => {
                       slide.active === true ? 'text-green-500' : 'text-red-500'
                     }`}
                   >
-                    {/* {slide.active === true ? (
-                      <img src={active} alt="" />
-                    ) : (
-                      <img src={notactive} alt="" />
-                    )} */}
                     {slide.active === true ? 'Active' : 'Not Active'}
                   </td>
                   <td className="px-6 py-4">{slide.order}</td>

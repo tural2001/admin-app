@@ -18,6 +18,7 @@ let schema = yup.object({
   description: yup.string().required(' Required'),
   active: yup.string().required(' Required'),
   color: yup.string().required(' Required'),
+  handle: yup.string(),
 });
 const AddRegion = () => {
   const dispatch = useDispatch();
@@ -34,6 +35,7 @@ const AddRegion = () => {
     createdRegion,
     regionName,
     regionDescription,
+    regionHandle,
     regionActive,
     regionColor,
     updatedRegion,
@@ -70,6 +72,8 @@ const AddRegion = () => {
     regionName,
     regionDescription,
     regionActive,
+    regionHandle,
+
     regionColor,
     updatedRegion,
     navigate,
@@ -82,6 +86,7 @@ const AddRegion = () => {
       description: regionDescription || '',
       active: regionActive ? 1 : 0,
       color: regionColor || 'black',
+      handle: regionHandle || '',
     },
     validationSchema: schema,
     onSubmit: (values) => {
@@ -157,7 +162,7 @@ const AddRegion = () => {
           </div>
           <CustomInput
             type="text"
-            label="Enter "
+            label="Enter Name"
             name="name"
             onCh={formik.handleChange('name')}
             onBl={formik.handleBlur('name')}
@@ -168,7 +173,7 @@ const AddRegion = () => {
           </div>
           <CustomInput
             type="text"
-            label="Enter "
+            label="Enter Description"
             name="description"
             onCh={formik.handleChange('description')}
             onBl={formik.handleBlur('description')}
@@ -179,7 +184,16 @@ const AddRegion = () => {
           </div>
           <CustomInput
             type="text"
-            label="Number"
+            label="Enter Handle"
+            name="handle"
+            onCh={formik.handleChange('handle')}
+            onBl={formik.handleBlur('handle')}
+            val={formik.values.handle}
+            readOnly={'readOnly'}
+          />
+          <CustomInput
+            type="color"
+            label="Enter Color"
             name="color"
             onCh={formik.handleChange('color')}
             onBl={formik.handleBlur('color')}

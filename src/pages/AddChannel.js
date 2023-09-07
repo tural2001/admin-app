@@ -15,6 +15,8 @@ import {
 
 let schema = yup.object({
   name: yup.string().required('Name s is Required'),
+  meta_title: yup.string(),
+  meta_description: yup.string(),
   country_id: yup.number().required('Description is Required'),
   image: yup.mixed().required('Icon is Required'),
   active: yup.string().required('Active status is Required'),
@@ -34,6 +36,8 @@ const Addchannel = () => {
     isLoading,
     createdChannel,
     channelName,
+    channelMeta_title,
+    channelMeta_description,
     channelActive,
     channelCountry_id,
     channelImage,
@@ -77,6 +81,8 @@ const Addchannel = () => {
     isLoading,
     createdChannel,
     channelName,
+    channelMeta_title,
+    channelMeta_description,
     channelActive,
     channelCountry_id,
     channelImage,
@@ -88,6 +94,8 @@ const Addchannel = () => {
     enableReinitialize: true,
     initialValues: {
       name: channelName || '',
+      meta_title: channelMeta_title || '',
+      meta_description: channelMeta_description || '',
       active: channelActive ? 1 : 0,
       country_id: channelCountry_id || '',
       image: channelImage || null,
@@ -180,12 +188,34 @@ const Addchannel = () => {
           </div>
           <CustomInput
             type="text"
+            label="Enter meta_title"
+            name="meta_title"
+            onCh={formik.handleChange('meta_title')}
+            onBl={formik.handleBlur('meta_title')}
+            val={formik.values.meta_title}
+          />
+          <div className="error">
+            {formik.touched.meta_title && formik.errors.meta_title}
+          </div>
+          <CustomInput
+            type="text"
+            label="Enter meta_description"
+            name="meta_description"
+            onCh={formik.handleChange('meta_description')}
+            onBl={formik.handleBlur('meta_description')}
+            val={formik.values.meta_description}
+          />
+          <div className="error">
+            {formik.touched.meta_description && formik.errors.meta_description}
+          </div>
+          <CustomInput
+            type="number"
             label="Enter country_id"
             name="country_id"
             onCh={formik.handleChange('country_id')}
             onBl={formik.handleBlur('country_id')}
             val={formik.values.country_id}
-            readOnly={'readOnly'}
+            // readOnly={'readOnly'}
           />
           <div className="error">
             {formik.touched.country_id && formik.errors.country_id}

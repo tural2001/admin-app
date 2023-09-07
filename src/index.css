@@ -168,7 +168,7 @@ main::-webkit-scrollbar {
 canvas {
   margin-top: 30px;
   margin-bottom: 30px;
-  width: 1150px !important;
+  width: 600px !important;
   height: 500px !important;
 }
 

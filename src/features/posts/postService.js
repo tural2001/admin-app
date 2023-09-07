@@ -4,7 +4,7 @@ import { config } from '../../utils/axiosconfig';
 
 const getposts = async () => {
   const response = await axios.get(
-    `${base_url}/api/posts?inactive=true`,
+    `${base_url}/api/posts?published=true`,
     config
   );
   return response.data;
@@ -14,22 +14,24 @@ const createpost = async (post) => {
   const response = await axios.post(`${base_url}/api/posts`, post, config);
   return response.data;
 };
-const updatepost = async (post, id) => {
+
+const updatepost = async (post, slug) => {
   const response = await axios.post(
-    `${base_url}/api/posts/${id}`,
+    `${base_url}/api/posts/${slug}`,
     post,
     config
   );
   return response.data;
 };
 
-const getpost = async (id) => {
-  const response = await axios.get(`${base_url}/api/posts/${id}`, config);
+const getpost = async (slug) => {
+  const response = await axios.get(`${base_url}/api/posts/${slug}`, config);
+
   return response.data;
 };
 
-const deletepost = async (id) => {
-  const response = await axios.delete(`${base_url}/api/posts/${id}`, config);
+const deletepost = async (slug) => {
+  const response = await axios.delete(`${base_url}/api/posts/${slug}`, config);
   return response.data;
 };
 

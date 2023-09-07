@@ -12,13 +12,13 @@ import {
 } from '../features/structures/structuresSlice';
 import Popup from 'reactjs-popup';
 import ReactPaginate from 'react-paginate';
-import { BsArrowLeft, BsArrowRight, BsArrowRightShort } from 'react-icons/bs';
+import { BsArrowLeft, BsArrowRight } from 'react-icons/bs';
 
 const StructureList = () => {
   const [open, setOpen] = useState(false);
   const [structureId, setStructureId] = useState('');
-  const [currentPage, setCurrentPage] = useState(0); // Sayfa numarasını saklar
-  const itemsPerPage = 7; // Her sayfada kaç yapı gösterileceği
+  const [currentPage, setCurrentPage] = useState(0);
+  const itemsPerPage = 7;
 
   const showModal = (e) => {
     setOpen(true);
@@ -34,9 +34,8 @@ const StructureList = () => {
     dispatch(getstructures());
   }, [dispatch]);
 
-  const structurestate = useSelector(
-    (state) => state.structure.structures.data
-  );
+  const structurestate =
+    useSelector((state) => state.structure.structures.data) || [];
 
   const deleteStructure = (e) => {
     setOpen(false);

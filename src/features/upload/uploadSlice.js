@@ -15,7 +15,7 @@ export const uploadImg = createAsyncThunk(
     try {
       const formData = new FormData();
       for (let i = 0; i < data.length; i++) {
-        formData.append('logo', data[i]);
+        formData.append('file', data[i]);
       }
       return await uploadService.uploadImg(formData);
     } catch (error) {

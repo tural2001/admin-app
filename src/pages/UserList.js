@@ -10,15 +10,14 @@ import {
   getusers,
   resetState,
 } from '../features/users/usersSlice';
-import { plus } from '../assets';
 import ReactPaginate from 'react-paginate';
-import { BsArrowLeft, BsArrowRight, BsArrowRightShort } from 'react-icons/bs';
+import { BsArrowLeft, BsArrowRight } from 'react-icons/bs';
 
 const UserList = () => {
   const [open, setOpen] = useState(false);
   const [userId, setuserId] = useState('');
-  const [currentPage, setCurrentPage] = useState(0); // Sayfa numarasını saklar
-  const itemsPerPage = 7; // Her sayfada kaç yapı gösterileceği
+  const [currentPage, setCurrentPage] = useState(0);
+  const itemsPerPage = 7;
 
   const showModal = (e) => {
     setOpen(true);
@@ -34,7 +33,7 @@ const UserList = () => {
     dispatch(getusers());
   }, [dispatch]);
 
-  const userstate = useSelector((state) => state.user.users.data);
+  const userstate = useSelector((state) => state.user.users.data) || [];
   console.log(userstate);
 
   const deleteUser = (e) => {
@@ -46,15 +45,15 @@ const UserList = () => {
     }, 100);
   };
 
-  const filteredTariff = userstate?.slice(
+  const filteredUser = userstate?.slice(
     currentPage * itemsPerPage,
     (currentPage + 1) * itemsPerPage
   );
 
-  const pageCount = Math.ceil(userstate?.length / itemsPerPage); // Toplam sayfa sayısını hesaplar
+  const pageCount = Math.ceil(userstate?.length / itemsPerPage);
 
   const handlePageClick = (data) => {
-    setCurrentPage(data.selected); // Sayfa numarasını günceller
+    setCurrentPage(data.selected);
   };
   return (
     <div>
@@ -112,7 +111,7 @@ const UserList = () => {
               </tr>
             </thead>
             <tbody>
-              {userstate?.map((user, index) => (
+              {filteredUser?.map((user, index) => (
                 <tr
                   key={index}
                   className="bg-white border-b dark:bg-gray-800 dark:border-gray-700"
