@@ -74,35 +74,22 @@ const StructureList = () => {
       <div>
         <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
           <table className="w-full text-sm text-left text-gray-500 dark:text-gray-400">
-            {/* Tablo başlık kısmı burada kalır */}
             <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
               <tr>
                 <th scope="col" className="px-6 py-3">
                   No
                 </th>
                 <th scope="col" className="px-6 py-3">
-                  <div className="flex items-center">
-                    Status
-                    {/* ... */}
-                  </div>
+                  <div className="flex items-center">Status</div>
                 </th>
                 <th scope="col" className="px-6 py-3">
-                  <div className="flex items-center">
-                    Name
-                    {/* ... */}
-                  </div>
+                  <div className="flex items-center">Name</div>
                 </th>
                 <th scope="col" className="px-6 py-3">
-                  <div className="flex items-center">
-                    Profession
-                    {/* ... */}
-                  </div>
+                  <div className="flex items-center">Profession</div>
                 </th>
                 <th scope="col" className="px-6 py-3">
-                  <div className="flex items-center">
-                    Image
-                    {/* ... */}
-                  </div>
+                  <div className="flex items-center">Image</div>
                 </th>
                 <th scope="col" className="px-6 py-3"></th>
               </tr>

@@ -13,87 +13,71 @@ const Dashboard = () => {
 
   const campaignState = useSelector((state) => state.campaign.campaigns.data);
   const vacancyState = useSelector((state) => state.vacancy.vacancies.data);
-  const userState = useSelector((state) => state);
+  // const userState = useSelector((state) => state);
 
   console.log(vacancyState, campaignState);
-  const activeVacanciesCount = vacancyState?.filter(
-    (vacancy) => vacancy.active === true
-  ).length;
-  const activeCampaignsCount = campaignState?.filter(
-    (campaign) => campaign.active === true
-  ).length;
-  const notactiveVacanciesCount = vacancyState?.filter(
-    (vacancy) => vacancy.active === false
-  ).length;
-  const notactiveCampaignsCount = campaignState?.filter(
-    (campaign) => campaign.active === false
-  ).length;
+  // const activeVacanciesCount = vacancyState?.filter(
+  //   (vacancy) => vacancy.active === true
+  // ).length;
+  // const activeCampaignsCount = campaignState?.filter(
+  //   (campaign) => campaign.active === true
+  // ).length;
+  // const notactiveVacanciesCount = vacancyState?.filter(
+  //   (vacancy) => vacancy.active === false
+  // ).length;
+  // const notactiveCampaignsCount = campaignState?.filter(
+  //   (campaign) => campaign.active === false
+  // ).length;
 
-  const data = [
-    {
-      status: 'Active',
-      name: 'Campaigns.',
-      value: activeCampaignsCount,
-    },
-    {
-      status: 'Not Active',
-      name: 'Campaigns.',
-      value: notactiveCampaignsCount,
-    },
-    {
-      status: 'Active',
-      name: 'Vacancies.',
-      value: activeVacanciesCount,
-    },
-    {
-      status: 'Not Active',
-      name: 'Vacancies.',
-      value: notactiveVacanciesCount,
-    },
-  ];
-  const config = {
-    data,
-    isGroup: true,
-    xField: 'name',
-    yField: 'value',
-    seriesField: 'status',
+  // const config = {
+  //   data,
+  //   isGroup: true,
+  //   xField: 'name',
+  //   yField: 'value',
+  //   seriesField: 'status',
 
-    /** 设置颜色 */
-    color: ['#1ca9e6', '#e12525'],
+  //   /** 设置颜色 */
+  //   color: ['#1ca9e6', '#e12525'],
 
-    /** 设置间距 */
-    // marginRatio: 0.1,
-    label: {
-      // 可手动配置 label 数据标签位置
-      position: 'middle',
-      // 'top', 'middle', 'bottom'
-      // 可配置附加的布局方法
-      layout: [
-        {
-          type: 'interval-adjust-position',
-        },
-        {
-          type: 'interval-hide-overlap',
-        },
-        {
-          type: 'adjust-color',
-        },
-      ],
-    },
-  };
+  //   /** 设置间距 */
+  //   // marginRatio: 0.1,
+  //   label: {
+  //     // 可手动配置 label 数据标签位置
+  //     position: 'middle',
+  //     // 'top', 'middle', 'bottom'
+  //     // 可配置附加的布局方法
+  //     layout: [
+  //       {
+  //         type: 'interval-adjust-position',
+  //       },
+  //       {
+  //         type: 'interval-hide-overlap',
+  //       },
+  //       {
+  //         type: 'adjust-color',
+  //       },
+  //     ],
+  //   },
+  // };
 
   return (
     <div>
-      <div classstatus="flex justify-between gap-3 mb-4">
-        <h3 classstatus="title">Dashboard</h3>
+      <div className="flex justify-between gap-3 mb-4">
+        <h3 className="title">Dashboard</h3>
       </div>
-      <div classstatus="">
+      {/* <div classstatus="">
         <Column {...config} />
-      </div>
+      </div> */}
       <div className="flex w-full justify-between ">
         {' '}
         <div className=" overflow-x-auto shadow-md sm:rounded-lg">
-          <table className="w-[500px] text-sm text-left text-gray-500 dark:text-gray-400">
+          <label
+            htmlFor=""
+            className="text-[20px] text-blue-500 flex justify-center items-center border-b-2 rounded-3xl"
+          >
+            Campaigns
+          </label>
+          <table className="w-[500px] text-sm text-left text-gray-500 dark:text-gray-400 mt-3">
             <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
               <tr>
                 <th scope="col" className="px-6 py-3">
@@ -162,6 +146,12 @@ const Dashboard = () => {
           </table>
         </div>
         <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
+          <label
+            htmlFor=""
+            className="text-[20px]  text-blue-500 flex justify-center items-center border-b-2 rounded-3xl"
+          >
+            Vacancies
+          </label>
           <table className="w-[500px] text-sm text-left text-gray-500 dark:text-gray-400">
             <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
               <tr>

@@ -15,7 +15,7 @@ import {
 
 let schema = yup.object({
   name: yup.string().required('Name is Required'),
-  active: yup.string().required('Required'),
+  active: yup.string(),
 });
 
 const AddCountry = (e) => {
@@ -113,6 +113,9 @@ const AddCountry = (e) => {
           }}
         >
           <div className="mt-4">
+            <label htmlFor="" className="mt-2">
+              Status
+            </label>
             <div className="my-4">
               <div className="mt-1">
                 <label className="inline-flex items-center">
@@ -149,9 +152,12 @@ const AddCountry = (e) => {
             <div className="error">
               {formik.touched.active && formik.errors.active}
             </div>
+            <label htmlFor="" className="mt-2">
+              Name
+            </label>
             <CustomInput
               type="text"
-              label="Enter country Name"
+              label="Enter Country Name"
               name="name"
               onCh={formik.handleChange('name')}
               onBl={formik.handleBlur('name')}

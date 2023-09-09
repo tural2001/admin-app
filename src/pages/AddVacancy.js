@@ -11,11 +11,10 @@ import {
   updateAvacancy,
 } from '../features/vacancies/vacaciesSlice';
 import { resetState } from '../features/structures/structuresSlice';
-
 let schema = yup.object({
   title: yup.string().required('Title is Required'),
   description: yup.string().required('Description is Required'),
-  active: yup.string().required('Required'),
+  active: yup.string(),
 });
 
 const AddVacancy = (e) => {
@@ -120,7 +119,10 @@ const AddVacancy = (e) => {
             formik.handleSubmit(e);
           }}
         >
-          <div className="my-4">
+          <label htmlFor="" className="mt-2">
+            Status
+          </label>
+          <div className="my-2">
             <div className="mt-1">
               <label className="inline-flex items-center">
                 <input
@@ -156,10 +158,13 @@ const AddVacancy = (e) => {
           <div className="error">
             {formik.touched.active && formik.errors.active}
           </div>
-          <div className="mt-4">
+          <label htmlFor="" className="mt-2">
+            Title
+          </label>{' '}
+          <div className="mt-2">
             <CustomInput
               type="text"
-              label="Enter Title"
+              label="Enter Vacancy Title"
               name="title"
               onCh={formik.handleChange('title')}
               onBl={formik.handleBlur('title')}
@@ -168,9 +173,12 @@ const AddVacancy = (e) => {
             <div className="error">
               {formik.touched.title && formik.errors.title}
             </div>
+            <label htmlFor="" className="mt-2">
+              Description
+            </label>
             <CustomInput
               type="text"
-              label="Enter Description"
+              label="Enter Vacancy Description"
               name="description"
               onCh={formik.handleChange('description')}
               onBl={formik.handleBlur('description')}

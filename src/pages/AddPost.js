@@ -12,6 +12,7 @@ import {
   resetState,
   updateApost,
 } from '../features/posts/postSlice';
+
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 
@@ -19,7 +20,7 @@ let schema = yup.object({
   title: yup.string().required('Title s is Required'),
   description: yup.string().required('Description is Required'),
   slug: yup.string(),
-  image: yup.mixed().required('Icon is Required'),
+  image: yup.mixed().required('Image is Required'),
   meta_title: yup.string(),
   meta_description: yup.string(),
   published_at: yup.date(),
@@ -66,14 +67,14 @@ const AddPost = () => {
 
   useEffect(() => {
     if (isSuccess && createdPost) {
-      toast.success('post Added Successfully!');
+      toast.success('Post Added Successfully!');
       navigate('/admin/post-list');
       setTimeout(() => {
         window.location.reload();
       }, 500);
     }
     if (isSuccess && updatedPost !== undefined) {
-      toast.success('post Updated Successfully!');
+      toast.success('Post Updated Successfully!');
       navigate('/admin/post-list');
     }
     if (isError) {
@@ -158,14 +159,28 @@ const AddPost = () => {
     ['clean'], // remove formatting button
   ];
 
-  const module = {
-    toolbar: toolbarOptions,
-  };
+  var formats = [
+    'header',
+    'height',
+    'bold',
+    'italic',
+    'underline',
+    'strike',
+    'blockquote',
+    'list',
+    'color',
+    'bullet',
+    'indent',
+    'link',
+    'image',
+    'align',
+    'size',
+  ];
 
   return (
     <div>
       <h3 className="mb-4 title">
-        {getpostId !== undefined ? 'Edit' : 'Add'} post
+        {getpostId !== undefined ? 'Edit' : 'Add'} Post
       </h3>
       <div>
         <form
@@ -185,9 +200,12 @@ const AddPost = () => {
             formik.handleSubmit(e);
           }}
         >
+          <label htmlFor="" className="mt-2">
+            Meta title
+          </label>
           <CustomInput
             type="text"
-            label="Enter meta_title"
+            label="Enter Meta Title"
             name="meta_title"
             onCh={formik.handleChange('meta_title')}
             onBl={formik.handleBlur('meta_title')}
@@ -196,28 +214,37 @@ const AddPost = () => {
           <div className="error">
             {formik.touched.meta_title && formik.errors.meta_title}
           </div>
+          <label htmlFor="" className="mt-2">
+            Meta description
+          </label>
           <CustomInput
             type="text"
-            label="Enter meta_description"
+            label="Enter Meta Description"
             name="meta_description"
             onCh={formik.handleChange('meta_description')}
             onBl={formik.handleBlur('meta_description')}
             val={formik.values.meta_description}
           />
+          <label htmlFor="" className="mt-2">
+            Description
+          </label>
           <ReactQuill
             theme="snow"
             name="description"
             className="mt-3"
-            onChange={formik.handleChange('content')}
-            value={formik.values.content}
-            modules={module}
+            onChange={formik.handleChange('description')}
+            value={formik.values.description}
+            modules={{
+              toolbar: toolbarOptions,
+            }}
+            formats={formats}
           />
-          <div className="error">
-            {formik.touched.meta_description && formik.errors.meta_description}
-          </div>
+          <label htmlFor="" className="mt-2">
+            Title
+          </label>
           <CustomInput
             type="text"
-            label="Enter title"
+            label="Enter Post Title"
             name="title"
             onCh={formik.handleChange('title')}
             onBl={formik.handleBlur('title')}
@@ -226,9 +253,12 @@ const AddPost = () => {
           <div className="error">
             {formik.touched.title && formik.errors.title}
           </div>
+          <label htmlFor="" className="mt-2">
+            Description
+          </label>
           <CustomInput
             type="text"
-            label="Enter description"
+            label="Enter Post description"
             name="description"
             onCh={formik.handleChange('description')}
             onBl={formik.handleBlur('description')}
@@ -237,14 +267,20 @@ const AddPost = () => {
           <div className="error">
             {formik.touched.description && formik.errors.description}
           </div>
+          <label htmlFor="" className="mt-2">
+            Slug
+          </label>
           <CustomInput
             type="text"
-            label="Enter slug"
+            label="Enter Post Slug"
             name="slug"
             onCh={formik.handleChange('slug')}
             onBl={formik.handleBlur('slug')}
             val={formik.values.slug}
           />
+          <label htmlFor="" className="mt-2">
+            Date
+          </label>
           <input
             type="datetime-local"
             id="datetime"
@@ -253,10 +289,13 @@ const AddPost = () => {
             onChange={formik.handleChange('published_at')}
             onBlur={formik.handleBlur('published_at')}
           />
+          <label htmlFor="" className="mt-2">
+            Image
+          </label>
           <div className="">
             <div className="text-center">
               <div className="flex justify-space w-full gap-10">
-                <div className="mt-4 text-center">
+                <div className="mt-2 text-center">
                   <Dropzone onDrop={onDrop}>
                     {({ getRootProps, getInputProps }) => (
                       <section>

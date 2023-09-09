@@ -18,7 +18,7 @@ let schema = yup.object({
   content: yup.string().required('Content is Required'),
   handle: yup.string().required('Handle is Required'),
   image: yup.mixed().required('Image is Required'),
-  active: yup.string().required('Active status is Required'),
+  active: yup.string(),
 });
 
 const Addpopup = () => {
@@ -131,8 +131,12 @@ const Addpopup = () => {
             formik.handleSubmit(e);
           }}
         >
-          <div className="my-4">
-            <div className="mt-1">
+          {' '}
+          <label htmlFor="" className="mt-2">
+            Status
+          </label>
+          <div className="my-2">
+            <div className="mt-3">
               <label className="inline-flex items-center">
                 <input
                   type="radio"
@@ -164,9 +168,12 @@ const Addpopup = () => {
           <div className="error">
             {formik.touched.active && formik.errors.active}
           </div>
+          <label htmlFor="" className="">
+            Handle
+          </label>
           <CustomInput
             type="text"
-            label="Enter Handle"
+            label="Enter Popup Handle"
             name="handle"
             onCh={formik.handleChange('handle')}
             onBl={formik.handleBlur('handle')}
@@ -175,9 +182,12 @@ const Addpopup = () => {
           <div className="error">
             {formik.touched.handle && formik.errors.handle}
           </div>
+          <label htmlFor="" className="mt-2">
+            Content
+          </label>
           <CustomInput
             type="text"
-            label="Enter Contnent"
+            label="Enter Popup Contnent"
             name="content"
             onCh={formik.handleChange('content')}
             onBl={formik.handleBlur('content')}
@@ -187,8 +197,11 @@ const Addpopup = () => {
           <div className="error">
             {formik.touched.content && formik.errors.content}
           </div>
+          <label htmlFor="" className="mt-2">
+            Image
+          </label>
           <div className="flex justify-space w-full gap-10">
-            <div className="mt-4 text-center">
+            <div className="mt-2 text-center">
               <Dropzone onDrop={onDrop}>
                 {({ getRootProps, getInputProps }) => (
                   <section>
@@ -268,7 +281,7 @@ const Addpopup = () => {
             type="submit"
             className="mt-10 text-purple-700 hover:text-white border border-purple-700 hover:bg-purple-800 focus:ring-4 focus:outline-none focus:ring-purple-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center mr-2 mb-2 add_button"
           >
-            {getPopupId !== undefined ? 'Edit' : 'Add'} popup
+            {getPopupId !== undefined ? 'Edit' : 'Add'} Popup
           </button>
         </form>
       </div>

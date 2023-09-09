@@ -15,9 +15,9 @@ import {
 
 let schema = yup.object({
   name: yup.string().required('Name is Required'),
-  profession: yup.string().required('Profession namse is Required'),
+  profession: yup.string().required('Profession is Required'),
   image: yup.mixed().required('Image is Required'),
-  active: yup.string().required('Active status is Required'),
+  active: yup.string(),
 });
 
 const AddStructure = () => {
@@ -132,7 +132,11 @@ const AddStructure = () => {
             formik.handleSubmit(e);
           }}
         >
-          <div className="my-4">
+          {' '}
+          <label htmlFor="" className="mt-2">
+            Status
+          </label>
+          <div className="my-2">
             <div className="mt-1">
               <label className="inline-flex items-center">
                 <input
@@ -167,9 +171,12 @@ const AddStructure = () => {
           <div className="error">
             {formik.touched.active && formik.errors.active}
           </div>
+          <label htmlFor="" className="mt-2">
+            Name
+          </label>
           <CustomInput
             type="text"
-            label="Enter name"
+            label="Enter Structure Name"
             name="name"
             onCh={formik.handleChange('name')}
             onBl={formik.handleBlur('name')}
@@ -177,10 +184,13 @@ const AddStructure = () => {
           />
           <div className="error">
             {formik.touched.name && formik.errors.name}
-          </div>
+          </div>{' '}
+          <label htmlFor="" className="mt-2">
+            Profession
+          </label>
           <CustomInput
             type="text"
-            label="Enter profession"
+            label="Enter Structure Profession"
             name="profession"
             onCh={formik.handleChange('profession')}
             onBl={formik.handleBlur('profession')}
@@ -189,8 +199,11 @@ const AddStructure = () => {
           <div className="error">
             {formik.touched.profession && formik.errors.profession}
           </div>
+          <label htmlFor="" className="mt-2">
+            Image
+          </label>
           <div className="flex justify-space w-full gap-10">
-            <div className="mt-10 text-center">
+            <div className="mt-2 text-center">
               <Dropzone onDrop={onDrop}>
                 {({ getRootProps, getInputProps }) => (
                   <section>

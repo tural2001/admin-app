@@ -18,7 +18,7 @@ let schema = yup.object({
   description: yup.string().required('Description is Required'),
   link: yup.string().required('Link is Required'),
   icon: yup.mixed().required('Icon is Required'),
-  active: yup.string().required('Active status is Required'),
+  active: yup.string(),
   meta_title: yup.string(),
   meta_description: yup.string(),
 });
@@ -148,7 +148,10 @@ const AddService = () => {
             formik.handleSubmit(e);
           }}
         >
-          <div className="my-4">
+          <label htmlFor="" className="mt-2">
+            Status
+          </label>
+          <div className="my-2">
             <div className="mt-1">
               <label className="inline-flex items-center">
                 <input
@@ -183,9 +186,12 @@ const AddService = () => {
           <div className="error">
             {formik.touched.active && formik.errors.active}
           </div>
+          <label htmlFor="" className="mt-2">
+            Meta title
+          </label>
           <CustomInput
             type="text"
-            label="Enter meta_title"
+            label="Enter Meta Title"
             name="meta_title"
             onCh={formik.handleChange('meta_title')}
             onBl={formik.handleBlur('meta_title')}
@@ -194,9 +200,12 @@ const AddService = () => {
           <div className="error">
             {formik.touched.meta_title && formik.errors.meta_title}
           </div>
+          <label htmlFor="" className="mt-2">
+            Meta description
+          </label>
           <CustomInput
             type="text"
-            label="Enter meta_description"
+            label="Enter Meta Description"
             name="meta_description"
             onCh={formik.handleChange('meta_description')}
             onBl={formik.handleBlur('meta_description')}
@@ -205,9 +214,12 @@ const AddService = () => {
           <div className="error">
             {formik.touched.meta_description && formik.errors.meta_description}
           </div>
+          <label htmlFor="" className="mt-2">
+            Title
+          </label>
           <CustomInput
             type="text"
-            label="Enter title"
+            label="Enter Service Title"
             name="title"
             onCh={formik.handleChange('title')}
             onBl={formik.handleBlur('title')}
@@ -216,9 +228,12 @@ const AddService = () => {
           <div className="error">
             {formik.touched.title && formik.errors.title}
           </div>
+          <label htmlFor="" className="mt-2">
+            Description
+          </label>
           <CustomInput
             type="text"
-            label="Enter description"
+            label="Enter Service description"
             name="description"
             onCh={formik.handleChange('description')}
             onBl={formik.handleBlur('description')}
@@ -227,9 +242,12 @@ const AddService = () => {
           <div className="error">
             {formik.touched.description && formik.errors.description}
           </div>
+          <label htmlFor="" className="mt-2">
+            Link
+          </label>
           <CustomInput
             type="text"
-            label="Enter link"
+            label="Enter Service link"
             name="link"
             onCh={formik.handleChange('link')}
             onBl={formik.handleBlur('link')}
@@ -238,10 +256,13 @@ const AddService = () => {
           <div className="error">
             {formik.touched.link && formik.errors.link}
           </div>
+          <label htmlFor="" className="mt-2">
+            Icon
+          </label>
           <div className="">
             <div className="text-center">
               <div className="flex justify-space w-full gap-10">
-                <div className="mt-4 text-center">
+                <div className="mt-2 text-center">
                   <Dropzone onDrop={onDrop}>
                     {({ getRootProps, getInputProps }) => (
                       <section>
@@ -327,7 +348,7 @@ const AddService = () => {
             type="submit"
             className="mt-10 text-purple-700 hover:text-white border border-purple-700 hover:bg-purple-800 focus:ring-4 focus:outline-none focus:ring-purple-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center mr-2 mb-2 add_button"
           >
-            {getServiceId !== undefined ? 'Edit' : 'Add'} service
+            {getServiceId !== undefined ? 'Edit' : 'Add'} Service
           </button>
         </form>
       </div>

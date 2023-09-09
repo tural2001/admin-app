@@ -15,9 +15,9 @@ import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 
 let schema = yup.object({
-  title: yup.string().required(' Required'),
+  title: yup.string().required('Title is Required'),
   slug: yup.string(),
-  content: yup.string().required(' Required'),
+  content: yup.string().required('Content is Required'),
   meta_title: yup.string(),
   meta_description: yup.string(),
 });
@@ -127,7 +127,7 @@ const AddPage = () => {
   return (
     <div>
       <h3 className="mb-4 title">
-        {getpageId !== undefined ? 'Edit' : 'Add'} page
+        {getpageId !== undefined ? 'Edit' : 'Add'} Page
       </h3>
       <div>
         <form
@@ -147,9 +147,13 @@ const AddPage = () => {
             formik.handleSubmit(e);
           }}
         >
+          {' '}
+          <label htmlFor="" className="mt-2">
+            Meta title
+          </label>
           <CustomInput
             type="text"
-            label="Enter meta_title"
+            label="Enter Meta Title"
             name="meta_title"
             onCh={formik.handleChange('meta_title')}
             onBl={formik.handleBlur('meta_title')}
@@ -158,9 +162,12 @@ const AddPage = () => {
           <div className="error">
             {formik.touched.meta_title && formik.errors.meta_title}
           </div>
+          <label htmlFor="" className="mt-2">
+            Meta description
+          </label>
           <CustomInput
             type="text"
-            label="Enter meta_description"
+            label="Enter Meta Description"
             name="meta_description"
             onCh={formik.handleChange('meta_description')}
             onBl={formik.handleBlur('meta_description')}
@@ -169,18 +176,24 @@ const AddPage = () => {
           <div className="error">
             {formik.touched.meta_description && formik.errors.meta_description}
           </div>
+          <label htmlFor="" className="mt-2">
+            Slug
+          </label>
           <CustomInput
             type="text"
-            label="Enter Slug"
+            label="Enter Page Slug"
             name="slug"
             onCh={formik.handleChange('slug')}
             onBl={formik.handleBlur('slug')}
             val={formik.values.slug}
             readOnly={'readOnly'}
           />
+          <label htmlFor="" className="mt-2">
+            Type
+          </label>
           <CustomInput
             type="text"
-            label="Enter "
+            label="Enter Page Title"
             name="title"
             onCh={formik.handleChange('title')}
             onBl={formik.handleBlur('title')}
@@ -189,6 +202,9 @@ const AddPage = () => {
           <div className="error">
             {formik.touched.title && formik.errors.title}
           </div>
+          <label htmlFor="" className="mt-2">
+            Content
+          </label>
           <ReactQuill
             theme="snow"
             name="description"
@@ -204,7 +220,7 @@ const AddPage = () => {
             type="submit"
             className="mt-10 text-purple-700 hover:text-white border border-purple-700 hover:bg-purple-800 focus:ring-4 focus:outline-none focus:ring-purple-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center mr-2 mb-2 add_button"
           >
-            {getpageId !== undefined ? 'Edit' : 'Add'} page
+            {getpageId !== undefined ? 'Edit' : 'Add'} Page
           </button>
         </form>
       </div>

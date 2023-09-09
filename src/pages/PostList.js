@@ -74,7 +74,7 @@ const PostList = () => {
                 </th>
                 <th scope="col" className="px-6 py-3">
                   <div className="flex items-center">
-                    Meta_title
+                    Meta title
                     <a href="#/">
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
@@ -90,7 +90,7 @@ const PostList = () => {
                 </th>
                 <th scope="col" className="px-6 py-3">
                   <div className="flex items-center">
-                    Meta_description
+                    Meta description
                     <a href="#/">
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
@@ -203,7 +203,10 @@ const PostList = () => {
                   <td className="px-6 py-4">{post.meta_title}</td>
                   <td className="px-6 py-4">{post.meta_description}</td>
                   <td className="px-6 py-4">{post.title}</td>
-                  <td className="px-6 py-4">{post.description}</td>
+                  <td
+                    className="px-6 py-4"
+                    dangerouslySetInnerHTML={{ __html: post.description }}
+                  ></td>
                   <td className="px-6 py-4">{post.slug}</td>
                   <td className="px-6 py-4">{post.published_at}</td>
                   <td className="px-6 py-4">

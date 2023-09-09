@@ -10,9 +10,9 @@ import { resetState } from '../features/faq/faqSlice';
 import { useLocation, useNavigate } from 'react-router-dom';
 
 let schema = yup.object({
-  question: yup.string().required('Title is Required'),
-  answer: yup.string().required('Description is Required'),
-  active: yup.string().required('Required'),
+  question: yup.string().required('Question is Required'),
+  answer: yup.string().required('Answer is Required'),
+  active: yup.string(),
 });
 
 const Addfaq = (e) => {
@@ -112,9 +112,13 @@ const Addfaq = (e) => {
             formik.handleSubmit(e);
           }}
         >
-          <div className="mt-4">
-            <div className="my-4">
-              <div className="mt-1">
+          {' '}
+          <label htmlFor="" className="mt-2">
+            Status
+          </label>
+          <div className="mt-2">
+            <div className="my-3">
+              <div className="">
                 <label className="inline-flex items-center">
                   <input
                     type="radio"
@@ -147,6 +151,9 @@ const Addfaq = (e) => {
             <div className="error">
               {formik.touched.active && formik.errors.active}
             </div>
+            <label htmlFor="" className="mt-2">
+              Question
+            </label>
             <CustomInput
               type="text"
               label="Enter Faq Question"
@@ -158,6 +165,9 @@ const Addfaq = (e) => {
             <div className="error">
               {formik.touched.question && formik.errors.question}
             </div>
+            <label htmlFor="" className="mt-2">
+              Answer
+            </label>
             <CustomInput
               type="text"
               label="Enter Faq Answer"
@@ -170,12 +180,11 @@ const Addfaq = (e) => {
               {formik.touched.answer && formik.errors.answer}
             </div>
           </div>
-
           <button
             type="submit"
             className="mt-10 text-purple-700 hover:text-white border border-purple-700 hover:bg-purple-800 focus:ring-4 focus:outline-none focus:ring-purple-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center mr-2 mb-2 add_button"
           >
-            {getFaqId !== undefined ? 'Edit' : 'Add'} faq
+            {getFaqId !== undefined ? 'Edit' : 'Add'} Faq
           </button>
         </form>
       </div>

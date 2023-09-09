@@ -12,13 +12,15 @@ import {
   resetState,
   updateAtariff,
 } from '../features/tariffs/tariffSlice';
+import { getservices } from '../features/services/servicesSlice';
 
 let schema = yup.object({
-  name: yup.string().required(' Required'),
-  description: yup.string().required(' Required'),
-  price: yup.number().required(' Required'),
-  speed: yup.number().required(' Required'),
-  active: yup.string().required(' Required'),
+  name: yup.string().required('Name is Required'),
+  description: yup.string(),
+  price: yup.number(),
+  service_id: yup.number().required('Service Id is Required'),
+  speed: yup.number().required('Speed is Required'),
+  active: yup.string(),
   most_wanted: yup.string().required(' Required'),
 });
 const AddTariff = () => {
@@ -50,6 +52,12 @@ const AddTariff = () => {
       dispatch(resetState());
     }
   }, [dispatch, getTariffId]);
+
+  useEffect(() => {
+    dispatch(getservices());
+  }, [dispatch]);
+  const serviceState = useSelector((state) => state.service.services.data);
+  console.log(serviceState);
 
   useEffect(() => {
     if (isSuccess && createdTariff) {
@@ -93,6 +101,7 @@ const AddTariff = () => {
     },
     validationSchema: schema,
     onSubmit: (values) => {
+      // alert(JSON.stringify(values));
       if (getTariffId !== undefined) {
         const data = { id: getTariffId, tariffData: values };
         dispatch(updateAtariff(data));
@@ -139,7 +148,11 @@ const AddTariff = () => {
             formik.handleSubmit(e);
           }}
         >
-          <div className="my-4">
+          {' '}
+          <label htmlFor="" className="mt-2">
+            Status
+          </label>
+          <div className="my-2">
             <div className="mt-1">
               <label className="inline-flex items-center">
                 <input
@@ -174,7 +187,28 @@ const AddTariff = () => {
           <div className="error">
             {formik.touched.active && formik.errors.active}
           </div>
-          <div className="my-4">
+          <label htmlFor="" className="mt-2">
+            Service Id
+          </label>
+          <select
+            className="text-[#637381] mt-2 bg-inherit w text-[15px] font-medium rounded-lg block w-1/8 p-2.5 focus:ring-0 hom"
+            id="service_id"
+            name="service_id"
+            onChange={formik.handleChange('service_id')}
+            onBlur={formik.handleBlur('service_id')}
+            value={formik.values.service_id}
+          >
+            <option value="">Select Service ID</option>
+            {serviceState?.map((service) => (
+              <option key={service.id} value={service.id}>
+                {service.id}
+              </option>
+            ))}
+          </select>
+          <label htmlFor="" className="mt-2">
+            Most wanted
+          </label>
+          <div className="my-2">
             <div className="mt-1">
               <label className="inline-flex items-center">
                 <input
@@ -190,7 +224,7 @@ const AddTariff = () => {
                   }
                   className="text-blue-500 form-radio h-4 w-4"
                 />
-                <span className="ml-2">most_wanted</span>
+                <span className="ml-2">Most Wanted</span>
               </label>
               <label className="inline-flex items-center ml-6">
                 <input
@@ -202,16 +236,19 @@ const AddTariff = () => {
                   checked={formik.values.most_wanted === '0'}
                   className="text-blue-500 form-radio h-4 w-4"
                 />
-                <span className="ml-2">Not most_wanted</span>
+                <span className="ml-2">Not Most Wanted</span>
               </label>
             </div>
           </div>
           <div className="error">
             {formik.touched.most_wanted && formik.errors.most_wanted}
           </div>
+          <label htmlFor="" className="mt-2">
+            Name
+          </label>
           <CustomInput
             type="text"
-            label="Enter "
+            label="Enter Tariff Name"
             name="name"
             onCh={formik.handleChange('name')}
             onBl={formik.handleBlur('name')}
@@ -220,9 +257,12 @@ const AddTariff = () => {
           <div className="error">
             {formik.touched.name && formik.errors.name}
           </div>
+          <label htmlFor="" className="mt-2">
+            Description
+          </label>
           <CustomInput
             type="text"
-            label="Enter "
+            label="Enter Tariff Description"
             name="description"
             onCh={formik.handleChange('description')}
             onBl={formik.handleBlur('description')}
@@ -231,9 +271,12 @@ const AddTariff = () => {
           <div className="error">
             {formik.touched.description && formik.errors.description}
           </div>
+          <label htmlFor="" className="mt-2">
+            Speed
+          </label>
           <CustomInput
             type="number"
-            label="Number"
+            label="Enter Tariff Speed"
             name="speed"
             onCh={formik.handleChange('speed')}
             onBl={formik.handleBlur('speed')}
@@ -242,9 +285,12 @@ const AddTariff = () => {
           <div className="error">
             {formik.touched.speed && formik.errors.speed}
           </div>
+          <label htmlFor="" className="mt-2">
+            Price
+          </label>
           <CustomInput
             type="number"
-            label="Number"
+            label="Enter Tariff Price"
             name="price"
             onCh={formik.handleChange('price')}
             onBl={formik.handleBlur('price')}
@@ -257,7 +303,7 @@ const AddTariff = () => {
             type="submit"
             className="mt-10 text-purple-700 hover:text-white border border-purple-700 hover:bg-purple-800 focus:ring-4 focus:outline-none focus:ring-purple-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center mr-2 mb-2 add_button"
           >
-            {getTariffId !== undefined ? 'Edit' : 'Add'} tariff
+            {getTariffId !== undefined ? 'Edit' : 'Add'} Tariff
           </button>
         </form>
       </div>

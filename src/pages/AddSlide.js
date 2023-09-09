@@ -14,14 +14,14 @@ import {
 import { resetState } from '../features/users/usersSlice';
 
 let schema = yup.object({
-  title: yup.string().required('title is Required'),
-  order: yup.number().required('order is Required'),
-  show_button: yup.string().required('Show_button s is Required'),
-  button_text: yup.string().required('button_text s is Required'),
-  button_link: yup.string().required('button_link s is Required'),
+  title: yup.string().required('Title is Required'),
+  order: yup.number(),
+  show_button: yup.string(),
+  button_text: yup.string(),
+  button_link: yup.string(),
   description: yup.string().required('Description is Required'),
   image: yup.mixed().required('Image is Required'),
-  active: yup.string().required('Active status is Required'),
+  active: yup.string(),
 });
 
 const AddSlide = () => {
@@ -158,7 +158,11 @@ const AddSlide = () => {
             formik.handleSubmit(e);
           }}
         >
-          <div className="my-4">
+          {' '}
+          <label htmlFor="" className="mt-2">
+            Status
+          </label>
+          <div className="my-2">
             <div className="mt-1">
               <label className="inline-flex items-center">
                 <input
@@ -191,9 +195,12 @@ const AddSlide = () => {
           <div className="error">
             {formik.touched.active && formik.errors.active}
           </div>
+          <label htmlFor="" className="mt-2">
+            Order
+          </label>
           <CustomInput
             type="number"
-            label="Enter order"
+            label="Enter Slide order"
             name="order"
             onCh={formik.handleChange('order')}
             onBl={formik.handleBlur('order')}
@@ -202,9 +209,12 @@ const AddSlide = () => {
           <div className="error">
             {formik.touched.order && formik.errors.order}
           </div>
+          <label htmlFor="" className="mt-2">
+            Title
+          </label>
           <CustomInput
             type="text"
-            label="Enter title"
+            label="Enter Slide Title"
             name="title"
             onCh={formik.handleChange('title')}
             onBl={formik.handleBlur('title')}
@@ -213,9 +223,12 @@ const AddSlide = () => {
           <div className="error">
             {formik.touched.title && formik.errors.title}
           </div>
+          <label htmlFor="" className="mt-2">
+            Description
+          </label>
           <CustomInput
             type="text"
-            label="Enter description"
+            label="Enter Slide description"
             name="description"
             onCh={formik.handleChange('description')}
             onBl={formik.handleBlur('description')}
@@ -224,7 +237,10 @@ const AddSlide = () => {
           <div className="error">
             {formik.touched.description && formik.errors.description}
           </div>
-          <div className="my-4">
+          <label htmlFor="" className="mt-2">
+            Show button
+          </label>
+          <div className="my-2">
             <div className="mt-1">
               <label className="inline-flex items-center">
                 <input
@@ -259,9 +275,12 @@ const AddSlide = () => {
               {formik.touched.show_button && formik.errors.show_button}
             </div>
           </div>
+          <label htmlFor="" className="mt-2">
+            Button text
+          </label>
           <CustomInput
             type="text"
-            label="Enter button_text"
+            label="Enter Button Text"
             name="button_text"
             onCh={formik.handleChange('button_text')}
             onBl={formik.handleBlur('button_text')}
@@ -270,9 +289,12 @@ const AddSlide = () => {
           <div className="error">
             {formik.touched.button_text && formik.errors.button_text}
           </div>
+          <label htmlFor="" className="mt-2">
+            Button link
+          </label>
           <CustomInput
             type="text"
-            label="Enter button_link"
+            label="Enter Button Link"
             name="button_link"
             onCh={formik.handleChange('button_link')}
             onBl={formik.handleBlur('button_link')}
@@ -280,11 +302,14 @@ const AddSlide = () => {
           />
           <div className="error">
             {formik.touched.button_link && formik.errors.button_link}
-          </div>
+          </div>{' '}
+          <label htmlFor="" className="mt-2">
+            Image
+          </label>
           <div className="">
             <div className="text-center">
               <div className="flex justify-space w-full gap-10">
-                <div className="mt-4 text-center">
+                <div className="mt-2 text-center">
                   <Dropzone onDrop={onDrop}>
                     {({ getRootProps, getInputProps }) => (
                       <section>

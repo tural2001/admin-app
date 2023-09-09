@@ -13,8 +13,8 @@ import {
 } from '../features/reviews/reviewsSlice';
 
 let schema = yup.object({
-  reviewer_name: yup.string().required('Review name is Required'),
-  comment: yup.string().required('Review comment is Required'),
+  reviewer_name: yup.string().required('Name is Required'),
+  comment: yup.string().required('Comment is Required'),
   show_on_home_page: yup.string(),
   active: yup.string(),
 });
@@ -47,7 +47,7 @@ const Addreview = () => {
 
   useEffect(() => {
     if (isSuccess && createdReview) {
-      toast.success('Review added successfully');
+      toast.success('Review Added Successfully');
       navigate('/admin/review-list');
       setTimeout(() => {
         window.location.reload();
@@ -125,7 +125,10 @@ const Addreview = () => {
             formik.handleSubmit(e);
           }}
         >
-          <div className="my-4">
+          <label htmlFor="" className="mt-2">
+            Status
+          </label>
+          <div className="my-2">
             <div className="mt-1">
               <label className="inline-flex items-center">
                 <input
@@ -160,7 +163,10 @@ const Addreview = () => {
           <div className="error">
             {formik.touched.active && formik.errors.active}
           </div>
-          <div className="my-4">
+          <label htmlFor="" className="mt-2">
+            Show
+          </label>
+          <div className="my-2">
             <div className="mt-1">
               <label className="inline-flex items-center">
                 <input
@@ -196,6 +202,9 @@ const Addreview = () => {
             {formik.touched.show_on_home_page &&
               formik.errors.show_on_home_page}
           </div>
+          <label htmlFor="" className="mt-2">
+            Name
+          </label>
           <CustomInput
             type="text"
             label="Enter Review Name"
@@ -208,9 +217,12 @@ const Addreview = () => {
           <div className="error">
             {formik.touched.reviewer_name && formik.errors.reviewer_name}
           </div>
+          <label htmlFor="" className="mt-2">
+            Comment
+          </label>
           <CustomInput
             type="text"
-            label="Enter Comment"
+            label="Enter Review Comment"
             name="comment"
             onCh={formik.handleChange('comment')}
             onBl={formik.handleBlur('comment')}

@@ -14,10 +14,10 @@ import {
 } from '../features/regions/regionSlice';
 
 let schema = yup.object({
-  name: yup.string().required(' Required'),
-  description: yup.string().required(' Required'),
-  active: yup.string().required(' Required'),
-  color: yup.string().required(' Required'),
+  name: yup.string().required('Name is Required'),
+  description: yup.string().required('Description is Required'),
+  active: yup.string(),
+  color: yup.string().required('Color is Required'),
   handle: yup.string(),
 });
 const AddRegion = () => {
@@ -105,7 +105,7 @@ const AddRegion = () => {
   return (
     <div>
       <h3 className="mb-4 title">
-        {getregionId !== undefined ? 'Edit' : 'Add'} region
+        {getregionId !== undefined ? 'Edit' : 'Add'} Region
       </h3>
       <div>
         <form
@@ -125,7 +125,11 @@ const AddRegion = () => {
             formik.handleSubmit(e);
           }}
         >
-          <div className="my-4">
+          {' '}
+          <label htmlFor="" className="mt-2">
+            Status
+          </label>
+          <div className="my-2">
             <div className="mt-1">
               <label className="inline-flex items-center">
                 <input
@@ -160,9 +164,12 @@ const AddRegion = () => {
           <div className="error">
             {formik.touched.active && formik.errors.active}
           </div>
+          <label htmlFor="" className="mt-2">
+            Name
+          </label>
           <CustomInput
             type="text"
-            label="Enter Name"
+            label="Enter Region Name"
             name="name"
             onCh={formik.handleChange('name')}
             onBl={formik.handleBlur('name')}
@@ -171,9 +178,12 @@ const AddRegion = () => {
           <div className="error">
             {formik.touched.name && formik.errors.name}
           </div>
+          <label htmlFor="" className="mt-2">
+            Description
+          </label>
           <CustomInput
             type="text"
-            label="Enter Description"
+            label="Enter Region Description"
             name="description"
             onCh={formik.handleChange('description')}
             onBl={formik.handleBlur('description')}
@@ -182,18 +192,24 @@ const AddRegion = () => {
           <div className="error">
             {formik.touched.description && formik.errors.description}
           </div>
+          <label htmlFor="" className="mt-2">
+            Handle
+          </label>
           <CustomInput
             type="text"
-            label="Enter Handle"
+            label="Enter Region Handle"
             name="handle"
             onCh={formik.handleChange('handle')}
             onBl={formik.handleBlur('handle')}
             val={formik.values.handle}
             readOnly={'readOnly'}
           />
+          <label htmlFor="" className="mt-2">
+            Color
+          </label>
           <CustomInput
             type="color"
-            label="Enter Color"
+            label="Enter Region Color"
             name="color"
             onCh={formik.handleChange('color')}
             onBl={formik.handleBlur('color')}
@@ -206,7 +222,7 @@ const AddRegion = () => {
             type="submit"
             className="mt-10 text-purple-700 hover:text-white border border-purple-700 hover:bg-purple-800 focus:ring-4 focus:outline-none focus:ring-purple-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center mr-2 mb-2 add_button"
           >
-            {getregionId !== undefined ? 'Edit' : 'Add'} region
+            {getregionId !== undefined ? 'Edit' : 'Add'} Region
           </button>
         </form>
       </div>

@@ -12,7 +12,7 @@ import {
 } from '../features/campaigns/campaignsSlice';
 import Popup from 'reactjs-popup';
 import ReactPaginate from 'react-paginate';
-import { BsArrowLeft, BsArrowRight, BsArrowRightShort } from 'react-icons/bs';
+import { BsArrowLeft, BsArrowRight } from 'react-icons/bs';
 
 const CampaignList = () => {
   const [open, setOpen] = useState(false);
@@ -168,7 +168,10 @@ const CampaignList = () => {
                     {campaign.active === true ? 'Active' : 'Not Active'}
                   </td>
                   <td className="px-6 py-4">{campaign.name}</td>
-                  <td className="px-6 py-4">{campaign.description}</td>
+                  <td
+                    dangerouslySetInnerHTML={{ __html: campaign.description }}
+                    className="px-6 py-4"
+                  ></td>
                   {/* <td className="px-6 py-4">
                     <a
                       href={campaign.image}
@@ -215,7 +218,7 @@ const CampaignList = () => {
                   <td className="px-6 py-16 flex gap-2">
                     <Link
                       to={`/admin/campaign/${campaignstate[index]?.id}`}
-                      className="text-[25px] text-red-500 "
+                      className="text-[25px] text-blue-500 "
                     >
                       <VscEdit />
                     </Link>

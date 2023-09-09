@@ -3,12 +3,8 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Dashboard from './pages/Dashboard';
 import Login from './pages/Login';
 import MainLayout from './components/MainLayout';
-import Enquiries from './pages/Enquiries';
 import FaqList from './pages/FaqList';
-import Orders from './pages/Orders';
 import Customers from './pages/Customers';
-import ViewEnq from './pages/ViewEnq';
-import ViewOrder from './pages/ViewOrder';
 import { PrivateRoutes } from './routing/PrivateRoutes';
 import { OpenRoutes } from './routing//OpenRoutes';
 import Addfaq from './pages/Addfaq';
@@ -73,8 +69,6 @@ function App() {
           <Route path="user-list" element={<UserList />} />
           <Route path="user" element={<AddUser />} />
           <Route path="user/:id" element={<AddUser />} />
-          <Route path="enquiries" element={<Enquiries />} />
-          <Route path="enquiries/:id" element={<ViewEnq />} />
           <Route path="setting-list" element={<SettingList />} />
           <Route path="setting/:id" element={<Addsetting />} />
           <Route path="setting" element={<Addsetting />} />
@@ -102,8 +96,6 @@ function App() {
           <Route path="tariff-list" element={<TariffList />} />
           <Route path="tariff" element={<AddTariff />} />
           <Route path="tariff/:id" element={<AddTariff />} />
-          <Route path="orders" element={<Orders />} />
-          <Route path="order/:id" element={<ViewOrder />} />
           <Route path="customers" element={<Customers />} />
           <Route path="review-list" element={<ReviewList />} />
           <Route path="review" element={<Addreview />} />

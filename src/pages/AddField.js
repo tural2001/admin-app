@@ -14,11 +14,11 @@ import {
 } from '../features/form/formSlice';
 
 let schema = yup.object({
-  label: yup.string().required('form name is Required'),
-  type: yup.string().required('form comment is Required'),
-  name: yup.string().required('form comment is Required'),
-  rules: yup.string().required('form comment is Required'),
-  data: yup.string().required('form comment is Required'),
+  label: yup.string().required('Label is Required'),
+  type: yup.string().required('Type is Required'),
+  name: yup.string(),
+  rules: yup.string(),
+  data: yup.string(),
 });
 
 const AddForm = () => {
@@ -53,7 +53,7 @@ const AddForm = () => {
 
   useEffect(() => {
     if (isSuccess && createdField) {
-      toast.success('Field added successfully');
+      toast.success('Field Added Successfully');
       navigate('/admin/field-list');
       setTimeout(() => {
         window.location.reload();
@@ -108,7 +108,7 @@ const AddForm = () => {
   return (
     <div>
       <h3 className="mb-4 title">
-        {getfieldId !== undefined ? 'Edit' : 'Add'} form
+        {getfieldId !== undefined ? 'Edit' : 'Add'} Form
       </h3>
       <div>
         <form
@@ -128,9 +128,12 @@ const AddForm = () => {
             formik.handleSubmit(e);
           }}
         >
+          <label htmlFor="" className="mt-2">
+            Label
+          </label>
           <CustomInput
             type="text"
-            label="Enter form Name"
+            label="Enter Label"
             name="label"
             onCh={formik.handleChange('label')}
             onBl={formik.handleBlur('label')}
@@ -139,20 +142,12 @@ const AddForm = () => {
           <div className="error">
             {formik.touched.label && formik.errors.label}
           </div>
+          <label htmlFor="" className="mt-2">
+            Type
+          </label>
           <CustomInput
             type="text"
-            label="Enter form Name"
-            name="name"
-            onCh={formik.handleChange('name')}
-            onBl={formik.handleBlur('name')}
-            val={formik.values.name}
-          />
-          <div className="error">
-            {formik.touched.name && formik.errors.name}
-          </div>
-          <CustomInput
-            type="text"
-            label="Enter type"
+            label="Enter Type"
             name="type"
             onCh={formik.handleChange('type')}
             onBl={formik.handleBlur('type')}
@@ -161,9 +156,26 @@ const AddForm = () => {
           <div className="error">
             {formik.touched.type && formik.errors.type}
           </div>
+          <label htmlFor="" className="mt-2">
+            Name
+          </label>
           <CustomInput
             type="text"
-            label="Enter type"
+            label="Enter Name"
+            name="name"
+            onCh={formik.handleChange('name')}
+            onBl={formik.handleBlur('name')}
+            val={formik.values.name}
+          />
+          <div className="error">
+            {formik.touched.name && formik.errors.name}
+          </div>
+          <label htmlFor="" className="mt-2">
+            Rules
+          </label>
+          <CustomInput
+            type="text"
+            label="Enter Rules"
             name="rules"
             onCh={formik.handleChange('rules')}
             onBl={formik.handleBlur('rules')}
@@ -171,7 +183,10 @@ const AddForm = () => {
           />
           <div className="error">
             {formik.touched.rules && formik.errors.rules}
-          </div>
+          </div>{' '}
+          <label htmlFor="" className="mt-2">
+            Data
+          </label>
           <CustomInput
             type="text"
             label="Enter data"

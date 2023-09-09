@@ -44,7 +44,7 @@ const PageList = () => {
                 </th>
                 <th scope="col" className="px-6 py-3">
                   <div className="flex items-center">
-                    Meta_title
+                    Meta title
                     <a href="#/">
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
@@ -60,7 +60,7 @@ const PageList = () => {
                 </th>
                 <th scope="col" className="px-6 py-3">
                   <div className="flex items-center">
-                    Meta_description
+                    Meta description
                     <a href="#/">
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
@@ -141,7 +141,10 @@ const PageList = () => {
                   <td className="px-6 py-4">{page.meta_description}</td>
                   <td className="px-6 py-4">{page.slug}</td>
                   <td className="px-6 py-4">{page.title}</td>
-                  <td className="px-6 py-4">{page.content}</td>
+                  <td
+                    className="px-6 py-4"
+                    dangerouslySetInnerHTML={{ __html: page.content }}
+                  ></td>
                   <td className="px-6 py-4 flex gap-2">
                     <Link
                       to={`/admin/page/${pagestate[index]?.slug}`}

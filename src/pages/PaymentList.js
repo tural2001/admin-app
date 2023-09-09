@@ -94,7 +94,7 @@ const PaymentList = () => {
                 </th>
                 <th scope="col" className="px-6 py-3">
                   <div className="flex items-center">
-                    Meta_title
+                    Meta title
                     <a href="#/">
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
@@ -110,7 +110,7 @@ const PaymentList = () => {
                 </th>
                 <th scope="col" className="px-6 py-3">
                   <div className="flex items-center">
-                    Meta_description
+                    Meta description
                     <a href="#/">
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
@@ -158,7 +158,7 @@ const PaymentList = () => {
                 </th>
                 <th scope="col" className="px-6 py-3">
                   <div className="flex items-center">
-                    Redirect_link
+                    Redirect link
                     <a href="#/">
                       <svg
                         xmlns="http://www.w3.org/2000/svg"

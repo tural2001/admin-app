@@ -14,9 +14,9 @@ import {
 } from '../features/partners/partnersSlice';
 
 let schema = yup.object({
-  name: yup.string().required('Brand name is Required'),
-  logo: yup.mixed().required('Images is Required'),
-  active: yup.string().required('Required'),
+  name: yup.string().required('Name is Required'),
+  logo: yup.mixed().required('Logo is Required'),
+  active: yup.string(),
 });
 
 const AddPartner = () => {
@@ -128,7 +128,10 @@ const AddPartner = () => {
             formik.handleSubmit(e);
           }}
         >
-          <div className="my-4">
+          <label htmlFor="" className="mt-2">
+            Status
+          </label>
+          <div className="my-3">
             <div className="mt-1">
               <label className="inline-flex items-center">
                 <input
@@ -163,9 +166,12 @@ const AddPartner = () => {
           <div className="error">
             {formik.touched.active && formik.errors.active}
           </div>
+          <label htmlFor="" className="mt-1">
+            Name
+          </label>
           <CustomInput
             type="text"
-            label="Enter Coupon Name"
+            label="Enter Partner Name"
             name="name"
             onCh={formik.handleChange('name')}
             onBl={formik.handleBlur('name')}
@@ -175,8 +181,11 @@ const AddPartner = () => {
           <div className="error">
             {formik.touched.name && formik.errors.name}
           </div>
+          <label htmlFor="" className="mt-3">
+            Logo
+          </label>
           <div className="flex justify-space w-full gap-10">
-            <div className="mt-4 text-center">
+            <div className="mt-2 text-center">
               <Dropzone onDrop={onDrop}>
                 {({ getRootProps, getInputProps }) => (
                   <section>

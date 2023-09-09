@@ -138,7 +138,7 @@ const SlideList = () => {
                 </th>
                 <th scope="col" className="px-6 py-3">
                   <div className="flex items-center">
-                    Show_button
+                    Show button
                     <a href="#/">
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
@@ -154,7 +154,7 @@ const SlideList = () => {
                 </th>
                 <th scope="col" className="px-6 py-3">
                   <div className="flex items-center">
-                    Button_text
+                    Button text
                     <a href="#/">
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
@@ -170,7 +170,7 @@ const SlideList = () => {
                 </th>
                 <th scope="col" className="px-6 py-3">
                   <div className="flex items-center">
-                    Button_link
+                    Button link
                     <a href="#/">
                       <svg
                         xmlns="http://www.w3.org/2000/svg"

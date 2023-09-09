@@ -16,10 +16,10 @@ import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 
 let schema = yup.object({
-  name: yup.string().required('Name s is Required'),
+  name: yup.string().required('Name is Required'),
   description: yup.string().required('Description is Required'),
-  image: yup.mixed().required('Icon is Required'),
-  active: yup.string().required('Active status is Required'),
+  image: yup.mixed().required('Image is Required'),
+  active: yup.string(),
 });
 
 const AddCampaign = () => {
@@ -60,14 +60,14 @@ const AddCampaign = () => {
 
   useEffect(() => {
     if (isSuccess && createdCampaign) {
-      toast.success('campaign Added Successfully!');
+      toast.success('Campaign Added Successfully!');
       navigate('/admin/campaign-list');
       setTimeout(() => {
         window.location.reload();
       }, 500);
     }
     if (isSuccess && updatedCampaign !== undefined) {
-      toast.success('campaign Updated Successfully!');
+      toast.success('Campaign Updated Successfully!');
       navigate('/admin/campaign-list');
     }
     if (isError) {
@@ -122,7 +122,7 @@ const AddCampaign = () => {
     [{ font: [] }],
     [{ align: [] }],
     [{ list: 'check' }], // check/uncheck list item
-    ['link', 'image', 'video'], // links, images, and videos
+    ['link', 'image'], // links, images, and videos
     ['clean'], // remove formatting button
   ];
 
@@ -135,7 +135,7 @@ const AddCampaign = () => {
   return (
     <div>
       <h3 className="mb-4 title">
-        {getCampaignId !== undefined ? 'Edit' : 'Add'} campaign
+        {getCampaignId !== undefined ? 'Edit' : 'Add'} Campaign
       </h3>
       <div>
         <form
@@ -155,7 +155,11 @@ const AddCampaign = () => {
             formik.handleSubmit(e);
           }}
         >
-          <div className="my-4">
+          {' '}
+          <label htmlFor="" className="">
+            Status
+          </label>
+          <div className="my-3">
             <div className="mt-1">
               <label className="inline-flex items-center">
                 <input
@@ -187,13 +191,13 @@ const AddCampaign = () => {
               </label>
             </div>
           </div>
-
           <div className="error">
             {formik.touched.active && formik.errors.active}
           </div>
+          <label htmlFor="">Name</label>
           <CustomInput
             type="text"
-            label="Enter name"
+            label="Enter Campaign name"
             name="name"
             onCh={formik.handleChange('name')}
             onBl={formik.handleBlur('name')}
@@ -202,10 +206,13 @@ const AddCampaign = () => {
           <div className="error">
             {formik.touched.name && formik.errors.name}
           </div>
+          <label htmlFor="" className="my-2">
+            Description
+          </label>
           <ReactQuill
             theme="snow"
             name="description"
-            className="mt-3"
+            className=""
             onChange={formik.handleChange('description')}
             value={formik.values.description}
             modules={module}
@@ -213,10 +220,13 @@ const AddCampaign = () => {
           <div className="error">
             {formik.touched.description && formik.errors.description}
           </div>
+          <label htmlFor="" className="mt-2">
+            Image
+          </label>
           <div className="">
             <div className="text-center">
               <div className="flex justify-space w-full gap-10">
-                <div className="mt-4 text-center">
+                <div className="mt-2 text-center">
                   <Dropzone onDrop={onDrop}>
                     {({ getRootProps, getInputProps }) => (
                       <section>

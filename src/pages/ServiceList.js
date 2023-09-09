@@ -33,7 +33,7 @@ const ServiceList = () => {
 
   const servicestate =
     useSelector((state) => state.service.services.data) || [];
-
+  console.log(servicestate);
   const deleteService = (e) => {
     setOpen(false);
     dispatch(deleteAservice(e));
@@ -95,7 +95,7 @@ const ServiceList = () => {
                 </th>
                 <th scope="col" className="px-6 py-3">
                   <div className="flex items-center">
-                    Meta_title
+                    Meta title
                     <a href="#/">
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
@@ -111,7 +111,7 @@ const ServiceList = () => {
                 </th>
                 <th scope="col" className="px-6 py-3">
                   <div className="flex items-center">
-                    Meta_description
+                    Meta description
                     <a href="#/">
                       <svg
                         xmlns="http://www.w3.org/2000/svg"

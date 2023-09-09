@@ -18,10 +18,10 @@ let schema = yup.object({
   name: yup.string().required('Name s is Required'),
   meta_title: yup.string(),
   meta_description: yup.string(),
-  description: yup.string().required('Description is Required'),
-  redirect_link: yup.string().required('Link is Required'),
-  image: yup.mixed().required('Icon is Required'),
-  active: yup.string().required('Active status is Required'),
+  description: yup.string(),
+  redirect_link: yup.string(),
+  image: yup.mixed().required('Image is Required'),
+  active: yup.string(),
 });
 
 const AddPayment = () => {
@@ -149,7 +149,10 @@ const AddPayment = () => {
             formik.handleSubmit(e);
           }}
         >
-          <div className="my-4">
+          <label htmlFor="" className="mt-2">
+            Status
+          </label>
+          <div className="my-2">
             <div className="mt-1">
               <label className="inline-flex items-center">
                 <input
@@ -183,10 +186,13 @@ const AddPayment = () => {
           </div>
           <div className="error">
             {formik.touched.active && formik.errors.active}
-          </div>
+          </div>{' '}
+          <label htmlFor="" className="mt-2">
+            Meta title
+          </label>
           <CustomInput
             type="text"
-            label="Enter meta_title"
+            label="Enter Meta Title"
             name="meta_title"
             onCh={formik.handleChange('meta_title')}
             onBl={formik.handleBlur('meta_title')}
@@ -195,9 +201,12 @@ const AddPayment = () => {
           <div className="error">
             {formik.touched.meta_title && formik.errors.meta_title}
           </div>
+          <label htmlFor="" className="mt-2">
+            Meta description
+          </label>
           <CustomInput
             type="text"
-            label="Enter meta_description"
+            label="Enter Meta Description"
             name="meta_description"
             onCh={formik.handleChange('meta_description')}
             onBl={formik.handleBlur('meta_description')}
@@ -206,9 +215,12 @@ const AddPayment = () => {
           <div className="error">
             {formik.touched.meta_description && formik.errors.meta_description}
           </div>
+          <label htmlFor="" className="mt-2">
+            Name
+          </label>
           <CustomInput
             type="text"
-            label="Enter name"
+            label="Enter Payment Name"
             name="name"
             onCh={formik.handleChange('name')}
             onBl={formik.handleBlur('name')}
@@ -217,9 +229,12 @@ const AddPayment = () => {
           <div className="error">
             {formik.touched.name && formik.errors.name}
           </div>
+          <label htmlFor="" className="mt-2">
+            Description
+          </label>
           <CustomInput
             type="text"
-            label="Enter description"
+            label="Enter Description"
             name="description"
             onCh={formik.handleChange('description')}
             onBl={formik.handleBlur('description')}
@@ -228,9 +243,12 @@ const AddPayment = () => {
           <div className="error">
             {formik.touched.description && formik.errors.description}
           </div>
+          <label htmlFor="" className="mt-2">
+            Link
+          </label>
           <CustomInput
             type="text"
-            label="Enter redirect_link"
+            label="Enter link"
             name="redirect_link"
             onCh={formik.handleChange('redirect_link')}
             onBl={formik.handleBlur('redirect_link')}
@@ -239,10 +257,13 @@ const AddPayment = () => {
           <div className="error">
             {formik.touched.redirect_link && formik.errors.redirect_link}
           </div>
+          <label htmlFor="" className="mt-2">
+            Image
+          </label>
           <div className="">
             <div className="text-center">
               <div className="flex justify-space w-full gap-10">
-                <div className="mt-4 text-center">
+                <div className="mt-2 text-center">
                   <Dropzone onDrop={onDrop}>
                     {({ getRootProps, getInputProps }) => (
                       <section>

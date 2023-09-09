@@ -9,9 +9,8 @@ import {
   getreviews,
   resetState,
 } from '../features/reviews/reviewsSlice';
-import { active, notactive, plus } from '../assets';
 import ReactPaginate from 'react-paginate';
-import { BsArrowLeft, BsArrowRight, BsArrowRightShort } from 'react-icons/bs';
+import { BsArrowLeft, BsArrowRight } from 'react-icons/bs';
 
 const ReviewList = () => {
   const [open, setOpen] = useState(false);

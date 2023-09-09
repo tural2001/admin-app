@@ -14,12 +14,12 @@ import {
 } from '../features/channels/channelsSlice';
 
 let schema = yup.object({
-  name: yup.string().required('Name s is Required'),
+  name: yup.string().required('Name is Required'),
   meta_title: yup.string(),
   meta_description: yup.string(),
-  country_id: yup.number().required('Description is Required'),
-  image: yup.mixed().required('Icon is Required'),
-  active: yup.string().required('Active status is Required'),
+  country_id: yup.number().required('Country Id is Required'),
+  image: yup.mixed().required('Image is Required'),
+  active: yup.string,
 });
 
 const Addchannel = () => {
@@ -120,7 +120,7 @@ const Addchannel = () => {
   return (
     <div>
       <h3 className="mb-4 title">
-        {getchannelId !== undefined ? 'Edit' : 'Add'} channel
+        {getchannelId !== undefined ? 'Edit' : 'Add'} Channel
       </h3>
       <div>
         <form
@@ -140,6 +140,10 @@ const Addchannel = () => {
             formik.handleSubmit(e);
           }}
         >
+          {' '}
+          <label htmlFor="" className="mt-2">
+            Status
+          </label>
           <div className="my-4">
             <div className="mt-1">
               <label className="inline-flex items-center">
@@ -175,9 +179,12 @@ const Addchannel = () => {
           <div className="error">
             {formik.touched.active && formik.errors.active}
           </div>
+          <label htmlFor="" className="">
+            Name
+          </label>
           <CustomInput
             type="text"
-            label="Enter name"
+            label="Enter Channel name"
             name="name"
             onCh={formik.handleChange('name')}
             onBl={formik.handleBlur('name')}
@@ -186,9 +193,12 @@ const Addchannel = () => {
           <div className="error">
             {formik.touched.name && formik.errors.name}
           </div>
+          <label htmlFor="" className="mt-2">
+            Meta title
+          </label>
           <CustomInput
             type="text"
-            label="Enter meta_title"
+            label="Enter Meta Title"
             name="meta_title"
             onCh={formik.handleChange('meta_title')}
             onBl={formik.handleBlur('meta_title')}
@@ -197,9 +207,12 @@ const Addchannel = () => {
           <div className="error">
             {formik.touched.meta_title && formik.errors.meta_title}
           </div>
+          <label htmlFor="" className="mt-2">
+            Meta description
+          </label>
           <CustomInput
             type="text"
-            label="Enter meta_description"
+            label="Enter Meta Description"
             name="meta_description"
             onCh={formik.handleChange('meta_description')}
             onBl={formik.handleBlur('meta_description')}
@@ -208,6 +221,9 @@ const Addchannel = () => {
           <div className="error">
             {formik.touched.meta_description && formik.errors.meta_description}
           </div>
+          <label htmlFor="" className="mt-2">
+            Country Id
+          </label>
           <CustomInput
             type="number"
             label="Enter country_id"
@@ -220,6 +236,9 @@ const Addchannel = () => {
           <div className="error">
             {formik.touched.country_id && formik.errors.country_id}
           </div>
+          <label htmlFor="" className="mt-2">
+            Image
+          </label>
           <div className="">
             <div className="text-center">
               <div className="flex justify-space w-full gap-10">

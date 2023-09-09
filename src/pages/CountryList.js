@@ -63,7 +63,7 @@ const CountryList = () => {
       <div className="flex justify-between gap-3 mb-4">
         <h3 className="title">Countries</h3>{' '}
         <Link
-          to="/admin/county"
+          to="/admin/country"
           className="flex justify-center items-center pr-3 gap-1 rounded-lg add_button_2"
         >
           {' '}
