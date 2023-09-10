@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, { useCallback, useEffect, useState } from 'react';
 import CustomInput from '../components/CustomInput';
 import { useDispatch, useSelector } from 'react-redux';
@@ -111,8 +112,13 @@ const AddStructure = () => {
     },
   });
 
-  console.log(newStructure.structureImage);
-
+  useEffect(() => {
+    if (getStructureId === undefined) {
+      formik.setFieldValue('active', '1');
+    } else {
+      formik.setFieldValue('active', newStructure.structureActive ? '1' : '0');
+    }
+  }, []);
   return (
     <div>
       <h3 className="mb-4 title">
@@ -122,7 +128,7 @@ const AddStructure = () => {
         <form
           onSubmit={(e) => {
             e.preventDefault();
-            const requiredFields = ['name', 'profession', 'image', 'active'];
+            const requiredFields = ['name', 'profession', 'image'];
             const errors = {};
             requiredFields.forEach((fieldName) => {
               if (formik.touched[fieldName] && !formik.values[fieldName]) {
@@ -146,14 +152,10 @@ const AddStructure = () => {
                 <input
                   type="radio"
                   name="active"
-                  onChange={formik.handleChange}
+                  onChange={() => formik.setFieldValue('active', '1')}
                   onBlur={formik.handleBlur}
                   value="1"
-                  checked={
-                    newStructure.structureActive
-                      ? 1
-                      : 0 || formik.values.active === '1'
-                  }
+                  checked={formik.values.active === '1'}
                   className="text-blue-500 form-radio h-4 w-4"
                 />
                 <span className="ml-2">Active</span>
@@ -162,7 +164,7 @@ const AddStructure = () => {
                 <input
                   type="radio"
                   name="active"
-                  onChange={formik.handleChange}
+                  onChange={() => formik.setFieldValue('active', '0')}
                   onBlur={formik.handleBlur}
                   value="0"
                   checked={formik.values.active === '0'}

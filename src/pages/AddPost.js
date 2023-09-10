@@ -12,7 +12,6 @@ import {
   resetState,
   updateApost,
 } from '../features/posts/postSlice';
-
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 import { uploadImg } from '../features/upload/uploadSlice';

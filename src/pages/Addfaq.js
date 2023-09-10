@@ -1,4 +1,5 @@
-import React, { useEffect, useState } from 'react';
+/* eslint-disable react-hooks/exhaustive-deps */
+import React, { useEffect } from 'react';
 import CustomInput from '../components/CustomInput';
 import { useFormik } from 'formik';
 import * as yup from 'yup';
@@ -76,6 +77,7 @@ const Addfaq = (e) => {
     },
     validationSchema: schema,
     onSubmit: (values) => {
+      // alert(JSON.stringify(values));
       if (getFaqId !== undefined) {
         const data = { id: getFaqId, faqData: values };
         dispatch(updateAfaq(data));
@@ -88,7 +90,14 @@ const Addfaq = (e) => {
       }
     },
   });
-  const [activeValue, setActiveValue] = useState(faqActive ? '1' : '0');
+
+  useEffect(() => {
+    if (getFaqId === undefined) {
+      formik.setFieldValue('active', '1');
+    } else {
+      formik.setFieldValue('active', newFaq.faqActive ? '1' : '0');
+    }
+  }, []);
 
   return (
     <div>
@@ -111,9 +120,6 @@ const Addfaq = (e) => {
               return;
             }
 
-            // Update the 'active' value in formik.values based on the state
-            formik.setFieldValue('active', activeValue);
-
             formik.handleSubmit(e);
           }}
         >
@@ -122,28 +128,28 @@ const Addfaq = (e) => {
             Status
           </label>
           <div className="mt-2">
-            <div className="my-3">
-              <div className="">
+            <div className="my-4">
+              <div className="mt-1">
                 <label className="inline-flex items-center">
                   <input
                     type="radio"
                     name="active"
-                    onChange={() => setActiveValue('1')}
+                    onChange={() => formik.setFieldValue('active', '1')}
                     onBlur={formik.handleBlur}
                     value="1"
-                    checked={activeValue === '1'}
+                    checked={formik.values.active === '1'}
                     className="text-blue-500 form-radio h-4 w-4"
                   />
-                  <span className={`ml-2`}>Active</span>
+                  <span className="ml-2">Active</span>
                 </label>
                 <label className="inline-flex items-center ml-6">
                   <input
                     type="radio"
                     name="active"
-                    onChange={() => setActiveValue('0')}
+                    onChange={() => formik.setFieldValue('active', '0')}
                     onBlur={formik.handleBlur}
                     value="0"
-                    checked={activeValue === '0'}
+                    checked={formik.values.active === '0'}
                     className="text-blue-500 form-radio h-4 w-4"
                   />
                   <span className="ml-2">Not Active</span>

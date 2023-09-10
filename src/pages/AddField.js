@@ -114,7 +114,7 @@ const AddForm = () => {
         <form
           onSubmit={(e) => {
             e.preventDefault();
-            const requiredFields = ['label', 'type', 'name', 'rules', 'data'];
+            const requiredFields = ['label', 'type'];
             const errors = {};
             requiredFields.forEach((fieldName) => {
               if (formik.touched[fieldName] && !formik.values[fieldName]) {

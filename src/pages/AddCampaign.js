@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, { useCallback, useEffect, useState } from 'react';
 import CustomInput from '../components/CustomInput';
 import { useDispatch, useSelector } from 'react-redux';
@@ -113,28 +114,33 @@ const AddCampaign = () => {
     },
   });
   var toolbarOptions = [
-    ['bold', 'italic', 'underline', 'strike'], // toggled buttons
+    ['bold', 'italic', 'underline', 'strike'],
     ['blockquote', 'code-block'],
-    [{ header: 1 }, { header: 2 }], // custom button values
+    [{ header: 1 }, { header: 2 }],
     [{ list: 'ordered' }, { list: 'bullet' }],
-    [{ script: 'sub' }, { script: 'super' }], // superscript/subscript
-    [{ indent: '-1' }, { indent: '+1' }], // outdent/indent
-    [{ direction: 'rtl' }], // text direction
-    [{ size: ['small', false, 'large', 'huge'] }], // custom dropdown
+    [{ script: 'sub' }, { script: 'super' }],
+    [{ indent: '-1' }, { indent: '+1' }],
+    [{ direction: 'rtl' }],
+    [{ size: ['small', false, 'large', 'huge'] }],
     [{ header: [1, 2, 3, 4, 5, 6, false] }],
-    [{ color: [] }, { background: [] }], // dropdown with defaults from theme
+    [{ color: [] }, { background: [] }],
     [{ font: [] }],
     [{ align: [] }],
-    [{ list: 'check' }], // check/uncheck list item
-    ['link', 'image'], // links, images, and videos
-    ['clean'], // remove formatting button
+    [{ list: 'check' }],
+    ['clean'],
   ];
 
   const module = {
     toolbar: toolbarOptions,
   };
 
-  console.log(newCampaign);
+  useEffect(() => {
+    if (getCampaignId === undefined) {
+      formik.setFieldValue('active', '1');
+    } else {
+      formik.setFieldValue('active', newCampaign.campaignActive ? '1' : '0');
+    }
+  }, [getCampaignId, newCampaign.campaignActive]);
 
   return (
     <div>
@@ -169,14 +175,10 @@ const AddCampaign = () => {
                 <input
                   type="radio"
                   name="active"
-                  onChange={formik.handleChange}
+                  onChange={() => formik.setFieldValue('active', '1')}
                   onBlur={formik.handleBlur}
                   value="1"
-                  checked={
-                    newCampaign.campaignActive
-                      ? 1
-                      : 0 || formik.values.active === '1'
-                  }
+                  checked={formik.values.active === '1'}
                   className="text-blue-500 form-radio h-4 w-4"
                 />
                 <span className="ml-2">Active</span>
@@ -185,7 +187,7 @@ const AddCampaign = () => {
                 <input
                   type="radio"
                   name="active"
-                  onChange={formik.handleChange}
+                  onChange={() => formik.setFieldValue('active', '0')}
                   onBlur={formik.handleBlur}
                   value="0"
                   checked={formik.values.active === '0'}

@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, { useEffect } from 'react';
 import CustomInput from '../components/CustomInput';
 import { useDispatch, useSelector } from 'react-redux';
@@ -21,7 +22,7 @@ let schema = yup.object({
   service_id: yup.number().required('Service Id is Required'),
   speed: yup.number().required('Speed is Required'),
   active: yup.string(),
-  most_wanted: yup.string().required(' Required'),
+  most_wanted: yup.string(),
 });
 const AddTariff = () => {
   const dispatch = useDispatch();
@@ -114,6 +115,14 @@ const AddTariff = () => {
       }
     },
   });
+
+  useEffect(() => {
+    if (getTariffId === undefined) {
+      formik.setFieldValue('active', '1');
+    } else {
+      formik.setFieldValue('active', newTariff.tariffActive ? '1' : '0');
+    }
+  }, []);
   return (
     <div>
       <h3 className="mb-4 title">
@@ -124,14 +133,7 @@ const AddTariff = () => {
           action=""
           onSubmit={(e) => {
             e.preventDefault();
-            const requiredFields = [
-              'name',
-              'speed',
-              'price',
-              'description',
-              'active',
-              'most_wanted',
-            ];
+            const requiredFields = ['name', 'speed', 'description'];
             const errors = {};
 
             requiredFields.forEach((fieldName) => {
@@ -161,11 +163,7 @@ const AddTariff = () => {
                   onChange={() => formik.setFieldValue('active', '1')}
                   onBlur={formik.handleBlur}
                   value="1"
-                  checked={
-                    newTariff.tariffActive
-                      ? 1
-                      : 0 || formik.values.active === '1'
-                  }
+                  checked={formik.values.active === '1'}
                   className="text-blue-500 form-radio h-4 w-4"
                 />
                 <span className="ml-2">Active</span>
@@ -176,7 +174,7 @@ const AddTariff = () => {
                   name="active"
                   onChange={() => formik.setFieldValue('active', '0')}
                   onBlur={formik.handleBlur}
-                  value="1"
+                  value="0"
                   checked={formik.values.active === '0'}
                   className="text-blue-500 form-radio h-4 w-4"
                 />

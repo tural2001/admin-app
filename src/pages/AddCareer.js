@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, { useCallback, useEffect, useState } from 'react';
 import CustomInput from '../components/CustomInput';
 import { useDispatch, useSelector } from 'react-redux';
@@ -45,16 +46,12 @@ const AddCareer = () => {
     updatedcareer,
   } = newcareer;
 
-  const onDrop = useCallback(
-    (acceptedFiles) => {
-      formik.setFieldValue('cv', acceptedFiles);
-      dispatch(uploadImg(acceptedFiles));
-      setIsFileDetected(true);
-    },
-    // eslint-disable-next-line no-use-before-define, react-hooks/exhaustive-deps
-    []
-  );
-  const imageState = useSelector((state) => state.upload.images.url);
+  const onDrop = useCallback((acceptedFiles) => {
+    formik.setFieldValue('cv', acceptedFiles);
+    dispatch(uploadImg(acceptedFiles));
+    setIsFileDetected(true);
+  }, []);
+  // const imageState = useSelector((state) => state.upload.images.url);
 
   useEffect(() => {
     if (getcareerId !== undefined) {
@@ -119,6 +116,14 @@ const AddCareer = () => {
     },
   });
 
+  useEffect(() => {
+    if (getcareerId === undefined) {
+      formik.setFieldValue('active', '1');
+    } else {
+      formik.setFieldValue('active', newcareer.campaignActive ? '1' : '0');
+    }
+  }, []);
+
   return (
     <div>
       <h3 className="mb-4 title">
@@ -159,14 +164,10 @@ const AddCareer = () => {
                 <input
                   type="radio"
                   name="active"
-                  onChange={formik.handleChange}
+                  onChange={() => formik.setFieldValue('active', '1')}
                   onBlur={formik.handleBlur}
                   value="1"
-                  checked={
-                    newcareer.careerActive
-                      ? 1
-                      : 0 || formik.values.active === '1'
-                  }
+                  checked={formik.values.active === '1'}
                   className="text-blue-500 form-radio h-4 w-4"
                 />
                 <span className="ml-2">Active</span>
@@ -175,7 +176,7 @@ const AddCareer = () => {
                 <input
                   type="radio"
                   name="active"
-                  onChange={formik.handleChange}
+                  onChange={() => formik.setFieldValue('active', '0')}
                   onBlur={formik.handleBlur}
                   value="0"
                   checked={formik.values.active === '0'}

@@ -97,7 +97,7 @@ const Addsetting = (e) => {
         <form
           onSubmit={(e) => {
             e.preventDefault();
-            const requiredFields = ['question', 'answer', 'active'];
+            const requiredFields = ['question', 'answer'];
             const errors = {};
             requiredFields.forEach((fieldName) => {
               if (formik.touched[fieldName] && !formik.values[fieldName]) {

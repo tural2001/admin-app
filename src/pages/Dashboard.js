@@ -4,7 +4,6 @@ import { useDispatch, useSelector } from 'react-redux';
 import { getvacancies } from '../features/vacancies/vacaciesSlice';
 import { getfaqforms } from '../features/faqform/faqformSlice';
 import { getcareers } from '../features/career/careerSlice';
-import Popup from 'reactjs-popup';
 const Dashboard = () => {
   const dispatch = useDispatch();
 
@@ -15,8 +14,6 @@ const Dashboard = () => {
     dispatch(getcareers());
   }, [dispatch]);
 
-  const campaignState = useSelector((state) => state.campaign?.campaigns?.data);
-  const vacancyState = useSelector((state) => state.vacancy?.vacancies?.data);
   const faqformState = useSelector((state) => state.faqform?.faqforms?.data);
   const careerformState = useSelector((state) => state.career?.careers?.data);
 
@@ -140,38 +137,16 @@ const Dashboard = () => {
                   <td className="px-6 py-4">{faqform.email}</td>
                   <td className="px-6 py-4">{faqform.vacancy_name}</td>
                   <td className="px-6 py-4">{faqform.notes}</td>
-                  <Popup
-                    trigger={
-                      <button>
-                        {' '}
-                        <img
-                          src="https://azeronline.netlify.app/static/media/blog2.891d84e7b5ab348201fd.png"
-                          alt=""
-                          width={150}
-                          height={50}
-                        />{' '}
-                      </button>
-                    }
-                    modal
-                    nested
-                    contentStyle={{
-                      padding: '0px',
-                      borderRadius: '50px',
-                      borderColor: 'white',
-                      width: '1110px',
-                      height: '575px',
-                      overflow: 'hidden',
-                    }}
-                  >
-                    <div>
-                      <img
-                        src="https://azeronline.netlify.app/static/media/blog2.891d84e7b5ab348201fd.png"
-                        alt=""
-                        width={1110}
-                        height={50}
-                      />{' '}
-                    </div>
-                  </Popup>
+                  <td className="px-6 py-4">
+                    {' '}
+                    <a
+                      href={faqform.cv}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      {faqform.cv}
+                    </a>
+                  </td>
                 </tr>
               ))}
             </tbody>

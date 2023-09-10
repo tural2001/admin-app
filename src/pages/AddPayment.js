@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, { useCallback, useEffect, useState } from 'react';
 import CustomInput from '../components/CustomInput';
 import { useDispatch, useSelector } from 'react-redux';
@@ -123,6 +124,13 @@ const AddPayment = () => {
     },
   });
 
+  useEffect(() => {
+    if (getPaymentId === undefined) {
+      formik.setFieldValue('active', '1');
+    } else {
+      formik.setFieldValue('active', newPayment.paymentActive ? '1' : '0');
+    }
+  }, []);
   return (
     <div>
       <h3 className="mb-4 title">
@@ -161,14 +169,10 @@ const AddPayment = () => {
                 <input
                   type="radio"
                   name="active"
-                  onChange={formik.handleChange}
+                  onChange={() => formik.setFieldValue('active', '1')}
                   onBlur={formik.handleBlur}
                   value="1"
-                  checked={
-                    newPayment.paymentActive
-                      ? 1
-                      : 0 || formik.values.active === '1'
-                  }
+                  checked={formik.values.active === '1'}
                   className="text-blue-500 form-radio h-4 w-4"
                 />
                 <span className="ml-2">Active</span>
@@ -177,7 +181,7 @@ const AddPayment = () => {
                 <input
                   type="radio"
                   name="active"
-                  onChange={formik.handleChange}
+                  onChange={() => formik.setFieldValue('active', '0')}
                   onBlur={formik.handleBlur}
                   value="0"
                   checked={formik.values.active === '0'}

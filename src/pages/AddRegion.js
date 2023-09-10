@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, { useEffect } from 'react';
 import CustomInput from '../components/CustomInput';
 import { useDispatch, useSelector } from 'react-redux';
@@ -107,6 +108,14 @@ const AddRegion = () => {
       }
     },
   });
+
+  useEffect(() => {
+    if (getregionId === undefined) {
+      formik.setFieldValue('active', '1');
+    } else {
+      formik.setFieldValue('active', newRegion.regionActive ? '1' : '0');
+    }
+  }, []);
   return (
     <div>
       <h3 className="mb-4 title">
@@ -148,11 +157,7 @@ const AddRegion = () => {
                   onChange={() => formik.setFieldValue('active', '1')}
                   onBlur={formik.handleBlur}
                   value="1"
-                  checked={
-                    newRegion.regionActive
-                      ? 1
-                      : 0 || formik.values.active === '1'
-                  }
+                  checked={formik.values.active === '1'}
                   className="text-blue-500 form-radio h-4 w-4"
                 />
                 <span className="ml-2">Active</span>
@@ -163,7 +168,7 @@ const AddRegion = () => {
                   name="active"
                   onChange={() => formik.setFieldValue('active', '0')}
                   onBlur={formik.handleBlur}
-                  value="1"
+                  value="0"
                   checked={formik.values.active === '0'}
                   className="text-blue-500 form-radio h-4 w-4"
                 />

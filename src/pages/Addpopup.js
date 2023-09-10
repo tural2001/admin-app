@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, { useCallback, useEffect, useState } from 'react';
 import CustomInput from '../components/CustomInput';
 import { useDispatch, useSelector } from 'react-redux';
@@ -94,7 +95,7 @@ const Addpopup = () => {
       content: popupContent || '',
       active: popupActive ? 1 : 0,
       handle: popupHandle || '',
-      image: typeof popupImage === 'string' ? popupImage : null,
+      image: popupImage || null,
     },
     validationSchema: schema,
     onSubmit: (values) => {
@@ -110,6 +111,14 @@ const Addpopup = () => {
       }
     },
   });
+
+  useEffect(() => {
+    if (getPopupId === undefined) {
+      formik.setFieldValue('active', '1');
+    } else {
+      formik.setFieldValue('active', newPopup.popupActive ? '1' : '0');
+    }
+  }, []);
 
   return (
     <div>
@@ -139,17 +148,15 @@ const Addpopup = () => {
             Status
           </label>
           <div className="my-2">
-            <div className="mt-3">
+            <div className="mt-1">
               <label className="inline-flex items-center">
                 <input
                   type="radio"
                   name="active"
-                  onChange={formik.handleChange}
+                  onChange={() => formik.setFieldValue('active', '1')}
                   onBlur={formik.handleBlur}
                   value="1"
-                  checked={
-                    newPopup.popupActive ? 1 : 0 || formik.values.active === '1'
-                  }
+                  checked={formik.values.active === '1'}
                   className="text-blue-500 form-radio h-4 w-4"
                 />
                 <span className="ml-2">Active</span>
@@ -158,7 +165,7 @@ const Addpopup = () => {
                 <input
                   type="radio"
                   name="active"
-                  onChange={formik.handleChange}
+                  onChange={() => formik.setFieldValue('active', '0')}
                   onBlur={formik.handleBlur}
                   value="0"
                   checked={formik.values.active === '0'}

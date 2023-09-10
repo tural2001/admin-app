@@ -3,7 +3,7 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Dashboard from './pages/Dashboard';
 import Login from './pages/Login';
 import MainLayout from './components/MainLayout';
-import FaqList from './pages/FaqFormList';
+import FaqList from './pages/FaqList';
 import { PrivateRoutes } from './routing/PrivateRoutes';
 import { OpenRoutes } from './routing//OpenRoutes';
 import Addfaq from './pages/Addfaq';

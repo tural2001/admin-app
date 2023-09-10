@@ -112,9 +112,6 @@ const AddFaqForm = (e) => {
               toast.error('Please fill in the required fields.');
               return;
             }
-
-            // Update the 'active' value in formik.values based on the state
-
             formik.handleSubmit(e);
           }}
         >

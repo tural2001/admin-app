@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, { useEffect } from 'react';
 import CustomInput from '../components/CustomInput';
 import { useFormik } from 'formik';
@@ -89,6 +90,13 @@ const AddCountry = (e) => {
     },
   });
 
+  useEffect(() => {
+    if (getcountryId === undefined) {
+      formik.setFieldValue('active', '1');
+    } else {
+      formik.setFieldValue('active', newCountry.countryActive ? '1' : '0');
+    }
+  }, []);
   return (
     <div>
       <h3 className="mb-4 title">
@@ -125,14 +133,10 @@ const AddCountry = (e) => {
                     onChange={() => formik.setFieldValue('active', '1')}
                     onBlur={formik.handleBlur}
                     value="1"
-                    checked={
-                      newCountry.countryActive
-                        ? 1
-                        : 0 || formik.values.active === '1'
-                    }
+                    checked={formik.values.active === '1'}
                     className="text-blue-500 form-radio h-4 w-4"
                   />
-                  <span className={`ml-2`}>Active</span>
+                  <span className="ml-2">Active</span>
                 </label>
                 <label className="inline-flex items-center ml-6">
                   <input
@@ -144,7 +148,6 @@ const AddCountry = (e) => {
                     checked={formik.values.active === '0'}
                     className="text-blue-500 form-radio h-4 w-4"
                   />
-
                   <span className="ml-2">Not Active</span>
                 </label>
               </div>

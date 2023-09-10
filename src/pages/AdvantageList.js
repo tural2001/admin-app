@@ -5,7 +5,6 @@ import CustomModal from '../components/CustomModal';
 import { VscEdit } from 'react-icons/vsc';
 import { RiDeleteBin5Line } from 'react-icons/ri';
 import { toast } from 'react-toastify';
-
 import Popup from 'reactjs-popup';
 import ReactPaginate from 'react-paginate';
 import { BsArrowLeft, BsArrowRight } from 'react-icons/bs';
@@ -57,6 +56,10 @@ const AdvantageList = () => {
   const handlePageClick = (data) => {
     setCurrentPage(data.selected);
   };
+
+  // useEffect(() => {
+  //   formik.setFieldValue('active', new. ? '0' : '1');
+  // }, [newVacancy.vacancyActive]);
 
   return (
     <div>

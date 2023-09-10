@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, { useCallback, useEffect, useState } from 'react';
 import CustomInput from '../components/CustomInput';
 import { useDispatch, useSelector } from 'react-redux';
@@ -40,10 +41,12 @@ const AddSlide = () => {
     createdSlide,
     slideTitle,
     slideOrder,
+
     slideShow_button,
     slideButton_text,
     slideButton_link,
     slideDescription,
+    slideActive,
     updatedSlide,
     slideImage,
   } = newslide;
@@ -94,6 +97,7 @@ const AddSlide = () => {
     slideButton_link,
     slideDescription,
     updatedSlide,
+    slideActive,
     slideImage,
     navigate,
   ]);
@@ -102,7 +106,7 @@ const AddSlide = () => {
     enableReinitialize: true,
     initialValues: {
       title: slideTitle || '',
-      active: slideTitle ? 1 : 0,
+      active: slideActive ? 1 : 0,
       order: slideOrder || '',
       show_button: slideShow_button ? 1 : 0,
       button_text: slideButton_text || '',
@@ -125,8 +129,13 @@ const AddSlide = () => {
     },
   });
 
-  console.log(newslide.slideOrder);
-
+  useEffect(() => {
+    if (getslideId === undefined) {
+      formik.setFieldValue('active', '1');
+    } else {
+      formik.setFieldValue('active', newslide.slideActive ? '1' : '0');
+    }
+  }, []);
   return (
     <div>
       <h3 className="mb-4 title">
@@ -136,16 +145,7 @@ const AddSlide = () => {
         <form
           onSubmit={(e) => {
             e.preventDefault();
-            const requiredFields = [
-              'title',
-              'order',
-              'active',
-              'show_button',
-              'button_text',
-              'button_link',
-              'description',
-              'image',
-            ];
+            const requiredFields = ['title', 'description', 'image'];
             const errors = {};
 
             requiredFields.forEach((fieldName) => {
@@ -172,12 +172,10 @@ const AddSlide = () => {
                 <input
                   type="radio"
                   name="active"
-                  onChange={formik.handleChange}
+                  onChange={() => formik.setFieldValue('active', '1')}
                   onBlur={formik.handleBlur}
                   value="1"
-                  checked={
-                    newslide.slideActive ? 1 : 0 || formik.values.active === '1'
-                  }
+                  checked={formik.values.active === '1'}
                   className="text-blue-500 form-radio h-4 w-4"
                 />
                 <span className="ml-2">Active</span>
@@ -186,7 +184,7 @@ const AddSlide = () => {
                 <input
                   type="radio"
                   name="active"
-                  onChange={formik.handleChange}
+                  onChange={() => formik.setFieldValue('active', '0')}
                   onBlur={formik.handleBlur}
                   value="0"
                   checked={formik.values.active === '0'}
