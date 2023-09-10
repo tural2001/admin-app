@@ -11,6 +11,7 @@ import {
 } from '../features/reviews/reviewsSlice';
 import ReactPaginate from 'react-paginate';
 import { BsArrowLeft, BsArrowRight } from 'react-icons/bs';
+import Popup from 'reactjs-popup';
 
 const ReviewList = () => {
   const [open, setOpen] = useState(false);
@@ -60,7 +61,7 @@ const ReviewList = () => {
           to={`/admin/review`}
           className="flex justify-center items-center pr-3 gap-1 rounded-lg add_button_2"
         >
-          <span className="mb-1 ml-2 text-[30px] hover:text-white">+</span> Add
+          <span className="mb-1 ml-2 text-[30px] hover:text-white">+</span>
           Add Review
         </Link>
       </div>
@@ -73,52 +74,16 @@ const ReviewList = () => {
                   No
                 </th>
                 <th scope="col" className="px-6 py-3">
-                  <div className="flex items-center">
-                    Status
-                    <a href="#/">
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        className="w-3 h-3 ml-1"
-                        aria-hidden="true"
-                        fill="currentColor"
-                        viewBox="0 0 320 512"
-                      >
-                        <path d="M27.66 224h264.7c24.6 0 36.89-29.78 19.54-47.12l-132.3-136.8c-5.406-5.406-12.47-8.107-19.53-8.107c-7.055 0-14.09 2.701-19.45 8.107L8.119 176.9C-9.229 194.2 3.055 224 27.66 224zM292.3 288H27.66c-24.6 0-36.89 29.77-19.54 47.12l132.5 136.8C145.9 477.3 152.1 480 160 480c7.053 0 14.12-2.703 19.53-8.109l132.3-136.8C329.2 317.8 316.9 288 292.3 288z" />
-                      </svg>
-                    </a>
-                  </div>
+                  <div className="flex items-center">Status</div>
                 </th>
                 <th scope="col" className="px-6 py-3">
-                  <div className="flex items-center">
-                    Reviewer name
-                    <a href="#/">
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        className="w-3 h-3 ml-1"
-                        aria-hidden="true"
-                        fill="currentColor"
-                        viewBox="0 0 320 512"
-                      >
-                        <path d="M27.66 224h264.7c24.6 0 36.89-29.78 19.54-47.12l-132.3-136.8c-5.406-5.406-12.47-8.107-19.53-8.107c-7.055 0-14.09 2.701-19.45 8.107L8.119 176.9C-9.229 194.2 3.055 224 27.66 224zM292.3 288H27.66c-24.6 0-36.89 29.77-19.54 47.12l132.5 136.8C145.9 477.3 152.1 480 160 480c7.053 0 14.12-2.703 19.53-8.109l132.3-136.8C329.2 317.8 316.9 288 292.3 288z" />
-                      </svg>
-                    </a>
-                  </div>
+                  <div className="flex items-center">Reviewer name</div>
                 </th>
                 <th scope="col" className="px-6 py-3">
-                  <div className="flex items-center">
-                    comment
-                    <a href="#/">
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        className="w-3 h-3 ml-1"
-                        aria-hidden="true"
-                        fill="currentColor"
-                        viewBox="0 0 320 512"
-                      >
-                        <path d="M27.66 224h264.7c24.6 0 36.89-29.78 19.54-47.12l-132.3-136.8c-5.406-5.406-12.47-8.107-19.53-8.107c-7.055 0-14.09 2.701-19.45 8.107L8.119 176.9C-9.229 194.2 3.055 224 27.66 224zM292.3 288H27.66c-24.6 0-36.89 29.77-19.54 47.12l132.5 136.8C145.9 477.3 152.1 480 160 480c7.053 0 14.12-2.703 19.53-8.109l132.3-136.8C329.2 317.8 316.9 288 292.3 288z" />
-                      </svg>
-                    </a>
-                  </div>
+                  <div className="flex items-center">comment</div>
+                </th>
+                <th scope="col" className="px-6 py-3">
+                  <div className="flex items-center">Image</div>
                 </th>
                 <th scope="col" className="px-6 py-3"></th>
               </tr>
@@ -140,15 +105,45 @@ const ReviewList = () => {
                       review.active === true ? 'text-green-500' : 'text-red-500'
                     }`}
                   >
-                    {/* {review.active === true ? (
-                      <img src={active} alt="" />
-                    ) : (
-                      <img src={notactive} alt="" />
-                    )} */}
                     {review.active === true ? 'Active' : 'Not Active'}
                   </td>
                   <td className="px-6 py-4">{review.reviewer_name}</td>
                   <td className="px-6 py-4">{review.comment}</td>
+                  {/* <td className="px-6 py-4">{review.reviewer_image}</td> */}
+                  <td className="px-6 py-4">
+                    <Popup
+                      trigger={
+                        <button>
+                          {' '}
+                          <img
+                            src="https://azeronline.netlify.app/static/media/blog2.891d84e7b5ab348201fd.png"
+                            alt=""
+                            width={150}
+                            height={50}
+                          />{' '}
+                        </button>
+                      }
+                      modal
+                      nested
+                      contentStyle={{
+                        padding: '0px',
+                        borderRadius: '50px',
+                        borderColor: 'white',
+                        width: '1110px',
+                        height: '575px',
+                        overflow: 'hidden',
+                      }}
+                    >
+                      <div>
+                        <img
+                          src="https://azeronline.netlify.app/static/media/blog2.891d84e7b5ab348201fd.png"
+                          alt=""
+                          width={1110}
+                          height={50}
+                        />{' '}
+                      </div>
+                    </Popup>
+                  </td>
                   <td className="px-6 py-4 flex gap-2">
                     <Link
                       to={`/admin/review/${reviewstate[index]?.id}`}

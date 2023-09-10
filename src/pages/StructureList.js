@@ -67,7 +67,7 @@ const StructureList = () => {
           to={`/admin/structure`}
           className="flex justify-center items-center pr-3 gap-1 rounded-lg add_button_2"
         >
-          <span className="mb-1 ml-2 text-[30px] hover:text-white">+</span> Add
+          <span className="mb-1 ml-2 text-[30px] hover:text-white">+</span>
           Add Structure
         </Link>
       </div>

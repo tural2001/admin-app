@@ -13,6 +13,7 @@ import {
 } from '../features/popup/popupSlice';
 import { useLocation, useNavigate } from 'react-router-dom';
 import Dropzone from 'react-dropzone';
+import { uploadImg } from '../features/upload/uploadSlice';
 
 let schema = yup.object({
   content: yup.string().required('Content is Required'),
@@ -43,11 +44,13 @@ const Addpopup = () => {
   const onDrop = useCallback(
     (acceptedFiles) => {
       formik.setFieldValue('image', acceptedFiles);
+      dispatch(uploadImg(acceptedFiles));
       setIsFileDetected(true);
     },
     // eslint-disable-next-line no-use-before-define, react-hooks/exhaustive-deps
     []
   );
+  const imageState = useSelector((state) => state.upload.images.url);
 
   useEffect(() => {
     if (getPopupId !== undefined) {
@@ -274,7 +277,7 @@ const Addpopup = () => {
               </div>
             </div>
             <div className="mt-[70px] w-[200px]">
-              <img src={newPopup.popupImage} alt="" />
+              <img src={imageState ? imageState : ''} alt="" />
             </div>
           </div>
           <button

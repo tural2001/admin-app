@@ -25,12 +25,15 @@ import { Layout, Menu, theme } from 'antd';
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
+  advantage,
   campaign,
   channel,
+  color,
   country,
   dashboard,
   form,
   logo,
+  ourvalue,
   page,
   partner,
   payment,
@@ -81,6 +84,9 @@ const MainLayout = () => {
       '/admin/faq-list': 'faq-list',
       '/admin/channel-list': 'channel-list',
       '/admin/campaign-list': 'campaign-list',
+      '/admin/advantage-list': 'advantage-list',
+      '/admin/our-value-list': 'our-value-list',
+      '/admin/color-list': 'color-list',
       '/admin/partner-list': 'partner-list',
       '/admin/payment-list': 'payment-list',
       '/admin/region-list': 'region-list',
@@ -131,9 +137,29 @@ const MainLayout = () => {
               label: 'Dashboard',
             },
             {
+              key: 'advantage-list',
+              icon: <img src={advantage} className="w-6" alt="" />,
+              label: 'Advantage List',
+            },
+            {
               key: 'campaign-list',
               icon: <img src={campaign} className="w-6" alt="" />,
               label: 'Campaign List',
+            },
+            {
+              key: 'color-list',
+              icon: <img src={color} className="w-6" alt="" />,
+              label: 'Color List',
+            },
+            {
+              key: 'career-form-list',
+              icon: <img src={form} className="w-6" alt="" />,
+              label: 'Career Form List',
+            },
+            {
+              key: 'faq-form-list',
+              icon: <img src={form} className="w-6" alt="" />,
+              label: 'Faq Form List',
             },
             {
               key: 'channel-list',
@@ -154,6 +180,11 @@ const MainLayout = () => {
               key: 'faq-list',
               icon: <FcFaq className="fs-4" />,
               label: 'Faq List',
+            },
+            {
+              key: 'our-value-list',
+              icon: <img src={ourvalue} className="w-6" alt="" />,
+              label: 'Our-Value List',
             },
             {
               key: 'payment-list',

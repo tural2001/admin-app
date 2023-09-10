@@ -9,54 +9,54 @@ const initialState = {
   message: '',
 };
 
-export const getColors = createAsyncThunk(
-  'color/get-colors',
+export const getcolors = createAsyncThunk(
+  'colors/get-color',
   async (thunkAPI) => {
     try {
-      return await colorService.getColors();
+      return await colorService.getcolors();
     } catch (error) {
       return thunkAPI.rejectWithValue(error);
     }
   }
 );
-export const getAColor = createAsyncThunk(
+
+export const getAcolor = createAsyncThunk(
   'color/get-color',
   async (id, thunkAPI) => {
     try {
-      return await colorService.getColor(id);
+      return await colorService.getcolor(id);
     } catch (error) {
       return thunkAPI.rejectWithValue(error);
     }
   }
 );
-
-export const deleteAColor = createAsyncThunk(
+export const deleteAcolor = createAsyncThunk(
   'color/delete-color',
   async (id, thunkAPI) => {
     try {
-      return await colorService.deleteColor(id);
+      return await colorService.deletecolor(id);
     } catch (error) {
       return thunkAPI.rejectWithValue(error);
     }
   }
 );
 
-export const createColor = createAsyncThunk(
+export const createAcolor = createAsyncThunk(
   'color/create-color',
   async (colorData, thunkAPI) => {
     try {
-      return await colorService.createColor(colorData);
+      return await colorService.createcolor(colorData);
     } catch (error) {
       return thunkAPI.rejectWithValue(error);
     }
   }
 );
 
-export const updateAColor = createAsyncThunk(
+export const updateAcolor = createAsyncThunk(
   'color/update-color',
   async (color, thunkAPI) => {
     try {
-      return await colorService.updateColor(color);
+      return await colorService.updatecolor(color);
     } catch (error) {
       return thunkAPI.rejectWithValue(error);
     }
@@ -71,76 +71,78 @@ export const colorSlice = createSlice({
   reducers: {},
   extraReducers: (builder) => {
     builder
-      .addCase(getColors.pending, (state) => {
+      .addCase(getcolors.pending, (state) => {
         state.isLoading = true;
       })
-      .addCase(getColors.fulfilled, (state, action) => {
+      .addCase(getcolors.fulfilled, (state, action) => {
         state.isLoading = false;
         state.isSuccess = true;
         state.isError = false;
         state.colors = action.payload;
       })
-      .addCase(getColors.rejected, (state, action) => {
+      .addCase(getcolors.rejected, (state, action) => {
         state.isLoading = false;
         state.isSuccess = false;
         state.isError = true;
         state.message = action.error;
       })
-      .addCase(createColor.pending, (state) => {
+      .addCase(createAcolor.pending, (state) => {
         state.isLoading = true;
       })
-      .addCase(createColor.fulfilled, (state, action) => {
+      .addCase(createAcolor.fulfilled, (state, action) => {
         state.isLoading = false;
         state.isSuccess = true;
         state.isError = false;
-        state.createdColor = action.payload;
+        state.createdcolor = action.payload;
       })
-      .addCase(createColor.rejected, (state, action) => {
+      .addCase(createAcolor.rejected, (state, action) => {
         state.isLoading = false;
         state.isSuccess = false;
         state.isError = true;
         state.message = action.error;
       })
-      .addCase(getAColor.pending, (state) => {
+      .addCase(getAcolor.pending, (state) => {
         state.isLoading = true;
       })
-      .addCase(getAColor.fulfilled, (state, action) => {
+      .addCase(getAcolor.fulfilled, (state, action) => {
         state.isLoading = false;
         state.isSuccess = true;
         state.isError = false;
-        state.colorName = action.payload.name;
+        state.colorName = action.payload.data.name;
+        state.colorCode = action.payload.data.code;
+        state.colorActive = action.payload.data.active;
       })
-      .addCase(getAColor.rejected, (state, action) => {
+      .addCase(getAcolor.rejected, (state, action) => {
         state.isLoading = false;
         state.isSuccess = false;
         state.isError = true;
         state.message = action.error;
       })
-      .addCase(updateAColor.pending, (state) => {
+      .addCase(updateAcolor.pending, (state) => {
         state.isLoading = true;
       })
-      .addCase(updateAColor.fulfilled, (state, action) => {
+      .addCase(updateAcolor.fulfilled, (state, action) => {
         state.isLoading = false;
         state.isSuccess = true;
         state.isError = false;
-        state.updatedColor = action.payload;
+        state.updatedcolor = action.payload;
       })
-      .addCase(updateAColor.rejected, (state, action) => {
+      .addCase(updateAcolor.rejected, (state, action) => {
         state.isLoading = false;
         state.isSuccess = false;
         state.isError = true;
         state.message = action.error;
       })
-      .addCase(deleteAColor.pending, (state) => {
+      .addCase(deleteAcolor.pending, (state) => {
         state.isLoading = true;
       })
-      .addCase(deleteAColor.fulfilled, (state, action) => {
+      .addCase(deleteAcolor.fulfilled, (state, action) => {
         state.isLoading = false;
         state.isSuccess = true;
         state.isError = false;
-        state.deletedColor = action.payload;
+        state.deletedcolor = action.payload;
       })
-      .addCase(deleteAColor.rejected, (state, action) => {
+      .addCase(deleteAcolor.rejected, (state, action) => {
         state.isLoading = false;
         state.isSuccess = false;
         state.isError = true;

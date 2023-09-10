@@ -14,6 +14,7 @@ import {
 } from '../features/campaigns/campaignsSlice';
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
+import { uploadImg } from '../features/upload/uploadSlice';
 
 let schema = yup.object({
   name: yup.string().required('Name is Required'),
@@ -45,10 +46,13 @@ const AddCampaign = () => {
   const onDrop = useCallback(
     (acceptedFiles) => {
       formik.setFieldValue('image', acceptedFiles);
+      dispatch(uploadImg(acceptedFiles));
       setIsFileDetected(true);
-    }, // eslint-disable-next-line no-use-before-define, react-hooks/exhaustive-deps
+    },
+    // eslint-disable-next-line no-use-before-define, react-hooks/exhaustive-deps
     []
   );
+  const imageState = useSelector((state) => state.upload.images.url);
 
   useEffect(() => {
     if (getCampaignId !== undefined) {
@@ -191,9 +195,6 @@ const AddCampaign = () => {
               </label>
             </div>
           </div>
-          <div className="error">
-            {formik.touched.active && formik.errors.active}
-          </div>
           <label htmlFor="">Name</label>
           <CustomInput
             type="text"
@@ -300,10 +301,7 @@ const AddCampaign = () => {
                   </div>
                 </div>
                 <div className="mt-[70px] w-[200px]">
-                  <img
-                    src="https://img.freepik.com/free-psd/google-icon-isolated-3d-render-illustration_47987-9777.jpg?w=2000"
-                    alt=""
-                  />
+                  <img src={imageState ? imageState : ''} alt="" />
                 </div>
               </div>
             </div>

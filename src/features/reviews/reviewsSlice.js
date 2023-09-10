@@ -35,7 +35,16 @@ export const createAreview = createAsyncThunk(
   'reviews/create-review',
   async (reviewData, thunkAPI) => {
     try {
-      return await reviewsService.createReview(reviewData);
+      const formdata = new FormData();
+      formdata.append('reviewer_name', reviewData.reviewer_name);
+      formdata.append('comment', reviewData.comment);
+      formdata.append(
+        'reviewer_image',
+        reviewData.reviewer_image[0],
+        reviewData.reviewer_image[0].name
+      );
+      const response = await reviewsService.createReview(formdata);
+      return response.data;
     } catch (error) {
       return thunkAPI.rejectWithValue(error);
     }
@@ -53,9 +62,26 @@ export const deleteAreview = createAsyncThunk(
 );
 export const updateAreview = createAsyncThunk(
   'reviews/update-review',
-  async (review, thunkAPI) => {
+  async (reviewData, thunkAPI) => {
+    console.log(reviewData);
     try {
-      return await reviewsService.updateReview(review);
+      const formdata = new FormData();
+      formdata.append('active', reviewData.review.active);
+      formdata.append('reviewer_name', reviewData.review.reviewer_name);
+      formdata.append('comment', reviewData.review.comment);
+      if (reviewData.review.reviewer_image[0] instanceof File) {
+        formdata.append(
+          'reviewer_image',
+          reviewData.review.reviewer_image[0],
+          reviewData.review.reviewer_image[0].name
+        );
+      }
+      formdata.append('_method', 'PUT');
+      const response = await reviewsService.updateReview(
+        formdata,
+        reviewData.id
+      );
+      return response.data;
     } catch (error) {
       return thunkAPI.rejectWithValue(error);
     }
@@ -108,9 +134,9 @@ export const reviewsSlice = createSlice({
         state.isSuccess = true;
         state.isError = false;
         state.reviewActive = action.payload.data?.active;
-        state.reviewShow_on_home_page = action.payload.data?.show_on_home_page;
         state.reviewReviewer_name = action.payload.data?.reviewer_name;
         state.reviewComment = action.payload.data?.comment;
+        state.reviewReviewer_image = action.payload.data?.reviewer_image;
       })
       .addCase(getAreview.rejected, (state, action) => {
         state.isLoading = false;

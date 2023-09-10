@@ -12,12 +12,13 @@ import {
   resetState,
   updateAregion,
 } from '../features/regions/regionSlice';
+import { getcolors } from '../features/color/colorSlice';
 
 let schema = yup.object({
   name: yup.string().required('Name is Required'),
   description: yup.string().required('Description is Required'),
   active: yup.string(),
-  color: yup.string().required('Color is Required'),
+  color_id: yup.string().required('Color is Required'),
   handle: yup.string(),
 });
 const AddRegion = () => {
@@ -73,11 +74,15 @@ const AddRegion = () => {
     regionDescription,
     regionActive,
     regionHandle,
-
     regionColor,
     updatedRegion,
     navigate,
   ]);
+  useEffect(() => {
+    dispatch(getcolors());
+  }, []);
+  const colorState = useSelector((state) => state.color.colors.data);
+  console.log(colorState);
 
   const formik = useFormik({
     enableReinitialize: true,
@@ -85,7 +90,7 @@ const AddRegion = () => {
       name: regionName || '',
       description: regionDescription || '',
       active: regionActive ? 1 : 0,
-      color: regionColor || 'black',
+      color_id: regionColor || '',
       handle: regionHandle || '',
     },
     validationSchema: schema,
@@ -111,7 +116,12 @@ const AddRegion = () => {
         <form
           onSubmit={(e) => {
             e.preventDefault();
-            const requiredFields = ['name', 'description', 'active', 'color'];
+            const requiredFields = [
+              'name',
+              'description',
+              'active',
+              'color_id',
+            ];
             const errors = {};
             requiredFields.forEach((fieldName) => {
               if (formik.touched[fieldName] && !formik.values[fieldName]) {
@@ -207,16 +217,23 @@ const AddRegion = () => {
           <label htmlFor="" className="mt-2">
             Color
           </label>
-          <CustomInput
-            type="color"
-            label="Enter Region Color"
-            name="color"
-            onCh={formik.handleChange('color')}
-            onBl={formik.handleBlur('color')}
-            val={formik.values.color}
-          />
+          <select
+            className="text-[#637381] mt-2 bg-inherit w text-[15px] font-medium rounded-lg block w-1/8 p-2.5 focus:ring-0 hom"
+            id="color"
+            name="color_id"
+            onChange={formik.handleChange('color_id')}
+            onBlur={formik.handleBlur('color_id')}
+            value={formik.values.color_id}
+          >
+            <option value="">Select Color</option>
+            {colorState?.map((color) => (
+              <option key={color.id} value={color.id}>
+                {color.name}
+              </option>
+            ))}
+          </select>
           <div className="error">
-            {formik.touched.color && formik.errors.color}
+            {formik.touched.color_id && formik.errors.color_id}
           </div>
           <button
             type="submit"

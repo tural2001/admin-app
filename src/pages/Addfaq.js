@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import CustomInput from '../components/CustomInput';
 import { useFormik } from 'formik';
 import * as yup from 'yup';
@@ -88,6 +88,7 @@ const Addfaq = (e) => {
       }
     },
   });
+  const [activeValue, setActiveValue] = useState(faqActive ? '1' : '0');
 
   return (
     <div>
@@ -109,6 +110,10 @@ const Addfaq = (e) => {
               toast.error('Please fill in the required fields.');
               return;
             }
+
+            // Update the 'active' value in formik.values based on the state
+            formik.setFieldValue('active', activeValue);
+
             formik.handleSubmit(e);
           }}
         >
@@ -123,12 +128,10 @@ const Addfaq = (e) => {
                   <input
                     type="radio"
                     name="active"
-                    onChange={() => formik.setFieldValue('active', '1')}
+                    onChange={() => setActiveValue('1')}
                     onBlur={formik.handleBlur}
                     value="1"
-                    checked={
-                      newFaq.faqActive ? 1 : 0 || formik.values.active === '1'
-                    }
+                    checked={activeValue === '1'}
                     className="text-blue-500 form-radio h-4 w-4"
                   />
                   <span className={`ml-2`}>Active</span>
@@ -137,13 +140,12 @@ const Addfaq = (e) => {
                   <input
                     type="radio"
                     name="active"
-                    onChange={() => formik.setFieldValue('active', '0')}
+                    onChange={() => setActiveValue('0')}
                     onBlur={formik.handleBlur}
                     value="0"
-                    checked={formik.values.active === '0'}
+                    checked={activeValue === '0'}
                     className="text-blue-500 form-radio h-4 w-4"
                   />
-
                   <span className="ml-2">Not Active</span>
                 </label>
               </div>

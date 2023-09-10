@@ -12,6 +12,7 @@ import {
   resetState,
   updateAchannel,
 } from '../features/channels/channelsSlice';
+import { uploadImg } from '../features/upload/uploadSlice';
 
 let schema = yup.object({
   name: yup.string().required('Name is Required'),
@@ -47,10 +48,13 @@ const Addchannel = () => {
   const onDrop = useCallback(
     (acceptedFiles) => {
       formik.setFieldValue('image', acceptedFiles);
+      dispatch(uploadImg(acceptedFiles));
       setIsFileDetected(true);
-    }, // eslint-disable-next-line no-use-before-define, react-hooks/exhaustive-deps
+    },
+    // eslint-disable-next-line no-use-before-define, react-hooks/exhaustive-deps
     []
   );
+  const imageState = useSelector((state) => state.upload.images.url);
 
   useEffect(() => {
     if (getchannelId !== undefined) {
@@ -316,10 +320,7 @@ const Addchannel = () => {
                   </div>
                 </div>
                 <div className="mt-[70px] w-[200px]">
-                  <img
-                    src="https://img.freepik.com/free-psd/google-icon-isolated-3d-render-illustration_47987-9777.jpg?w=2000"
-                    alt=""
-                  />
+                  <img src={imageState ? imageState : ''} alt="" />
                 </div>
               </div>
             </div>

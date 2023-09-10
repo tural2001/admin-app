@@ -11,19 +11,23 @@ import faqReducer from '../features/faq/faqSlice';
 import settingReducer from '../features/settings/settingSlice';
 import userReducer from '../features/users/usersSlice';
 import countryReducer from '../features/countries/countriesSlice';
-import colorReducer from '../features/color/colorSlice';
 import enquiryReducer from '../features/enquiry/enquirySlice';
 import uploadReducer from '../features/upload/uploadSlice';
 import partnerReducer from '../features/partners/partnersSlice';
 import structureReducer from '../features/structures/structuresSlice';
 import serviceReducer from '../features/services/servicesSlice';
 import paymentReducer from '../features/payments/paymentsSlice';
-import campaignReducer from '../features/campaigns/campaignsSlice';
+import campaignReducer from '../features/career/careerSlice';
 import channelReducer from '../features/channels/channelsSlice';
 import slideReducer from '../features/slides/slidesSlice';
 import regionReducer from '../features/regions/regionSlice';
 import postReducer from '../features/posts/postSlice';
 import formReducer from '../features/form/formSlice';
+import advantageReducer from '../features/advantages/advantagesSlice';
+import ourvalueReducer from '../features/ourvalues/OurValuesSlice';
+import colorReducer from '../features/color/colorSlice';
+import careerReducer from '../features/career/careerSlice';
+import faqformReducer from '../features/faqform/faqformSlice';
 
 export const store = configureStore({
   reducer: {
@@ -36,6 +40,9 @@ export const store = configureStore({
     region: regionReducer,
     field: formReducer,
     post: postReducer,
+    advantage: advantageReducer,
+    ourvalue: ourvalueReducer,
+    color: colorReducer,
     page: pageReducer,
     vacancy: vacancyReducer,
     structure: structureReducer,
@@ -43,12 +50,13 @@ export const store = configureStore({
     payment: paymentReducer,
     channel: channelReducer,
     campaign: campaignReducer,
+    career: careerReducer,
     slide: slideReducer,
     faq: faqReducer,
+    faqform: faqformReducer,
     setting: settingReducer,
     user: userReducer,
     country: countryReducer,
-    color: colorReducer,
     enquiry: enquiryReducer,
     upload: uploadReducer,
     partner: partnerReducer,

@@ -23,8 +23,14 @@ import active from './active.png';
 import notactive from './notactive.png';
 import menu from './menu.png';
 import user from './user.png';
+import color from './color.png';
+import advantage from './advantage.png';
+import ourvalue from './ourvalue.png';
 
 export {
+  ourvalue,
+  color,
+  advantage,
   user,
   menu,
   active,

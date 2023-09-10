@@ -12,6 +12,7 @@ import {
   resetState,
   updateApartner,
 } from '../features/partners/partnersSlice';
+import { uploadImg } from '../features/upload/uploadSlice';
 
 let schema = yup.object({
   name: yup.string().required('Name is Required'),
@@ -50,10 +51,12 @@ const AddPartner = () => {
   const onDrop = useCallback(
     (acceptedFiles) => {
       formik.setFieldValue('logo', acceptedFiles);
+      dispatch(uploadImg(acceptedFiles));
       setIsFileDetected(true);
     }, // eslint-disable-next-line no-use-before-define, react-hooks/exhaustive-deps
     []
   );
+  const imageState = useSelector((state) => state.upload.images.url);
 
   useEffect(() => {
     if (isSuccess && createdPartner) {
@@ -259,12 +262,7 @@ const AddPartner = () => {
               </div>
             </div>
             <div className="mt-[90px]">
-              <img
-                src="https://azeronline.netlify.app/static/media/blog2.891d84e7b5ab348201fd.png"
-                alt=""
-                width={250}
-                height={50}
-              />
+              <img src={imageState ? imageState : ''} alt="" />
             </div>
           </div>
           <button

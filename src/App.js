@@ -3,8 +3,7 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Dashboard from './pages/Dashboard';
 import Login from './pages/Login';
 import MainLayout from './components/MainLayout';
-import FaqList from './pages/FaqList';
-import Customers from './pages/Customers';
+import FaqList from './pages/FaqFormList';
 import { PrivateRoutes } from './routing/PrivateRoutes';
 import { OpenRoutes } from './routing//OpenRoutes';
 import Addfaq from './pages/Addfaq';
@@ -44,6 +43,16 @@ import FieldList from './pages/FieldList';
 import AddField from './pages/AddField';
 import SettingList from './pages/SettingList';
 import Addsetting from './pages/AddSetting';
+import AdvantageList from './pages/AdvantageList';
+import Addadvantage from './pages/AddAdvantage';
+import OurValueList from './pages/OurValueList';
+import AddOurValue from './pages/AddOurValue';
+import AddColor from './pages/AddColor';
+import ColorList from './pages/ColorList';
+import CareerList from './pages/CareerList';
+import AddCareer from './pages/AddCareer';
+import FaqFormList from './pages/FaqFormList';
+import AddFaqForm from './pages/AddFaqForm';
 
 function App() {
   return (
@@ -72,9 +81,24 @@ function App() {
           <Route path="setting-list" element={<SettingList />} />
           <Route path="setting/:id" element={<Addsetting />} />
           <Route path="setting" element={<Addsetting />} />
+          <Route path="faq-form-list" element={<FaqFormList />} />
+          <Route path="faq-form" element={<AddFaqForm />} />
+          <Route path="faq-form/:id" element={<AddFaqForm />} />
+          <Route path="color-list" element={<ColorList />} />
+          <Route path="color" element={<AddColor />} />
+          <Route path="color/:id" element={<AddColor />} />
+          <Route path="career-form-list" element={<CareerList />} />
+          <Route path="career-form" element={<AddCareer />} />
+          <Route path="carrer/:id" element={<AddCareer />} />
           <Route path="faq-list" element={<FaqList />} />
           <Route path="faq" element={<Addfaq />} />
           <Route path="faq/:id" element={<Addfaq />} />
+          <Route path="advantage-list" element={<AdvantageList />} />
+          <Route path="advantage" element={<Addadvantage />} />
+          <Route path="advantage/:id" element={<Addadvantage />} />
+          <Route path="our-value-list" element={<OurValueList />} />
+          <Route path="our-value" element={<AddOurValue />} />
+          <Route path="our-value/:id" element={<AddOurValue />} />
           <Route path="region-list" element={<RegionList />} />
           <Route path="region" element={<AddRegion />} />
           <Route path="region/:id" element={<AddRegion />} />
@@ -96,7 +120,6 @@ function App() {
           <Route path="tariff-list" element={<TariffList />} />
           <Route path="tariff" element={<AddTariff />} />
           <Route path="tariff/:id" element={<AddTariff />} />
-          <Route path="customers" element={<Customers />} />
           <Route path="review-list" element={<ReviewList />} />
           <Route path="review" element={<Addreview />} />
           <Route path="review/:id" element={<Addreview />} />

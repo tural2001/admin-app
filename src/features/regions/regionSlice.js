@@ -64,7 +64,7 @@ export const updateAregion = createAsyncThunk(
       formdata.append('name', regionData.regionData.name);
       formdata.append('description', regionData.regionData.description);
       formdata.append('handle', regionData.regionData.handle);
-      formdata.append('color', regionData.regionData.color);
+      formdata.append('color_id', regionData.regionData.color_id);
       formdata.append('_method', 'PUT');
 
       const response = await regionService.updateregion(
@@ -125,7 +125,7 @@ export const regionSlice = createSlice({
         state.isError = false;
         state.regionName = action.payload.data.name;
         state.regionActive = action.payload.data.active;
-        state.regionColor = action.payload.data.color;
+        state.regionColor = action.payload.data.color_id;
         state.regionDescription = action.payload.data.description;
         state.regionHandle = action.payload.data.handle;
       })

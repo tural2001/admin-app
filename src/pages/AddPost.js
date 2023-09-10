@@ -15,6 +15,7 @@ import {
 
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
+import { uploadImg } from '../features/upload/uploadSlice';
 
 let schema = yup.object({
   title: yup.string().required('Title s is Required'),
@@ -52,10 +53,13 @@ const AddPost = () => {
   const onDrop = useCallback(
     (acceptedFiles) => {
       formik.setFieldValue('image', acceptedFiles);
+      dispatch(uploadImg(acceptedFiles));
       setIsFileDetected(true);
-    }, // eslint-disable-next-line no-use-before-define, react-hooks/exhaustive-deps
+    },
+    // eslint-disable-next-line no-use-before-define, react-hooks/exhaustive-deps
     []
   );
+  const imageState = useSelector((state) => state.upload.images.url);
 
   useEffect(() => {
     if (getpostId !== undefined) {
@@ -186,7 +190,7 @@ const AddPost = () => {
         <form
           onSubmit={(e) => {
             e.preventDefault();
-            const requiredFields = ['title', 'description', 'slug', 'image'];
+            const requiredFields = ['title', 'description', 'image'];
             const errors = {};
             requiredFields.forEach((fieldName) => {
               if (formik.touched[fieldName] && !formik.values[fieldName]) {
@@ -369,10 +373,7 @@ const AddPost = () => {
                   </div>
                 </div>
                 <div className="mt-[70px] w-[200px]">
-                  <img
-                    src="https://img.freepik.com/free-psd/google-icon-isolated-3d-render-illustration_47987-9777.jpg?w=2000"
-                    alt=""
-                  />
+                  <img src={imageState ? imageState : ''} alt="" />
                 </div>
               </div>
             </div>

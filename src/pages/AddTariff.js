@@ -201,7 +201,7 @@ const AddTariff = () => {
             <option value="">Select Service ID</option>
             {serviceState?.map((service) => (
               <option key={service.id} value={service.id}>
-                {service.id}
+                {service.title}
               </option>
             ))}
           </select>

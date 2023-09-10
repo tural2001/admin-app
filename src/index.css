@@ -154,6 +154,16 @@ main::-webkit-scrollbar {
   border-bottom: 0.3px solid rgb(164, 163, 163);
   border-radius: 5px;
 }
+
+.label-title {
+  color: #5e3989 !important;
+  text-transform: capitalize;
+  text-shadow: rgba(0, 0, 0, 0.25) 0px 14px 28px,
+    rgba(0, 0, 0, 0.22) 0px 10px 10px;
+  padding-bottom: 10px;
+  border-bottom: 0.3px solid rgb(164, 163, 163);
+  border-radius: 5px;
+}
 .ant-menu .ant-menu-item .ant-menu-item-icon {
   min-width: 25px !important;
 }
@@ -195,4 +205,18 @@ canvas {
 
 .active a {
   color: #9548b3 !important;
+}
+
+.ant-menu-vertical li img {
+  margin-top: 6px !important;
+  margin-left: -6px !important;
+}
+
+.ant-menu-vertical li svg {
+  margin-top: 6px !important;
+  margin-left: -6px !important;
+}
+
+label.mt-2 {
+  margin-bottom: -10px !important;
 }

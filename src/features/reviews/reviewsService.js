@@ -14,15 +14,10 @@ const createReview = async (review) => {
   const response = await axios.post(`${base_url}/api/reviews`, review, config);
   return response.data;
 };
-const updateReview = async (review) => {
-  const response = await axios.put(
-    `${base_url}/api/reviews/${review.id}`,
-    {
-      reviewer_name: review.reviewData.reviewer_name,
-      comment: review.reviewData.comment,
-      active: review.reviewData.active,
-      show_on_home_page: review.reviewData.show_on_home_page,
-    },
+const updateReview = async (review, id) => {
+  const response = await axios.post(
+    `${base_url}/api/reviews/${id}`,
+    review,
     config
   );
   return response.data;
