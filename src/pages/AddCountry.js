@@ -96,7 +96,7 @@ const AddCountry = (e) => {
     } else {
       formik.setFieldValue('active', newCountry.countryActive ? '1' : '0');
     }
-  }, []);
+  }, [getcountryId, newCountry.countryActive]);
   return (
     <div>
       <h3 className="mb-4 title">

@@ -130,7 +130,7 @@ const AddPayment = () => {
     } else {
       formik.setFieldValue('active', newPayment.paymentActive ? '1' : '0');
     }
-  }, []);
+  }, [getPaymentId, newPayment.paymentActive]);
   return (
     <div>
       <h3 className="mb-4 title">

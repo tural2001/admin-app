@@ -115,7 +115,7 @@ const AddRegion = () => {
     } else {
       formik.setFieldValue('active', newRegion.regionActive ? '1' : '0');
     }
-  }, []);
+  }, [getregionId, newRegion.regionActive]);
   return (
     <div>
       <h3 className="mb-4 title">

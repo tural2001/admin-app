@@ -135,7 +135,7 @@ const AddSlide = () => {
     } else {
       formik.setFieldValue('active', newslide.slideActive ? '1' : '0');
     }
-  }, []);
+  }, [getslideId, newslide.slideActive]);
   return (
     <div>
       <h3 className="mb-4 title">

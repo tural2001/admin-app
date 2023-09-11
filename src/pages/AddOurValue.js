@@ -115,7 +115,7 @@ const AddOurValue = () => {
     } else {
       formik.setFieldValue('active', newourvalue.ourvalueActive ? '1' : '0');
     }
-  }, []);
+  }, [getourvalueId, newourvalue.ourvalueActive]);
 
   return (
     <div>

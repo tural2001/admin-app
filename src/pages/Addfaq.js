@@ -97,7 +97,7 @@ const Addfaq = (e) => {
     } else {
       formik.setFieldValue('active', newFaq.faqActive ? '1' : '0');
     }
-  }, []);
+  }, [getFaqId, newFaq.faqActive]);
 
   return (
     <div>

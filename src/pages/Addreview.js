@@ -118,7 +118,7 @@ const Addreview = () => {
     } else {
       formik.setFieldValue('active', newReview.reviewActive ? '1' : '0');
     }
-  }, []);
+  }, [getReviewId, newReview.reviewActive]);
 
   return (
     <div>

@@ -217,6 +217,6 @@ canvas {
   margin-left: -6px !important;
 }
 
-label.mt-2 {
-  margin-bottom: -10px !important;
+form label.mt-2 {
+  margin-top: 20px !important;
 }

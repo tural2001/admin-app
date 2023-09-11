@@ -118,7 +118,7 @@ const AddStructure = () => {
     } else {
       formik.setFieldValue('active', newStructure.structureActive ? '1' : '0');
     }
-  }, []);
+  }, [getStructureId, newStructure.structureActive]);
   return (
     <div>
       <h3 className="mb-4 title">

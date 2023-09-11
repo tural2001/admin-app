@@ -126,7 +126,7 @@ const Addchannel = () => {
     } else {
       formik.setFieldValue('active', newchannel.channelActive ? '1' : '0');
     }
-  }, []);
+  }, [getchannelId, newchannel.channelActive]);
   return (
     <div>
       <h3 className="mb-4 title">

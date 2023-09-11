@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, { useCallback, useEffect, useState } from 'react';
 import CustomInput from '../components/CustomInput';
 import { useDispatch, useSelector } from 'react-redux';
@@ -15,6 +16,11 @@ import {
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 import { uploadImg } from '../features/upload/uploadSlice';
+import { CKEditor } from '@ckeditor/ckeditor5-react';
+import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
+import axios from 'axios';
+import { base_url } from '../utils/base_url';
+import { config } from '../utils/axiosconfig';
 
 let schema = yup.object({
   title: yup.string().required('Title s is Required'),
@@ -49,15 +55,11 @@ const AddPost = () => {
     postPublished,
   } = newPost;
 
-  const onDrop = useCallback(
-    (acceptedFiles) => {
-      formik.setFieldValue('image', acceptedFiles);
-      dispatch(uploadImg(acceptedFiles));
-      setIsFileDetected(true);
-    },
-    // eslint-disable-next-line no-use-before-define, react-hooks/exhaustive-deps
-    []
-  );
+  const onDrop = useCallback((acceptedFiles) => {
+    formik.setFieldValue('image', acceptedFiles);
+    dispatch(uploadImg(acceptedFiles));
+    setIsFileDetected(true);
+  }, []);
   const imageState = useSelector((state) => state.upload.images.url);
 
   useEffect(() => {
@@ -125,7 +127,6 @@ const AddPost = () => {
     onSubmit: (values) => {
       const formattedPublishedAt = formatDateTimeForServer(values.published_at);
 
-      // Create a new object with updated values
       const updatedValues = {
         ...values,
         published_at: formattedPublishedAt,
@@ -135,7 +136,7 @@ const AddPost = () => {
         const data = { id: getpostId, post: values };
         dispatch(updateApost(data));
       } else {
-        dispatch(createApost(updatedValues));
+        dispatch(createApost(values));
         formik.resetForm();
         setTimeout(() => {
           dispatch(resetState());
@@ -144,41 +145,50 @@ const AddPost = () => {
     },
   });
 
-  var toolbarOptions = [
-    ['bold', 'italic', 'underline', 'strike'], // toggled buttons
-    ['blockquote', 'code-block'],
-    [{ header: 1 }, { header: 2 }], // custom button values
-    [{ list: 'ordered' }, { list: 'bullet' }],
-    [{ script: 'sub' }, { script: 'super' }], // superscript/subscript
-    [{ indent: '-1' }, { indent: '+1' }], // outdent/indent
-    [{ direction: 'rtl' }], // text direction
-    [{ size: ['small', false, 'large', 'huge'] }], // custom dropdown
-    [{ header: [1, 2, 3, 4, 5, 6, false] }],
-    [{ color: [] }, { background: [] }], // dropdown with defaults from theme
-    [{ font: [] }],
-    [{ align: [] }],
-    [{ list: 'check' }], // check/uncheck list item
-    ['image'], // links, images, and videos
-    ['clean'], // remove formatting button
-  ];
+  const getTokenFromLocalStorage = localStorage.getItem('user')
+    ? JSON.parse(localStorage.getItem('user'))
+    : null;
 
-  var formats = [
-    'header',
-    'height',
-    'bold',
-    'italic',
-    'underline',
-    'strike',
-    'blockquote',
-    'list',
-    'color',
-    'bullet',
-    'indent',
-    'link',
-    'image',
-    'align',
-    'size',
-  ];
+  function uploadPlugin(editor) {
+    editor.plugins.get('FileRepository').createUploadAdapter = (loader) => {
+      return uploadAdapter(loader);
+    };
+  }
+  function uploadAdapter(loader) {
+    return {
+      upload: () => {
+        return new Promise((resolve, reject) => {
+          loader.file.then((file) => {
+            const body = new FormData();
+            body.append('file', file);
+
+            axios
+              .post(`${base_url}/api/upload-media`, body, {
+                headers: {
+                  'Accept-Language': 'az',
+                  // 'Content-Type': 'multipart/form-data',
+                  Authorization: `Bearer ${
+                    getTokenFromLocalStorage() !== null
+                      ? getTokenFromLocalStorage().data.token
+                      : ''
+                  }`,
+                  Accept: 'application/json',
+                },
+              })
+              .then((response) => response.json())
+              .then((response) => {
+                // Here you can handle the response from the server if needed
+                resolve({ default: `${base_url}/${response.url}` }); // Assuming the response contains the URL to the uploaded file
+                console.log(response.url);
+              })
+              .catch((error) => {
+                reject(error);
+              });
+          });
+        });
+      },
+    };
+  }
 
   return (
     <div>
@@ -231,17 +241,22 @@ const AddPost = () => {
           <label htmlFor="" className="mt-2">
             Description
           </label>
-          <ReactQuill
-            theme="snow"
-            name="description"
-            className="mt-3"
-            onChange={formik.handleChange('description')}
-            value={formik.values.description}
-            modules={{
-              toolbar: toolbarOptions,
+          <CKEditor
+            editor={ClassicEditor}
+            data={formik.values.description}
+            onReady={(editor) => {
+              // You can store the "editor" and use when it is needed.
+              console.log('Editor is ready to use!', editor);
             }}
-            formats={formats}
+            onChange={(event, editor) => {
+              const data = editor.getData();
+              formik.setFieldValue('description', data);
+            }}
+            config={{
+              extraPlugins: [uploadPlugin],
+            }}
           />
+
           <label htmlFor="" className="mt-2">
             Title
           </label>
@@ -284,7 +299,7 @@ const AddPost = () => {
           <label htmlFor="" className="mt-2">
             Date
           </label>
-          <input
+          <CustomInput
             type="datetime-local"
             id="datetime"
             name="published_at"

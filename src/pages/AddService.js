@@ -130,7 +130,7 @@ const AddService = () => {
     } else {
       formik.setFieldValue('active', newService.serviceActive ? '1' : '0');
     }
-  }, []);
+  }, [getServiceId, newService.serviceActive]);
   return (
     <div>
       <h3 className="mb-4 title">

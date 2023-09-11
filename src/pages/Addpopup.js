@@ -118,7 +118,7 @@ const Addpopup = () => {
     } else {
       formik.setFieldValue('active', newPopup.popupActive ? '1' : '0');
     }
-  }, []);
+  }, [getPopupId, newPopup.popupActive]);
 
   return (
     <div>
@@ -147,7 +147,7 @@ const Addpopup = () => {
           <label htmlFor="" className="mt-2">
             Status
           </label>
-          <div className="my-2">
+          <div className="mb-2">
             <div className="mt-1">
               <label className="inline-flex items-center">
                 <input

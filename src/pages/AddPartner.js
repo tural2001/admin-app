@@ -115,7 +115,7 @@ const AddPartner = () => {
     } else {
       formik.setFieldValue('active', newPartner.partnerActive ? '1' : '0');
     }
-  }, []);
+  }, [getPartnerId, newPartner.partnerActive]);
   return (
     <div>
       <h3 className="mb-4 title">

@@ -100,7 +100,7 @@ const AddVacancy = (e) => {
     } else {
       formik.setFieldValue('active', newVacancy.vacancyActive ? '1' : '0');
     }
-  }, []);
+  }, [getVacancyId, newVacancy.vacancyActive]);
 
   return (
     <div>

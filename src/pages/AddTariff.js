@@ -122,7 +122,7 @@ const AddTariff = () => {
     } else {
       formik.setFieldValue('active', newTariff.tariffActive ? '1' : '0');
     }
-  }, []);
+  }, [getTariffId, newTariff, tariffActive]);
   return (
     <div>
       <h3 className="mb-4 title">

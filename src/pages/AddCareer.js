@@ -122,7 +122,7 @@ const AddCareer = () => {
     } else {
       formik.setFieldValue('active', newcareer.campaignActive ? '1' : '0');
     }
-  }, []);
+  }, [getcareerId, newcareer.campaignActive]);
 
   return (
     <div>
