@@ -28,6 +28,7 @@ import ourvalueReducer from '../features/ourvalues/OurValuesSlice';
 import colorReducer from '../features/color/colorSlice';
 import careerReducer from '../features/career/careerSlice';
 import faqformReducer from '../features/faqform/faqformSlice';
+import formdataReducer from '../features/formData/formDataSlice';
 
 export const store = configureStore({
   reducer: {
@@ -54,6 +55,7 @@ export const store = configureStore({
     slide: slideReducer,
     faq: faqReducer,
     faqform: faqformReducer,
+    formdata: formdataReducer,
     setting: settingReducer,
     user: userReducer,
     country: countryReducer,

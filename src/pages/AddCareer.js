@@ -226,7 +226,7 @@ const AddCareer = () => {
             Vacancy name
           </label>
           <CustomInput
-            type="email"
+            type="text"
             label="Enter career vacancy name"
             name="vacancy_name"
             onCh={formik.handleChange('vacancy_name')}

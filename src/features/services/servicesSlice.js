@@ -52,7 +52,6 @@ export const createAservice = createAsyncThunk(
       formdata.append('title', serviceData.title);
       formdata.append('meta_title', serviceData.meta_title);
       formdata.append('meta_description', serviceData.meta_description);
-      formdata.append('link', serviceData.link);
       formdata.append('description', serviceData.description);
       const response = await serviceService.createservice(formdata);
       return response.data;
@@ -79,7 +78,6 @@ export const updateAservice = createAsyncThunk(
         );
       }
       formdata.append('description', serviceData.service.description);
-      formdata.append('link', serviceData.service.link);
       formdata.append('_method', 'PUT');
 
       const response = await serviceService.updateservice(
@@ -142,7 +140,6 @@ export const servicesSlice = createSlice({
         state.serviceMeta_description = action.payload.data.meta_description;
         state.serviceActive = action.payload.data.active;
         state.serviceDescription = action.payload.data.description;
-        state.serviceLink = action.payload.data.link;
         state.serviceIcon = action.payload.data.icon;
       })
       .addCase(getAservice.rejected, (state, action) => {

@@ -1,23 +1,5 @@
 import { MenuFoldOutlined, MenuUnfoldOutlined } from '@ant-design/icons';
-import { AiOutlineForm, AiOutlineLogout } from 'react-icons/ai';
-import { TbListCheck } from 'react-icons/tb';
-import { GrChannel } from 'react-icons/gr';
-import {
-  MdOutlineCampaign,
-  MdOutlineMiscellaneousServices,
-  MdPayment,
-  MdOutlineRateReview,
-  MdOutline6FtApart,
-  MdWorkOutline,
-  MdOutlinePriceCheck,
-} from 'react-icons/md';
-import { FaUserCog } from 'react-icons/fa';
-import { GiExitDoor, GiModernCity } from 'react-icons/gi';
-import { RiFileList3Line, RiPagesLine } from 'react-icons/ri';
 import { FcFaq, FcTreeStructure } from 'react-icons/fc';
-import { CgUserList } from 'react-icons/cg';
-import { TfiLayoutSlider, TfiMapAlt } from 'react-icons/tfi';
-import { BsFileEarmarkPost } from 'react-icons/bs';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { Link, Outlet, useLocation } from 'react-router-dom';
@@ -147,19 +129,9 @@ const MainLayout = () => {
               label: 'Campaign List',
             },
             {
-              key: 'color-list',
-              icon: <img src={color} className="w-6" alt="" />,
-              label: 'Color List',
-            },
-            {
               key: 'career-form-list',
               icon: <img src={form} className="w-6" alt="" />,
               label: 'Career Form List',
-            },
-            {
-              key: 'faq-form-list',
-              icon: <img src={form} className="w-6" alt="" />,
-              label: 'Faq Form List',
             },
             {
               key: 'channel-list',
@@ -167,14 +139,14 @@ const MainLayout = () => {
               label: 'Channel List',
             },
             {
+              key: 'color-list',
+              icon: <img src={color} className="w-6" alt="" />,
+              label: 'Color List',
+            },
+            {
               key: 'country-list',
               icon: <img src={country} className="w-6" alt="" />,
               label: 'Country List',
-            },
-            {
-              key: 'field-list',
-              icon: <img src={form} className="w-6" alt="" />,
-              label: 'Field List',
             },
             {
               key: 'faq-list',
@@ -182,19 +154,34 @@ const MainLayout = () => {
               label: 'Faq List',
             },
             {
+              key: 'faq-form-list',
+              icon: <img src={form} className="w-6" alt="" />,
+              label: 'Faq Form List',
+            },
+            {
+              key: 'formdata-list',
+              icon: <img src={form} className="w-6" alt="" />,
+              label: 'Register Form Data List',
+            },
+            {
               key: 'our-value-list',
               icon: <img src={ourvalue} className="w-6" alt="" />,
               label: 'Our-Value List',
             },
             {
-              key: 'payment-list',
-              icon: <img src={payment} className="w-6" alt="" />,
-              label: 'Payment List',
+              key: 'page-list',
+              icon: <img src={page} className="w-6" alt="" />,
+              label: 'Page List',
             },
             {
               key: 'partner-list',
               icon: <img src={partner} className="w-6" alt="" />,
               label: 'Partner List',
+            },
+            {
+              key: 'payment-list',
+              icon: <img src={payment} className="w-6" alt="" />,
+              label: 'Payment List',
             },
             {
               key: 'popup-list',
@@ -203,19 +190,9 @@ const MainLayout = () => {
               label: 'Popup List',
             },
             {
-              key: 'page-list',
-              icon: <img src={page} className="w-6" alt="" />,
-              label: 'Page List',
-            },
-            {
               key: 'post-list',
               icon: <img src={post} className="w-6" alt="" />,
               label: 'Post List',
-            },
-            {
-              key: 'review-list',
-              icon: <img src={review} className="w-6" alt="" />,
-              label: 'Review List',
             },
             {
               key: 'region-list',
@@ -223,20 +200,29 @@ const MainLayout = () => {
               label: 'Region List',
             },
             {
-              key: 'structure-list',
-              icon: <FcTreeStructure className="fs-4" />,
-              label: 'Structure List',
+              key: 'field-list',
+              icon: <img src={form} className="w-6" alt="" />,
+              label: 'Register Form Field List',
+            },
+            {
+              key: 'review-list',
+              icon: <img src={review} className="w-6" alt="" />,
+              label: 'Review List',
             },
             {
               key: 'service-list',
               icon: <img src={service} className="w-6" alt="" />,
               label: 'Service List',
             },
-
             {
               key: 'slide-list',
               icon: <img src={slide} className="w-6" alt="" />,
               label: 'Slide List',
+            },
+            {
+              key: 'structure-list',
+              icon: <FcTreeStructure className="fs-4" />,
+              label: 'Structure List',
             },
             {
               key: 'tariff-list',

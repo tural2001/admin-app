@@ -92,9 +92,7 @@ const ServiceList = () => {
                 <th scope="col" className="px-6 py-3">
                   <div className="flex items-center">Description</div>
                 </th>
-                <th scope="col" className="px-6 py-3">
-                  <div className="flex items-center">Link</div>
-                </th>
+
                 <th scope="col" className="px-6 py-3">
                   <div className="flex items-center">Icon</div>
                 </th>
@@ -126,15 +124,7 @@ const ServiceList = () => {
                   <td className="px-6 py-4">{service.meta_description}</td>
                   <td className="px-6 py-4">{service.title}</td>
                   <td className="px-6 py-4">{service.description}</td>
-                  <td className="px-6 py-4">
-                    <a
-                      href={service.link}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                    >
-                      {service.link}
-                    </a>
-                  </td>
+
                   <td className="px-6 py-4">
                     <Popup
                       trigger={
@@ -176,12 +166,7 @@ const ServiceList = () => {
                     >
                       <VscEdit />
                     </Link>
-                    <Link
-                      to={`/admin/service/${servicestate[index]?.id}`}
-                      className="text-[20px] text-blue-500 "
-                    >
-                      Id
-                    </Link>
+
                     <button
                       onClick={() => showModal(servicestate[index]?.id)}
                       className="text-[25px] text-red-500 "

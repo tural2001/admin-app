@@ -18,7 +18,6 @@ import { uploadImg } from '../features/upload/uploadSlice';
 let schema = yup.object({
   title: yup.string().required('Title s is Required'),
   description: yup.string().required('Description is Required'),
-  link: yup.string().required('Link is Required'),
   icon: yup.mixed().required('Icon is Required'),
   active: yup.string(),
   meta_title: yup.string(),
@@ -41,7 +40,6 @@ const AddService = () => {
     serviceTitle,
     serviceActive,
     serviceDescription,
-    serviceLink,
     serviceIcon,
     updatedService,
     serviceMeta_title,
@@ -90,7 +88,6 @@ const AddService = () => {
     serviceTitle,
     serviceActive,
     serviceDescription,
-    serviceLink,
     serviceIcon,
     updatedService,
     serviceMeta_title,
@@ -104,7 +101,6 @@ const AddService = () => {
       title: serviceTitle || '',
       active: serviceActive ? 1 : 0,
       description: serviceDescription || '',
-      link: serviceLink || '',
       icon: serviceIcon || null,
       meta_title: serviceMeta_title || '',
       meta_description: serviceMeta_description || '',
@@ -140,13 +136,7 @@ const AddService = () => {
         <form
           onSubmit={(e) => {
             e.preventDefault();
-            const requiredFields = [
-              'title',
-              'description',
-              'link',
-              'icon',
-              'active',
-            ];
+            const requiredFields = ['title', 'description', 'icon', 'active'];
             const errors = {};
             requiredFields.forEach((fieldName) => {
               if (formik.touched[fieldName] && !formik.values[fieldName]) {
@@ -249,20 +239,6 @@ const AddService = () => {
           />
           <div className="error">
             {formik.touched.description && formik.errors.description}
-          </div>
-          <label htmlFor="" className="mt-2">
-            Link
-          </label>
-          <CustomInput
-            type="text"
-            label="Enter Service link"
-            name="link"
-            onCh={formik.handleChange('link')}
-            onBl={formik.handleBlur('link')}
-            val={formik.values.link}
-          />
-          <div className="error">
-            {formik.touched.link && formik.errors.link}
           </div>
           <label htmlFor="" className="mt-2">
             Icon

@@ -4,40 +4,54 @@ import { useDispatch, useSelector } from 'react-redux';
 import { getvacancies } from '../features/vacancies/vacaciesSlice';
 import { getfaqforms } from '../features/faqform/faqformSlice';
 import { getcareers } from '../features/career/careerSlice';
+import { getformdatas } from '../features/formData/formDataSlice';
+import { debounce } from 'lodash';
+
 const Dashboard = () => {
   const dispatch = useDispatch();
 
   useEffect(() => {
+    const debouncedDispatch = debounce(dispatch, 1000); // Adjust the debounce delay as needed
+
     dispatch(getcampaigns());
     dispatch(getvacancies());
     dispatch(getfaqforms());
     dispatch(getcareers());
+    dispatch(getformdatas());
+    return () => {
+      debouncedDispatch.cancel();
+    };
   }, [dispatch]);
 
-  const faqformState = useSelector((state) => state.faqform?.faqforms?.data);
-  const careerformState = useSelector((state) => state.career?.careers?.data);
+  const formdatastate =
+    useSelector((state) => state.formdata?.formdatas?.data) || [];
+  // const dataList = formdatastate.map((item) => item.data);
+  // const parsedDataList = dataList.map((data) => JSON.parse(data));
 
-  // const userState = useSelector((state) => state);
+  const faqformState =
+    useSelector((state) => state.faqform?.faqforms?.data) || [];
+  const careerformState =
+    useSelector((state) => state.career?.careers?.data) || [];
 
-  // const activeVacanciesCount = vacancyState?.filter(
-  //   (vacancy) => vacancy.active === true
-  // ).length;
-  // const activeCampaignsCount = campaignState?.filter(
-  //   (campaign) => campaign.active === true
-  // ).length;
-  // const notactiveVacanciesCount = vacancyState?.filter(
-  //   (vacancy) => vacancy.active === false
-  // ).length;
-  // const notactiveCampaignsCount = campaignState?.filter(
-  //   (campaign) => campaign.active === false
-  // ).length;
+  const formatDate = (dateTimeString) => {
+    const options = {
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit',
+      hour: '2-digit',
+      minute: '2-digit',
+      second: '2-digit',
+      hour12: false,
+    };
+
+    return new Date(dateTimeString).toLocaleString(undefined, options);
+  };
 
   return (
     <div>
       <div className="flex justify-between gap-3 mb-4">
         <h3 className="title">Dashboard</h3>
       </div>
-
       <div className="flex flex-col gap-10 w-full justify-between ">
         <div className=" overflow-x-auto shadow-md sm:rounded-lg">
           <label
@@ -112,7 +126,7 @@ const Dashboard = () => {
                 </th>
                 <th scope="col" className="px-6 py-3">
                   <div className="flex items-center">Notes</div>
-                </th>{' '}
+                </th>
                 <th scope="col" className="px-6 py-3">
                   <div className="flex items-center">Cv</div>
                 </th>
@@ -131,14 +145,12 @@ const Dashboard = () => {
                   >
                     {faqform.id}
                   </th>
-
                   <td className="px-6 py-4">{faqform.name}</td>
                   <td className="px-6 py-4">{faqform.phone}</td>
                   <td className="px-6 py-4">{faqform.email}</td>
                   <td className="px-6 py-4">{faqform.vacancy_name}</td>
                   <td className="px-6 py-4">{faqform.notes}</td>
                   <td className="px-6 py-4">
-                    {' '}
                     <a
                       href={faqform.cv}
                       target="_blank"
@@ -149,6 +161,59 @@ const Dashboard = () => {
                   </td>
                 </tr>
               ))}
+            </tbody>
+          </table>
+        </div>
+        <div className=" overflow-x-auto shadow-md sm:rounded-lg">
+          <label
+            htmlFor=""
+            className="text-[20px] text-blue-500 flex justify-center items-center label-title"
+          >
+            Register Form Data
+          </label>
+          <table className="w-full text-sm text-left text-gray-500 dark:text-gray-400 mt-3">
+            <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+              <tr>
+                <th scope="col" className="px-6 py-3">
+                  No
+                </th>
+                <th scope="col" className="px-6 py-3">
+                  <div className="flex items-center">Data</div>
+                </th>
+                <th scope="col" className="px-6 py-3">
+                  <div className="flex items-center">Read At</div>
+                </th>
+                <th scope="col" className="px-6 py-3">
+                  <div className="flex items-center">Created At</div>
+                </th>
+                <th scope="col" className="px-6 py-3">
+                  <div className="flex items-center">Updated At</div>
+                </th>
+                <th scope="col" className="px-6 py-3"></th>
+              </tr>
+            </thead>
+            <tbody>
+              {formdatastate?.map((form, index) => {
+                return (
+                  <tr
+                    key={index}
+                    className="bg-white border-b dark:bg-gray-800 dark:border-gray-700"
+                  >
+                    <th
+                      scope="row"
+                      className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"
+                    >
+                      {form.id}
+                    </th>
+                    <td className="px-6 py-4">{form.data}</td>
+                    <td className="px-6 py-4">
+                      {form.read_at ? form.read_at : 'null'}
+                    </td>
+                    <td className="px-6 py-4">{formatDate(form.created_at)}</td>
+                    <td className="px-6 py-4">{formatDate(form.updated_at)}</td>
+                  </tr>
+                );
+              })}
             </tbody>
           </table>
         </div>

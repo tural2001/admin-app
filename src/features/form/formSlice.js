@@ -44,11 +44,20 @@ export const deleteAfield = createAsyncThunk(
 
 export const createAfield = createAsyncThunk(
   'fields/create-field',
-  async (fieldData, id, thunkAPI) => {
+  async (fieldData, thunkAPI) => {
     console.log(fieldData);
     try {
-      const response = await formService.createfield(fieldData, id);
+      const formdata = new FormData();
+      formdata.append('label', fieldData.label);
+      formdata.append('name', fieldData.name);
+      formdata.append('required', fieldData.required);
+      formdata.append('data', fieldData.data);
+      formdata.append('type', fieldData.type);
+      const response = await formService.createfield(formdata);
+      console.log(response.data);
       return response.data;
+      // const response = await formService.createfield(fieldData);
+      // return response.data;
     } catch (error) {
       return thunkAPI.rejectWithValue(error);
     }
@@ -63,7 +72,7 @@ export const updateAfield = createAsyncThunk(
       const formdata = new FormData();
       formdata.append('label', fieldData.field.label);
       formdata.append('name', fieldData.field.name);
-      formdata.append('rules', fieldData.field.rules);
+      formdata.append('required', fieldData.field.required);
       formdata.append('data', fieldData.field.data);
       formdata.append('type', fieldData.field.type);
       formdata.append('_method', 'PUT');
@@ -126,7 +135,7 @@ export const formSlice = createSlice({
         state.isSuccess = true;
         state.isError = false;
         state.fieldLabel = action.payload.label;
-        state.fieldRules = action.payload.rules;
+        state.fieldRequired = action.payload.required;
         state.fielddata = action.payload.data;
         state.fieldName = action.payload.name;
         state.fieldType = action.payload.type;

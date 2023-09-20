@@ -7,7 +7,7 @@ export const config = {
     'Accept-Language': 'az',
     Authorization: `Bearer ${
       getTokenFromLocalStorage !== null
-        ? getTokenFromLocalStorage.data.token
+        ? getTokenFromLocalStorage?.data?.token
         : ''
     }`,
     Accept: 'application/json',

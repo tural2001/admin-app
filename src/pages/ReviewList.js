@@ -29,7 +29,7 @@ const ReviewList = () => {
     dispatch(getreviews());
   }, [dispatch]);
 
-  const reviewstate = useSelector((state) => state.reviews.reviews.data);
+  const reviewstate = useSelector((state) => state.reviews.reviews.data) || [];
   console.log(reviewstate);
 
   const deleteReview = (e) => {
@@ -39,8 +39,8 @@ const ReviewList = () => {
       dispatch(getreviews());
     }, 100);
   };
-  const [currentPage, setCurrentPage] = useState(0); // Sayfa numarasını saklar
-  const itemsPerPage = 7; // Her sayfada kaç yapı gösterileceği
+  const [currentPage, setCurrentPage] = useState(0);
+  const itemsPerPage = 7;
 
   const filteredReview = reviewstate?.slice(
     currentPage * itemsPerPage,

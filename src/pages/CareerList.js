@@ -5,7 +5,6 @@ import CustomModal from '../components/CustomModal';
 import { VscEdit } from 'react-icons/vsc';
 import { RiDeleteBin5Line } from 'react-icons/ri';
 import { toast } from 'react-toastify';
-import Popup from 'reactjs-popup';
 import ReactPaginate from 'react-paginate';
 import { BsArrowLeft, BsArrowRight } from 'react-icons/bs';
 import {
@@ -127,7 +126,6 @@ const CareerList = () => {
                     >
                       <VscEdit />
                     </Link>
-
                     <button
                       onClick={() => showModal(careerstate[index]?.id)}
                       className="text-[25px] text-red-500 "

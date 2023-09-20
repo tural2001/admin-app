@@ -84,7 +84,7 @@ const FieldList = () => {
                   <div className="flex items-center">Name</div>
                 </th>
                 <th scope="col" className="px-6 py-3">
-                  <div className="flex items-center">Rules</div>
+                  <div className="flex items-center">Required</div>
                 </th>
                 <th scope="col" className="px-6 py-3">
                   <div className="flex items-center">Data</div>
@@ -94,10 +94,7 @@ const FieldList = () => {
             </thead>
             <tbody>
               {filteredField?.map((field, index) => (
-                <tr
-                  key={index}
-                  className="bg-white border-b dark:bg-gray-800 dark:border-gray-700"
-                >
+                <tr key={index}>
                   <th
                     scope="row"
                     className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"
@@ -107,18 +104,26 @@ const FieldList = () => {
                   <td className="px-6 py-4">{field.label}</td>
                   <td className="px-6 py-4">{field.type}</td>
                   <td className="px-6 py-4">{field.name}</td>
-                  <td className="px-6 py-4">{field.rules}</td>
+                  <td
+                    className={`px-6 py-4 ${
+                      field.required === true
+                        ? 'text-green-500'
+                        : 'text-red-500'
+                    }`}
+                  >
+                    {field.required === true ? 'Required' : 'Not required'}
+                  </td>
                   <td className="px-6 py-4">{field.data}</td>
                   <td className="px-6 py-16 flex gap-2">
                     <Link
-                      to={`/admin/field-list/${fieldstate[index]?.id}`}
-                      className="text-[25px] text-blue-500 "
+                      to={`/admin/field-list/${field.id}`}
+                      className="text-[25px] text-blue-500"
                     >
                       <VscEdit />
                     </Link>
                     <button
                       onClick={() => showModal(fieldstate[index]?.id)}
-                      className="text-[25px] text-red-500 "
+                      className="text-[25px] text-red-500"
                     >
                       <RiDeleteBin5Line />
                     </button>

@@ -13,7 +13,6 @@ import {
   resetState,
   updateApost,
 } from '../features/posts/postSlice';
-import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 import { uploadImg } from '../features/upload/uploadSlice';
 import { CKEditor } from '@ckeditor/ckeditor5-react';
@@ -149,47 +148,6 @@ const AddPost = () => {
     ? JSON.parse(localStorage.getItem('user'))
     : null;
 
-  function uploadPlugin(editor) {
-    editor.plugins.get('FileRepository').createUploadAdapter = (loader) => {
-      return uploadAdapter(loader);
-    };
-  }
-  function uploadAdapter(loader) {
-    return {
-      upload: () => {
-        return new Promise((resolve, reject) => {
-          loader.file.then((file) => {
-            const body = new FormData();
-            body.append('file', file);
-
-            axios
-              .post(`${base_url}/api/upload-media`, body, {
-                headers: {
-                  'Accept-Language': 'az',
-                  // 'Content-Type': 'multipart/form-data',
-                  Authorization: `Bearer ${
-                    getTokenFromLocalStorage() !== null
-                      ? getTokenFromLocalStorage().data.token
-                      : ''
-                  }`,
-                  Accept: 'application/json',
-                },
-              })
-              .then((response) => response.json())
-              .then((response) => {
-                // Here you can handle the response from the server if needed
-                resolve({ default: `${base_url}/${response.url}` }); // Assuming the response contains the URL to the uploaded file
-                console.log(response.url);
-              })
-              .catch((error) => {
-                reject(error);
-              });
-          });
-        });
-      },
-    };
-  }
-
   return (
     <div>
       <h3 className="mb-4 title">
@@ -245,7 +203,6 @@ const AddPost = () => {
             editor={ClassicEditor}
             data={formik.values.description}
             onReady={(editor) => {
-              // You can store the "editor" and use when it is needed.
               console.log('Editor is ready to use!', editor);
             }}
             onChange={(event, editor) => {
@@ -253,10 +210,11 @@ const AddPost = () => {
               formik.setFieldValue('description', data);
             }}
             config={{
-              extraPlugins: [uploadPlugin],
+              ckfinder: {
+                uploadUrl: `${base_url}/api/upload-media`,
+              },
             }}
           />
-
           <label htmlFor="" className="mt-2">
             Title
           </label>

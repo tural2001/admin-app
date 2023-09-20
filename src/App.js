@@ -53,6 +53,7 @@ import CareerList from './pages/CareerList';
 import AddCareer from './pages/AddCareer';
 import FaqFormList from './pages/FaqFormList';
 import AddFaqForm from './pages/AddFaqForm';
+import FormDataList from './pages/FormDataList';
 
 function App() {
   return (
@@ -82,6 +83,7 @@ function App() {
           <Route path="setting/:id" element={<Addsetting />} />
           <Route path="setting" element={<Addsetting />} />
           <Route path="faq-form-list" element={<FaqFormList />} />
+          <Route path="formdata-list" element={<FormDataList />} />
           <Route path="faq-form" element={<AddFaqForm />} />
           <Route path="faq-form/:id" element={<AddFaqForm />} />
           <Route path="color-list" element={<ColorList />} />

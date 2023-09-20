@@ -11,9 +11,8 @@ import {
   deleteAcountry,
   getcountries,
 } from '../features/countries/countriesSlice';
-import { active, notactive, plus } from '../assets';
 import ReactPaginate from 'react-paginate';
-import { BsArrowLeft, BsArrowRight, BsArrowRightShort } from 'react-icons/bs';
+import { BsArrowLeft, BsArrowRight } from 'react-icons/bs';
 
 const CountryList = () => {
   const [open, setOpen] = useState(false);
@@ -32,7 +31,8 @@ const CountryList = () => {
     dispatch(getcountries());
   }, [dispatch]);
 
-  const countrystate = useSelector((state) => state.country.countries.data);
+  const countrystate =
+    useSelector((state) => state.country.countries.data) || [];
   console.log(countrystate);
 
   const deleteCountry = (e) => {

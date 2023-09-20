@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, { useEffect } from 'react';
 import CustomInput from '../components/CustomInput';
 import { useDispatch, useSelector } from 'react-redux';
@@ -16,8 +17,8 @@ import {
 let schema = yup.object({
   label: yup.string().required('Label is Required'),
   type: yup.string().required('Type is Required'),
-  name: yup.string(),
-  rules: yup.string(),
+  name: yup.string().required('Name is Required'),
+  required: yup.string(),
   data: yup.string(),
 });
 
@@ -37,7 +38,7 @@ const AddForm = () => {
     fieldName,
     fielddata,
     fieldType,
-    fieldRules,
+    fieldRequired,
     updatedField,
   } = newField;
   console.log(newField);
@@ -52,12 +53,12 @@ const AddForm = () => {
   }, [dispatch, getfieldId]);
 
   useEffect(() => {
-    if (isSuccess && createdField) {
+    if (isSuccess && createdField === '') {
       toast.success('Field Added Successfully');
       navigate('/admin/field-list');
       setTimeout(() => {
         window.location.reload();
-      }, 500);
+      }, 1000);
     }
     if (isSuccess && updatedField !== undefined) {
       toast.success('Field Updated Successfully!');
@@ -75,7 +76,7 @@ const AddForm = () => {
     fieldName,
     fielddata,
     fieldType,
-    fieldRules,
+    fieldRequired,
     updatedField,
     navigate,
   ]);
@@ -86,7 +87,7 @@ const AddForm = () => {
       label: fieldLabel || '',
       type: fieldType || '',
       name: fieldName || '',
-      rules: fieldRules || '',
+      required: fieldRequired ? 1 : 0,
       data: fielddata || '',
     },
     validationSchema: schema,
@@ -104,6 +105,30 @@ const AddForm = () => {
       }
     },
   });
+
+  useEffect(() => {
+    if (getfieldId === undefined) {
+      formik.setFieldValue('required', '1');
+    } else {
+      formik.setFieldValue('required', newField.fieldRequired ? '1' : '0');
+    }
+  }, [getfieldId, newField.fieldRequired]);
+
+  useEffect(() => {
+    if (
+      formik.values.type === '3' ||
+      formik.values.type === '4' ||
+      formik.values.type === '5'
+    ) {
+      formik.setFieldTouched('required', true);
+      formik.setFieldTouched('data', true);
+    } else {
+      formik.setFieldValue('required', '');
+      formik.setFieldValue('data', '');
+      formik.setFieldTouched('required', false);
+      formik.setFieldTouched('data', false);
+    }
+  }, [formik.values.type]);
 
   return (
     <div>
@@ -145,14 +170,21 @@ const AddForm = () => {
           <label htmlFor="" className="mt-2">
             Type
           </label>
-          <CustomInput
-            type="text"
-            label="Enter Type"
+          <select
+            className="text-[#637381] mt-2 bg-inherit w text-[15px] font-medium rounded-lg block w-1/8 p-2.5 focus:ring-0 hom"
             name="type"
-            onCh={formik.handleChange('type')}
-            onBl={formik.handleBlur('type')}
-            val={formik.values.type}
-          />
+            onChange={formik.handleChange('type')}
+            onBlur={formik.handleBlur('type')}
+            value={formik.values.type}
+          >
+            <option value="">Select Type</option>
+            <option value={1}>text</option>
+            <option value={2}>tel</option>
+            <option value={3}>select</option>
+            <option value={4}>radio</option>
+            <option value={5}>checkbox</option> <option value={6}>file</option>
+            <option value={7}>textarea</option>
+          </select>
           <div className="error">
             {formik.touched.type && formik.errors.type}
           </div>
@@ -170,34 +202,61 @@ const AddForm = () => {
           <div className="error">
             {formik.touched.name && formik.errors.name}
           </div>
-          <label htmlFor="" className="mt-2">
-            Rules
-          </label>
-          <CustomInput
-            type="text"
-            label="Enter Rules"
-            name="rules"
-            onCh={formik.handleChange('rules')}
-            onBl={formik.handleBlur('rules')}
-            val={formik.values.rules}
-          />
-          <div className="error">
-            {formik.touched.rules && formik.errors.rules}
-          </div>{' '}
-          <label htmlFor="" className="mt-2">
-            Data
-          </label>
-          <CustomInput
-            type="text"
-            label="Enter data"
-            name="data"
-            onCh={formik.handleChange('data')}
-            onBl={formik.handleBlur('data')}
-            val={formik.values.data}
-          />
-          <div className="error">
-            {formik.touched.data && formik.errors.data}
-          </div>
+          {formik.values.type === '3' ||
+          formik.values.type === '4' ||
+          formik.values.type === '5' ? (
+            <>
+              <label htmlFor="" className="mt-2">
+                Required
+              </label>
+              <div className="my-2">
+                <div className="mt-1">
+                  <label className="inline-flex items-center">
+                    <input
+                      type="radio"
+                      name="required"
+                      onChange={() => formik.setFieldValue('required', '1')}
+                      onBlur={formik.handleBlur}
+                      value="1"
+                      checked={formik.values.required === '1'}
+                      className="text-blue-500 form-radio h-4 w-4"
+                    />
+                    <span className="ml-2">Required</span>
+                  </label>
+                  <label className="inline-flex items-center ml-6">
+                    <input
+                      type="radio"
+                      name="required"
+                      onChange={() => formik.setFieldValue('required', '0')}
+                      onBlur={formik.handleBlur}
+                      value="0"
+                      checked={formik.values.required === '0'}
+                      className="text-blue-500 form-radio h-4 w-4"
+                    />
+                    <span className="ml-2">Not required</span>
+                  </label>
+                </div>
+              </div>
+              <div className="error">
+                {formik.touched.required && formik.errors.required}
+              </div>{' '}
+              <label htmlFor="" className="mt-2">
+                Data
+              </label>
+              <CustomInput
+                type="text"
+                label="Enter data"
+                name="data"
+                onCh={formik.handleChange('data')}
+                onBl={formik.handleBlur('data')}
+                val={formik.values.data}
+              />
+              <div className="error">
+                {formik.touched.data && formik.errors.data}
+              </div>
+            </>
+          ) : null}
+
           <button
             type="submit"
             className="mt-10 text-purple-700 hover:text-white border border-purple-700 hover:bg-purple-800 focus:ring-4 focus:outline-none focus:ring-purple-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center mr-2 mb-2 add_button"

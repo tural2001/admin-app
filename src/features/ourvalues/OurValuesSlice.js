@@ -52,6 +52,7 @@ export const createAourvalue = createAsyncThunk(
       formdata.append('title', ourvalueData.title);
       formdata.append('description', ourvalueData.description);
       const response = await ourvalueService.createourvalue(formdata);
+
       return response.data;
     } catch (error) {
       return thunkAPI.rejectWithValue(error);

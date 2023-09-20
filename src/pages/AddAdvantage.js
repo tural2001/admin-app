@@ -195,8 +195,7 @@ const Addadvantage = () => {
                           <input {...getInputProps()} />
 
                           <div
-                            className={`flex items-center justify-center w-[800px]
-                        `}
+                            className={`flex items-center justify-center w-[800px]`}
                           >
                             <label
                               htmlFor="dropzone-file"
