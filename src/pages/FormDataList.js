@@ -10,6 +10,10 @@ import {
   getformdatas,
   resetState,
 } from '../features/formData/formDataSlice';
+import Popup from 'reactjs-popup';
+import axios from 'axios';
+import { base_url } from '../utils/base_url';
+import { config } from '../utils/axiosconfig';
 
 const FormDataList = () => {
   const [open, setOpen] = useState(false);
@@ -31,8 +35,6 @@ const FormDataList = () => {
 
   const formdatastate =
     useSelector((state) => state.formdata?.formdatas?.data) || [];
-  // const dataList = formdatastate.map((item) => item.data);
-  // const parsedDataList = dataList.map((data) => JSON.parse(data));
 
   const deleteformdata = (e) => {
     setOpen(false);
@@ -70,6 +72,17 @@ const FormDataList = () => {
     return new Date(dateTimeString).toLocaleString(undefined, options);
   };
 
+  const fetchFormData = (formId) => {
+    axios
+      .get(`${base_url}/api/form-data/${formId}`, config)
+      .then((response) => {
+        dispatch(getformdatas());
+      })
+      .catch((error) => {
+        console.error('Form Data Request Error:', error);
+      });
+  };
+
   return (
     <div>
       <div className="flex justify-between gap-3 mb-4">
@@ -78,7 +91,7 @@ const FormDataList = () => {
       <div>
         <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
           <table className="w-full text-sm text-left text-gray-500 dark:text-gray-400 mt-3">
-            <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+            <thead className="text-xs text-gray-700 uppercase bg-gray-50 ">
               <tr>
                 <th scope="col" className="px-6 py-3">
                   No
@@ -95,6 +108,7 @@ const FormDataList = () => {
                 <th scope="col" className="px-6 py-3">
                   <div className="flex items-center">Updated At</div>
                 </th>
+                <th scope="col" className="px-6 py-3"></th>
                 <th scope="col" className="px-6 py-3"></th>
               </tr>
             </thead>
@@ -113,7 +127,7 @@ const FormDataList = () => {
                     </th>
                     <td className="px-6 py-4">{form.data}</td>
                     <td className="px-6 py-4">
-                      {form.read_at ? form.read_at : 'null'}
+                      {form.read_at ? formatDate(form.read_at) : 'null'}
                     </td>
                     <td className="px-6 py-4">{formatDate(form.created_at)}</td>
                     <td className="px-6 py-4">{formatDate(form.updated_at)}</td>
@@ -124,6 +138,44 @@ const FormDataList = () => {
                       >
                         <RiDeleteBin5Line />
                       </button>
+                    </td>
+                    <td className="px-6 py-4">
+                      <Popup
+                        trigger={<button>Show</button>}
+                        modal
+                        nested
+                        contentStyle={{
+                          padding: '20px',
+                          borderRadius: '50px',
+                          borderColor: 'white',
+                          width: '700px',
+                          height: '300px',
+                          overflow: 'hidden',
+                        }}
+                        onOpen={() => fetchFormData(form.id)} // Popup açıldığında fetchFormData fonksiyonunu çağırın
+                      >
+                        <div className="flex flex-col justify-center items-start">
+                          {(() => {
+                            try {
+                              const formDataObject = JSON.parse(form.data);
+
+                              // Create an array of JSX elements to render
+                              const formDataElements = Object.keys(
+                                formDataObject
+                              ).map((key, index) => (
+                                <p key={index}>
+                                  {key}: {formDataObject[key]}
+                                </p>
+                              ));
+
+                              return formDataElements;
+                            } catch (error) {
+                              console.error('Error parsing form.data:', error);
+                              return null;
+                            }
+                          })()}
+                        </div>
+                      </Popup>
                     </td>
                   </tr>
                 );
