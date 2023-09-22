@@ -159,11 +159,6 @@ const MainLayout = () => {
               label: 'Faq Form List',
             },
             {
-              key: 'formdata-list',
-              icon: <img src={form} className="w-6" alt="" />,
-              label: 'Register Form Data List',
-            },
-            {
               key: 'our-value-list',
               icon: <img src={ourvalue} className="w-6" alt="" />,
               label: 'Our-Value List',
@@ -198,6 +193,11 @@ const MainLayout = () => {
               key: 'region-list',
               icon: <img src={region} className="w-6" alt="" />,
               label: 'Region List',
+            },
+            {
+              key: 'formdata-list',
+              icon: <img src={form} className="w-6" alt="" />,
+              label: 'Register Form Data List',
             },
             {
               key: 'field-list',

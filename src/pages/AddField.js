@@ -118,7 +118,7 @@ const AddForm = () => {
     if (
       formik.values.type === '3' ||
       formik.values.type === '4' ||
-      formik.values.type === '5'
+      formik.values.type === '6'
     ) {
       formik.setFieldTouched('required', true);
       formik.setFieldTouched('data', true);
@@ -180,9 +180,9 @@ const AddForm = () => {
             <option value="">Select Type</option>
             <option value={1}>text</option>
             <option value={2}>tel</option>
-            <option value={3}>select</option>
-            <option value={4}>radio</option>
-            <option value={5}>checkbox</option> <option value={6}>file</option>
+            <option value={3}>radio</option>
+            <option value={4}>checkbox</option>
+            <option value={5}>file</option> <option value={6}>select</option>
             <option value={7}>textarea</option>
           </select>
           <div className="error">
@@ -202,44 +202,44 @@ const AddForm = () => {
           <div className="error">
             {formik.touched.name && formik.errors.name}
           </div>
+          <label htmlFor="" className="mt-2">
+            Required
+          </label>
+          <div className="my-2">
+            <div className="mt-1">
+              <label className="inline-flex items-center">
+                <input
+                  type="radio"
+                  name="required"
+                  onChange={() => formik.setFieldValue('required', '1')}
+                  onBlur={formik.handleBlur}
+                  value="1"
+                  checked={formik.values.required === '1'}
+                  className="text-blue-500 form-radio h-4 w-4"
+                />
+                <span className="ml-2">Required</span>
+              </label>
+              <label className="inline-flex items-center ml-6">
+                <input
+                  type="radio"
+                  name="required"
+                  onChange={() => formik.setFieldValue('required', '0')}
+                  onBlur={formik.handleBlur}
+                  value="0"
+                  checked={formik.values.required === '0'}
+                  className="text-blue-500 form-radio h-4 w-4"
+                />
+                <span className="ml-2">Not required</span>
+              </label>
+            </div>
+          </div>
+          <div className="error">
+            {formik.touched.required && formik.errors.required}
+          </div>{' '}
           {formik.values.type === '3' ||
           formik.values.type === '4' ||
-          formik.values.type === '5' ? (
+          formik.values.type === '6' ? (
             <>
-              <label htmlFor="" className="mt-2">
-                Required
-              </label>
-              <div className="my-2">
-                <div className="mt-1">
-                  <label className="inline-flex items-center">
-                    <input
-                      type="radio"
-                      name="required"
-                      onChange={() => formik.setFieldValue('required', '1')}
-                      onBlur={formik.handleBlur}
-                      value="1"
-                      checked={formik.values.required === '1'}
-                      className="text-blue-500 form-radio h-4 w-4"
-                    />
-                    <span className="ml-2">Required</span>
-                  </label>
-                  <label className="inline-flex items-center ml-6">
-                    <input
-                      type="radio"
-                      name="required"
-                      onChange={() => formik.setFieldValue('required', '0')}
-                      onBlur={formik.handleBlur}
-                      value="0"
-                      checked={formik.values.required === '0'}
-                      className="text-blue-500 form-radio h-4 w-4"
-                    />
-                    <span className="ml-2">Not required</span>
-                  </label>
-                </div>
-              </div>
-              <div className="error">
-                {formik.touched.required && formik.errors.required}
-              </div>{' '}
               <label htmlFor="" className="mt-2">
                 Data
               </label>
@@ -256,7 +256,6 @@ const AddForm = () => {
               </div>
             </>
           ) : null}
-
           <button
             type="submit"
             className="mt-10 text-purple-700 hover:text-white border border-purple-700 hover:bg-purple-800 focus:ring-4 focus:outline-none focus:ring-purple-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center mr-2 mb-2 add_button"
