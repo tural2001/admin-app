@@ -23,9 +23,9 @@ export const getpopups = createAsyncThunk(
 
 export const getApopup = createAsyncThunk(
   'popups/get-popup',
-  async (id, thunkAPI) => {
+  async (handle, thunkAPI) => {
     try {
-      return await popupService.getpopup(id);
+      return await popupService.getpopup(handle);
     } catch (error) {
       return thunkAPI.rejectWithValue(error);
     }

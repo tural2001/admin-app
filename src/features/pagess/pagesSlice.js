@@ -67,7 +67,10 @@ export const updateApage = createAsyncThunk(
       formdata.append('content', pageData.pageData.content);
       formdata.append('_method', 'PUT');
 
-      const response = await pageService.updatepage(formdata, pageData.slug);
+      const response = await pageService.updatepage(
+        formdata,
+        pageData.pageData.slug
+      );
       return response.data;
     } catch (error) {
       return thunkAPI.rejectWithValue(error);

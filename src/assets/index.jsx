@@ -26,8 +26,10 @@ import user from './user.png';
 import color from './color.png';
 import advantage from './advantage.png';
 import ourvalue from './ourvalue.png';
+import x from './x.png';
 
 export {
+  x,
   ourvalue,
   color,
   advantage,

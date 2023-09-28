@@ -17,11 +17,12 @@ import { getservices } from '../features/services/servicesSlice';
 
 let schema = yup.object({
   name: yup.string().required('Name is Required'),
-  description: yup.string(),
+  description: yup.string().required('Description is Required'),
   price: yup.number(),
   service_id: yup.number().required('Service Id is Required'),
   speed: yup.number().required('Speed is Required'),
   active: yup.string(),
+  type: yup.number().required('Type is Required'),
   most_wanted: yup.string(),
 });
 const AddTariff = () => {
@@ -41,7 +42,9 @@ const AddTariff = () => {
     tariffSpeed,
     tariffPrice,
     tariffDescription,
+    tariffType,
     tariffActive,
+    tariffService_id,
     updatedTariff,
     tariffMostWanted,
   } = newTariff;
@@ -84,6 +87,8 @@ const AddTariff = () => {
     tariffSpeed,
     tariffPrice,
     tariffDescription,
+    tariffType,
+    tariffService_id,
     tariffActive,
     updatedTariff,
     tariffMostWanted,
@@ -97,8 +102,10 @@ const AddTariff = () => {
       speed: tariffSpeed || '',
       price: tariffPrice || '',
       description: tariffDescription || '',
+      service_id: tariffService_id || '',
       active: tariffActive ? 1 : 0,
       most_wanted: tariffMostWanted ? 1 : 0,
+      type: tariffType || '',
     },
     validationSchema: schema,
     onSubmit: (values) => {
@@ -115,14 +122,17 @@ const AddTariff = () => {
       }
     },
   });
+  console.log(newTariff);
 
   useEffect(() => {
     if (getTariffId === undefined) {
       formik.setFieldValue('active', '1');
+      formik.setFieldValue('most_wanted', '1');
     } else {
       formik.setFieldValue('active', newTariff.tariffActive ? '1' : '0');
+      formik.setFieldValue('most_wanted', newTariff.most_wanted ? '1' : '0');
     }
-  }, [getTariffId, newTariff, tariffActive]);
+  }, [getTariffId, newTariff.tariffActive]);
   return (
     <div>
       <h3 className="mb-4 title">
@@ -133,7 +143,13 @@ const AddTariff = () => {
           action=""
           onSubmit={(e) => {
             e.preventDefault();
-            const requiredFields = ['name', 'speed', 'description'];
+            const requiredFields = [
+              'name',
+              'speed',
+              'service_id',
+              'type',
+              'description',
+            ];
             const errors = {};
 
             requiredFields.forEach((fieldName) => {
@@ -196,13 +212,50 @@ const AddTariff = () => {
             onBlur={formik.handleBlur('service_id')}
             value={formik.values.service_id}
           >
-            <option value="">Select Service ID</option>
+            <option value="">Select Service</option>
             {serviceState?.map((service) => (
               <option key={service.id} value={service.id}>
                 {service.title}
               </option>
             ))}
           </select>
+          <div className="error">
+            {formik.touched.service_id && formik.errors.service_id}
+          </div>
+          <label htmlFor="" className="mt-2">
+            Type
+          </label>
+          <div className="my-2">
+            <div className="mt-1">
+              <label className="inline-flex items-center">
+                <input
+                  type="radio"
+                  name="type"
+                  onChange={() => formik.setFieldValue('type', 1)}
+                  onBlur={formik.handleBlur}
+                  value={1}
+                  checked={formik.values.type === 1}
+                  className="text-blue-500 form-radio h-4 w-4"
+                />
+                <span className="ml-2">Fərdi</span>
+              </label>
+              <label className="inline-flex items-center ml-6">
+                <input
+                  type="radio"
+                  name="type"
+                  onChange={() => formik.setFieldValue('type', 2)}
+                  onBlur={formik.handleBlur}
+                  value={2}
+                  checked={formik.values.type === 2}
+                  className="text-blue-500 form-radio h-4 w-4"
+                />
+                <span className="ml-2">Biznes</span>
+              </label>
+            </div>
+          </div>
+          <div className="error">
+            {formik.touched.type && formik.errors.type}
+          </div>
           <label htmlFor="" className="mt-2">
             Most wanted
           </label>

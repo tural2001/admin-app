@@ -1,12 +1,16 @@
 import ImageUploader from 'quill-image-uploader';
+import ImageResize from 'quill-image-resize-module-react';
+
 import React, { Component } from 'react';
 import ReactQuill, { Quill } from 'react-quill';
 import { base_url } from '../utils/base_url';
 import axios from 'axios';
 import { config } from '../utils/axiosconfig';
-import Dropzone from 'react-dropzone'; // Import the react-dropzone component
-
+import Dropzone from 'react-dropzone';
+import BlotFormatter from 'quill-blot-formatter';
 Quill.register('modules/imageUploader', ImageUploader);
+Quill.register('modules/imageResize', ImageResize);
+Quill.register('modules/blotFormatter', BlotFormatter);
 
 class Editor extends Component {
   constructor(props) {
@@ -22,36 +26,25 @@ class Editor extends Component {
 
   handleDrop(acceptedFiles) {
     console.log(acceptedFiles);
-    // Handle the uploaded files here, e.g., send them to the server
 
     try {
-      const file = acceptedFiles[0]; // Assuming you want to upload the first accepted file
+      const file = acceptedFiles[0];
 
-      // Create a FormData object to send the file to the server
       const formData = new FormData();
-      formData.append('file', file); // 'file' should match the field name expected by the server
+      formData.append('file', file);
 
-      // Send a POST request to the server to upload the file
       axios
-        .post(
-          `${base_url}/api/upload-media`, // Replace with your server's endpoint
-          formData, // Attach the FormData containing the file
-          config // Include any Axios configuration options you need
-        )
+        .post(`${base_url}/api/upload-media`, formData, config)
         .then((response) => {
-          // Sunucunun yanıtında yüklü görüntünün URL'sine erişebilirsiniz
           const imageUrl = response.data.url;
 
-          // Quill editörüne bir başvuru alın
           const quill = this.reactQuillRef.getEditor();
 
-          // Quill editöründeki mevcut imleç pozisyonunu alın
           const range = quill.getSelection();
 
-          // İmleç pozisyonuna yüklenen görüntü URL'sini ekleyin
           quill.clipboard.dangerouslyPasteHTML(
-            range.index, // İmleç pozisyonuna ekle
-            `<img src="${imageUrl}" className="w-20" alt="Resim" />`
+            range.index,
+            `<img src="${imageUrl}"  alt="Resim" />`
           );
           acceptedFiles.length = 0;
 
@@ -64,19 +57,16 @@ class Editor extends Component {
     editor.clipboard.dangerouslyPasteHTML(editor.getSelection(true));
   }
 
-  // Rest of your component code...
-
   render() {
     return (
       <>
-        {/* Place the Dropzone component where you want the drag-and-drop area */}
         <Dropzone onDrop={this.handleDrop}>
           {({ getRootProps, getInputProps }) => (
             <div
               {...getRootProps()}
               style={{
                 border: '1px solid #ccc',
-                padding: '20px',
+                padding: '10px',
                 textAlign: 'center',
                 cursor: 'pointer',
               }}
@@ -88,7 +78,7 @@ class Editor extends Component {
         </Dropzone>
 
         <ReactQuill
-          ref={(el) => (this.reactQuillRef = el)} // Reference to the Quill editor
+          ref={(el) => (this.reactQuillRef = el)}
           value={this.state.editorHtml}
           onChange={(newContent) => {
             this.handleChange(newContent);
@@ -96,10 +86,60 @@ class Editor extends Component {
           }}
           theme="snow"
           style={{
-            minHeight: '25vh',
+            minHeight: '5vh',
           }}
-          modules={this.modules}
-          formats={this.formats}
+          modules={{
+            toolbar: {
+              container: [
+                ['bold', 'italic', 'underline', 'strike'],
+                ['blockquote', 'code-block'],
+
+                [{ header: 1 }, { header: 2 }],
+                [{ list: 'ordered' }, { list: 'bullet' }],
+                [{ script: 'sub' }, { script: 'super' }],
+                [{ indent: '-1' }, { indent: '+1' }],
+                [{ direction: 'rtl' }],
+
+                [{ size: ['small', false, 'large', 'huge'] }],
+                [{ header: [1, 2, 3, 4, 5, 6, false] }],
+
+                [{ color: [] }, { background: [] }],
+                [{ font: [] }],
+                [{ align: [] }],
+
+                ['clean'],
+              ],
+            },
+            clipboard: {
+              // toggle to add extra line breaks when pasting HTML:
+              matchVisual: false,
+            },
+            imageResize: {
+              parchment: Quill.import('parchment'),
+              modules: ['Resize', 'DisplaySize'],
+            },
+            blotFormatter: {},
+          }}
+          formats={[
+            'header',
+            'font',
+            'size',
+            'bold',
+            'italic',
+            'underline',
+            'align',
+            'strike',
+            'script',
+            'blockquote',
+            'background',
+            'list',
+            'bullet',
+            'indent',
+            'link',
+            'image',
+            'color',
+            'code-block',
+          ]}
         />
       </>
     );

@@ -57,13 +57,6 @@ const Popuplist = () => {
     <div>
       <div className="flex justify-between gap-3 mb-4">
         <h3 className="title">Popups</h3>
-        <Link
-          to={`/admin/popup`}
-          className="flex justify-center items-center pr-3 gap-1 rounded-lg add_button_2"
-        >
-          <span className="mb-1 ml-2 text-[30px] hover:text-white">+</span>
-          Add Popup
-        </Link>
       </div>
       <div>
         <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
@@ -116,7 +109,7 @@ const Popuplist = () => {
                         <button>
                           {' '}
                           <img
-                            src="https://azeronline.netlify.app/static/media/blog2.891d84e7b5ab348201fd.png"
+                            src={popup.image}
                             alt=""
                             width={150}
                             height={50}
@@ -146,7 +139,7 @@ const Popuplist = () => {
                   </td>
                   <td className="px-6 py-16 flex gap-2">
                     <Link
-                      to={`/admin/popup/${popupstate[index]?.id}`}
+                      to={`/admin/popup/${popupstate[index]?.handle}`}
                       className="text-[25px] text-blue-500 "
                     >
                       <VscEdit />

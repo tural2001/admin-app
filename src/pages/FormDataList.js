@@ -14,6 +14,7 @@ import Popup from 'reactjs-popup';
 import axios from 'axios';
 import { base_url } from '../utils/base_url';
 import { config } from '../utils/axiosconfig';
+import { x } from '../assets';
 
 const FormDataList = () => {
   const [open, setOpen] = useState(false);
@@ -109,7 +110,6 @@ const FormDataList = () => {
                   <div className="flex items-center">Updated At</div>
                 </th>
                 <th scope="col" className="px-6 py-3"></th>
-                <th scope="col" className="px-6 py-3"></th>
               </tr>
             </thead>
             <tbody>
@@ -125,7 +125,76 @@ const FormDataList = () => {
                     >
                       {form.id}
                     </th>
-                    <td className="px-6 py-4">{form.data}</td>
+                    <td className="px-6 py-4">
+                      <Popup
+                        trigger={<button>Read</button>}
+                        modal
+                        nested
+                        contentStyle={{
+                          padding: '20px',
+                          borderRadius: '50px',
+                          borderColor: 'white',
+                          width: '500px',
+                          height: '250px',
+                          overflow: 'hidden',
+                        }}
+                        onOpen={() => fetchFormData(form.id)}
+                      >
+                        {(close) => (
+                          <>
+                            <div className="flex flex-col   justify-center items-center p-2">
+                              <img
+                                src={x}
+                                className="absolute right-7 top-5 w-10"
+                                onClick={close}
+                                alt=""
+                              />
+                              {(() => {
+                                try {
+                                  const formDataObject = JSON.parse(form.data);
+
+                                  // Create an array of JSX elements to render
+                                  const formDataElements = Object.keys(
+                                    formDataObject
+                                  ).map((key, index) => {
+                                    // Check if the value is a valid URL
+                                    const isURL =
+                                      /^(http|https):\/\/[^ "]+$/.test(
+                                        formDataObject[key]
+                                      );
+
+                                    if (isURL) {
+                                      return (
+                                        <p key={index}>
+                                          {key}:{' '}
+                                          <a href={formDataObject[key]}>
+                                            {formDataObject[key]}
+                                          </a>
+                                        </p>
+                                      );
+                                    } else {
+                                      return (
+                                        <p key={index}>
+                                          {key}: {formDataObject[key]}
+                                        </p>
+                                      );
+                                    }
+                                  });
+
+                                  return formDataElements;
+                                } catch (error) {
+                                  console.error(
+                                    'Error parsing form.data:',
+                                    error
+                                  );
+                                  return null;
+                                }
+                              })()}
+                            </div>
+                          </>
+                        )}
+                      </Popup>
+                    </td>{' '}
                     <td className="px-6 py-4">
                       {form.read_at ? formatDate(form.read_at) : 'null'}
                     </td>
@@ -138,44 +207,6 @@ const FormDataList = () => {
                       >
                         <RiDeleteBin5Line />
                       </button>
-                    </td>
-                    <td className="px-6 py-4">
-                      <Popup
-                        trigger={<button>Show</button>}
-                        modal
-                        nested
-                        contentStyle={{
-                          padding: '20px',
-                          borderRadius: '50px',
-                          borderColor: 'white',
-                          width: '700px',
-                          height: '300px',
-                          overflow: 'hidden',
-                        }}
-                        onOpen={() => fetchFormData(form.id)} // Popup açıldığında fetchFormData fonksiyonunu çağırın
-                      >
-                        <div className="flex flex-col justify-center items-start">
-                          {(() => {
-                            try {
-                              const formDataObject = JSON.parse(form.data);
-
-                              // Create an array of JSX elements to render
-                              const formDataElements = Object.keys(
-                                formDataObject
-                              ).map((key, index) => (
-                                <p key={index}>
-                                  {key}: {formDataObject[key]}
-                                </p>
-                              ));
-
-                              return formDataElements;
-                            } catch (error) {
-                              console.error('Error parsing form.data:', error);
-                              return null;
-                            }
-                          })()}
-                        </div>
-                      </Popup>
                     </td>
                   </tr>
                 );

@@ -16,6 +16,7 @@ const createpage = async (page) => {
 };
 
 const updatepage = async (page, slug) => {
+  console.log(slug);
   const response = await axios.post(
     `${base_url}/api/pages/${slug}`,
     page,

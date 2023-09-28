@@ -23,8 +23,8 @@ const updatepopup = async (popup, id) => {
   return response.data;
 };
 
-const getpopup = async (id) => {
-  const response = await axios.get(`${base_url}/api/popups/${id}`, config);
+const getpopup = async (handle) => {
+  const response = await axios.get(`${base_url}/api/popups/${handle}`, config);
   return response.data;
 };
 

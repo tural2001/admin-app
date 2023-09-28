@@ -81,7 +81,10 @@ export const updateApost = createAsyncThunk(
         );
       }
       formdata.append('_method', 'PUT');
-      const response = await postService.updatepost(formdata, postData.slug);
+      const response = await postService.updatepost(
+        formdata,
+        postData.post.slug
+      );
       return response.data;
     } catch (error) {
       return thunkAPI.rejectWithValue(error);

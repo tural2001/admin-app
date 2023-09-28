@@ -220,3 +220,10 @@ canvas {
 form label.mt-2 {
   margin-top: 20px !important;
 }
+
+.ql-editor {
+  display: block;
+}
+.ql-container {
+  min-height: 100px !important;
+}

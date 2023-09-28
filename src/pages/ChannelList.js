@@ -33,6 +33,7 @@ const ChannelList = () => {
 
   const channelstate =
     useSelector((state) => state.channel.channels.data) || [];
+  console.log(channelstate);
 
   const deleteChannel = (e) => {
     setOpen(false);
@@ -82,12 +83,6 @@ const ChannelList = () => {
                   <div className="flex items-center">Status</div>
                 </th>
                 <th scope="col" className="px-6 py-3">
-                  <div className="flex items-center">Meta title</div>
-                </th>
-                <th scope="col" className="px-6 py-3">
-                  <div className="flex items-center">Meta description</div>
-                </th>
-                <th scope="col" className="px-6 py-3">
                   <div className="flex items-center">Country Id</div>
                 </th>
                 <th scope="col" className="px-6 py-3">
@@ -121,8 +116,6 @@ const ChannelList = () => {
                     {channel.active === true ? 'Active' : 'Not Active'}
                   </td>
                   <td className="px-6 py-4">{channel.country_id}</td>
-                  <td className="px-6 py-4">{channel.meta_title}</td>
-                  <td className="px-6 py-4">{channel.meta_description}</td>
                   <td className="px-6 py-4">{channel.name}</td>
                   {/* <td className="px-6 py-4">
                     <a

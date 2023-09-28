@@ -68,7 +68,7 @@ const SettingList = () => {
                   <td className="px-6 py-4">{setting.value}</td>
                   <td className="px-6 py-16 flex gap-2">
                     <Link
-                      to={`/admin/setting/${settingstate[index]?.id}`}
+                      to={`/admin/setting/${filteredsetting[index]?.id}`}
                       className="text-[25px] text-blue-500 "
                     >
                       <VscEdit />

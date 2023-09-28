@@ -13,15 +13,14 @@ import {
   resetState,
   updateAchannel,
 } from '../features/channels/channelsSlice';
+import { getcountries } from '../features/countries/countriesSlice';
 import { uploadImg } from '../features/upload/uploadSlice';
 
 let schema = yup.object({
   name: yup.string().required('Name is Required'),
-  meta_title: yup.string(),
-  meta_description: yup.string(),
   country_id: yup.number().required('Country Id is Required'),
   image: yup.mixed().required('Image is Required'),
-  active: yup.string,
+  active: yup.boolean(),
 });
 
 const Addchannel = () => {
@@ -38,23 +37,17 @@ const Addchannel = () => {
     isLoading,
     createdChannel,
     channelName,
-    channelMeta_title,
-    channelMeta_description,
     channelActive,
     channelCountry_id,
     channelImage,
     updatedChannel,
   } = newchannel;
 
-  const onDrop = useCallback(
-    (acceptedFiles) => {
-      formik.setFieldValue('image', acceptedFiles);
-      dispatch(uploadImg(acceptedFiles));
-      setIsFileDetected(true);
-    },
-    // eslint-disable-next-line no-use-before-define, react-hooks/exhaustive-deps
-    []
-  );
+  const onDrop = useCallback((acceptedFiles) => {
+    formik.setFieldValue('image', acceptedFiles);
+    dispatch(uploadImg(acceptedFiles));
+    setIsFileDetected(true);
+  }, []);
   const imageState = useSelector((state) => state.upload.images.url);
 
   useEffect(() => {
@@ -66,12 +59,18 @@ const Addchannel = () => {
   }, [dispatch, getchannelId]);
 
   useEffect(() => {
+    dispatch(getcountries());
+  }, [dispatch]);
+  const countryState = useSelector((state) => state.country.countries.data);
+  console.log(countryState);
+
+  useEffect(() => {
     if (isSuccess && createdChannel) {
       toast.success('Channel Added Successfully!');
       navigate('/admin/channel-list');
       setTimeout(() => {
         window.location.reload();
-      }, 500);
+      }, 1000);
     }
     if (isSuccess && updatedChannel !== undefined) {
       toast.success('Channel Updated Successfully!');
@@ -86,8 +85,6 @@ const Addchannel = () => {
     isLoading,
     createdChannel,
     channelName,
-    channelMeta_title,
-    channelMeta_description,
     channelActive,
     channelCountry_id,
     channelImage,
@@ -99,8 +96,6 @@ const Addchannel = () => {
     enableReinitialize: true,
     initialValues: {
       name: channelName || '',
-      meta_title: channelMeta_title || '',
-      meta_description: channelMeta_description || '',
       active: channelActive ? 1 : 0,
       country_id: channelCountry_id || '',
       image: channelImage || null,
@@ -127,6 +122,7 @@ const Addchannel = () => {
       formik.setFieldValue('active', newchannel.channelActive ? '1' : '0');
     }
   }, [getchannelId, newchannel.channelActive]);
+
   return (
     <div>
       <h3 className="mb-4 title">
@@ -136,17 +132,20 @@ const Addchannel = () => {
         <form
           onSubmit={(e) => {
             e.preventDefault();
-            const requiredFields = ['name', 'country_id', 'image', 'active'];
+            const requiredFields = ['name', 'country_id', 'image'];
             const errors = {};
+
             requiredFields.forEach((fieldName) => {
               if (formik.touched[fieldName] && !formik.values[fieldName]) {
                 errors[fieldName] = 'This field is Required';
               }
             });
+
             if (Object.keys(errors).length > 0) {
               toast.error('Please fill in the required fields.');
               return;
             }
+
             formik.handleSubmit(e);
           }}
         >
@@ -200,45 +199,23 @@ const Addchannel = () => {
             {formik.touched.name && formik.errors.name}
           </div>
           <label htmlFor="" className="mt-2">
-            Meta title
-          </label>
-          <CustomInput
-            type="text"
-            label="Enter Meta Title"
-            name="meta_title"
-            onCh={formik.handleChange('meta_title')}
-            onBl={formik.handleBlur('meta_title')}
-            val={formik.values.meta_title}
-          />
-          <div className="error">
-            {formik.touched.meta_title && formik.errors.meta_title}
-          </div>
-          <label htmlFor="" className="mt-2">
-            Meta description
-          </label>
-          <CustomInput
-            type="text"
-            label="Enter Meta Description"
-            name="meta_description"
-            onCh={formik.handleChange('meta_description')}
-            onBl={formik.handleBlur('meta_description')}
-            val={formik.values.meta_description}
-          />
-          <div className="error">
-            {formik.touched.meta_description && formik.errors.meta_description}
-          </div>
-          <label htmlFor="" className="mt-2">
             Country Id
           </label>
-          <CustomInput
-            type="number"
-            label="Enter country_id"
+          <select
+            className="text-[#637381] mt-2 bg-inherit w text-[15px] font-medium rounded-lg block w-1/8 p-2.5 focus:ring-0 hom"
+            id="country_id"
             name="country_id"
-            onCh={formik.handleChange('country_id')}
-            onBl={formik.handleBlur('country_id')}
-            val={formik.values.country_id}
-            // readOnly={'readOnly'}
-          />
+            onChange={formik.handleChange('country_id')}
+            onBlur={formik.handleBlur('country_id')}
+            value={formik.values.country_id}
+          >
+            <option value="">Select Country</option>
+            {countryState?.map((country) => (
+              <option key={country.id} value={country.id}>
+                {country.name}
+              </option>
+            ))}
+          </select>
           <div className="error">
             {formik.touched.country_id && formik.errors.country_id}
           </div>

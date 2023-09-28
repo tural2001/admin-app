@@ -114,21 +114,21 @@ const AddForm = () => {
     }
   }, [getfieldId, newField.fieldRequired]);
 
-  useEffect(() => {
-    if (
-      formik.values.type === '3' ||
-      formik.values.type === '4' ||
-      formik.values.type === '6'
-    ) {
-      formik.setFieldTouched('required', true);
-      formik.setFieldTouched('data', true);
-    } else {
-      formik.setFieldValue('required', '');
-      formik.setFieldValue('data', '');
-      formik.setFieldTouched('required', false);
-      formik.setFieldTouched('data', false);
-    }
-  }, [formik.values.type]);
+  // useEffect(() => {
+  //   if (
+  //     formik.values.type === '3' ||
+  //     formik.values.type === '4' ||
+  //     formik.values.type === '6'
+  //   ) {
+  //     formik.setFieldTouched('required', true);
+  //     formik.setFieldTouched('data', true);
+  //   } else {
+  //     formik.setFieldValue('required', '');
+  //     formik.setFieldValue('data', '');
+  //     formik.setFieldTouched('required', false);
+  //     formik.setFieldTouched('data', false);
+  //   }
+  // }, [formik.values.type]);
 
   return (
     <div>

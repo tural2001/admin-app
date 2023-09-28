@@ -85,6 +85,9 @@ const TariffList = () => {
                   <div className="flex items-center">Service</div>
                 </th>
                 <th scope="col" className="px-6 py-3">
+                  <div className="flex items-center">Type</div>
+                </th>
+                <th scope="col" className="px-6 py-3">
                   <div className="flex items-center">Description</div>
                 </th>
                 <th scope="col" className="px-6 py-3">
@@ -117,6 +120,7 @@ const TariffList = () => {
                   </td>
                   <td className="px-6 py-4">{tariff.name}</td>
                   <td className="px-6 py-4">{tariff.service.title.az}</td>
+                  <td className="px-6 py-4">{tariff.type}</td>
                   <td className="px-6 py-4">{tariff.description}</td>
                   <td className="px-6 py-4">{tariff.price}</td>
                   <td className="px-6 py-4">{tariff.speed}</td>

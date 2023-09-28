@@ -120,12 +120,12 @@ const CareerList = () => {
                   </td>
                   {/* <td className="px-6 py-4">{career.cv}</td> */}
                   <td className="px-6 py-16 flex gap-2">
-                    <Link
+                    {/* <Link
                       to={`/admin/career/${careerstate[index]?.id}`}
                       className="text-[25px] text-blue-500 "
                     >
                       <VscEdit />
-                    </Link>
+                    </Link> */}
                     <button
                       onClick={() => showModal(careerstate[index]?.id)}
                       className="text-[25px] text-red-500 "

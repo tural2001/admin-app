@@ -1,5 +1,4 @@
-/* eslint-disable react-hooks/exhaustive-deps */
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import CustomInput from '../components/CustomInput';
 import { useFormik } from 'formik';
 import * as yup from 'yup';
@@ -9,10 +8,28 @@ import { createAfaq, getAfaq, updateAfaq } from '../features/faq/faqSlice';
 
 import { resetState } from '../features/faq/faqSlice';
 import { useLocation, useNavigate } from 'react-router-dom';
+import { language } from '../Language/languages';
 
 let schema = yup.object({
-  question: yup.string().required('Question is Required'),
-  answer: yup.string().required('Answer is Required'),
+  question: yup.object().shape(
+    language.reduce(
+      (acc, lang) => ({
+        ...acc,
+        az: yup.string().required(`Question for ${lang} is Required`),
+      }),
+      {}
+    )
+  ),
+
+  answer: yup.object().shape(
+    language.reduce(
+      (acc, lang) => ({
+        ...acc,
+        az: yup.string().required(`Question for ${lang} is Required`),
+      }),
+      {}
+    )
+  ),
   active: yup.string(),
 });
 
@@ -42,16 +59,23 @@ const Addfaq = (e) => {
   }, [dispatch, getFaqId]);
 
   useEffect(() => {
-    if (isSuccess && createdFaq !== undefined) {
+    if (isSuccess && createdFaq !== undefined && updatedFaq !== undefined) {
       toast.success('Faq Added Successfully!');
-      navigate('/admin/faq-list');
-      setTimeout(() => {
-        window.location.reload();
-      }, 1000);
+      // navigate('/admin/faq-list');
+      // setTimeout(() => {
+      //   window.location.reload();
+      // }, 1000);
     }
-    if (isSuccess && updatedFaq !== undefined) {
+    if (isSuccess && createdFaq !== undefined && updatedFaq === undefined) {
+      toast.success('Faq Added Successfully!');
+      // navigate('/admin/faq-list');
+      // setTimeout(() => {
+      //   window.location.reload();
+      // }, 1000);
+    }
+    if (isSuccess && updatedFaq !== undefined && createdFaq === undefined) {
       toast.success('Faq Updated Successfully!');
-      navigate('/admin/faq-list');
+      // navigate('/admin/faq-list');
     }
     if (isError) {
       toast.error('Something Went Wrong!');
@@ -67,26 +91,84 @@ const Addfaq = (e) => {
     updatedFaq,
     navigate,
   ]);
+  console.log(newFaq);
+  const language = ['az', 'en'];
 
+  // const [selectedLanguage, setSelectedLanguage] = useState(language[0]);
+  // const selectedlanguage = 'az';
   const formik = useFormik({
     enableReinitialize: true,
     initialValues: {
-      question: faqQuestion || '',
-      answer: faqAnswer || '',
-      active: faqActive ? 1 : 0,
+      question: language.reduce((acc, lang) => {
+        acc[lang] = faqQuestion ? faqQuestion[lang] || '' : '';
+        return acc;
+      }, {}),
+      answer: language.reduce((acc, lang) => {
+        acc[lang] = faqAnswer ? faqAnswer[lang] || '' : '';
+        return acc;
+      }, {}),
+      active: faqActive ? '1' : '0',
     },
+
     validationSchema: schema,
     onSubmit: (values) => {
-      // alert(JSON.stringify(values));
+      alert(JSON.stringify(values));
+      const updatedLanguages = language.filter((lang) => values.question[lang]);
+      console.log(updatedLanguages);
       if (getFaqId !== undefined) {
-        const data = { id: getFaqId, faqData: values };
-        dispatch(updateAfaq(data));
+        // Update existing FAQ for each language
+        updatedLanguages.forEach((lang) => {
+          const data = {
+            id: getFaqId,
+            faqData: {
+              question: values.question[lang],
+              answer: values.answer[lang],
+              active: values.active === '1' ? true : false,
+            },
+            selectedLanguage: lang,
+          };
+          dispatch(updateAfaq(data));
+        });
       } else {
-        dispatch(createAfaq(values));
-        formik.resetForm();
-        setTimeout(() => {
-          dispatch(resetState());
-        }, 300);
+        // Create a new FAQ for the first language and update for the rest
+        if (updatedLanguages.length > 0) {
+          const firstLang = updatedLanguages[0];
+          const createData = {
+            values: {
+              question: values.question[firstLang],
+              answer: values.answer[firstLang],
+              active: values.active === '1' ? true : false,
+            },
+            selectedLanguage: firstLang,
+          };
+          dispatch(createAfaq(createData))
+            .then((createdFaq) => {
+              console.log(createdFaq);
+
+              // Diğer diller için update işlemi yap
+              updatedLanguages.slice(1).forEach((lang) => {
+                const updateData = {
+                  id: createdFaq.payload.data.id,
+                  faqData: {
+                    question: values.question[lang],
+                    answer: values.answer[lang],
+                    active: values.active === '1' ? true : false,
+                  },
+                  selectedLanguage: lang,
+                };
+
+                dispatch(updateAfaq(updateData));
+              });
+
+              formik.resetForm();
+              setTimeout(() => {
+                dispatch(resetState());
+              }, 300);
+            })
+            .catch((error) => {
+              console.error('Error creating FAQ:', error);
+            });
+        }
       }
     },
   });
@@ -108,13 +190,20 @@ const Addfaq = (e) => {
         <form
           onSubmit={(e) => {
             e.preventDefault();
-            const requiredFields = ['question', 'answer', 'active'];
+            const requiredFields = ['answer', 'active'];
             const errors = {};
             requiredFields.forEach((fieldName) => {
               if (formik.touched[fieldName] && !formik.values[fieldName]) {
                 errors[fieldName] = 'This field is Required';
               }
             });
+
+            language.forEach((lang) => {
+              if (formik.touched.question && !formik.values.question.az) {
+                errors[`question.${lang}`] = `Question for ${lang} is Required`;
+              }
+            });
+
             if (Object.keys(errors).length > 0) {
               toast.error('Please fill in the required fields.');
               return;
@@ -123,7 +212,6 @@ const Addfaq = (e) => {
             formik.handleSubmit(e);
           }}
         >
-          {' '}
           <label htmlFor="" className="mt-2">
             Status
           </label>
@@ -159,34 +247,40 @@ const Addfaq = (e) => {
             <div className="error">
               {formik.touched.active && formik.errors.active}
             </div>
-            <label htmlFor="" className="mt-2">
-              Question
-            </label>
-            <CustomInput
-              type="text"
-              label="Enter Faq Question"
-              name="question"
-              onCh={formik.handleChange('question')}
-              onBl={formik.handleBlur('question')}
-              val={formik.values.question}
-            />
-            <div className="error">
-              {formik.touched.question && formik.errors.question}
-            </div>
-            <label htmlFor="" className="mt-2">
-              Answer
-            </label>
-            <CustomInput
-              type="text"
-              label="Enter Faq Answer"
-              name="answer"
-              onCh={formik.handleChange('answer')}
-              onBl={formik.handleBlur('answer')}
-              val={formik.values.answer}
-            />
-            <div className="error">
-              {formik.touched.answer && formik.errors.answer}
-            </div>
+
+            {language.map((lang) => (
+              <div key={lang}>
+                <label>{`Enter Faq answer for ${lang}:`}</label>
+                <CustomInput
+                  type="text"
+                  name={`answer.${lang}`}
+                  onCh={formik.handleChange}
+                  onBl={formik.handleBlur}
+                  val={formik.values.answer[lang]}
+                />
+                <div className="error">
+                  {formik.touched[`answer.${lang}`] &&
+                    formik.errors[`answer.${lang}`]}
+                </div>
+              </div>
+            ))}
+
+            {language.map((lang) => (
+              <div key={lang}>
+                <label>{`Enter Faq question for ${lang}:`}</label>
+                <CustomInput
+                  type="text"
+                  name={`question.${lang}`}
+                  onCh={formik.handleChange}
+                  onBl={formik.handleBlur}
+                  val={formik.values.question[lang]}
+                />
+                <div className="error">
+                  {formik.touched[`question.${lang}`] &&
+                    formik.errors[`question.${lang}`]}
+                </div>
+              </div>
+            ))}
           </div>
           <button
             type="submit"

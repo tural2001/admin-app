@@ -68,6 +68,7 @@ const MainLayout = () => {
       '/admin/campaign-list': 'campaign-list',
       '/admin/advantage-list': 'advantage-list',
       '/admin/our-value-list': 'our-value-list',
+      '/admin/service-list': 'service-list',
       '/admin/color-list': 'color-list',
       '/admin/partner-list': 'partner-list',
       '/admin/payment-list': 'payment-list',

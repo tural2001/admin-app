@@ -129,7 +129,7 @@ const Addpopup = () => {
         <form
           onSubmit={(e) => {
             e.preventDefault();
-            const requiredFields = ['content', 'handle', 'image', 'active'];
+            const requiredFields = ['content', 'handle', 'image'];
             const errors = {};
             requiredFields.forEach((fieldName) => {
               if (formik.touched[fieldName] && !formik.values[fieldName]) {
@@ -147,7 +147,7 @@ const Addpopup = () => {
           <label htmlFor="" className="mt-2">
             Status
           </label>
-          <div className="mb-2">
+          <div className="my-2">
             <div className="mt-1">
               <label className="inline-flex items-center">
                 <input

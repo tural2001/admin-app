@@ -90,8 +90,6 @@ function App() {
           <Route path="color" element={<AddColor />} />
           <Route path="color/:id" element={<AddColor />} />
           <Route path="career-form-list" element={<CareerList />} />
-          <Route path="career-form" element={<AddCareer />} />
-          <Route path="carrer/:id" element={<AddCareer />} />
           <Route path="faq-list" element={<FaqList />} />
           <Route path="faq" element={<Addfaq />} />
           <Route path="faq/:id" element={<Addfaq />} />

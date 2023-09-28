@@ -2,20 +2,24 @@ import axios from 'axios';
 import { base_url } from '../../utils/base_url';
 import { config } from '../../utils/axiosconfig';
 
-const getfaqs = async () => {
-  const response = await axios.get(
-    `${base_url}/api/faqs?inactive=true`,
-    config
-  );
+const getfaqs = async (selectedLanguage) => {
+  const response = await axios.get(`${base_url}/api/faqs?inactive=true`, {
+    headers: config.getHeaders(selectedLanguage), // Pass the selected language here
+  });
+
   return response.data;
 };
 
-const createfaq = async (faq) => {
-  const response = await axios.post(`${base_url}/api/faqs`, faq, config);
+const createfaq = async (faq, selectedLanguage) => {
+  console.log(faq);
+  const response = await axios.post(`${base_url}/api/faqs`, faq.values, {
+    headers: config.getHeaders(faq.selectedLanguage),
+  });
   return response.data;
 };
 
-const updatefaq = async (faq) => {
+const updatefaq = async (faq, selectedLanguage) => {
+  console.log(faq.selectedLanguage);
   const response = await axios.put(
     `${base_url}/api/faqs/${faq.id}`,
     {
@@ -23,18 +27,24 @@ const updatefaq = async (faq) => {
       answer: faq.faqData.answer,
       active: faq.faqData.active,
     },
-    config
+    {
+      headers: config.getHeaders(faq.selectedLanguage),
+    }
   );
   return response.data;
 };
 
-const getfaq = async (id) => {
-  const response = await axios.get(`${base_url}/api/faqs/${id}`, config);
+const getfaq = async (id, selectedLanguage) => {
+  const response = await axios.get(`${base_url}/api/faqs/${id}`, {
+    headers: config.getHeaders(selectedLanguage),
+  });
   return response.data;
 };
 
-const deletefaq = async (id) => {
-  const response = await axios.delete(`${base_url}/api/faqs/${id}`, config);
+const deletefaq = async (id, language) => {
+  const response = await axios.delete(`${base_url}/api/faqs/${id}`, {
+    headers: config.getHeaders(language),
+  });
   return response.data;
 };
 

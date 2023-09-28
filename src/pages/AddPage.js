@@ -84,8 +84,8 @@ const AddPage = () => {
       title: pageTitle || '',
       slug: pageSlug || '',
       content: pageContent || '',
-      meta_title: pageContent || '',
-      meta_description: pageContent || '',
+      meta_title: pageMeta_title || '',
+      meta_description: pagelMeta_description || '',
     },
     validationSchema: schema,
     onSubmit: (values) => {
@@ -188,7 +188,7 @@ const AddPage = () => {
             readOnly={'readOnly'}
           />
           <label htmlFor="" className="mt-2">
-            Type
+            Title
           </label>
           <CustomInput
             type="text"

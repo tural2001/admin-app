@@ -17,7 +17,7 @@ import partnerReducer from '../features/partners/partnersSlice';
 import structureReducer from '../features/structures/structuresSlice';
 import serviceReducer from '../features/services/servicesSlice';
 import paymentReducer from '../features/payments/paymentsSlice';
-import campaignReducer from '../features/career/careerSlice';
+import campaignReducer from '../features/campaigns/campaignsSlice';
 import channelReducer from '../features/channels/channelsSlice';
 import slideReducer from '../features/slides/slidesSlice';
 import regionReducer from '../features/regions/regionSlice';
@@ -29,10 +29,12 @@ import colorReducer from '../features/color/colorSlice';
 import careerReducer from '../features/career/careerSlice';
 import faqformReducer from '../features/faqform/faqformSlice';
 import formdataReducer from '../features/formData/formDataSlice';
+import { languageReducer } from '../features/Language/languageSlice';
 
 export const store = configureStore({
   reducer: {
     auth: authReducer,
+    language: languageReducer,
     customer: customerReducer,
     product: productReducer,
     popup: popupReducer,

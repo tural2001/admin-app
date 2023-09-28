@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import CustomInput from '../components/CustomInput';
 import { useDispatch, useSelector } from 'react-redux';
 import { toast } from 'react-toastify';
@@ -15,10 +15,6 @@ import {
 } from '../features/posts/postSlice';
 import 'react-quill/dist/quill.snow.css';
 import { uploadImg } from '../features/upload/uploadSlice';
-import axios from 'axios';
-import { base_url } from '../utils/base_url';
-import { config } from '../utils/axiosconfig';
-import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 import Editor from '../components/Editor';
 
@@ -33,9 +29,6 @@ let schema = yup.object({
 });
 
 const AddPost = () => {
-  const [content, setContent] = useState('');
-  const [selectedImage, setSelectedImage] = useState(null);
-
   const [isFileDetected, setIsFileDetected] = useState(false);
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -137,10 +130,10 @@ const AddPost = () => {
       };
       // alert(JSON.stringify(updatedValues));
       if (getpostId !== undefined) {
-        const data = { id: getpostId, post: values };
+        const data = { id: getpostId, post: updatedValues };
         dispatch(updateApost(data));
       } else {
-        dispatch(createApost(values));
+        dispatch(createApost(updatedValues));
         formik.resetForm();
         setTimeout(() => {
           dispatch(resetState());
@@ -148,62 +141,9 @@ const AddPost = () => {
       }
     },
   });
-  const [quillRef, setQuillRef] = useState(null); // Define quillRef using useState
-  const fileInputRef = useRef(null);
 
-  const handleImageUpload = async (e) => {
-    console.log('Dosya yüklendi:', e.target.files[0]);
-    const fileInput = e.target;
-    const file = fileInput.files[0];
-
-    try {
-      const formData = new FormData();
-      formData.append('file', file);
-
-      const response = await axios.post(
-        `${base_url}/api/upload-media`,
-        formData,
-        config
-      );
-
-      fileInput.value = ''; // Bu satır dosya seçim alanını sıfırlar
-
-      // Assuming your API returns a URL for the uploaded image
-      const imageUrl = response.data.url;
-
-      // Insert the image URL into the Quill editor at the current cursor position
-      const quill = quillRef.getEditor();
-      const range = quill.getSelection();
-      quill.clipboard.dangerouslyPasteHTML(
-        range.index,
-        `<img src="${imageUrl}" alt="Image" />`
-      );
-      e.preventDefault();
-      // Update the content state to reflect the changes
-      setContent(quill.root.innerHTML);
-    } catch (error) {
-      console.error('Image upload error:', error);
-    }
-  };
-
-  const quillModules = {
-    toolbar: {
-      container: [
-        [{ header: '1' }, { header: '2' }],
-        ['bold', 'italic', 'underline', 'strike'],
-        [{ list: 'ordered' }, { list: 'bullet' }],
-        ['link', 'image'],
-        ['clean'],
-      ],
-    },
-  };
-  // useEffect(() => {
-  //   if (!content) {
-  //     formik.setFieldValue('description', content);
-  //   }
-  // }, []);
   const handleDescriptionChange = (newContent) => {
-    formik.setFieldValue('description', newContent); // Use formik.setFieldValue to update the description field
+    formik.setFieldValue('description', newContent);
   };
   return (
     <div>
@@ -256,35 +196,6 @@ const AddPost = () => {
           <label htmlFor="" className="mt-2">
             Description
           </label>
-          <div className="quill-container">
-            {/* <ReactQuill
-              value={content}
-              onChange={(newContent) => {
-                setContent(newContent); // Update the content state
-                formik.setFieldValue('description', newContent); // Update Formik field
-              }}
-              modules={quillModules}
-              formats={[
-                'header',
-                'bold',
-                'italic',
-                'underline',
-                'strike',
-                'list',
-                'link',
-                'image',
-              ]}
-              ref={(el) => setQuillRef(el)}
-            /> */}
-            {/* <input
-              type="file"
-              accept="image/*"
-              onChange={(e) => {
-                this.readfile(e);
-                e.target.value = null;
-              }}
-            /> */}
-          </div>
           <Editor onDescriptionChange={handleDescriptionChange} />
           <label htmlFor="" className="mt-2">
             Title
@@ -300,7 +211,6 @@ const AddPost = () => {
           <div className="error">
             {formik.touched.title && formik.errors.title}
           </div>
-
           <div className="error">
             {formik.touched.description && formik.errors.description}
           </div>
@@ -322,9 +232,9 @@ const AddPost = () => {
             type="datetime-local"
             id="datetime"
             name="published_at"
-            value={formik.values.published_at || ''}
-            onChange={formik.handleChange('published_at')}
-            onBlur={formik.handleBlur('published_at')}
+            val={formik.values.published_at || ''}
+            onCh={formik.handleChange('published_at')}
+            onBl={formik.handleBlur('published_at')}
           />
           <label htmlFor="" className="mt-2">
             Image
