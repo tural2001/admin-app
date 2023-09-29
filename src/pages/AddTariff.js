@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, { useEffect } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import CustomInput from '../components/CustomInput';
 import { useDispatch, useSelector } from 'react-redux';
 import { toast } from 'react-toastify';
@@ -14,36 +14,58 @@ import {
   updateAtariff,
 } from '../features/tariffs/tariffSlice';
 import { getservices } from '../features/services/servicesSlice';
+import { language } from '../Language/languages';
+import { uploadImg } from '../features/upload/uploadSlice';
+import Dropzone from 'react-dropzone';
 
 let schema = yup.object({
-  name: yup.string().required('Name is Required'),
-  description: yup.string().required('Description is Required'),
+  name: yup.object().shape(
+    language.reduce(
+      (acc, lang) => ({
+        ...acc,
+        az: yup.string().required(`Name for az is Required`),
+      }),
+      {}
+    )
+  ),
+  description: yup.object().shape(
+    language.reduce(
+      (acc, lang) => ({
+        ...acc,
+        az: yup.string().required(`Description for az is Required`),
+      }),
+      {}
+    )
+  ),
   price: yup.number(),
   service_id: yup.number().required('Service Id is Required'),
   speed: yup.number().required('Speed is Required'),
   active: yup.string(),
+  channel: yup.string(),
   type: yup.number().required('Type is Required'),
   most_wanted: yup.string(),
+  icon: yup.mixed().required('Icon is Required'),
 });
+
 const AddTariff = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const location = useLocation();
   const getTariffId = location.pathname.split('/')[3];
   const newTariff = useSelector((state) => state.tariff);
-
   console.log(newTariff);
   const {
     isSuccess,
     isError,
     isLoading,
     createdTariff,
-    tariffName,
+    tariffChannel,
     tariffSpeed,
     tariffPrice,
-    tariffDescription,
     tariffType,
-    tariffActive,
+    tariffIcon,
+    TariffActive,
+    TariffData,
     tariffService_id,
     updatedTariff,
     tariffMostWanted,
@@ -51,88 +73,197 @@ const AddTariff = () => {
 
   useEffect(() => {
     if (getTariffId !== undefined) {
-      dispatch(getAtariff(getTariffId));
+      language.forEach((selectedLanguage) => {
+        dispatch(getAtariff(getTariffId, selectedLanguage));
+      });
     } else {
       dispatch(resetState());
     }
-  }, [dispatch, getTariffId]);
+  }, [getTariffId]);
+
+  const prevUpdatedTariffRef = useRef();
+  const debounceTimeoutRef = useRef(null);
 
   useEffect(() => {
-    dispatch(getservices());
-  }, [dispatch]);
-  const serviceState = useSelector((state) => state.service.services.data);
-  console.log(serviceState);
-
-  useEffect(() => {
-    if (isSuccess && createdTariff) {
+    const prevUpdatedFaq = prevUpdatedTariffRef.current;
+    if (
+      isSuccess &&
+      updatedTariff !== undefined &&
+      updatedTariff !== prevUpdatedFaq
+    ) {
+      if (debounceTimeoutRef.current) {
+        clearTimeout(debounceTimeoutRef.current);
+      }
+      debounceTimeoutRef.current = setTimeout(() => {
+        toast.success('Tariff Updated Successfully!');
+        prevUpdatedTariffRef.current = updatedTariff;
+        navigate('/admin/tariff-list');
+      }, 1000);
+    }
+    if (
+      isSuccess &&
+      createdTariff !== undefined &&
+      updatedTariff !== undefined
+    ) {
       toast.success('Tariff Added Successfully!');
       navigate('/admin/tariff-list');
       setTimeout(() => {
         window.location.reload();
-      }, 500);
-    }
-    if (isSuccess && updatedTariff !== undefined) {
-      toast.success('Tariff Updated Successfully!');
-      navigate('/admin/tariff-list');
+      }, 1000);
     }
     if (isError) {
       toast.error('Something Went Wrong!');
     }
-  }, [
-    isSuccess,
-    isError,
-    isLoading,
-    createdTariff,
-    tariffName,
-    tariffSpeed,
-    tariffPrice,
-    tariffDescription,
-    tariffType,
-    tariffService_id,
-    tariffActive,
-    updatedTariff,
-    tariffMostWanted,
-    navigate,
-  ]);
+  }, [isSuccess, isError, createdTariff, updatedTariff, navigate]);
 
+  const serviceState = useSelector((state) => state.service.services.data);
+  console.log(serviceState);
   const formik = useFormik({
     enableReinitialize: true,
     initialValues: {
-      name: tariffName || '',
+      name: language.reduce((acc, lang) => {
+        acc[lang] = TariffData ? TariffData[lang]?.data?.name || '' : '';
+        return acc;
+      }, {}),
       speed: tariffSpeed || '',
+      icon: tariffIcon || null,
       price: tariffPrice || '',
-      description: tariffDescription || '',
+      description: language.reduce((acc, lang) => {
+        acc[lang] = TariffData ? TariffData[lang]?.data?.description || '' : '';
+        return acc;
+      }, {}),
       service_id: tariffService_id || '',
-      active: tariffActive ? 1 : 0,
+      active: TariffActive ? 1 : 0,
+      channel: tariffChannel ? 1 : 0,
       most_wanted: tariffMostWanted ? 1 : 0,
-      type: tariffType || '',
+      type: tariffType || null,
     },
     validationSchema: schema,
+    validate: (values) => {
+      const errors = {};
+
+      language.forEach((lang) => {
+        const nameKey = `name.${lang}`;
+        const descriptionKey = `description.${lang}`;
+
+        if (values[descriptionKey] && !values[nameKey]) {
+          errors[nameKey] = `Answer for ${lang} is Required`;
+        }
+      });
+
+      return errors;
+    },
+
     onSubmit: (values) => {
-      // alert(JSON.stringify(values));
+      alert(JSON.stringify(values));
+      const updatedLanguages = language.filter((lang) => values.name[lang]);
+      console.log(updatedLanguages);
       if (getTariffId !== undefined) {
-        const data = { id: getTariffId, tariffData: values };
-        dispatch(updateAtariff(data));
+        updatedLanguages.forEach((lang) => {
+          const data = {
+            id: getTariffId,
+            tariffData: {
+              name: values.name[lang],
+              description: values.description[lang],
+              speed: values.speed,
+              price: values.price,
+              service_id: values.service_id,
+              most_wanted: values.most_wanted === 1 ? 1 : 0,
+              active: values.active === 1 ? 1 : 0,
+              channel: values.channel === 1 ? 1 : 0,
+              type: values.type === 1 ? 1 : 2,
+            },
+            selectedLanguage: lang,
+          };
+          dispatch(updateAtariff(data));
+        });
       } else {
-        dispatch(createAtariff(values));
-        formik.resetForm();
-        setTimeout(() => {
-          dispatch(resetState());
-        }, 300);
+        if (updatedLanguages.length > 0) {
+          const firstLang = updatedLanguages[0];
+          const createData = {
+            values: {
+              name: values.name[firstLang],
+              description: values.description[firstLang],
+              speed: values.speed,
+              price: values.price,
+              icon: values.icon,
+              service_id: values.service_id,
+              most_wanted: values.most_wanted === 1 ? 1 : 0,
+              active: values.active === 1 ? 1 : 0,
+              channel: values.channel === 1 ? 1 : 0,
+              type: values.type === 1 ? 1 : 2,
+            },
+            selectedLanguage: firstLang,
+          };
+          dispatch(createAtariff(createData))
+            .then((createdTariff) => {
+              console.log(createdTariff);
+
+              updatedLanguages.slice(1).forEach((lang) => {
+                const updateData = {
+                  id: createdTariff.payload.id,
+                  tariffData: {
+                    name: values.name[lang],
+                    description: values.description[lang],
+                    speed: values.speed,
+                    price: values.price,
+                    icon: values.icon,
+                    service_id: values.service_id,
+                    most_wanted: values.most_wanted === 1 ? 1 : 0,
+                    active: values.active === 1 ? 1 : 0,
+                    channel: values.channel === 1 ? 1 : 0,
+                    type: values.type === 1 ? 1 : 2,
+                  },
+                  selectedLanguage: lang,
+                };
+
+                dispatch(updateAtariff(updateData));
+              });
+
+              formik.resetForm();
+              setTimeout(() => {
+                dispatch(resetState());
+              }, 300);
+            })
+            .catch((error) => {
+              console.error('Error creating Tariff:', error);
+            });
+        }
       }
     },
   });
-  console.log(newTariff);
+
+  useEffect(() => {
+    language.forEach((selectedLanguage) => {
+      dispatch(getservices(selectedLanguage));
+    });
+  }, []);
 
   useEffect(() => {
     if (getTariffId === undefined) {
-      formik.setFieldValue('active', '1');
-      formik.setFieldValue('most_wanted', '1');
+      formik.setFieldValue('active', 1);
+      formik.setFieldValue('most_wanted', 1);
+      formik.setFieldValue('channel', 1);
     } else {
-      formik.setFieldValue('active', newTariff.tariffActive ? '1' : '0');
-      formik.setFieldValue('most_wanted', newTariff.most_wanted ? '1' : '0');
+      formik.setFieldValue('active', newTariff.TariffActive ? 1 : 0);
+      formik.setFieldValue('most_wanted', newTariff.tariffMostWanted ? 1 : 0);
+      formik.setFieldValue('channel', newTariff.tariffChannel ? 1 : 0);
     }
-  }, [getTariffId, newTariff.tariffActive]);
+  }, [getTariffId]);
+
+  const [isFileDetected, setIsFileDetected] = useState(false);
+
+  const onDrop = useCallback(
+    (acceptedFiles) => {
+      formik.setFieldValue('icon', acceptedFiles);
+      dispatch(uploadImg(acceptedFiles));
+      setIsFileDetected(true);
+    },
+    // eslint-disable-next-line no-use-before-define, react-hooks/exhaustive-deps
+    []
+  );
+  const imageState = useSelector((state) => state.upload.images.url);
+
   return (
     <div>
       <h3 className="mb-4 title">
@@ -140,21 +271,38 @@ const AddTariff = () => {
       </h3>
       <div>
         <form
-          action=""
           onSubmit={(e) => {
             e.preventDefault();
             const requiredFields = [
               'name',
-              'speed',
-              'service_id',
-              'type',
               'description',
+              'service_id',
+              'speed',
+              'type',
+              'icon',
             ];
             const errors = {};
-
             requiredFields.forEach((fieldName) => {
               if (formik.touched[fieldName] && !formik.values[fieldName]) {
                 errors[fieldName] = 'This field is Required';
+              }
+            });
+
+            language.forEach((lang) => {
+              const nameFieldName = `name.${lang}`;
+              const descriptionFieldName = `description.${lang}`;
+
+              if (formik.touched.name && !formik.values.name[lang]) {
+                errors[nameFieldName] = `Name for ${lang} is Required`;
+              }
+
+              if (
+                formik.touched.description &&
+                !formik.values.description[lang]
+              ) {
+                errors[
+                  descriptionFieldName
+                ] = `Description for ${lang} is Required`;
               }
             });
 
@@ -162,7 +310,7 @@ const AddTariff = () => {
               toast.error('Please fill in the required fields.');
               return;
             }
-
+            console.log(formik.errors.answer);
             formik.handleSubmit(e);
           }}
         >
@@ -170,16 +318,16 @@ const AddTariff = () => {
           <label htmlFor="" className="mt-2">
             Status
           </label>
-          <div className="my-2">
+          <div className="my-4">
             <div className="mt-1">
               <label className="inline-flex items-center">
                 <input
                   type="radio"
                   name="active"
-                  onChange={() => formik.setFieldValue('active', '1')}
+                  onChange={() => formik.setFieldValue('active', 1)}
                   onBlur={formik.handleBlur}
-                  value="1"
-                  checked={formik.values.active === '1'}
+                  value={1}
+                  checked={formik.values.active === 1}
                   className="text-blue-500 form-radio h-4 w-4"
                 />
                 <span className="ml-2">Active</span>
@@ -188,10 +336,10 @@ const AddTariff = () => {
                 <input
                   type="radio"
                   name="active"
-                  onChange={() => formik.setFieldValue('active', '0')}
+                  onChange={() => formik.setFieldValue('active', 0)}
                   onBlur={formik.handleBlur}
-                  value="0"
-                  checked={formik.values.active === '0'}
+                  value={0}
+                  checked={formik.values.active === 0}
                   className="text-blue-500 form-radio h-4 w-4"
                 />
                 <span className="ml-2">Not Active</span>
@@ -265,13 +413,13 @@ const AddTariff = () => {
                 <input
                   type="radio"
                   name="most_wanted"
-                  onChange={() => formik.setFieldValue('most_wanted', '1')}
+                  onChange={() => formik.setFieldValue('most_wanted', 1)}
                   onBlur={formik.handleBlur}
-                  value="1"
+                  value={1}
                   checked={
                     newTariff.tariffMostWanted
                       ? 1
-                      : 0 || formik.values.most_wanted === '1'
+                      : 0 || formik.values.most_wanted === 1
                   }
                   className="text-blue-500 form-radio h-4 w-4"
                 />
@@ -281,10 +429,10 @@ const AddTariff = () => {
                 <input
                   type="radio"
                   name="most_wanted"
-                  onChange={() => formik.setFieldValue('most_wanted', '0')}
+                  onChange={() => formik.setFieldValue('most_wanted', 0)}
                   onBlur={formik.handleBlur}
-                  value="0"
-                  checked={formik.values.most_wanted === '0'}
+                  value={0}
+                  checked={formik.values.most_wanted === 0}
                   className="text-blue-500 form-radio h-4 w-4"
                 />
                 <span className="ml-2">Not Most Wanted</span>
@@ -295,33 +443,87 @@ const AddTariff = () => {
             {formik.touched.most_wanted && formik.errors.most_wanted}
           </div>
           <label htmlFor="" className="mt-2">
+            Channel
+          </label>
+          <div className="my-2">
+            <div className="mt-1">
+              <label className="inline-flex items-center">
+                <input
+                  type="radio"
+                  name="channel"
+                  onChange={() => formik.setFieldValue('channel', 1)}
+                  onBlur={formik.handleBlur}
+                  value={1}
+                  checked={
+                    newTariff.tariffChannel
+                      ? 1
+                      : 0 || formik.values.channel === 1
+                  }
+                  className="text-blue-500 form-radio h-4 w-4"
+                />
+                <span className="ml-2">Yes</span>
+              </label>
+              <label className="inline-flex items-center ml-6">
+                <input
+                  type="radio"
+                  name="channel"
+                  onChange={() => formik.setFieldValue('channel', 0)}
+                  onBlur={formik.handleBlur}
+                  value={0}
+                  checked={formik.values.channel === 0}
+                  className="text-blue-500 form-radio h-4 w-4"
+                />
+                <span className="ml-2">No</span>
+              </label>
+            </div>
+          </div>
+          <div className="error">
+            {formik.touched.channel && formik.errors.channel}
+          </div>
+          <label htmlFor="" className="mt-2">
             Name
           </label>
-          <CustomInput
-            type="text"
-            label="Enter Tariff Name"
-            name="name"
-            onCh={formik.handleChange('name')}
-            onBl={formik.handleBlur('name')}
-            val={formik.values.name}
-          />
-          <div className="error">
-            {formik.touched.name && formik.errors.name}
-          </div>
+          {language.map((lang, index) => {
+            return (
+              <div key={lang}>
+                <label>{`Enter Tariff name for ${lang}:`}</label>
+                <CustomInput
+                  type="text"
+                  name={`name.${lang}`}
+                  onCh={formik.handleChange}
+                  onBl={formik.handleBlur}
+                  val={formik.values.name[lang]}
+                />
+                {formik.touched.name && formik.errors.name && (
+                  <div className="error" key={`${lang}-error`}>
+                    {formik.errors.name[lang]}
+                  </div>
+                )}
+              </div>
+            );
+          })}
           <label htmlFor="" className="mt-2">
             Description
           </label>
-          <CustomInput
-            type="text"
-            label="Enter Tariff Description"
-            name="description"
-            onCh={formik.handleChange('description')}
-            onBl={formik.handleBlur('description')}
-            val={formik.values.description}
-          />
-          <div className="error">
-            {formik.touched.description && formik.errors.description}
-          </div>
+          {language.map((lang, index) => {
+            return (
+              <div key={index}>
+                <label>{`Enter Faq description for ${lang}:`}</label>
+                <CustomInput
+                  type="text"
+                  name={`description.${lang}`}
+                  onCh={formik.handleChange}
+                  onBl={formik.handleBlur}
+                  val={formik.values.description[lang]}
+                />
+                {formik.touched.description && formik.errors.description && (
+                  <div className="error" key={lang}>
+                    {formik.errors.description[lang]}
+                  </div>
+                )}
+              </div>
+            );
+          })}
           <label htmlFor="" className="mt-2">
             Speed
           </label>
@@ -349,6 +551,91 @@ const AddTariff = () => {
           />
           <div className="error">
             {formik.touched.price && formik.errors.price}
+          </div>
+          <label htmlFor="" className="mt-2">
+            Image
+          </label>
+          <div className="">
+            <div className="text-center">
+              <div className="flex justify-space w-full gap-10">
+                <div className="mt-2 text-center">
+                  <Dropzone onDrop={onDrop}>
+                    {({ getRootProps, getInputProps }) => (
+                      <section>
+                        <div {...getRootProps()}>
+                          <input {...getInputProps()} />
+
+                          <div
+                            className={`flex items-center justify-center w-[800px]
+                        `}
+                          >
+                            <label
+                              htmlFor="dropzone-file"
+                              className={`flex flex-col items-center justify-center w-full h-64 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 ${
+                                isFileDetected
+                                  ? 'bg-green-200'
+                                  : 'dark:hover:bg-bray-800 dark:bg-gray-700 hover:bg-gray-100'
+                              } dark:border-gray-600 dark:hover:border-gray-500 dark:hover:bg-gray-600`}
+                            >
+                              <div className="flex flex-col items-center justify-center pt-5 pb-6">
+                                {isFileDetected ? (
+                                  <p className="mb-2 text-sm text-yellow-600 dark:text-yellow-400">
+                                    File detected
+                                  </p>
+                                ) : (
+                                  <p className="mb-2 text-sm text-gray-500 dark:text-gray-400">
+                                    <span className="font-semibold">
+                                      Click to upload
+                                    </span>{' '}
+                                    or drag and drop
+                                  </p>
+                                )}
+
+                                <svg
+                                  aria-hidden="true"
+                                  className="w-10 h-10 mb-3 text-gray-400"
+                                  fill="none"
+                                  stroke="currentColor"
+                                  viewBox="0 0 24 24"
+                                  xmlns="http://www.w3.org/2000/svg"
+                                >
+                                  <path
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                    strokeWidth="2"
+                                    d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"
+                                  ></path>
+                                </svg>
+                                <p className="mb-2 text-sm text-gray-500 dark:text-gray-400">
+                                  <span className="font-semibold">
+                                    Click to upload
+                                  </span>{' '}
+                                  or drag and drop
+                                </p>
+                                <p className="text-xs text-gray-500 dark:text-gray-400">
+                                  SVG, PNG, JPG or GIF (MAX. 800x400px)
+                                </p>
+                              </div>
+                              <input
+                                id="dropzone-file"
+                                type="file"
+                                className="hidden"
+                              />
+                            </label>
+                          </div>
+                        </div>
+                      </section>
+                    )}
+                  </Dropzone>
+                  <div className="error">
+                    {formik.touched.icon && formik.errors.icon}
+                  </div>
+                </div>
+                <div className="mt-[70px] w-[200px]">
+                  <img src={imageState ? imageState : ''} alt="" />
+                </div>
+              </div>
+            </div>
           </div>
           <button
             type="submit"

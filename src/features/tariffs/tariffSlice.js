@@ -1,5 +1,6 @@
 import { createSlice, createAsyncThunk, createAction } from '@reduxjs/toolkit';
 import tariffService from './tariffService';
+import { language } from '../../Language/languages';
 
 const initialState = {
   tariffs: [],
@@ -45,8 +46,24 @@ export const deleteAtariff = createAsyncThunk(
 export const createAtariff = createAsyncThunk(
   'tariffs/create-tariff',
   async (tariffData, thunkAPI) => {
+    console.log(tariffData);
     try {
-      const response = await tariffService.createTariff(tariffData);
+      const formdata = new FormData();
+      formdata.append('active', tariffData.values.active);
+      formdata.append('name', tariffData.values.name);
+      formdata.append('price', tariffData.values.price);
+      formdata.append('service_id', tariffData.values.service_id);
+      formdata.append('channel', tariffData.values.channel);
+      formdata.append(
+        'icon',
+        tariffData?.values.icon[0],
+        tariffData?.values.icon[0]?.name
+      );
+      formdata.append('type', tariffData.values.type);
+      formdata.append('description', tariffData.values.description);
+      formdata.append('most_wanted', tariffData.values.most_wanted);
+      formdata.append('speed', tariffData.values.speed);
+      const response = await tariffService.createTariff(formdata);
       return response.data;
     } catch (error) {
       return thunkAPI.rejectWithValue(error);
@@ -64,6 +81,14 @@ export const updateAtariff = createAsyncThunk(
       formdata.append('name', tariffData.tariffData.name);
       formdata.append('price', tariffData.tariffData.price);
       formdata.append('service_id', tariffData.tariffData.service_id);
+      formdata.append('channel', tariffData.tariffData.channel);
+      if (tariffData.tariffData.icon instanceof File) {
+        formdata.append(
+          'icon',
+          tariffData.tariffData.icon,
+          tariffData.tariffData.icon.name
+        );
+      }
       formdata.append('type', tariffData.tariffData.type);
       formdata.append('description', tariffData.tariffData.description);
       formdata.append('most_wanted', tariffData.tariffData.most_wanted);
@@ -72,7 +97,8 @@ export const updateAtariff = createAsyncThunk(
 
       const response = await tariffService.updateTariff(
         formdata,
-        tariffData.id
+        tariffData.id,
+        tariffData
       );
       return response.data;
     } catch (error) {
@@ -126,14 +152,16 @@ export const tariffSlice = createSlice({
         state.isLoading = false;
         state.isSuccess = true;
         state.isError = false;
-        state.tariffName = action.payload.data.name;
-        state.tariffSpeed = action.payload.data.speed;
-        state.tariffPrice = action.payload.data.price;
-        state.tariffService_id = action.payload.data.service.id;
-        state.tariffType = action.payload.data.type;
-        state.tariffDescription = action.payload.data.description;
-        state.tariffActive = action.payload.data.active;
-        state.tariffMostWanted = action.payload.data.most_wanted;
+        console.log(action.payload);
+        state.TariffData = action.payload;
+        state.tariffSpeed = action.payload[language[0]].data.speed;
+        state.tariffIcon = action.payload[language[0]].data.icon;
+        state.tariffPrice = action.payload[language[0]].data.price;
+        state.tariffService_id = action.payload[language[0]].data.service.id;
+        state.tariffType = action.payload[language[0]].data.type;
+        state.TariffActive = action.payload[language[0]].data.active;
+        state.TariffChannel = action.payload[language[0]].data.channel;
+        state.tariffMostWanted = action.payload[language[0]].data.most_wanted;
       })
       .addCase(getAtariff.rejected, (state, action) => {
         state.isLoading = false;

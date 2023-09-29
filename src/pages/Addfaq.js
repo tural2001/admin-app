@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef } from 'react';
 import CustomInput from '../components/CustomInput';
 import { useFormik } from 'formik';
 import * as yup from 'yup';
@@ -16,7 +16,7 @@ let schema = yup.object({
     language.reduce(
       (acc, lang) => ({
         ...acc,
-        az: yup.string().required(`Question for ${lang} is Required`),
+        az: yup.string().required(`Question for az is Required`),
       }),
       {}
     )
@@ -26,7 +26,7 @@ let schema = yup.object({
     language.reduce(
       (acc, lang) => ({
         ...acc,
-        az: yup.string().required(`Question for ${lang} is Required`),
+        az: yup.string().required(`Answer for az is Required`),
       }),
       {}
     )
@@ -106,8 +106,6 @@ const Addfaq = (e) => {
     updatedFaq,
     navigate,
   ]);
-  console.log(newFaq);
-  const language = ['az', 'en'];
 
   // const [selectedLanguage, setSelectedLanguage] = useState(language[0]);
   // const selectedlanguage = 'az';
@@ -129,6 +127,21 @@ const Addfaq = (e) => {
     },
 
     validationSchema: schema,
+    validate: (values) => {
+      const errors = {};
+
+      // Dil bazında doğrulama
+      language.forEach((lang) => {
+        const questionKey = `question.${lang}`;
+        const answerKey = `answer.${lang}`;
+
+        if (values[questionKey] && !values[answerKey]) {
+          errors[answerKey] = `Answer for ${lang} is Required`;
+        }
+      });
+
+      return errors;
+    },
     onSubmit: (values) => {
       alert(JSON.stringify(values));
       const updatedLanguages = language.filter((lang) => values.question[lang]);
@@ -214,8 +227,15 @@ const Addfaq = (e) => {
             });
 
             language.forEach((lang) => {
-              if (formik.touched.question && !formik.values.question.az) {
-                errors[`question.${lang}`] = `Question for ${lang} is Required`;
+              const questionFieldName = `question.${lang}`;
+              const answerFieldName = `answer.${lang}`;
+
+              if (formik.touched.question && !formik.values.question[lang]) {
+                errors[questionFieldName] = `Question for ${lang} is Required`;
+              }
+
+              if (formik.touched.answer && !formik.values.answer[lang]) {
+                errors[answerFieldName] = `Answer for ${lang} is Required`;
               }
             });
 
@@ -223,7 +243,7 @@ const Addfaq = (e) => {
               toast.error('Please fill in the required fields.');
               return;
             }
-
+            console.log(formik.errors.answer);
             formik.handleSubmit(e);
           }}
         >
@@ -262,39 +282,39 @@ const Addfaq = (e) => {
             <div className="error">
               {formik.touched.active && formik.errors.active}
             </div>
-
             {language.map((lang) => (
-              <div key={lang}>
-                <label>{`Enter Faq answer for ${lang}:`}</label>
-                <CustomInput
-                  type="text"
-                  name={`answer.${lang}`}
-                  onCh={formik.handleChange}
-                  onBl={formik.handleBlur}
-                  val={formik.values.answer[lang]}
-                />
-                <div className="error">
-                  {formik.touched[`answer.${lang}`] &&
-                    formik.errors[`answer.${lang}`]}
+              <>
+                <div key={lang}>
+                  <label>{`Enter Faq answer for ${lang}:`}</label>
+                  <CustomInput
+                    type="text"
+                    name={`answer.${lang}`}
+                    onCh={formik.handleChange}
+                    onBl={formik.handleBlur}
+                    val={formik.values.answer[lang]}
+                  />
                 </div>
-              </div>
-            ))}
-
+                {formik.touched.answer && formik.errors.answer && (
+                  <div className="error">{formik.errors.answer[lang]}</div>
+                )}
+              </>
+            ))}{' '}
             {language.map((lang) => (
-              <div key={lang}>
-                <label>{`Enter Faq question for ${lang}:`}</label>
-                <CustomInput
-                  type="text"
-                  name={`question.${lang}`}
-                  onCh={formik.handleChange}
-                  onBl={formik.handleBlur}
-                  val={formik.values.question[lang]}
-                />
-                <div className="error">
-                  {formik.touched[`question.${lang}`] &&
-                    formik.errors[`question.${lang}`]}
+              <>
+                <div key={lang}>
+                  <label>{`Enter Faq question for ${lang}:`}</label>
+                  <CustomInput
+                    type="text"
+                    name={`question.${lang}`}
+                    onCh={formik.handleChange}
+                    onBl={formik.handleBlur}
+                    val={formik.values.question[lang]}
+                  />
                 </div>
-              </div>
+                {formik.touched.question && formik.errors.question && (
+                  <div className="error">{formik.errors.question[lang]}</div>
+                )}
+              </>
             ))}
           </div>
           <button

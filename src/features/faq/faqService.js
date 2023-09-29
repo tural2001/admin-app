@@ -10,7 +10,7 @@ const getfaqs = async (selectedLanguage) => {
   return response.data;
 };
 
-const createfaq = async (faq, selectedLanguage) => {
+const createfaq = async (faq) => {
   console.log(faq);
   const response = await axios.post(`${base_url}/api/faqs`, faq.values, {
     headers: config.getHeaders(faq.selectedLanguage),
@@ -18,7 +18,7 @@ const createfaq = async (faq, selectedLanguage) => {
   return response.data;
 };
 
-const updatefaq = async (faq, selectedLanguage) => {
+const updatefaq = async (faq) => {
   console.log(faq.selectedLanguage);
   const response = await axios.put(
     `${base_url}/api/faqs/${faq.id}`,
@@ -42,8 +42,6 @@ const getfaq = async (id) => {
     });
     data[lang] = response.data;
   }
-
-  console.log(data);
   return data;
 };
 
