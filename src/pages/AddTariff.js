@@ -48,6 +48,8 @@ let schema = yup.object({
 });
 
 const AddTariff = () => {
+  const [selectedLanguageAn, setSelectedLanguageAn] = useState('az');
+  const [selectedLanguageQu, setSelectedLanguageQu] = useState('az');
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const location = useLocation();
@@ -264,6 +266,13 @@ const AddTariff = () => {
   );
   const imageState = useSelector((state) => state.upload.images.url);
 
+  const handleLanguageClickAn = (language) => {
+    setSelectedLanguageAn(language);
+  };
+
+  const handleLanguageClickQu = (language) => {
+    setSelectedLanguageQu(language);
+  };
   return (
     <div>
       <h3 className="mb-4 title">
@@ -483,10 +492,26 @@ const AddTariff = () => {
           <label htmlFor="" className="mt-2">
             Name
           </label>
+          <div className="flex">
+            {language.map((lang, index) => (
+              <label
+                key={lang}
+                className={`cursor-pointer capitalize border-[1px] border-[#5e3989]  rounded-t-lg px-5 ${
+                  lang === selectedLanguageAn ? 'font-bold' : ''
+                }`}
+                onClick={() => handleLanguageClickAn(lang)}
+              >
+                {lang}
+              </label>
+            ))}
+          </div>
           {language.map((lang, index) => {
             return (
-              <div key={lang}>
-                <label>{`Enter Tariff name for ${lang}:`}</label>
+              <div
+                key={lang}
+                className={lang === selectedLanguageAn ? '' : 'hidden'}
+              >
+                {' '}
                 <CustomInput
                   type="text"
                   name={`name.${lang}`}
@@ -505,10 +530,25 @@ const AddTariff = () => {
           <label htmlFor="" className="mt-2">
             Description
           </label>
-          {language.map((lang, index) => {
+          <div className="flex">
+            {language.map((lang, index) => (
+              <label
+                key={lang}
+                className={`cursor-pointer capitalize border-[1px] border-[#5e3989]  rounded-t-lg px-5 ${
+                  lang === selectedLanguageQu ? 'font-bold' : ''
+                }`}
+                onClick={() => handleLanguageClickQu(lang)}
+              >
+                {lang}
+              </label>
+            ))}
+          </div>
+          {language.map((lang) => {
             return (
-              <div key={index}>
-                <label>{`Enter Faq description for ${lang}:`}</label>
+              <div
+                key={lang}
+                className={lang === selectedLanguageQu ? '' : 'hidden'}
+              >
                 <CustomInput
                   type="text"
                   name={`description.${lang}`}

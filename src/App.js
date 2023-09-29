@@ -54,6 +54,9 @@ import AddCareer from './pages/AddCareer';
 import FaqFormList from './pages/FaqFormList';
 import AddFaqForm from './pages/AddFaqForm';
 import FormDataList from './pages/FormDataList';
+import Addcareer from './pages/Addcareerpage';
+import CareerpageList from './pages/Careerpage';
+import Addcareerpage from './pages/Addcareerpage';
 
 function App() {
   return (
@@ -90,6 +93,9 @@ function App() {
           <Route path="color" element={<AddColor />} />
           <Route path="color/:id" element={<AddColor />} />
           <Route path="career-form-list" element={<CareerList />} />
+          <Route path="career-list" element={<CareerpageList />} />
+          <Route path="career" element={<Addcareerpage />} />
+          <Route path="career/:id" element={<Addcareerpage />} />
           <Route path="faq-list" element={<FaqList />} />
           <Route path="faq" element={<Addfaq />} />
           <Route path="faq/:id" element={<Addfaq />} />

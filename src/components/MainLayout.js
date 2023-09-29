@@ -125,6 +125,11 @@ const MainLayout = () => {
               label: 'Advantage List',
             },
             {
+              key: 'career-list',
+              icon: <img src={campaign} className="w-6" alt="" />,
+              label: 'Career List',
+            },
+            {
               key: 'campaign-list',
               icon: <img src={campaign} className="w-6" alt="" />,
               label: 'Campaign List',

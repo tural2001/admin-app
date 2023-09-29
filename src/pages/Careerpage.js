@@ -4,67 +4,68 @@ import { Link } from 'react-router-dom';
 import CustomModal from '../components/CustomModal';
 import { RiDeleteBin5Line } from 'react-icons/ri';
 import { VscEdit } from 'react-icons/vsc';
-import {
-  deleteAtariff,
-  gettariffs,
-  resetState,
-} from '../features/tariffs/tariffSlice';
 import { toast } from 'react-toastify';
 import ReactPaginate from 'react-paginate';
 import { BsArrowLeft, BsArrowRight } from 'react-icons/bs';
+import {
+  deleteAcareerpage,
+  getcareerpages,
+  resetState,
+} from '../features/careerpage/careerpageSlice';
 
-const TariffList = () => {
+const CareerpageList = () => {
   const [open, setOpen] = useState(false);
-  const [tariffId, settariffId] = useState('');
-  const [currentPage, setCurrentPage] = useState(0);
-  const itemsPerPage = 7;
-
+  const [careerId, setcareerId] = useState('');
   const showModal = (e) => {
     setOpen(true);
-    settariffId(e);
+    setcareerId(e);
   };
   const hideModal = () => {
     setOpen(false);
   };
   const dispatch = useDispatch();
+
   useEffect(() => {
     dispatch(resetState());
-    dispatch(gettariffs());
+    dispatch(getcareerpages());
   }, [dispatch]);
 
-  const tariffstate = useSelector((state) => state.tariff.tariffs.data) || [];
+  const careerpagestate =
+    useSelector((state) => state.careerpage.careerpages.data) || [];
+  console.log(careerpagestate);
 
-  const deleteTariff = (e) => {
+  const deletecareer = (e) => {
     setOpen(false);
-    dispatch(deleteAtariff(e));
-    toast.success('Delete tariff successfully');
+    dispatch(deleteAcareerpage(e));
+    toast.success('career deleted successfully');
     setTimeout(() => {
-      dispatch(gettariffs());
+      dispatch(getcareerpages());
     }, 100);
   };
+  const [currentPage, setCurrentPage] = useState(0);
+  const itemsPerPage = 7;
 
-  const filteredTariff = tariffstate?.slice(
+  const filteredcareer = careerpagestate?.slice(
     currentPage * itemsPerPage,
     (currentPage + 1) * itemsPerPage
   );
 
-  const pageCount = Math.ceil(tariffstate?.length / itemsPerPage);
+  const pageCount = Math.ceil(careerpagestate?.length / itemsPerPage);
 
   const handlePageClick = (data) => {
     setCurrentPage(data.selected);
   };
-  console.log(filteredTariff);
-
   return (
     <div>
       <div className="flex justify-between gap-3 mb-4">
-        <h3 className="title">Tariffs</h3>
+        <h3 className="title">careers</h3>{' '}
         <Link
-          to={`/admin/tariff`}
+          to="/admin/career"
           className="flex justify-center items-center pr-3 gap-1 rounded-lg add_button_2"
         >
+          {' '}
           <span className="mb-1 ml-2 text-[30px] hover:text-white">+</span>
-          Add Tariff
+          Add career
         </Link>
       </div>
       <div>
@@ -76,31 +77,35 @@ const TariffList = () => {
                   No
                 </th>
                 <th scope="col" className="px-6 py-3">
-                  <div className="flex items-center">Status</div>
+                  <div className="flex items-center">
+                    Status
+                    <a href="#/">
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        className="w-3 h-3 ml-1"
+                        aria-hidden="true"
+                        fill="currentColor"
+                        viewBox="0 0 320 512"
+                      >
+                        <path d="M27.66 224h264.7c24.6 0 36.89-29.78 19.54-47.12l-132.3-136.8c-5.406-5.406-12.47-8.107-19.53-8.107c-7.055 0-14.09 2.701-19.45 8.107L8.119 176.9C-9.229 194.2 3.055 224 27.66 224zM292.3 288H27.66c-24.6 0-36.89 29.77-19.54 47.12l132.5 136.8C145.9 477.3 152.1 480 160 480c7.053 0 14.12-2.703 19.53-8.109l132.3-136.8C329.2 317.8 316.9 288 292.3 288z" />
+                      </svg>
+                    </a>
+                  </div>
                 </th>
                 <th scope="col" className="px-6 py-3">
                   <div className="flex items-center">Name</div>
                 </th>
                 <th scope="col" className="px-6 py-3">
-                  <div className="flex items-center">Service</div>
-                </th>
-                <th scope="col" className="px-6 py-3">
-                  <div className="flex items-center">Type</div>
+                  <div className="flex items-center">Address</div>
                 </th>
                 <th scope="col" className="px-6 py-3">
                   <div className="flex items-center">Description</div>
-                </th>
-                <th scope="col" className="px-6 py-3">
-                  <div className="flex items-center">Price</div>
-                </th>
-                <th scope="col" className="px-6 py-3">
-                  <div className="flex items-center">Speed</div>
                 </th>
                 <th scope="col" className="px-6 py-3"></th>
               </tr>
             </thead>
             <tbody>
-              {filteredTariff?.map((tariff, index) => (
+              {filteredcareer?.map((career, index) => (
                 <tr
                   key={index}
                   className="bg-white border-b dark:bg-gray-800 dark:border-gray-700"
@@ -109,31 +114,28 @@ const TariffList = () => {
                     scope="row"
                     className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"
                   >
-                    {tariff.id}
+                    {career.id}
                   </th>
                   <td
                     className={`px-6 py-4 ${
-                      tariff.active === true ? 'text-green-500' : 'text-red-500'
+                      career.active === true ? 'text-green-500' : 'text-red-500'
                     }`}
                   >
-                    {tariff.active === true ? 'Active' : 'Not Active'}
+                    {career.active === true ? 'Active' : 'Not Active'}
                   </td>
-                  <td className="px-6 py-4">{tariff.name}</td>
-                  <td className="px-6 py-4">{tariff.service.title.az}</td>
-                  <td className="px-6 py-4">{tariff.type}</td>
-                  <td className="px-6 py-4">{tariff.description}</td>
-                  <td className="px-6 py-4">{tariff.price}</td>
-                  <td className="px-6 py-4">{tariff.speed}</td>
+                  <td className="px-6 py-4">{career.name}</td>
+                  <td className="px-6 py-4">{career.address}</td>
+                  <td className="px-6 py-4">{career.description}</td>
                   <td className="px-6 py-16 flex gap-2">
                     <Link
-                      to={`/admin/tariff/${filteredTariff[index]?.id}`}
+                      to={`/admin/career/${careerpagestate[index]?.id}`}
                       className="text-[25px] text-blue-500 "
                     >
                       <VscEdit />
                     </Link>
 
                     <button
-                      onClick={() => showModal(tariffstate[index]?.id)}
+                      onClick={() => showModal(careerpagestate[index]?.id)}
                       className="text-[25px] text-red-500 "
                     >
                       <RiDeleteBin5Line />
@@ -145,7 +147,6 @@ const TariffList = () => {
           </table>
         </div>
       </div>
-
       <ReactPaginate
         previousLabel={<BsArrowLeft />}
         nextLabel={<BsArrowRight />}
@@ -161,12 +162,12 @@ const TariffList = () => {
         hideModal={hideModal}
         open={open}
         performAction={() => {
-          deleteTariff(tariffId);
+          deletecareer(careerId);
         }}
-        title={`Are you sure you want to delete  this tariff ?`}
+        title={`Are you sure you want to delete  this career ?`}
       />
     </div>
   );
 };
 
-export default TariffList;
+export default CareerpageList;

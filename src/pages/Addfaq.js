@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import CustomInput from '../components/CustomInput';
 import { useFormik } from 'formik';
 import * as yup from 'yup';
@@ -35,6 +35,9 @@ let schema = yup.object({
 });
 
 const Addfaq = (e) => {
+  const [selectedLanguage1, setSelectedLanguage1] = useState('az');
+  const [selectedLanguage2, setSelectedLanguage2] = useState('az');
+
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const location = useLocation();
@@ -52,7 +55,6 @@ const Addfaq = (e) => {
   console.log(newFaq);
   useEffect(() => {
     if (getFaqId !== undefined) {
-      // Tüm diller için döngü oluşturun
       language.forEach((selectedLanguage) => {
         dispatch(getAfaq(getFaqId, selectedLanguage));
       });
@@ -107,11 +109,6 @@ const Addfaq = (e) => {
     navigate,
   ]);
 
-  // const [selectedLanguage, setSelectedLanguage] = useState(language[0]);
-  // const selectedlanguage = 'az';
-  // const activeValue = FaqData[language[0]]; // Herhangi bir dilin active değerini baz alıyoruz.
-  // console.log(activeValue);
-
   const formik = useFormik({
     enableReinitialize: true,
     initialValues: {
@@ -130,7 +127,6 @@ const Addfaq = (e) => {
     validate: (values) => {
       const errors = {};
 
-      // Dil bazında doğrulama
       language.forEach((lang) => {
         const questionKey = `question.${lang}`;
         const answerKey = `answer.${lang}`;
@@ -147,7 +143,6 @@ const Addfaq = (e) => {
       const updatedLanguages = language.filter((lang) => values.question[lang]);
       console.log(updatedLanguages);
       if (getFaqId !== undefined) {
-        // Update existing FAQ for each language
         updatedLanguages.forEach((lang) => {
           const data = {
             id: getFaqId,
@@ -209,6 +204,13 @@ const Addfaq = (e) => {
     }
   }, [getFaqId, newFaq.FaqActive]);
 
+  const handleLanguageClick1 = (language) => {
+    setSelectedLanguage1(language);
+  };
+
+  const handleLanguageClick2 = (language) => {
+    setSelectedLanguage2(language);
+  };
   return (
     <div>
       <h3 className="mb-4 title">
@@ -282,10 +284,28 @@ const Addfaq = (e) => {
             <div className="error">
               {formik.touched.active && formik.errors.active}
             </div>
-            {language.map((lang) => (
-              <>
-                <div key={lang}>
-                  <label>{`Enter Faq answer for ${lang}:`}</label>
+            <label htmlFor="" className="my-2">
+              Answer
+            </label>
+            <div className="flex">
+              {language.map((lang, index) => (
+                <label
+                  key={lang}
+                  className={`cursor-pointer capitalize border-[1px] border-[#5e3989]  rounded-t-lg px-5 ${
+                    lang === selectedLanguage1 ? 'font-bold' : ''
+                  }`}
+                  onClick={() => handleLanguageClick1(lang)}
+                >
+                  {lang}
+                </label>
+              ))}
+            </div>
+            {language.map((lang) => {
+              return (
+                <div
+                  key={lang}
+                  className={lang === selectedLanguage1 ? '' : 'hidden'}
+                >
                   <CustomInput
                     type="text"
                     name={`answer.${lang}`}
@@ -293,16 +313,34 @@ const Addfaq = (e) => {
                     onBl={formik.handleBlur}
                     val={formik.values.answer[lang]}
                   />
+                  {formik.touched.answer && formik.errors.answer && (
+                    <div className="error">{formik.errors.answer[lang]}</div>
+                  )}
                 </div>
-                {formik.touched.answer && formik.errors.answer && (
-                  <div className="error">{formik.errors.answer[lang]}</div>
-                )}
-              </>
-            ))}{' '}
-            {language.map((lang) => (
-              <>
-                <div key={lang}>
-                  <label>{`Enter Faq question for ${lang}:`}</label>
+              );
+            })}{' '}
+            <label htmlFor="" className="my-2">
+              Question
+            </label>
+            <div className="flex">
+              {language.map((lang, index) => (
+                <label
+                  key={lang}
+                  className={`cursor-pointer capitalize border-[1px] border-[#5e3989]  rounded-t-lg px-5 ${
+                    lang === selectedLanguage2 ? 'font-bold text-[#5e3989]' : ''
+                  }`}
+                  onClick={() => handleLanguageClick2(lang)}
+                >
+                  {lang}
+                </label>
+              ))}
+            </div>
+            {language.map((lang) => {
+              return (
+                <div
+                  key={lang}
+                  className={lang === selectedLanguage2 ? '' : 'hidden'}
+                >
                   <CustomInput
                     type="text"
                     name={`question.${lang}`}
@@ -310,12 +348,12 @@ const Addfaq = (e) => {
                     onBl={formik.handleBlur}
                     val={formik.values.question[lang]}
                   />
+                  {formik.touched.question && formik.errors.question && (
+                    <div className="error">{formik.errors.question[lang]}</div>
+                  )}
                 </div>
-                {formik.touched.question && formik.errors.question && (
-                  <div className="error">{formik.errors.question[lang]}</div>
-                )}
-              </>
-            ))}
+              );
+            })}
           </div>
           <button
             type="submit"
