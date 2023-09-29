@@ -1,4 +1,5 @@
-import React, { useEffect, useState } from 'react';
+/* eslint-disable react-hooks/exhaustive-deps */
+import React, { useEffect, useRef, useState } from 'react';
 import CustomInput from '../components/CustomInput';
 import { useFormik } from 'formik';
 import * as yup from 'yup';
@@ -44,38 +45,53 @@ const Addfaq = (e) => {
     isError,
     isLoading,
     createdFaq,
-    faqQuestion,
-    faqAnswer,
-    faqActive,
+    FaqData,
     updatedFaq,
+    FaqActive,
   } = newFaq;
-
+  console.log(newFaq);
   useEffect(() => {
     if (getFaqId !== undefined) {
-      dispatch(getAfaq(getFaqId));
+      // Tüm diller için döngü oluşturun
+      language.forEach((selectedLanguage) => {
+        dispatch(getAfaq(getFaqId, selectedLanguage));
+      });
     } else {
       dispatch(resetState());
     }
   }, [dispatch, getFaqId]);
 
+  const prevUpdatedFaqRef = useRef();
+  const debounceTimeoutRef = useRef(null);
+
+  useEffect(() => {
+    const prevUpdatedFaq = prevUpdatedFaqRef.current;
+    if (
+      isSuccess &&
+      updatedFaq !== undefined &&
+      updatedFaq !== prevUpdatedFaq
+    ) {
+      if (debounceTimeoutRef.current) {
+        clearTimeout(debounceTimeoutRef.current);
+      }
+      debounceTimeoutRef.current = setTimeout(() => {
+        toast.success('Faq Updated Successfully!');
+        prevUpdatedFaqRef.current = updatedFaq;
+        navigate('/admin/faq-list');
+      }, 1000);
+    }
+
+    if (isError) {
+      toast.error('Something Went Wrong!');
+    }
+  }, [isSuccess, isError, updatedFaq]);
   useEffect(() => {
     if (isSuccess && createdFaq !== undefined && updatedFaq !== undefined) {
       toast.success('Faq Added Successfully!');
-      // navigate('/admin/faq-list');
-      // setTimeout(() => {
-      //   window.location.reload();
-      // }, 1000);
-    }
-    if (isSuccess && createdFaq !== undefined && updatedFaq === undefined) {
-      toast.success('Faq Added Successfully!');
-      // navigate('/admin/faq-list');
-      // setTimeout(() => {
-      //   window.location.reload();
-      // }, 1000);
-    }
-    if (isSuccess && updatedFaq !== undefined && createdFaq === undefined) {
-      toast.success('Faq Updated Successfully!');
-      // navigate('/admin/faq-list');
+      navigate('/admin/faq-list');
+      setTimeout(() => {
+        window.location.reload();
+      }, 1000);
     }
     if (isError) {
       toast.error('Something Went Wrong!');
@@ -85,9 +101,8 @@ const Addfaq = (e) => {
     isError,
     isLoading,
     createdFaq,
-    faqQuestion,
-    faqActive,
-    faqAnswer,
+    FaqData,
+    FaqActive,
     updatedFaq,
     navigate,
   ]);
@@ -96,18 +111,21 @@ const Addfaq = (e) => {
 
   // const [selectedLanguage, setSelectedLanguage] = useState(language[0]);
   // const selectedlanguage = 'az';
+  // const activeValue = FaqData[language[0]]; // Herhangi bir dilin active değerini baz alıyoruz.
+  // console.log(activeValue);
+
   const formik = useFormik({
     enableReinitialize: true,
     initialValues: {
       question: language.reduce((acc, lang) => {
-        acc[lang] = faqQuestion ? faqQuestion[lang] || '' : '';
+        acc[lang] = FaqData ? FaqData[lang]?.data?.question || '' : '';
         return acc;
       }, {}),
       answer: language.reduce((acc, lang) => {
-        acc[lang] = faqAnswer ? faqAnswer[lang] || '' : '';
+        acc[lang] = FaqData ? FaqData[lang]?.data?.answer || '' : '';
         return acc;
       }, {}),
-      active: faqActive ? '1' : '0',
+      active: FaqActive ? 1 : 0,
     },
 
     validationSchema: schema,
@@ -130,7 +148,6 @@ const Addfaq = (e) => {
           dispatch(updateAfaq(data));
         });
       } else {
-        // Create a new FAQ for the first language and update for the rest
         if (updatedLanguages.length > 0) {
           const firstLang = updatedLanguages[0];
           const createData = {
@@ -145,14 +162,12 @@ const Addfaq = (e) => {
             .then((createdFaq) => {
               console.log(createdFaq);
 
-              // Diğer diller için update işlemi yap
               updatedLanguages.slice(1).forEach((lang) => {
                 const updateData = {
                   id: createdFaq.payload.data.id,
                   faqData: {
                     question: values.question[lang],
                     answer: values.answer[lang],
-                    active: values.active === '1' ? true : false,
                   },
                   selectedLanguage: lang,
                 };
@@ -177,9 +192,9 @@ const Addfaq = (e) => {
     if (getFaqId === undefined) {
       formik.setFieldValue('active', '1');
     } else {
-      formik.setFieldValue('active', newFaq.faqActive ? '1' : '0');
+      formik.setFieldValue('active', newFaq.FaqActive ? '1' : '0');
     }
-  }, [getFaqId, newFaq.faqActive]);
+  }, [getFaqId, newFaq.FaqActive]);
 
   return (
     <div>

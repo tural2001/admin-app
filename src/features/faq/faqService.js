@@ -1,10 +1,10 @@
 import axios from 'axios';
 import { base_url } from '../../utils/base_url';
 import { config } from '../../utils/axiosconfig';
-
+import { language } from '../../Language/languages';
 const getfaqs = async (selectedLanguage) => {
   const response = await axios.get(`${base_url}/api/faqs?inactive=true`, {
-    headers: config.getHeaders(selectedLanguage), // Pass the selected language here
+    headers: config.getHeaders(selectedLanguage),
   });
 
   return response.data;
@@ -33,12 +33,18 @@ const updatefaq = async (faq, selectedLanguage) => {
   );
   return response.data;
 };
+const getfaq = async (id) => {
+  const data = {};
 
-const getfaq = async (id, selectedLanguage) => {
-  const response = await axios.get(`${base_url}/api/faqs/${id}`, {
-    headers: config.getHeaders(selectedLanguage),
-  });
-  return response.data;
+  for (const lang of language) {
+    const response = await axios.get(`${base_url}/api/faqs/${id}`, {
+      headers: config.getHeaders(lang),
+    });
+    data[lang] = response.data;
+  }
+
+  console.log(data);
+  return data;
 };
 
 const deletefaq = async (id, language) => {

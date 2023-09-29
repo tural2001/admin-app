@@ -1,5 +1,6 @@
 import { createSlice, createAsyncThunk, createAction } from '@reduxjs/toolkit';
 import faqService from './faqService';
+import { language } from '../../Language/languages';
 
 const initialState = {
   faqs: [],
@@ -102,9 +103,16 @@ export const faqSlice = createSlice({
         state.isLoading = false;
         state.isSuccess = true;
         state.isError = false;
-        state.faqQuestion = action.payload.data.question;
-        state.faqAnswer = action.payload.data.answer;
-        state.faqActive = action.payload.data.active;
+        console.log(action.payload[language[0]].data.active);
+        state.FaqData = action.payload;
+        state.FaqActive = action.payload[language[0]].data.active;
+
+        // state.faqQuestion = action.payload.az.data.question;
+        // state.faqAnswer = action.payload.az.data.answer;
+        // state.faqActive = action.payload.az.data.active;
+        // state.faqQuestion = action.payload.en.data.question;
+        // state.faqAnswer = action.payload.en.data.answer;
+        // state.faqActive = action.payload.en.data.active;
       })
       .addCase(getAfaq.rejected, (state, action) => {
         state.isLoading = false;

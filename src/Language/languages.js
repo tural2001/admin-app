@@ -1,1 +1,1 @@
-export const language = ['az', 'en', 'rus'];
+export const language = ['az', 'en'];

@@ -319,7 +319,7 @@ const MainLayout = () => {
         >
           <ToastContainer
             position="top-right"
-            autoClose={250}
+            autoClose={2000}
             hideProgressBar={false}
             newestOnTop={true}
             closeOnClick
