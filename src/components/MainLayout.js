@@ -221,6 +221,11 @@ const MainLayout = () => {
               label: 'Service List',
             },
             {
+              key: 'service-category-list',
+              icon: <img src={service} className="w-6" alt="" />,
+              label: 'Service Category List',
+            },
+            {
               key: 'slide-list',
               icon: <img src={slide} className="w-6" alt="" />,
               label: 'Slide List',

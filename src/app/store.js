@@ -30,6 +30,7 @@ import careerReducer from '../features/career/careerSlice';
 import faqformReducer from '../features/faqform/faqformSlice';
 import formdataReducer from '../features/formData/formDataSlice';
 import careerpageReducer from '../features/careerpage/careerpageSlice';
+import servicecategoryReducer from '../features/servicecategories/servicecategoriesSlice';
 import { languageReducer } from '../features/Language/languageSlice';
 
 export const store = configureStore({
@@ -41,6 +42,7 @@ export const store = configureStore({
     popup: popupReducer,
     reviews: reviewsReducer,
     tariff: tariffReducer,
+    servicecategory: servicecategoryReducer,
     region: regionReducer,
     field: formReducer,
     post: postReducer,
