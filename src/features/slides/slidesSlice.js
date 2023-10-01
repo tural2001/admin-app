@@ -1,5 +1,6 @@
 import { createSlice, createAsyncThunk, createAction } from '@reduxjs/toolkit';
 import slideService from './slidesService';
+import { language } from '../../Language/languages';
 
 const initialState = {
   slides: [],
@@ -47,14 +48,18 @@ export const createAslide = createAsyncThunk(
   async (slideData, thunkAPI) => {
     try {
       const formdata = new FormData();
-      formdata.append('active', slideData.active);
-      formdata.append('order', slideData.order);
-      formdata.append('image', slideData.image[0], slideData.image[0].name);
-      formdata.append('title', slideData.title);
-      formdata.append('description', slideData.description);
-      formdata.append('button_text', slideData.button_text);
-      formdata.append('button_link', slideData.button_link);
-      formdata.append('show_button', slideData.show_button);
+      formdata.append('active', slideData.values.active);
+      formdata.append('order', slideData.values.order);
+      formdata.append(
+        'image',
+        slideData?.values?.image[0],
+        slideData?.values?.image[0]?.name
+      );
+      formdata.append('title', slideData.values.title);
+      formdata.append('description', slideData.values.description);
+      formdata.append('button_text', slideData.values.button_text);
+      formdata.append('button_link', slideData.values.button_link);
+      formdata.append('show_button', slideData.values.show_button);
       const response = await slideService.createslide(formdata);
       return response.data;
     } catch (error) {
@@ -68,22 +73,26 @@ export const updateAslide = createAsyncThunk(
     console.log(slideData);
     try {
       const formdata = new FormData();
-      formdata.append('active', slideData.slide.active);
-      formdata.append('title', slideData.slide.title);
-      formdata.append('order', slideData.slide.order);
-      formdata.append('button_text', slideData.slide.button_text);
-      formdata.append('button_link', slideData.slide.button_link);
-      formdata.append('show_button', slideData.slide.show_button);
-      if (slideData.slide.image[0] instanceof File) {
+      formdata.append('active', slideData.slideData.active);
+      formdata.append('title', slideData.slideData.title);
+      formdata.append('order', slideData.slideData.order);
+      formdata.append('button_text', slideData.slideData.button_text);
+      formdata.append('button_link', slideData.slideData.button_link);
+      formdata.append('show_button', slideData.slideData.show_button);
+      if (slideData.slideData.image instanceof File) {
         formdata.append(
           'image',
-          slideData.slide.image[0],
-          slideData.slide.image[0].name
+          slideData.slideData.image,
+          slideData.slideData.image.name
         );
       }
-      formdata.append('description', slideData.slide.description);
+      formdata.append('description', slideData.slideData.description);
       formdata.append('_method', 'PUT');
-      const response = await slideService.updateslide(formdata, slideData.id);
+      const response = await slideService.updateslide(
+        formdata,
+        slideData.id,
+        slideData
+      );
       return response.data;
     } catch (error) {
       return thunkAPI.rejectWithValue(error);
@@ -135,14 +144,12 @@ export const slideSlice = createSlice({
         state.isLoading = false;
         state.isSuccess = true;
         state.isError = false;
-        state.slideTitle = action.payload.data.title;
-        state.slideActive = action.payload.data.active;
-        state.slideOrder = action.payload.data.order;
-        state.slideShow_button = action.payload.data.show_button;
-        state.slideButton_text = action.payload.data.button_text;
-        state.slideButton_link = action.payload.data.button_link;
-        state.slideDescription = action.payload.data.description;
-        state.slideImage = action.payload.data.image;
+        console.log(action.payload);
+        state.slideData = action.payload;
+        state.slideActive = action.payload[language[0]].data.active;
+        state.slideOrder = action.payload[language[0]].data.order;
+        state.slideShow_button = action.payload[language[0]].data.show_button;
+        state.slideImage = action.payload[language[0]].data.image;
       })
       .addCase(getAslide.rejected, (state, action) => {
         state.isLoading = false;

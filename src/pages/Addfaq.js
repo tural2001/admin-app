@@ -220,7 +220,7 @@ const Addfaq = (e) => {
         <form
           onSubmit={(e) => {
             e.preventDefault();
-            const requiredFields = ['answer', 'active'];
+            const requiredFields = ['answer', 'question'];
             const errors = {};
             requiredFields.forEach((fieldName) => {
               if (formik.touched[fieldName] && !formik.values[fieldName]) {
@@ -285,41 +285,6 @@ const Addfaq = (e) => {
               {formik.touched.active && formik.errors.active}
             </div>
             <label htmlFor="" className="my-2">
-              Answer
-            </label>
-            <div className="flex">
-              {language.map((lang, index) => (
-                <label
-                  key={lang}
-                  className={`cursor-pointer capitalize border-[1px] border-[#5e3989]  rounded-t-lg px-5 ${
-                    lang === selectedLanguage1 ? 'font-bold' : ''
-                  }`}
-                  onClick={() => handleLanguageClick1(lang)}
-                >
-                  {lang}
-                </label>
-              ))}
-            </div>
-            {language.map((lang) => {
-              return (
-                <div
-                  key={lang}
-                  className={lang === selectedLanguage1 ? '' : 'hidden'}
-                >
-                  <CustomInput
-                    type="text"
-                    name={`answer.${lang}`}
-                    onCh={formik.handleChange}
-                    onBl={formik.handleBlur}
-                    val={formik.values.answer[lang]}
-                  />
-                  {formik.touched.answer && formik.errors.answer && (
-                    <div className="error">{formik.errors.answer[lang]}</div>
-                  )}
-                </div>
-              );
-            })}{' '}
-            <label htmlFor="" className="my-2">
               Question
             </label>
             <div className="flex">
@@ -354,6 +319,41 @@ const Addfaq = (e) => {
                 </div>
               );
             })}
+            <label htmlFor="" className="my-2">
+              Answer
+            </label>
+            <div className="flex">
+              {language.map((lang, index) => (
+                <label
+                  key={lang}
+                  className={`cursor-pointer capitalize border-[1px] border-[#5e3989]  rounded-t-lg px-5 ${
+                    lang === selectedLanguage1 ? 'font-bold' : ''
+                  }`}
+                  onClick={() => handleLanguageClick1(lang)}
+                >
+                  {lang}
+                </label>
+              ))}
+            </div>
+            {language.map((lang) => {
+              return (
+                <div
+                  key={lang}
+                  className={lang === selectedLanguage1 ? '' : 'hidden'}
+                >
+                  <CustomInput
+                    type="text"
+                    name={`answer.${lang}`}
+                    onCh={formik.handleChange}
+                    onBl={formik.handleBlur}
+                    val={formik.values.answer[lang]}
+                  />
+                  {formik.touched.answer && formik.errors.answer && (
+                    <div className="error">{formik.errors.answer[lang]}</div>
+                  )}
+                </div>
+              );
+            })}{' '}
           </div>
           <button
             type="submit"

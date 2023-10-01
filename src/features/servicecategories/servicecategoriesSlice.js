@@ -35,13 +35,15 @@ export const getServicecategory = createAsyncThunk(
 export const createServicecategories = createAsyncThunk(
   'servicecategories/create-service-categories',
   async (servicecategoryData, thunkAPI) => {
+    console.log(servicecategoryData);
     try {
       const formdata = new FormData();
-      formdata.append('name', servicecategoryData.name);
+      formdata.append('name', servicecategoryData.values.name);
+      formdata.append('active', servicecategoryData.values.active);
       formdata.append(
         'icon',
-        servicecategoryData.icon[0],
-        servicecategoryData.icon[0].name
+        servicecategoryData?.values.icon[0],
+        servicecategoryData?.values.icon[0]?.name
       );
       const response = await servicecategoriesService.createservicecategories(
         formdata
@@ -75,7 +77,7 @@ export const updateServicecategories = createAsyncThunk(
       if (servicecategoryData.servicecData.icon instanceof File) {
         formdata.append(
           'icon',
-          servicecategoryData.servicecData.icon,
+          servicecategoryData.servicecData?.icon,
           servicecategoryData.servicecData.icon.name
         );
       }

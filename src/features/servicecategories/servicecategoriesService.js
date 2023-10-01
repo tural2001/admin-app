@@ -11,6 +11,7 @@ const getservicecategories = async (selectedLanguage) => {
 };
 
 const createservicecategories = async (servicecategories) => {
+  console.log(servicecategories);
   const response = await axios.post(
     `${base_url}/api/service-categories`,
     servicecategories,

@@ -166,7 +166,7 @@ const CampaignList = () => {
                   </td>
                   <td className="px-6 py-16 flex gap-2">
                     <Link
-                      to={`/admin/campaign/${campaignstate[index]?.id}`}
+                      to={`/admin/campaign/${filteredCampaign[index]?.id}`}
                       className="text-[25px] text-blue-500 "
                     >
                       <VscEdit />

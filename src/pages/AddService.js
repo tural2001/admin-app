@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import CustomInput from '../components/CustomInput';
 import { useDispatch, useSelector } from 'react-redux';
 import { toast } from 'react-toastify';
@@ -14,17 +14,40 @@ import {
   updateAservice,
 } from '../features/services/servicesSlice';
 import { uploadImg } from '../features/upload/uploadSlice';
+import { language } from '../Language/languages';
+import { getServicecategories } from '../features/servicecategories/servicecategoriesSlice';
 
 let schema = yup.object({
-  title: yup.string().required('Title s is Required'),
-  description: yup.string().required('Description is Required'),
+  title: yup.object().shape(
+    language.reduce(
+      (acc, lang) => ({
+        ...acc,
+        az: yup.string().required(`Title for az is Required`),
+      }),
+      {}
+    )
+  ),
+  description: yup.object().shape(
+    language.reduce(
+      (acc, lang) => ({
+        ...acc,
+        az: yup.string().required(`Description for az is Required`),
+      }),
+      {}
+    )
+  ),
   icon: yup.mixed().required('Icon is Required'),
   active: yup.string(),
+  partner: yup.string(),
   meta_title: yup.string(),
   meta_description: yup.string(),
 });
 
 const AddService = () => {
+  const [selectedLanguage1, setSelectedLanguage1] = useState('az');
+  const [selectedLanguage2, setSelectedLanguage2] = useState('az');
+  const [selectedLanguage3, setSelectedLanguage3] = useState('az');
+  const [selectedLanguage4, setSelectedLanguage4] = useState('az');
   const [isFileDetected, setIsFileDetected] = useState(false);
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -37,13 +60,11 @@ const AddService = () => {
     isError,
     isLoading,
     createdService,
-    serviceTitle,
     serviceActive,
-    serviceDescription,
+    serviceData,
     serviceIcon,
     updatedService,
-    serviceMeta_title,
-    serviceMeta_description,
+    servicePartner,
   } = newService;
 
   const onDrop = useCallback(
@@ -58,64 +79,153 @@ const AddService = () => {
   const imageState = useSelector((state) => state.upload.images.url);
 
   useEffect(() => {
+    dispatch(getServicecategories());
+  }, [dispatch]);
+
+  useEffect(() => {
     if (getServiceId !== undefined) {
-      dispatch(getAservice(getServiceId));
+      language.forEach((selectedLanguage) => {
+        dispatch(getAservice(getServiceId, selectedLanguage));
+      });
     } else {
       dispatch(resetState());
     }
-  }, [dispatch, getServiceId]);
+  }, [getServiceId]);
+
+  const prevUpdatedTariffRef = useRef();
+  const debounceTimeoutRef = useRef(null);
 
   useEffect(() => {
-    if (isSuccess && createdService) {
-      toast.success('Service Added Successfully!');
+    const prevUpdatedFaq = prevUpdatedTariffRef.current;
+    if (
+      isSuccess &&
+      updatedService !== undefined &&
+      updatedService !== prevUpdatedFaq
+    ) {
+      if (debounceTimeoutRef.current) {
+        clearTimeout(debounceTimeoutRef.current);
+      }
+      debounceTimeoutRef.current = setTimeout(() => {
+        toast.success('Service Updated Successfully!');
+        prevUpdatedTariffRef.current = updatedService;
+        navigate('/admin/service-list');
+      }, 1000);
+    }
+    if (
+      isSuccess &&
+      createdService !== undefined &&
+      updatedService !== undefined
+    ) {
+      toast.success('Tariff Added Successfully!');
       navigate('/admin/service-list');
       setTimeout(() => {
         window.location.reload();
-      }, 500);
-    }
-    if (isSuccess && updatedService !== undefined) {
-      toast.success('Service Updated Successfully!');
-      navigate('/admin/service-list');
+      }, 1000);
     }
     if (isError) {
       toast.error('Something Went Wrong!');
     }
-  }, [
-    isSuccess,
-    isError,
-    isLoading,
-    createdService,
-    serviceTitle,
-    serviceActive,
-    serviceDescription,
-    serviceIcon,
-    updatedService,
-    serviceMeta_title,
-    serviceMeta_description,
-    navigate,
-  ]);
+  }, [isSuccess, isError, createdService, updatedService, navigate]);
 
+  const servicecstate =
+    useSelector((state) => state.servicecategory?.serviceC?.data) || [];
   const formik = useFormik({
     enableReinitialize: true,
     initialValues: {
-      title: serviceTitle || '',
+      title: language.reduce((acc, lang) => {
+        acc[lang] = serviceData ? serviceData[lang]?.data?.title || '' : '';
+        return acc;
+      }, {}),
       active: serviceActive ? 1 : 0,
-      description: serviceDescription || '',
+      partner: servicePartner ? 1 : 0,
+      description: language.reduce((acc, lang) => {
+        acc[lang] = serviceData
+          ? serviceData[lang]?.data?.description || ''
+          : '';
+        return acc;
+      }, {}),
       icon: serviceIcon || null,
-      meta_title: serviceMeta_title || '',
-      meta_description: serviceMeta_description || '',
+      meta_title: language.reduce((acc, lang) => {
+        acc[lang] = serviceData
+          ? serviceData[lang]?.data?.meta_title || ''
+          : '';
+        return acc;
+      }, {}),
+      meta_description: language.reduce((acc, lang) => {
+        acc[lang] = serviceData
+          ? serviceData[lang]?.data?.meta_description || ''
+          : '';
+        return acc;
+      }, {}),
     },
     validationSchema: schema,
     onSubmit: (values) => {
+      alert(JSON.stringify(values));
+      const updatedLanguages = language.filter((lang) => values.name[lang]);
+      console.log(updatedLanguages);
       if (getServiceId !== undefined) {
-        const data = { id: getServiceId, service: values };
-        dispatch(updateAservice(data));
+        updatedLanguages.forEach((lang) => {
+          const data = {
+            id: getServiceId,
+            tariffData: {
+              title: values.title[lang],
+              description: values.description[lang],
+              meta_title: values.meta_title[lang],
+              meta_description: values.meta_description[lang],
+              active: values.active === 1 ? 1 : 0,
+              partner: values.partner === 1 ? 1 : 0,
+              icon: values.icon,
+            },
+            selectedLanguage: lang,
+          };
+          dispatch(updateAservice(data));
+        });
       } else {
-        dispatch(createAservice(values));
-        formik.resetForm();
-        setTimeout(() => {
-          dispatch(resetState());
-        }, 1000);
+        if (updatedLanguages.length > 0) {
+          const firstLang = updatedLanguages[0];
+          const createData = {
+            values: {
+              title: values.title[firstLang],
+              description: values.description[firstLang],
+              meta_title: values.meta_title[firstLang],
+              meta_description: values.meta_description[firstLang],
+              active: values.active === 1 ? 1 : 0,
+              partner: values.partner === 1 ? 1 : 0,
+              icon: values.icon,
+            },
+            selectedLanguage: firstLang,
+          };
+          dispatch(createAservice(createData))
+            .then((createdService) => {
+              console.log(createdService);
+
+              updatedLanguages.slice(1).forEach((lang) => {
+                const updateData = {
+                  id: createdService.payload.id,
+                  tariffData: {
+                    title: values.title[lang],
+                    description: values.description[lang],
+                    meta_title: values.meta_title[lang],
+                    meta_description: values.meta_description[lang],
+                    active: values.active === 1 ? 1 : 0,
+                    partner: values.partner === 1 ? 1 : 0,
+                    icon: values.icon,
+                  },
+                  selectedLanguage: lang,
+                };
+
+                dispatch(updateAservice(updateData));
+              });
+
+              formik.resetForm();
+              setTimeout(() => {
+                dispatch(resetState());
+              }, 300);
+            })
+            .catch((error) => {
+              console.error('Error creating Service:', error);
+            });
+        }
       }
     },
   });
@@ -123,10 +233,28 @@ const AddService = () => {
   useEffect(() => {
     if (getServiceId === undefined) {
       formik.setFieldValue('active', '1');
+      formik.setFieldValue('partner', '0');
     } else {
       formik.setFieldValue('active', newService.serviceActive ? '1' : '0');
+      formik.setFieldValue('partner', newService.servicePartner ? '1' : '0');
     }
   }, [getServiceId, newService.serviceActive]);
+
+  const handleLanguageClick1 = (language) => {
+    setSelectedLanguage1(language);
+  };
+
+  const handleLanguageClick2 = (language) => {
+    setSelectedLanguage2(language);
+  };
+  const handleLanguageClick3 = (language) => {
+    setSelectedLanguage3(language);
+  };
+
+  const handleLanguageClick4 = (language) => {
+    setSelectedLanguage4(language);
+  };
+
   return (
     <div>
       <h3 className="mb-4 title">
@@ -136,17 +264,50 @@ const AddService = () => {
         <form
           onSubmit={(e) => {
             e.preventDefault();
-            const requiredFields = ['title', 'description', 'icon', 'active'];
+            const requiredFields = [
+              'title',
+              'description',
+              'icon',
+              'parent_id',
+            ];
             const errors = {};
             requiredFields.forEach((fieldName) => {
               if (formik.touched[fieldName] && !formik.values[fieldName]) {
                 errors[fieldName] = 'This field is Required';
               }
             });
+
+            language.forEach((lang) => {
+              const titleFieldName = `title.${lang}`;
+              const parent_idFieldName = `parent_id.${lang}`;
+              const iconFieldName = `icon.${lang}`;
+              const descriptionFieldName = `description.${lang}`;
+
+              if (formik.touched.title && !formik.values.title[lang]) {
+                errors[titleFieldName] = `Name for ${lang} is Required`;
+              }
+
+              if (formik.touched.parent_id && !formik.values.parent_id[lang]) {
+                errors[parent_idFieldName] = `Name for ${lang} is Required`;
+              }
+              if (formik.touched.icon && !formik.values.icon[lang]) {
+                errors[iconFieldName] = `Name for ${lang} is Required`;
+              }
+              if (
+                formik.touched.description &&
+                !formik.values.description[lang]
+              ) {
+                errors[
+                  descriptionFieldName
+                ] = `Description for ${lang} is Required`;
+              }
+            });
+
             if (Object.keys(errors).length > 0) {
               toast.error('Please fill in the required fields.');
               return;
             }
+            console.log(formik.errors.answer);
             formik.handleSubmit(e);
           }}
         >
@@ -185,61 +346,201 @@ const AddService = () => {
             {formik.touched.active && formik.errors.active}
           </div>
           <label htmlFor="" className="mt-2">
+            Partner
+          </label>
+          <div className="my-2">
+            <div className="mt-1">
+              <label className="inline-flex items-center">
+                <input
+                  type="radio"
+                  name="partner"
+                  onChange={() => formik.setFieldValue('partner', '1')}
+                  onBlur={formik.handleBlur}
+                  value="1"
+                  checked={formik.values.partner === '1'}
+                  className="text-blue-500 form-radio h-4 w-4"
+                />
+                <span className="ml-2">Partner</span>
+              </label>
+              <label className="inline-flex items-center ml-6">
+                <input
+                  type="radio"
+                  name="partner"
+                  onChange={() => formik.setFieldValue('partner', '0')}
+                  onBlur={formik.handleBlur}
+                  value="0"
+                  checked={formik.values.partner === '0'}
+                  className="text-blue-500 form-radio h-4 w-4"
+                />
+                <span className="ml-2">Not partner</span>
+              </label>
+            </div>
+          </div>
+          <label htmlFor="" className="mt-2">
+            Service
+          </label>
+          <select
+            className="text-[#637381] mt-2 bg-inherit w text-[15px] font-medium rounded-lg block w-1/8 p-2.5 focus:ring-0 hom"
+            id="country_id"
+            name="country_id"
+            onChange={formik.handleChange('country_id')}
+            onBlur={formik.handleBlur('country_id')}
+            value={formik.values.country_id}
+          >
+            <option value="">Select Service</option>
+            {servicecstate?.map((service) => (
+              <option key={service.id} value={service.id}>
+                {service.name}
+              </option>
+            ))}
+          </select>
+          <label htmlFor="" className="mt-2">
             Meta title
           </label>
-          <CustomInput
-            type="text"
-            label="Enter Meta Title"
-            name="meta_title"
-            onCh={formik.handleChange('meta_title')}
-            onBl={formik.handleBlur('meta_title')}
-            val={formik.values.meta_title}
-          />
-          <div className="error">
-            {formik.touched.meta_title && formik.errors.meta_title}
+          <div className="flex">
+            {language.map((lang, index) => (
+              <label
+                key={lang}
+                className={`cursor-pointer capitalize border-[1px] border-[#5e3989]  rounded-t-lg px-5 ${
+                  lang === selectedLanguage1 ? 'font-bold' : ''
+                }`}
+                onClick={() => handleLanguageClick1(lang)}
+              >
+                {lang}
+              </label>
+            ))}
           </div>
+          {language.map((lang, index) => {
+            return (
+              <div
+                key={lang}
+                className={lang === selectedLanguage1 ? '' : 'hidden'}
+              >
+                {' '}
+                <CustomInput
+                  type="text"
+                  name={`meta_title.${lang}`}
+                  onCh={formik.handleChange}
+                  onBl={formik.handleBlur}
+                  val={formik.values.meta_title[lang]}
+                />
+              </div>
+            );
+          })}
+
           <label htmlFor="" className="mt-2">
             Meta description
           </label>
-          <CustomInput
-            type="text"
-            label="Enter Meta Description"
-            name="meta_description"
-            onCh={formik.handleChange('meta_description')}
-            onBl={formik.handleBlur('meta_description')}
-            val={formik.values.meta_description}
-          />
-          <div className="error">
-            {formik.touched.meta_description && formik.errors.meta_description}
+          <div className="flex">
+            {language.map((lang, index) => (
+              <label
+                key={lang}
+                className={`cursor-pointer capitalize border-[1px] border-[#5e3989]  rounded-t-lg px-5 ${
+                  lang === selectedLanguage2 ? 'font-bold' : ''
+                }`}
+                onClick={() => handleLanguageClick2(lang)}
+              >
+                {lang}
+              </label>
+            ))}
           </div>
+          {language.map((lang, index) => {
+            return (
+              <div
+                key={lang}
+                className={lang === selectedLanguage2 ? '' : 'hidden'}
+              >
+                {' '}
+                <CustomInput
+                  type="text"
+                  name={`meta_description.${lang}`}
+                  onCh={formik.handleChange}
+                  onBl={formik.handleBlur}
+                  val={formik.values.meta_description[lang]}
+                />
+              </div>
+            );
+          })}
+
           <label htmlFor="" className="mt-2">
             Title
           </label>
-          <CustomInput
-            type="text"
-            label="Enter Service Title"
-            name="title"
-            onCh={formik.handleChange('title')}
-            onBl={formik.handleBlur('title')}
-            val={formik.values.title}
-          />
-          <div className="error">
-            {formik.touched.title && formik.errors.title}
+          <div className="flex">
+            {language.map((lang, index) => (
+              <label
+                key={lang}
+                className={`cursor-pointer capitalize border-[1px] border-[#5e3989]  rounded-t-lg px-5 ${
+                  lang === selectedLanguage3 ? 'font-bold' : ''
+                }`}
+                onClick={() => handleLanguageClick3(lang)}
+              >
+                {lang}
+              </label>
+            ))}
           </div>
+          {language.map((lang, index) => {
+            return (
+              <div
+                key={lang}
+                className={lang === selectedLanguage3 ? '' : 'hidden'}
+              >
+                {' '}
+                <CustomInput
+                  type="text"
+                  name={`title.${lang}`}
+                  onCh={formik.handleChange}
+                  onBl={formik.handleBlur}
+                  val={formik.values.title[lang]}
+                />
+                {formik.touched.title && formik.errors.title && (
+                  <div className="error" key={`${lang}-error`}>
+                    {formik.errors.title[lang]}
+                  </div>
+                )}
+              </div>
+            );
+          })}
           <label htmlFor="" className="mt-2">
             Description
           </label>
-          <CustomInput
-            type="text"
-            label="Enter Service description"
-            name="description"
-            onCh={formik.handleChange('description')}
-            onBl={formik.handleBlur('description')}
-            val={formik.values.description}
-          />
-          <div className="error">
-            {formik.touched.description && formik.errors.description}
+          <div className="flex">
+            {language.map((lang, index) => (
+              <label
+                key={lang}
+                className={`cursor-pointer capitalize border-[1px] border-[#5e3989]  rounded-t-lg px-5 ${
+                  lang === selectedLanguage4 ? 'font-bold' : ''
+                }`}
+                onClick={() => handleLanguageClick4(lang)}
+              >
+                {lang}
+              </label>
+            ))}
           </div>
+          {language.map((lang, index) => {
+            return (
+              <div
+                key={lang}
+                className={lang === selectedLanguage4 ? '' : 'hidden'}
+              >
+                {' '}
+                <CustomInput
+                  type="text"
+                  name={`description.${lang}`}
+                  onCh={formik.handleChange}
+                  onBl={formik.handleBlur}
+                  val={formik.values.description[lang]}
+                />
+                {formik.touched.description && formik.errors.description && (
+                  <div className="error" key={`${lang}-error`}>
+                    {formik.errors.description[lang]}
+                  </div>
+                )}
+              </div>
+            );
+          })}
+          {/* <div className="error">
+            {formik.touched.country_id && formik.errors.country_id}
+          </div> */}
           <label htmlFor="" className="mt-2">
             Icon
           </label>

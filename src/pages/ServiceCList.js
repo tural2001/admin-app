@@ -50,10 +50,10 @@ const ServiceCList = () => {
     (currentPage + 1) * itemsPerPage
   );
 
-  const pageCount = Math.ceil(servicecstate?.length / itemsPerPage); // Toplam sayfa sayısını hesaplar
+  const pageCount = Math.ceil(servicecstate?.length / itemsPerPage);
 
   const handlePageClick = (data) => {
-    setCurrentPage(data.selected); // Sayfa numarasını günceller
+    setCurrentPage(data.selected);
   };
 
   return (

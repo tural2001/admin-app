@@ -30,7 +30,6 @@ import {
   tariff,
   user,
   users,
-  vacancy,
 } from '../assets';
 const { Header, Sider, Content } = Layout;
 
@@ -58,7 +57,6 @@ const MainLayout = () => {
       '/admin/structure-list': 'structure-list',
       '/admin/page-list': 'page-list',
       '/admin/tariff-list': 'tariff-list',
-      '/admin/vacancy-list': 'vacancy-list',
       '/admin/slide-list': 'slide-list',
       '/admin/user-list': 'user-list',
       '/admin/post-list': 'post-list',
@@ -125,14 +123,14 @@ const MainLayout = () => {
               label: 'Advantage List',
             },
             {
-              key: 'career-list',
-              icon: <img src={campaign} className="w-6" alt="" />,
-              label: 'Career List',
-            },
-            {
               key: 'campaign-list',
               icon: <img src={campaign} className="w-6" alt="" />,
               label: 'Campaign List',
+            },
+            {
+              key: 'career-list',
+              icon: <img src={campaign} className="w-6" alt="" />,
+              label: 'Career List',
             },
             {
               key: 'career-form-list',
@@ -239,11 +237,6 @@ const MainLayout = () => {
               key: 'tariff-list',
               icon: <img src={tariff} className="w-6" alt="" />,
               label: 'Tariff List',
-            },
-            {
-              key: 'vacancy-list',
-              icon: <img src={vacancy} className="w-6" alt="" />,
-              label: 'Vacancy List',
             },
           ]}
         />

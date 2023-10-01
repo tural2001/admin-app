@@ -1,5 +1,6 @@
 import { createSlice, createAsyncThunk, createAction } from '@reduxjs/toolkit';
 import serviceService from './servicesService';
+import { language } from '../../Language/languages';
 
 const initialState = {
   services: [],
@@ -48,8 +49,10 @@ export const createAservice = createAsyncThunk(
     try {
       const formdata = new FormData();
       formdata.append('active', serviceData.active);
+      formdata.append('partner', serviceData.partner);
       formdata.append('icon', serviceData.icon[0], serviceData.icon[0].name);
       formdata.append('title', serviceData.title);
+      formdata.append('parent_id', serviceData.parent_id);
       formdata.append('meta_title', serviceData.meta_title);
       formdata.append('meta_description', serviceData.meta_description);
       formdata.append('description', serviceData.description);
@@ -67,7 +70,9 @@ export const updateAservice = createAsyncThunk(
     try {
       const formdata = new FormData();
       formdata.append('active', serviceData.service.active);
+      formdata.append('partner', serviceData.service.partner);
       formdata.append('title', serviceData.service.title);
+      formdata.append('parent_id', serviceData.service.parent_id);
       formdata.append('meta_title', serviceData.service.meta_title);
       formdata.append('meta_description', serviceData.service.meta_description);
       if (serviceData.service.icon[0] instanceof File) {
@@ -135,12 +140,11 @@ export const servicesSlice = createSlice({
         state.isLoading = false;
         state.isSuccess = true;
         state.isError = false;
-        state.serviceTitle = action.payload.data.title;
-        state.serviceMeta_title = action.payload.data.meta_title;
-        state.serviceMeta_description = action.payload.data.meta_description;
-        state.serviceActive = action.payload.data.active;
-        state.serviceDescription = action.payload.data.description;
-        state.serviceIcon = action.payload.data.icon;
+        state.serviceData = action.payload;
+        state.serviceActive = action.payload[language[0]].data.active;
+        state.servicePartner = action.payload[language[0]].data.partner;
+        state.serviceIcon = action.payload[language[0]].data.icon;
+        state.serviceParentId = action.payload[language[0]].data.parent_id;
       })
       .addCase(getAservice.rejected, (state, action) => {
         state.isLoading = false;

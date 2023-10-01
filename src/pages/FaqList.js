@@ -145,7 +145,7 @@ const FaqList = () => {
                   <td className="px-6 py-4">{faq.answer}</td>
                   <td className="px-6 py-16 flex gap-2">
                     <Link
-                      to={`/admin/faq/${faqstate[index]?.id}`}
+                      to={`/admin/faq/${filteredFaq[index]?.id}`}
                       className="text-[25px] text-blue-500 "
                     >
                       <VscEdit />

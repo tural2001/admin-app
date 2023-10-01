@@ -119,7 +119,7 @@ const TariffList = () => {
                     {tariff.active === true ? 'Active' : 'Not Active'}
                   </td>
                   <td className="px-6 py-4">{tariff.name}</td>
-                  <td className="px-6 py-4">{tariff.service.title.az}</td>
+                  <td className="px-6 py-4">{tariff.service}</td>
                   <td className="px-6 py-4">{tariff.type}</td>
                   <td className="px-6 py-4">{tariff.description}</td>
                   <td className="px-6 py-4">{tariff.price}</td>

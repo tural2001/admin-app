@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import CustomInput from '../components/CustomInput';
 import { useDispatch, useSelector } from 'react-redux';
 import { toast } from 'react-toastify';
@@ -14,19 +14,56 @@ import {
 } from '../features/slides/slidesSlice';
 import { resetState } from '../features/users/usersSlice';
 import { uploadImg } from '../features/upload/uploadSlice';
+import { language } from '../Language/languages';
 
 let schema = yup.object({
-  title: yup.string().required('Title is Required'),
+  title: yup.object().shape(
+    language.reduce(
+      (acc, lang) => ({
+        ...acc,
+        az: yup.string().required(`Title for az is Required`),
+      }),
+      {}
+    )
+  ),
   order: yup.number(),
   show_button: yup.string(),
-  button_text: yup.string(),
-  button_link: yup.string(),
-  description: yup.string().required('Description is Required'),
+  button_text: yup.object().shape(
+    language.reduce(
+      (acc, lang) => ({
+        ...acc,
+        az: yup.string().required(`button text for az is Required`),
+      }),
+      {}
+    )
+  ),
+  button_link: yup.object().shape(
+    language.reduce(
+      (acc, lang) => ({
+        ...acc,
+        az: yup.string().required(`button link for az is Required`),
+      }),
+      {}
+    )
+  ),
+  description: yup.object().shape(
+    language.reduce(
+      (acc, lang) => ({
+        ...acc,
+        az: yup.string().required(`Description for az is Required`),
+      }),
+      {}
+    )
+  ),
   image: yup.mixed().required('Image is Required'),
   active: yup.string(),
 });
 
 const AddSlide = () => {
+  const [selectedLanguage1, setSelectedLanguage1] = useState('az');
+  const [selectedLanguage2, setSelectedLanguage2] = useState('az');
+  const [selectedLanguage3, setSelectedLanguage3] = useState('az');
+  const [selectedLanguage4, setSelectedLanguage4] = useState('az');
   const [isFileDetected, setIsFileDetected] = useState(false);
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -39,13 +76,9 @@ const AddSlide = () => {
     isError,
     isLoading,
     createdSlide,
-    slideTitle,
     slideOrder,
-
+    slideData,
     slideShow_button,
-    slideButton_text,
-    slideButton_link,
-    slideDescription,
     slideActive,
     updatedSlide,
     slideImage,
@@ -64,78 +97,168 @@ const AddSlide = () => {
 
   useEffect(() => {
     if (getslideId !== undefined) {
-      dispatch(getAslide(getslideId));
+      language.forEach((selectedLanguage) => {
+        dispatch(getAslide(getslideId, selectedLanguage));
+      });
     } else {
       dispatch(resetState());
     }
-  }, [dispatch, getslideId]);
+  }, [getslideId]);
+
+  const prevUpdatedSlideRef = useRef();
+  const debounceTimeoutRef = useRef(null);
 
   useEffect(() => {
-    if (isSuccess && createdSlide) {
+    const prevUpdatedSlide = prevUpdatedSlideRef.current;
+    if (
+      isSuccess &&
+      updatedSlide !== undefined &&
+      updatedSlide !== prevUpdatedSlide
+    ) {
+      if (debounceTimeoutRef.current) {
+        clearTimeout(debounceTimeoutRef.current);
+      }
+      debounceTimeoutRef.current = setTimeout(() => {
+        toast.success('Slide Updated Successfully!');
+        prevUpdatedSlideRef.current = updatedSlide;
+        navigate('/admin/slide-list');
+      }, 1000);
+    }
+    if (isSuccess && createdSlide !== undefined && updatedSlide !== undefined) {
       toast.success('Slide Added Successfully!');
       navigate('/admin/slide-list');
       setTimeout(() => {
         window.location.reload();
-      }, 500);
-    }
-    if (isSuccess && updatedSlide !== undefined) {
-      toast.success('Slide Updated Successfully!');
-      navigate('/admin/slide-list');
+      }, 1000);
     }
     if (isError) {
       toast.error('Something Went Wrong!');
     }
-  }, [
-    isSuccess,
-    isError,
-    isLoading,
-    createdSlide,
-    slideTitle,
-    slideOrder,
-    slideShow_button,
-    slideButton_text,
-    slideButton_link,
-    slideDescription,
-    updatedSlide,
-    slideActive,
-    slideImage,
-    navigate,
-  ]);
-
+  }, [isSuccess, isError, createdSlide, updatedSlide, navigate]);
+  console.log(slideData);
   const formik = useFormik({
     enableReinitialize: true,
     initialValues: {
-      title: slideTitle || '',
+      title: language.reduce((acc, lang) => {
+        acc[lang] = slideData ? slideData[lang]?.data?.title || '' : '';
+        return acc;
+      }, {}),
       active: slideActive ? 1 : 0,
-      order: slideOrder || '',
+      order: slideOrder ? 1 : 0,
       show_button: slideShow_button ? 1 : 0,
-      button_text: slideButton_text || '',
-      button_link: slideButton_link || '',
-      description: slideDescription || '',
+      button_text: language.reduce((acc, lang) => {
+        acc[lang] = slideData ? slideData[lang]?.data?.button_text || '' : '';
+        return acc;
+      }, {}),
+      button_link: language.reduce((acc, lang) => {
+        acc[lang] = slideData ? slideData[lang]?.data?.button_link || '' : '';
+        return acc;
+      }, {}),
+      description: language.reduce((acc, lang) => {
+        acc[lang] = slideData ? slideData[lang]?.data?.description || '' : '';
+        return acc;
+      }, {}),
       image: slideImage || null,
     },
     validationSchema: schema,
     onSubmit: (values) => {
+      alert(JSON.stringify(values));
+      const updatedLanguages = language.filter((lang) => values.title[lang]);
+      console.log(updatedLanguages);
       if (getslideId !== undefined) {
-        const data = { id: getslideId, slide: values };
-        dispatch(updateAslide(data));
+        updatedLanguages.forEach((lang) => {
+          const data = {
+            id: getslideId,
+            slideData: {
+              title: values.title[lang],
+              description: values.description[lang],
+              button_link: values.button_link[lang],
+              button_text: values.button_text[lang],
+              show_button: values.show_button,
+              active: values.active === 1 ? 1 : 0,
+              order: values.order === 1 ? 1 : 0,
+              image: values.image,
+            },
+            selectedLanguage: lang,
+          };
+          dispatch(updateAslide(data));
+        });
       } else {
-        dispatch(createAslide(values));
-        formik.resetForm();
-        setTimeout(() => {
-          dispatch(resetState());
-        }, 1000);
+        if (updatedLanguages.length > 0) {
+          const firstLang = updatedLanguages[0];
+          const createData = {
+            values: {
+              title: values.title[firstLang],
+              description: values.description[firstLang],
+              button_link: values.button_link[firstLang],
+              button_text: values.button_text[firstLang],
+              show_button: values.show_button,
+              order: values.order === 1 ? 1 : 0,
+              active: values.active === 1 ? 1 : 0,
+              image: values.image,
+            },
+            selectedLanguage: firstLang,
+          };
+          dispatch(createAslide(createData))
+            .then((createdSlide) => {
+              console.log(createdSlide);
+
+              updatedLanguages.slice(1).forEach((lang) => {
+                const updateData = {
+                  id: createdSlide.payload.id,
+                  slideData: {
+                    title: values.title[lang],
+                    description: values.description[lang],
+                    button_link: values.button_link[lang],
+                    button_text: values.button_text[lang],
+                    show_button: values.show_button,
+                    order: values.order === 1 ? 1 : 0,
+                    active: values.active === 1 ? 1 : 0,
+                    image: values.image,
+                  },
+                  selectedLanguage: lang,
+                };
+                console.log(updateData);
+                dispatch(updateAslide(updateData));
+              });
+
+              formik.resetForm();
+              setTimeout(() => {
+                dispatch(resetState());
+              }, 300);
+            })
+            .catch((error) => {
+              console.error('Error creating Service:', error);
+            });
+        }
       }
     },
   });
 
   useEffect(() => {
     if (getslideId === undefined) {
-      formik.setFieldValue('active', '1');
+      formik.setFieldValue('active', 1);
+      formik.setFieldValue('order', 0);
     } else {
-      formik.setFieldValue('active', newslide.slideActive ? '1' : '0');
+      formik.setFieldValue('active', newslide.slideActive ? 1 : 0);
+      formik.setFieldValue('order', newslide.slideOrder ? 1 : 0);
     }
   }, [getslideId, newslide.slideActive]);
+
+  const handleLanguageClick1 = (language) => {
+    setSelectedLanguage1(language);
+  };
+
+  const handleLanguageClick2 = (language) => {
+    setSelectedLanguage2(language);
+  };
+  const handleLanguageClick3 = (language) => {
+    setSelectedLanguage3(language);
+  };
+
+  const handleLanguageClick4 = (language) => {
+    setSelectedLanguage4(language);
+  };
   return (
     <div>
       <h3 className="mb-4 title">
@@ -145,12 +268,48 @@ const AddSlide = () => {
         <form
           onSubmit={(e) => {
             e.preventDefault();
-            const requiredFields = ['title', 'description', 'image'];
+            const requiredFields = [
+              'title',
+              'description',
+              'icon',
+              'parent_id',
+            ];
             const errors = {};
-
             requiredFields.forEach((fieldName) => {
               if (formik.touched[fieldName] && !formik.values[fieldName]) {
                 errors[fieldName] = 'This field is Required';
+              }
+            });
+
+            language.forEach((lang) => {
+              const titleFieldName = `title.${lang}`;
+              const button_textFieldName = `button_link.${lang}`;
+              const button_linkFieldName = `button_text.${lang}`;
+              const descriptionFieldName = `description.${lang}`;
+
+              if (formik.touched.title && !formik.values.title[lang]) {
+                errors[titleFieldName] = `Name for ${lang} is Required`;
+              }
+
+              if (
+                formik.touched.button_link &&
+                !formik.values.button_link[lang]
+              ) {
+                errors[button_textFieldName] = `Name for ${lang} is Required`;
+              }
+              if (
+                formik.touched.button_text &&
+                !formik.values.button_text[lang]
+              ) {
+                errors[button_linkFieldName] = `Name for ${lang} is Required`;
+              }
+              if (
+                formik.touched.description &&
+                !formik.values.description[lang]
+              ) {
+                errors[
+                  descriptionFieldName
+                ] = `Description for ${lang} is Required`;
               }
             });
 
@@ -158,7 +317,7 @@ const AddSlide = () => {
               toast.error('Please fill in the required fields.');
               return;
             }
-
+            console.log(formik.errors.answer);
             formik.handleSubmit(e);
           }}
         >
@@ -172,10 +331,10 @@ const AddSlide = () => {
                 <input
                   type="radio"
                   name="active"
-                  onChange={() => formik.setFieldValue('active', '1')}
+                  onChange={() => formik.setFieldValue('active', 1)}
                   onBlur={formik.handleBlur}
-                  value="1"
-                  checked={formik.values.active === '1'}
+                  value={1}
+                  checked={formik.values.active === 1}
                   className="text-blue-500 form-radio h-4 w-4"
                 />
                 <span className="ml-2">Active</span>
@@ -184,10 +343,10 @@ const AddSlide = () => {
                 <input
                   type="radio"
                   name="active"
-                  onChange={() => formik.setFieldValue('active', '0')}
+                  onChange={() => formik.setFieldValue('active', 0)}
                   onBlur={formik.handleBlur}
-                  value="0"
-                  checked={formik.values.active === '0'}
+                  value={0}
+                  checked={formik.values.active === 0}
                   className="text-blue-500 form-radio h-4 w-4"
                 />
                 <span className="ml-2">Not Active</span>
@@ -200,45 +359,110 @@ const AddSlide = () => {
           <label htmlFor="" className="mt-2">
             Order
           </label>
-          <CustomInput
-            type="number"
-            label="Enter Slide order"
-            name="order"
-            onCh={formik.handleChange('order')}
-            onBl={formik.handleBlur('order')}
-            val={formik.values.order}
-          />
-          <div className="error">
-            {formik.touched.order && formik.errors.order}
+          <div className="my-2">
+            <div className="mt-1">
+              <label className="inline-flex items-center">
+                <input
+                  type="radio"
+                  name="order"
+                  onChange={() => formik.setFieldValue('order', 1)}
+                  onBlur={formik.handleBlur}
+                  value={1}
+                  checked={formik.values.order === 1}
+                  className="text-blue-500 form-radio h-4 w-4"
+                />
+                <span className="ml-2">Order</span>
+              </label>
+              <label className="inline-flex items-center ml-6">
+                <input
+                  type="radio"
+                  name="order"
+                  onChange={() => formik.setFieldValue('order', 0)}
+                  onBlur={formik.handleBlur}
+                  value={0}
+                  checked={formik.values.order === 0}
+                  className="text-blue-500 form-radio h-4 w-4"
+                />
+                <span className="ml-2">not ordered</span>
+              </label>
+            </div>
           </div>
           <label htmlFor="" className="mt-2">
             Title
           </label>
-          <CustomInput
-            type="text"
-            label="Enter Slide Title"
-            name="title"
-            onCh={formik.handleChange('title')}
-            onBl={formik.handleBlur('title')}
-            val={formik.values.title}
-          />
-          <div className="error">
-            {formik.touched.title && formik.errors.title}
+          <div className="flex">
+            {language.map((lang, index) => (
+              <label
+                key={lang}
+                className={`cursor-pointer capitalize border-[1px] border-[#5e3989]  rounded-t-lg px-5 ${
+                  lang === selectedLanguage1 ? 'font-bold' : ''
+                }`}
+                onClick={() => handleLanguageClick1(lang)}
+              >
+                {lang}
+              </label>
+            ))}
           </div>
+          {language.map((lang, index) => {
+            return (
+              <div
+                key={lang}
+                className={lang === selectedLanguage1 ? '' : 'hidden'}
+              >
+                {' '}
+                <CustomInput
+                  type="text"
+                  name={`title.${lang}`}
+                  onCh={formik.handleChange}
+                  onBl={formik.handleBlur}
+                  val={formik.values.title[lang]}
+                />
+                {formik.touched.title && formik.errors.title && (
+                  <div className="error" key={`${lang}-error`}>
+                    {formik.errors.title[lang]}
+                  </div>
+                )}
+              </div>
+            );
+          })}
           <label htmlFor="" className="mt-2">
             Description
           </label>
-          <CustomInput
-            type="text"
-            label="Enter Slide description"
-            name="description"
-            onCh={formik.handleChange('description')}
-            onBl={formik.handleBlur('description')}
-            val={formik.values.description}
-          />
-          <div className="error">
-            {formik.touched.description && formik.errors.description}
+          <div className="flex">
+            {language.map((lang, index) => (
+              <label
+                key={lang}
+                className={`cursor-pointer capitalize border-[1px] border-[#5e3989]  rounded-t-lg px-5 ${
+                  lang === selectedLanguage2 ? 'font-bold' : ''
+                }`}
+                onClick={() => handleLanguageClick2(lang)}
+              >
+                {lang}
+              </label>
+            ))}
           </div>
+          {language.map((lang, index) => {
+            return (
+              <div
+                key={lang}
+                className={lang === selectedLanguage2 ? '' : 'hidden'}
+              >
+                {' '}
+                <CustomInput
+                  type="text"
+                  name={`description.${lang}`}
+                  onCh={formik.handleChange}
+                  onBl={formik.handleBlur}
+                  val={formik.values.description[lang]}
+                />
+                {formik.touched.description && formik.errors.description && (
+                  <div className="error" key={`${lang}-error`}>
+                    {formik.errors.description[lang]}
+                  </div>
+                )}
+              </div>
+            );
+          })}
           <label htmlFor="" className="mt-2">
             Show button
           </label>
@@ -278,33 +502,81 @@ const AddSlide = () => {
             </div>
           </div>
           <label htmlFor="" className="mt-2">
-            Button text
+            Button Text
           </label>
-          <CustomInput
-            type="text"
-            label="Enter Button Text"
-            name="button_text"
-            onCh={formik.handleChange('button_text')}
-            onBl={formik.handleBlur('button_text')}
-            val={formik.values.button_text}
-          />
-          <div className="error">
-            {formik.touched.button_text && formik.errors.button_text}
+          <div className="flex">
+            {language.map((lang, index) => (
+              <label
+                key={lang}
+                className={`cursor-pointer capitalize border-[1px] border-[#5e3989]  rounded-t-lg px-5 ${
+                  lang === selectedLanguage3 ? 'font-bold' : ''
+                }`}
+                onClick={() => handleLanguageClick3(lang)}
+              >
+                {lang}
+              </label>
+            ))}
           </div>
+          {language.map((lang, index) => {
+            return (
+              <div
+                key={lang}
+                className={lang === selectedLanguage3 ? '' : 'hidden'}
+              >
+                {' '}
+                <CustomInput
+                  type="text"
+                  name={`button_text.${lang}`}
+                  onCh={formik.handleChange}
+                  onBl={formik.handleBlur}
+                  val={formik.values.button_text[lang]}
+                />
+                {formik.touched.button_text && formik.errors.button_text && (
+                  <div className="error" key={`${lang}-error`}>
+                    {formik.errors.button_text[lang]}
+                  </div>
+                )}
+              </div>
+            );
+          })}
           <label htmlFor="" className="mt-2">
-            Button link
+            Button Link
           </label>
-          <CustomInput
-            type="text"
-            label="Enter Button Link"
-            name="button_link"
-            onCh={formik.handleChange('button_link')}
-            onBl={formik.handleBlur('button_link')}
-            val={formik.values.button_link}
-          />
-          <div className="error">
-            {formik.touched.button_link && formik.errors.button_link}
-          </div>{' '}
+          <div className="flex">
+            {language.map((lang, index) => (
+              <label
+                key={lang}
+                className={`cursor-pointer capitalize border-[1px] border-[#5e3989]  rounded-t-lg px-5 ${
+                  lang === selectedLanguage4 ? 'font-bold' : ''
+                }`}
+                onClick={() => handleLanguageClick4(lang)}
+              >
+                {lang}
+              </label>
+            ))}
+          </div>
+          {language.map((lang, index) => {
+            return (
+              <div
+                key={lang}
+                className={lang === selectedLanguage4 ? '' : 'hidden'}
+              >
+                {' '}
+                <CustomInput
+                  type="text"
+                  name={`button_link.${lang}`}
+                  onCh={formik.handleChange}
+                  onBl={formik.handleBlur}
+                  val={formik.values.button_link[lang]}
+                />
+                {formik.touched.button_link && formik.errors.button_link && (
+                  <div className="error" key={`${lang}-error`}>
+                    {formik.errors.button_link[lang]}
+                  </div>
+                )}
+              </div>
+            );
+          })}
           <label htmlFor="" className="mt-2">
             Image
           </label>

@@ -1,5 +1,6 @@
 import { createSlice, createAsyncThunk, createAction } from '@reduxjs/toolkit';
 import campaignService from './campaignsService';
+import { language } from '../../Language/languages';
 
 const initialState = {
   campaigns: [],
@@ -47,14 +48,14 @@ export const createAcampaign = createAsyncThunk(
   async (campaignData, thunkAPI) => {
     try {
       const formdata = new FormData();
-      formdata.append('active', campaignData.active);
+      formdata.append('active', campaignData.values.active);
       formdata.append(
         'image',
-        campaignData.image[0],
-        campaignData.image[0].name
+        campaignData?.values?.image[0],
+        campaignData?.values?.image?.name
       );
-      formdata.append('name', campaignData.name);
-      formdata.append('description', campaignData.description);
+      formdata.append('name', campaignData.values.name);
+      formdata.append('description', campaignData.values.description);
       const response = await campaignService.createcampaign(formdata);
       return response.data;
     } catch (error) {
@@ -68,20 +69,21 @@ export const updateAcampaign = createAsyncThunk(
     console.log(campaignData);
     try {
       const formdata = new FormData();
-      formdata.append('active', campaignData.campaign.active);
-      formdata.append('name', campaignData.campaign.name);
-      if (campaignData.campaign.image[0] instanceof File) {
+      formdata.append('active', campaignData.campaignData.active);
+      formdata.append('name', campaignData.campaignData.name);
+      if (campaignData.campaignData.image instanceof File) {
         formdata.append(
           'image',
-          campaignData.campaign.image[0],
-          campaignData.campaign.image[0].name
+          campaignData.campaignData.image,
+          campaignData.campaignData.image.name
         );
       }
-      formdata.append('description', campaignData.campaign.description);
+      formdata.append('description', campaignData.campaignData.description);
       formdata.append('_method', 'PUT');
       const response = await campaignService.updatecampaign(
         formdata,
-        campaignData.id
+        campaignData.id,
+        campaignData
       );
       return response.data;
     } catch (error) {
@@ -134,10 +136,9 @@ export const campaignSlice = createSlice({
         state.isLoading = false;
         state.isSuccess = true;
         state.isError = false;
-        state.campaignName = action.payload.data.name;
-        state.campaignActive = action.payload.data.active;
-        state.campaignDescription = action.payload.data.description;
-        state.campaignImage = action.payload.data.image;
+        state.CampaignData = action.payload;
+        state.campaignActive = action.payload[language[0]].data.active;
+        state.campaignImage = action.payload[language[0]].data.image;
       })
       .addCase(getAcampaign.rejected, (state, action) => {
         state.isLoading = false;

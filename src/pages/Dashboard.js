@@ -1,7 +1,6 @@
 import React, { useEffect } from 'react';
 import { getcampaigns } from '../features/campaigns/campaignsSlice';
 import { useDispatch, useSelector } from 'react-redux';
-import { getvacancies } from '../features/vacancies/vacaciesSlice';
 import { getfaqforms } from '../features/faqform/faqformSlice';
 import { getcareers } from '../features/career/careerSlice';
 import { getformdatas } from '../features/formData/formDataSlice';
@@ -14,7 +13,7 @@ const Dashboard = () => {
     const debouncedDispatch = debounce(dispatch, 1000); // Adjust the debounce delay as needed
 
     dispatch(getcampaigns());
-    dispatch(getvacancies());
+    dispatch(getcareers());
     dispatch(getfaqforms());
     dispatch(getcareers());
     dispatch(getformdatas());
