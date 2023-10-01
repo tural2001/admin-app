@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import CustomInput from '../components/CustomInput';
 import { useDispatch, useSelector } from 'react-redux';
 import { toast } from 'react-toastify';
@@ -14,16 +14,28 @@ import {
   updateAchannel,
 } from '../features/channels/channelsSlice';
 import { getcountries } from '../features/countries/countriesSlice';
+import { gettariffs } from '../features/tariffs/tariffSlice';
 import { uploadImg } from '../features/upload/uploadSlice';
+import { language } from '../Language/languages';
 
 let schema = yup.object({
-  name: yup.string().required('Name is Required'),
+  name: yup.object().shape(
+    language.reduce(
+      (acc, lang) => ({
+        ...acc,
+        az: yup.string().required(`Name for az is Required`),
+      }),
+      {}
+    )
+  ),
   country_id: yup.number().required('Country Id is Required'),
+  tariff_id: yup.number().required('Country Id is Required'),
   image: yup.mixed().required('Image is Required'),
   active: yup.boolean(),
 });
 
 const Addchannel = () => {
+  const [selectedLanguage1, setSelectedLanguage1] = useState('az');
   const [isFileDetected, setIsFileDetected] = useState(false);
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -34,9 +46,9 @@ const Addchannel = () => {
   const {
     isSuccess,
     isError,
-    isLoading,
+    channelTariff_id,
     createdChannel,
-    channelName,
+    ChannelData,
     channelActive,
     channelCountry_id,
     channelImage,
@@ -51,77 +63,149 @@ const Addchannel = () => {
   const imageState = useSelector((state) => state.upload.images.url);
 
   useEffect(() => {
+    language.forEach((selectedLanguage) => {
+      dispatch(getcountries(selectedLanguage));
+      dispatch(gettariffs(selectedLanguage));
+    });
+  }, []);
+
+  const countryState = useSelector((state) => state.country.countries.data);
+  const tariffState = useSelector((state) => state.tariff.tariffs.data);
+
+  useEffect(() => {
     if (getchannelId !== undefined) {
-      dispatch(getAchannel(getchannelId));
+      language.forEach((selectedLanguage) => {
+        dispatch(getAchannel(getchannelId, selectedLanguage));
+      });
     } else {
       dispatch(resetState());
     }
-  }, [dispatch, getchannelId]);
+  }, [getchannelId]);
+
+  const prevUpdatedChannelRef = useRef();
+  const debounceTimeoutRef = useRef(null);
 
   useEffect(() => {
-    dispatch(getcountries());
-  }, [dispatch]);
-  const countryState = useSelector((state) => state.country.countries.data);
-  console.log(countryState);
-
-  useEffect(() => {
-    if (isSuccess && createdChannel) {
+    const prevUpdatedChannel = prevUpdatedChannelRef.current;
+    if (
+      isSuccess &&
+      updatedChannel !== undefined &&
+      updatedChannel !== prevUpdatedChannel
+    ) {
+      if (debounceTimeoutRef.current) {
+        clearTimeout(debounceTimeoutRef.current);
+      }
+      debounceTimeoutRef.current = setTimeout(() => {
+        toast.success('Channel Updated Successfully!');
+        prevUpdatedChannelRef.current = updatedChannel;
+        navigate('/admin/channel-list');
+      }, 1000);
+    }
+    if (
+      isSuccess &&
+      createdChannel !== undefined &&
+      updatedChannel !== undefined
+    ) {
       toast.success('Channel Added Successfully!');
       navigate('/admin/channel-list');
       setTimeout(() => {
         window.location.reload();
       }, 1000);
     }
-    if (isSuccess && updatedChannel !== undefined) {
-      toast.success('Channel Updated Successfully!');
-      navigate('/admin/channel-list');
-    }
     if (isError) {
       toast.error('Something Went Wrong!');
     }
-  }, [
-    isSuccess,
-    isError,
-    isLoading,
-    createdChannel,
-    channelName,
-    channelActive,
-    channelCountry_id,
-    channelImage,
-    updatedChannel,
-    navigate,
-  ]);
+  }, [isSuccess, isError, createdChannel, updatedChannel, navigate]);
 
   const formik = useFormik({
     enableReinitialize: true,
     initialValues: {
-      name: channelName || '',
+      name: language.reduce((acc, lang) => {
+        acc[lang] = ChannelData ? ChannelData[lang]?.data?.name || '' : '';
+        return acc;
+      }, {}),
       active: channelActive ? 1 : 0,
       country_id: channelCountry_id || '',
+      tariff_id: channelTariff_id || '',
       image: channelImage || null,
     },
     validationSchema: schema,
     onSubmit: (values) => {
+      alert(JSON.stringify(values));
+      const updatedLanguages = language.filter((lang) => values.name[lang]);
+      console.log(updatedLanguages);
       if (getchannelId !== undefined) {
-        const data = { id: getchannelId, channel: values };
-        dispatch(updateAchannel(data));
+        updatedLanguages.forEach((lang) => {
+          const data = {
+            id: getchannelId,
+            channelData: {
+              name: values.name[lang],
+              active: values.active === 1 ? 1 : 0,
+              country_id: values.country_id,
+              tariff_id: values.tariff_id,
+              image: values.image,
+            },
+            selectedLanguage: lang,
+          };
+          dispatch(updateAchannel(data));
+        });
       } else {
-        dispatch(createAchannel(values));
-        formik.resetForm();
-        setTimeout(() => {
-          dispatch(resetState());
-        }, 1000);
+        if (updatedLanguages.length > 0) {
+          const firstLang = updatedLanguages[0];
+          const createData = {
+            values: {
+              name: values.name[firstLang],
+              active: values.active === 1 ? 1 : 0,
+              country_id: values.country_id,
+              tariff_id: values.tariff_id,
+              image: values.image,
+            },
+            selectedLanguage: firstLang,
+          };
+          dispatch(createAchannel(createData))
+            .then((createdChannel) => {
+              console.log(createdChannel);
+
+              updatedLanguages.slice(1).forEach((lang) => {
+                const updateData = {
+                  id: createdChannel.payload.id,
+                  channelData: {
+                    name: values.name[lang],
+                    active: values.active === 1 ? 1 : 0,
+                    country_id: values.country_id,
+                    tariff_id: values.tariff_id,
+                    image: values.image,
+                  },
+                  selectedLanguage: lang,
+                };
+
+                dispatch(updateAchannel(updateData));
+              });
+
+              formik.resetForm();
+              setTimeout(() => {
+                dispatch(resetState());
+              }, 300);
+            })
+            .catch((error) => {
+              console.error('Error creating Channel:', error);
+            });
+        }
       }
     },
   });
 
   useEffect(() => {
     if (getchannelId === undefined) {
-      formik.setFieldValue('active', '1');
+      formik.setFieldValue('active', 1);
     } else {
-      formik.setFieldValue('active', newchannel.channelActive ? '1' : '0');
+      formik.setFieldValue('active', newchannel.channelActive ? 1 : 0);
     }
   }, [getchannelId, newchannel.channelActive]);
+
+  const handleLanguageClick1 = (language) => {
+    setSelectedLanguage1(language);
+  };
 
   return (
     <div>
@@ -132,12 +216,19 @@ const Addchannel = () => {
         <form
           onSubmit={(e) => {
             e.preventDefault();
-            const requiredFields = ['name', 'country_id', 'image'];
+            const requiredFields = ['name', 'country_id', 'image', 'tariff_id'];
             const errors = {};
-
             requiredFields.forEach((fieldName) => {
               if (formik.touched[fieldName] && !formik.values[fieldName]) {
                 errors[fieldName] = 'This field is Required';
+              }
+            });
+
+            language.forEach((lang) => {
+              const nameFieldName = `name.${lang}`;
+
+              if (formik.touched.name && !formik.values.name[lang]) {
+                errors[nameFieldName] = `Name for ${lang} is Required`;
               }
             });
 
@@ -159,10 +250,10 @@ const Addchannel = () => {
                 <input
                   type="radio"
                   name="active"
-                  onChange={() => formik.setFieldValue('active', '1')}
+                  onChange={() => formik.setFieldValue('active', 1)}
                   onBlur={formik.handleBlur}
-                  value="1"
-                  checked={formik.values.active === '1'}
+                  value={1}
+                  checked={formik.values.active === 1}
                   className="text-blue-500 form-radio h-4 w-4"
                 />
                 <span className="ml-2">Active</span>
@@ -171,10 +262,10 @@ const Addchannel = () => {
                 <input
                   type="radio"
                   name="active"
-                  onChange={() => formik.setFieldValue('active', '0')}
+                  onChange={() => formik.setFieldValue('active', 0)}
                   onBlur={formik.handleBlur}
-                  value="0"
-                  checked={formik.values.active === '0'}
+                  value={0}
+                  checked={formik.values.active === 0}
                   className="text-blue-500 form-radio h-4 w-4"
                 />
                 <span className="ml-2">Not Active</span>
@@ -184,22 +275,46 @@ const Addchannel = () => {
           <div className="error">
             {formik.touched.active && formik.errors.active}
           </div>
-          <label htmlFor="" className="">
+          <label htmlFor="" className="mt-2">
             Name
           </label>
-          <CustomInput
-            type="text"
-            label="Enter Channel name"
-            name="name"
-            onCh={formik.handleChange('name')}
-            onBl={formik.handleBlur('name')}
-            val={formik.values.name}
-          />
-          <div className="error">
-            {formik.touched.name && formik.errors.name}
+          <div className="flex">
+            {language.map((lang, index) => (
+              <label
+                key={lang}
+                className={`cursor-pointer capitalize border-[1px] border-[#5e3989]  rounded-t-lg px-5 ${
+                  lang === selectedLanguage1 ? 'font-bold' : ''
+                }`}
+                onClick={() => handleLanguageClick1(lang)}
+              >
+                {lang}
+              </label>
+            ))}
           </div>
+          {language.map((lang, index) => {
+            return (
+              <div
+                key={lang}
+                className={lang === selectedLanguage1 ? '' : 'hidden'}
+              >
+                {' '}
+                <CustomInput
+                  type="text"
+                  name={`name.${lang}`}
+                  onCh={formik.handleChange}
+                  onBl={formik.handleBlur}
+                  val={formik.values.name[lang]}
+                />
+                {formik.touched.name && formik.errors.name && (
+                  <div className="error" key={`${lang}-error`}>
+                    {formik.errors.name[lang]}
+                  </div>
+                )}
+              </div>
+            );
+          })}
           <label htmlFor="" className="mt-2">
-            Country Id
+            Country
           </label>
           <select
             className="text-[#637381] mt-2 bg-inherit w text-[15px] font-medium rounded-lg block w-1/8 p-2.5 focus:ring-0 hom"
@@ -218,6 +333,27 @@ const Addchannel = () => {
           </select>
           <div className="error">
             {formik.touched.country_id && formik.errors.country_id}
+          </div>
+          <label htmlFor="" className="mt-2">
+            Tariff
+          </label>
+          <select
+            className="text-[#637381] mt-2 bg-inherit w text-[15px] font-medium rounded-lg block w-1/8 p-2.5 focus:ring-0 hom"
+            id="tariff_id"
+            name="tariff_id"
+            onChange={formik.handleChange('tariff_id')}
+            onBlur={formik.handleBlur('tariff_id')}
+            value={formik.values.tariff_id}
+          >
+            <option value="">Select Tariff</option>
+            {tariffState?.map((tariff) => (
+              <option key={tariff.id} value={tariff.id}>
+                {tariff.name}
+              </option>
+            ))}
+          </select>
+          <div className="error">
+            {formik.touched.tariff_id && formik.errors.tariff_id}
           </div>
           <label htmlFor="" className="mt-2">
             Image

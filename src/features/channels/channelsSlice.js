@@ -1,5 +1,6 @@
 import { createSlice, createAsyncThunk, createAction } from '@reduxjs/toolkit';
 import channelService from './channelsService';
+import { language } from '../../Language/languages';
 
 const initialState = {
   channels: [],
@@ -47,10 +48,15 @@ export const createAchannel = createAsyncThunk(
   async (channelData, thunkAPI) => {
     try {
       const formdata = new FormData();
-      formdata.append('active', channelData.active);
-      formdata.append('image', channelData.image[0], channelData.image[0].name);
-      formdata.append('name', channelData.name);
-      formdata.append('country_id', channelData.country_id);
+      formdata.append('active', channelData.values.active);
+      formdata.append(
+        'image',
+        channelData.values.image[0],
+        channelData.values.image[0].name
+      );
+      formdata.append('name', channelData.values.name);
+      formdata.append('country_id', channelData.values.country_id);
+      formdata.append('tariff_id', channelData.values.tariff_id);
       const response = await channelService.createchannel(formdata);
       return response.data;
     } catch (error) {
@@ -64,20 +70,22 @@ export const updateAchannel = createAsyncThunk(
     console.log(channelData);
     try {
       const formdata = new FormData();
-      formdata.append('active', channelData.channel.active);
-      formdata.append('name', channelData.channel.name);
-      if (channelData.channel.image[0] instanceof File) {
+      formdata.append('active', channelData.channelData.active);
+      formdata.append('name', channelData.channelData.name);
+      if (channelData.channelData.image instanceof File) {
         formdata.append(
           'image',
-          channelData.channel.image[0],
-          channelData.channel.image[0].name
+          channelData.channelData.image,
+          channelData.channelData.image.name
         );
       }
-      formdata.append('country_id', channelData.channel.country_id);
+      formdata.append('country_id', channelData.channelData.country_id);
+      formdata.append('tariff_id', channelData.channelData.tariff_id);
       formdata.append('_method', 'PUT');
       const response = await channelService.updatechannel(
         formdata,
-        channelData.id
+        channelData.id,
+        channelData
       );
       return response.data;
     } catch (error) {
@@ -130,10 +138,11 @@ export const channelSlice = createSlice({
         state.isLoading = false;
         state.isSuccess = true;
         state.isError = false;
-        state.channelName = action.payload.data.name;
-        state.channelActive = action.payload.data.active;
-        state.channelCountry_id = action.payload.data.country_id;
-        state.channelImage = action.payload.data.image;
+        state.ChannelData = action.payload;
+        state.channelActive = action.payload[language[0]].data.active;
+        state.channelCountry_id = action.payload[language[0]].data.country_id;
+        state.channelTariff_id = action.payload[language[0]].data.tariff_id;
+        state.channelImage = action.payload[language[0]].data.image;
       })
       .addCase(getAchannel.rejected, (state, action) => {
         state.isLoading = false;

@@ -1,5 +1,6 @@
 import { createSlice, createAsyncThunk, createAction } from '@reduxjs/toolkit';
 import colorService from './colorService';
+import { language } from '../../Language/languages';
 
 const initialState = {
   colors: [],
@@ -45,7 +46,12 @@ export const createAcolor = createAsyncThunk(
   'color/create-color',
   async (colorData, thunkAPI) => {
     try {
-      return await colorService.createcolor(colorData);
+      const formdata = new FormData();
+      formdata.append('active', colorData.values.active);
+      formdata.append('name', colorData.values.name);
+      formdata.append('code', colorData.values.code);
+      const response = await colorService.createcolor(formdata);
+      return response.data;
     } catch (error) {
       return thunkAPI.rejectWithValue(error);
     }
@@ -54,9 +60,20 @@ export const createAcolor = createAsyncThunk(
 
 export const updateAcolor = createAsyncThunk(
   'color/update-color',
-  async (color, thunkAPI) => {
+  async (colorData, thunkAPI) => {
     try {
-      return await colorService.updatecolor(color);
+      const formdata = new FormData();
+      formdata.append('active', colorData.colorData.active);
+      formdata.append('name', colorData.colorData.name);
+      formdata.append('code', colorData.colorData.code);
+      formdata.append('_method', 'PUT');
+
+      const response = await colorService.updatecolor(
+        formdata,
+        colorData.id,
+        colorData
+      );
+      return response.data;
     } catch (error) {
       return thunkAPI.rejectWithValue(error);
     }
@@ -108,9 +125,9 @@ export const colorSlice = createSlice({
         state.isLoading = false;
         state.isSuccess = true;
         state.isError = false;
-        state.colorName = action.payload.data.name;
-        state.colorCode = action.payload.data.code;
-        state.colorActive = action.payload.data.active;
+        state.ColorData = action.payload;
+        state.colorActive = action.payload[language[0]].data.active;
+        state.colorCode = action.payload[language[0]].data.code;
       })
       .addCase(getAcolor.rejected, (state, action) => {
         state.isLoading = false;

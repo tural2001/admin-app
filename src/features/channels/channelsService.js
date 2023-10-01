@@ -1,39 +1,45 @@
 import axios from 'axios';
 import { base_url } from '../../utils/base_url';
 import { config } from '../../utils/axiosconfig';
+import { language } from '../../Language/languages';
 
-const getchannels = async () => {
-  const response = await axios.get(
-    `${base_url}/api/channels?inactive=true`,
-    config
-  );
+const getchannels = async (selectedLanguage) => {
+  const response = await axios.get(`${base_url}/api/channels?inactive=true`, {
+    headers: config.getHeaders(selectedLanguage),
+  });
   return response.data;
 };
 
 const createchannel = async (channel) => {
-  const response = await axios.post(
-    `${base_url}/api/channels`,
-    channel,
-    config
-  );
+  const response = await axios.post(`${base_url}/api/channels`, channel, {
+    headers: config.getHeaders(channel.selectedLanguage),
+  });
   return response.data;
 };
-const updatechannel = async (channel, id) => {
-  const response = await axios.post(
-    `${base_url}/api/channels/${id}`,
-    channel,
-    config
-  );
+const updatechannel = async (channel, id, channelData) => {
+  const response = await axios.post(`${base_url}/api/channels/${id}`, channel, {
+    headers: config.getHeaders(channelData.selectedLanguage),
+  });
   return response.data;
 };
 
 const getchannel = async (id) => {
-  const response = await axios.get(`${base_url}/api/channels/${id}`, config);
-  return response.data;
+  const data = {};
+
+  for (const lang of language) {
+    const response = await axios.get(`${base_url}/api/channels/${id}`, {
+      headers: config.getHeaders(lang),
+    });
+
+    data[lang] = response.data;
+  }
+  return data;
 };
 
-const deletechannel = async (id) => {
-  const response = await axios.delete(`${base_url}/api/channels/${id}`, config);
+const deletechannel = async (id, language) => {
+  const response = await axios.delete(`${base_url}/api/channels/${id}`, {
+    headers: config.getHeaders(language),
+  });
   return response.data;
 };
 

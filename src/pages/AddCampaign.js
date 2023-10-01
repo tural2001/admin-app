@@ -87,37 +87,37 @@ const AddCampaign = () => {
   const prevUpdatedCampaignRef = useRef();
   const debounceTimeoutRef = useRef(null);
 
-  // useEffect(() => {
-  //   const prevUpdatedCampaign = prevUpdatedCampaignRef.current;
-  //   if (
-  //     isSuccess &&
-  //     updatedCampaign !== undefined &&
-  //     updatedCampaign !== prevUpdatedCampaign
-  //   ) {
-  //     if (debounceTimeoutRef.current) {
-  //       clearTimeout(debounceTimeoutRef.current);
-  //     }
-  //     debounceTimeoutRef.current = setTimeout(() => {
-  //       toast.success('Campaign Updated Successfully!');
-  //       prevUpdatedCampaignRef.current = updatedCampaign;
-  //       navigate('/admin/campaign-list');
-  //     }, 1000);
-  //   }
-  //   if (
-  //     isSuccess &&
-  //     createdCampaign !== undefined &&
-  //     updatedCampaign !== undefined
-  //   ) {
-  //     toast.success('Campaign Added Successfully!');
-  //     navigate('/admin/campaign-list');
-  //     setTimeout(() => {
-  //       window.location.reload();
-  //     }, 1000);
-  //   }
-  //   if (isError) {
-  //     toast.error('Something Went Wrong!');
-  //   }
-  // }, [isSuccess, isError, createdCampaign, updatedCampaign, navigate]);
+  useEffect(() => {
+    const prevUpdatedCampaign = prevUpdatedCampaignRef.current;
+    if (
+      isSuccess &&
+      updatedCampaign !== undefined &&
+      updatedCampaign !== prevUpdatedCampaign
+    ) {
+      if (debounceTimeoutRef.current) {
+        clearTimeout(debounceTimeoutRef.current);
+      }
+      debounceTimeoutRef.current = setTimeout(() => {
+        toast.success('Campaign Updated Successfully!');
+        prevUpdatedCampaignRef.current = updatedCampaign;
+        navigate('/admin/campaign-list');
+      }, 1000);
+    }
+    if (
+      isSuccess &&
+      createdCampaign !== undefined &&
+      updatedCampaign !== undefined
+    ) {
+      toast.success('Campaign Added Successfully!');
+      navigate('/admin/campaign-list');
+      setTimeout(() => {
+        window.location.reload();
+      }, 1000);
+    }
+    if (isError) {
+      toast.error('Something Went Wrong!');
+    }
+  }, [isSuccess, isError, createdCampaign, updatedCampaign, navigate]);
 
   const formik = useFormik({
     enableReinitialize: true,

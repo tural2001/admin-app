@@ -1,5 +1,6 @@
 import { createSlice, createAsyncThunk, createAction } from '@reduxjs/toolkit';
 import advantageService from './advantagesService';
+import { language } from '../../Language/languages';
 
 const initialState = {
   advantages: [],
@@ -47,13 +48,13 @@ export const createAadvantage = createAsyncThunk(
   async (advantageData, thunkAPI) => {
     try {
       const formdata = new FormData();
-      formdata.append('active', advantageData.active);
+      formdata.append('active', advantageData.values.active);
       formdata.append(
         'icon',
-        advantageData.icon[0],
-        advantageData.icon[0].name
+        advantageData.values.icon[0],
+        advantageData.values.icon[0].name
       );
-      formdata.append('title', advantageData.title);
+      formdata.append('title', advantageData.values.title);
 
       const response = await advantageService.createadvantage(formdata);
       return response.data;
@@ -68,20 +69,21 @@ export const updateAadvantage = createAsyncThunk(
     console.log(advantageData);
     try {
       const formdata = new FormData();
-      formdata.append('active', advantageData.advantage.active);
-      formdata.append('title', advantageData.advantage.title);
-      if (advantageData.advantage.icon[0] instanceof File) {
+      formdata.append('active', advantageData.advantageData.active);
+      formdata.append('title', advantageData.advantageData.title);
+      if (advantageData.advantageData.icon instanceof File) {
         formdata.append(
           'icon',
-          advantageData.advantage.icon[0],
-          advantageData.advantage.icon[0].name
+          advantageData.advantageData.icon,
+          advantageData.advantageData.icon.name
         );
       }
       formdata.append('_method', 'PUT');
 
       const response = await advantageService.updateadvantage(
         formdata,
-        advantageData.id
+        advantageData.id,
+        advantageData
       );
       return response.data;
     } catch (error) {
@@ -134,9 +136,9 @@ export const advantageSlice = createSlice({
         state.isLoading = false;
         state.isSuccess = true;
         state.isError = false;
-        state.advantageTitle = action.payload.data.title;
-        state.advantageActive = action.payload.data.active;
-        state.advantageIcon = action.payload.data.icon;
+        state.AdData = action.payload;
+        state.advantageActive = action.payload[language[0]].data.active;
+        state.AdIcon = action.payload[language[0]].data.icon;
       })
       .addCase(getAadvantage.rejected, (state, action) => {
         state.isLoading = false;

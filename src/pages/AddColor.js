@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, { useEffect } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import CustomInput from '../components/CustomInput';
 import { useFormik } from 'formik';
 import * as yup from 'yup';
@@ -13,14 +13,24 @@ import {
   updateAcolor,
 } from '../features/color/colorSlice';
 import { useLocation, useNavigate } from 'react-router-dom';
+import { language } from '../Language/languages';
 
 let schema = yup.object({
-  name: yup.string().required('Name is Required'),
+  name: yup.object().shape(
+    language.reduce(
+      (acc, lang) => ({
+        ...acc,
+        az: yup.string().required(`Name for az is Required`),
+      }),
+      {}
+    )
+  ),
   code: yup.string().required('Code is Required'),
   active: yup.string(),
 });
 
 const AddColor = (e) => {
+  const [selectedLanguage1, setSelectedLanguage1] = useState('az');
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const location = useLocation();
@@ -29,9 +39,8 @@ const AddColor = (e) => {
   const {
     isSuccess,
     isError,
-    isLoading,
     createdcolor,
-    colorName,
+    ColorData,
     colorActive,
     colorCode,
     updatedcolor,
@@ -39,68 +48,127 @@ const AddColor = (e) => {
 
   useEffect(() => {
     if (getcolorId !== undefined) {
-      dispatch(getAcolor(getcolorId));
+      language.forEach((selectedLanguage) => {
+        dispatch(getAcolor(getcolorId, selectedLanguage));
+      });
     } else {
       dispatch(resetState());
     }
-  }, [dispatch, getcolorId]);
+  }, [getcolorId]);
+
+  const prevUpdatedColorRef = useRef();
+  const debounceTimeoutRef = useRef(null);
 
   useEffect(() => {
-    if (isSuccess && createdcolor !== undefined) {
+    const prevUpdatedColor = prevUpdatedColorRef.current;
+    if (
+      isSuccess &&
+      updatedcolor !== undefined &&
+      updatedcolor !== prevUpdatedColor
+    ) {
+      if (debounceTimeoutRef.current) {
+        clearTimeout(debounceTimeoutRef.current);
+      }
+      debounceTimeoutRef.current = setTimeout(() => {
+        toast.success('Color Updated Successfully!');
+        prevUpdatedColorRef.current = updatedcolor;
+        navigate('/admin/color-list');
+      }, 1000);
+    }
+    if (isSuccess && createdcolor !== undefined && updatedcolor !== undefined) {
       toast.success('Color Added Successfully!');
       navigate('/admin/color-list');
       setTimeout(() => {
         window.location.reload();
       }, 1000);
     }
-    if (isSuccess && updatedcolor !== undefined) {
-      toast.success('Color Updated Successfully!');
-      navigate('/admin/color-list');
-    }
     if (isError) {
       toast.error('Something Went Wrong!');
     }
-  }, [
-    isSuccess,
-    isError,
-    isLoading,
-    createdcolor,
-    colorName,
-    colorActive,
-    colorCode,
-    updatedcolor,
-    navigate,
-  ]);
+  }, [isSuccess, isError, createdcolor, updatedcolor, navigate]);
 
   const formik = useFormik({
     enableReinitialize: true,
     initialValues: {
-      name: colorName || '',
+      name: language.reduce((acc, lang) => {
+        acc[lang] = ColorData ? ColorData[lang]?.data?.name || '' : '';
+        return acc;
+      }, {}),
       code: colorCode || '',
       active: colorActive ? 1 : 0,
     },
     validationSchema: schema,
     onSubmit: (values) => {
+      alert(JSON.stringify(values));
+      const updatedLanguages = language.filter((lang) => values.name[lang]);
+      console.log(updatedLanguages);
       if (getcolorId !== undefined) {
-        const data = { id: getcolorId, colorData: values };
-        dispatch(updateAcolor(data));
+        updatedLanguages.forEach((lang) => {
+          const data = {
+            id: getcolorId,
+            colorData: {
+              name: values.name[lang],
+              active: values.active === 1 ? 1 : 0,
+              code: values.code,
+            },
+            selectedLanguage: lang,
+          };
+          dispatch(updateAcolor(data));
+        });
       } else {
-        dispatch(createAcolor(values));
-        formik.resetForm();
-        setTimeout(() => {
-          dispatch(resetState());
-        }, 300);
+        if (updatedLanguages.length > 0) {
+          const firstLang = updatedLanguages[0];
+          const createData = {
+            values: {
+              name: values.name[firstLang],
+              active: values.active === 1 ? 1 : 0,
+              code: values.code,
+            },
+            selectedLanguage: firstLang,
+          };
+          dispatch(createAcolor(createData))
+            .then((createdColor) => {
+              console.log(createdColor);
+
+              updatedLanguages.slice(1).forEach((lang) => {
+                const updateData = {
+                  id: createdColor.payload.id,
+                  colorData: {
+                    name: values.name[lang],
+                    active: values.active === 1 ? 1 : 0,
+                    code: values.code,
+                  },
+                  selectedLanguage: lang,
+                };
+
+                dispatch(updateAcolor(updateData));
+              });
+
+              formik.resetForm();
+              setTimeout(() => {
+                dispatch(resetState());
+              }, 300);
+            })
+            .catch((error) => {
+              console.error('Error creating Advantage:', error);
+            });
+        }
       }
     },
   });
 
   useEffect(() => {
     if (getcolorId === undefined) {
-      formik.setFieldValue('active', '1');
+      formik.setFieldValue('active', 1);
     } else {
-      formik.setFieldValue('active', newcolor.colorActive ? '1' : '0');
+      formik.setFieldValue('active', newcolor.colorActive ? 1 : 0);
     }
   }, [getcolorId, newcolor.colorActive]);
+
+  const handleLanguageClick1 = (language) => {
+    setSelectedLanguage1(language);
+  };
+
   return (
     <div>
       <h3 className="mb-4 title">
@@ -117,10 +185,20 @@ const AddColor = (e) => {
                 errors[fieldName] = 'This field is Required';
               }
             });
+
+            language.forEach((lang) => {
+              const nameFieldName = `name.${lang}`;
+
+              if (formik.touched.name && !formik.values.name[lang]) {
+                errors[nameFieldName] = `Name for ${lang} is Required`;
+              }
+            });
+
             if (Object.keys(errors).length > 0) {
               toast.error('Please fill in the required fields.');
               return;
             }
+
             formik.handleSubmit(e);
           }}
         >
@@ -134,10 +212,10 @@ const AddColor = (e) => {
                 <input
                   type="radio"
                   name="active"
-                  onChange={() => formik.setFieldValue('active', '1')}
+                  onChange={() => formik.setFieldValue('active', 1)}
                   onBlur={formik.handleBlur}
-                  value="1"
-                  checked={formik.values.active === '1'}
+                  value={1}
+                  checked={formik.values.active === 1}
                   className="text-blue-500 form-radio h-4 w-4"
                 />
                 <span className="ml-2">Active</span>
@@ -146,10 +224,10 @@ const AddColor = (e) => {
                 <input
                   type="radio"
                   name="active"
-                  onChange={() => formik.setFieldValue('active', '0')}
+                  onChange={() => formik.setFieldValue('active', 0)}
                   onBlur={formik.handleBlur}
-                  value="0"
-                  checked={formik.values.active === '0'}
+                  value={0}
+                  checked={formik.values.active === 0}
                   className="text-blue-500 form-radio h-4 w-4"
                 />
                 <span className="ml-2">Not Active</span>
@@ -161,17 +239,41 @@ const AddColor = (e) => {
             <label htmlFor="" className="mt-2">
               Name
             </label>
-            <CustomInput
-              type="text"
-              label="Enter color Name"
-              name="name"
-              onCh={formik.handleChange('name')}
-              onBl={formik.handleBlur('name')}
-              val={formik.values.name}
-            />
-            <div className="error">
-              {formik.touched.name && formik.errors.name}
+            <div className="flex">
+              {language.map((lang, index) => (
+                <label
+                  key={lang}
+                  className={`cursor-pointer capitalize border-[1px] border-[#5e3989]  rounded-t-lg px-5 ${
+                    lang === selectedLanguage1 ? 'font-bold' : ''
+                  }`}
+                  onClick={() => handleLanguageClick1(lang)}
+                >
+                  {lang}
+                </label>
+              ))}
             </div>
+            {language.map((lang, index) => {
+              return (
+                <div
+                  key={lang}
+                  className={lang === selectedLanguage1 ? '' : 'hidden'}
+                >
+                  {' '}
+                  <CustomInput
+                    type="text"
+                    name={`name.${lang}`}
+                    onCh={formik.handleChange}
+                    onBl={formik.handleBlur}
+                    val={formik.values.name[lang]}
+                  />
+                  {formik.touched.name && formik.errors.name && (
+                    <div className="error" key={`${lang}-error`}>
+                      {formik.errors.name[lang]}
+                    </div>
+                  )}
+                </div>
+              );
+            })}
             <label htmlFor="" className="mt-2">
               Code
             </label>

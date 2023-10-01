@@ -1,40 +1,46 @@
 import axios from 'axios';
 import { base_url } from '../../utils/base_url';
 import { config } from '../../utils/axiosconfig';
+import { language } from '../../Language/languages';
 
-const getcolors = async () => {
-  const response = await axios.get(
-    `${base_url}/api/colors?inactive=true`,
-    config
-  );
+const getcolors = async (selectedLanguage) => {
+  const response = await axios.get(`${base_url}/api/colors?inactive=true`, {
+    headers: config.getHeaders(selectedLanguage),
+  });
   return response.data;
 };
 
 const createcolor = async (color) => {
-  const response = await axios.post(`${base_url}/api/colors`, color, config);
+  const response = await axios.post(`${base_url}/api/colors`, color, {
+    headers: config.getHeaders(color.selectedLanguage),
+  });
   return response.data;
 };
 
-const updatecolor = async (color) => {
-  const response = await axios.put(
-    `${base_url}/api/colors/${color.id}`,
-    {
-      code: color.colorData.code,
-      name: color.colorData.name,
-      active: color.colorData.active,
-    },
-    config
-  );
+const updatecolor = async (color, id, colorData) => {
+  const response = await axios.post(`${base_url}/api/colors/${id}`, color, {
+    headers: config.getHeaders(colorData.selectedLanguage),
+  });
   return response.data;
 };
 
 const getcolor = async (id) => {
-  const response = await axios.get(`${base_url}/api/colors/${id}`, config);
-  return response.data;
+  const data = {};
+
+  for (const lang of language) {
+    const response = await axios.get(`${base_url}/api/colors/${id}`, {
+      headers: config.getHeaders(lang),
+    });
+
+    data[lang] = response.data;
+  }
+  return data;
 };
 
-const deletecolor = async (id) => {
-  const response = await axios.delete(`${base_url}/api/colors/${id}`, config);
+const deletecolor = async (id, language) => {
+  const response = await axios.delete(`${base_url}/api/colors/${id}`, {
+    headers: config.getHeaders(language),
+  });
   return response.data;
 };
 

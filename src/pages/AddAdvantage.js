@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import CustomInput from '../components/CustomInput';
 import { useDispatch, useSelector } from 'react-redux';
 import { toast } from 'react-toastify';
@@ -14,14 +14,24 @@ import {
   updateAadvantage,
 } from '../features/advantages/advantagesSlice';
 import { uploadImg } from '../features/upload/uploadSlice';
+import { language } from '../Language/languages';
 
 let schema = yup.object({
-  title: yup.string().required('Title s is Required'),
+  title: yup.object().shape(
+    language.reduce(
+      (acc, lang) => ({
+        ...acc,
+        az: yup.string().required(`Title for az is Required`),
+      }),
+      {}
+    )
+  ),
   active: yup.string(),
   icon: yup.mixed().required('Icon is Required'),
 });
 
 const Addadvantage = () => {
+  const [selectedLanguage1, setSelectedLanguage1] = useState('az');
   const [isFileDetected, setIsFileDetected] = useState(false);
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -32,11 +42,10 @@ const Addadvantage = () => {
   const {
     isSuccess,
     isError,
-    isLoading,
     createdAdvantage,
-    advantageTitle,
+    AdData,
     advantageActive,
-    advantageIcon,
+    AdIcon,
     updatedAdvantage,
   } = newadvantage;
 
@@ -49,69 +58,130 @@ const Addadvantage = () => {
 
   useEffect(() => {
     if (getadvantageId !== undefined) {
-      dispatch(getAadvantage(getadvantageId));
+      language.forEach((selectedLanguage) => {
+        dispatch(getAadvantage(getadvantageId, selectedLanguage));
+      });
     } else {
       dispatch(resetState());
     }
-  }, [dispatch, getadvantageId]);
+  }, [getadvantageId]);
+
+  const prevUpdatedAdvantageRef = useRef();
+  const debounceTimeoutRef = useRef(null);
 
   useEffect(() => {
-    if (isSuccess && createdAdvantage) {
+    const prevUpdatedAdvantage = prevUpdatedAdvantageRef.current;
+    if (
+      isSuccess &&
+      updatedAdvantage !== undefined &&
+      updatedAdvantage !== prevUpdatedAdvantage
+    ) {
+      if (debounceTimeoutRef.current) {
+        clearTimeout(debounceTimeoutRef.current);
+      }
+      debounceTimeoutRef.current = setTimeout(() => {
+        toast.success('Advantage Updated Successfully!');
+        prevUpdatedAdvantageRef.current = updatedAdvantage;
+        navigate('/admin/advantage-list');
+      }, 1000);
+    }
+    if (
+      isSuccess &&
+      createdAdvantage !== undefined &&
+      updatedAdvantage !== undefined
+    ) {
       toast.success('Advantage Added Successfully!');
       navigate('/admin/advantage-list');
       setTimeout(() => {
         window.location.reload();
-      }, 500);
-    }
-    if (isSuccess && updatedAdvantage !== undefined) {
-      toast.success('Advantage Updated Successfully!');
-      navigate('/admin/advantage-list');
+      }, 1000);
     }
     if (isError) {
       toast.error('Something Went Wrong!');
     }
-  }, [
-    isSuccess,
-    isError,
-    isLoading,
-    createdAdvantage,
-    advantageTitle,
-    advantageActive,
-    advantageIcon,
-    updatedAdvantage,
-    navigate,
-  ]);
+  }, [isSuccess, isError, createdAdvantage, updatedAdvantage, navigate]);
 
   const formik = useFormik({
     enableReinitialize: true,
     initialValues: {
-      title: advantageTitle || '',
+      title: language.reduce((acc, lang) => {
+        acc[lang] = AdData ? AdData[lang]?.data?.title || '' : '';
+        return acc;
+      }, {}),
       active: advantageActive ? 1 : 0,
-      icon: advantageIcon || null,
+      icon: AdIcon || null,
     },
     validationSchema: schema,
     onSubmit: (values) => {
-      // alert(JSON.stringify(updatedValues));
+      alert(JSON.stringify(values));
+      const updatedLanguages = language.filter((lang) => values.title[lang]);
+      console.log(updatedLanguages);
       if (getadvantageId !== undefined) {
-        const data = { id: getadvantageId, advantage: values };
-        dispatch(updateAadvantage(data));
+        updatedLanguages.forEach((lang) => {
+          const data = {
+            id: getadvantageId,
+            advantageData: {
+              title: values.title[lang],
+              active: values.active === 1 ? 1 : 0,
+              icon: values.icon,
+            },
+            selectedLanguage: lang,
+          };
+          dispatch(updateAadvantage(data));
+        });
       } else {
-        dispatch(createAadvantage(values));
-        formik.resetForm();
-        setTimeout(() => {
-          dispatch(resetState());
-        }, 1000);
+        if (updatedLanguages.length > 0) {
+          const firstLang = updatedLanguages[0];
+          const createData = {
+            values: {
+              title: values.title[firstLang],
+              active: values.active === 1 ? 1 : 0,
+              icon: values.icon,
+            },
+            selectedLanguage: firstLang,
+          };
+          dispatch(createAadvantage(createData))
+            .then((createdAdvantage) => {
+              console.log(createdAdvantage);
+
+              updatedLanguages.slice(1).forEach((lang) => {
+                const updateData = {
+                  id: createdAdvantage.payload.id,
+                  advantageData: {
+                    title: values.title[lang],
+                    active: values.active === 1 ? 1 : 0,
+                    icon: values.icon,
+                  },
+                  selectedLanguage: lang,
+                };
+
+                dispatch(updateAadvantage(updateData));
+              });
+
+              formik.resetForm();
+              setTimeout(() => {
+                dispatch(resetState());
+              }, 300);
+            })
+            .catch((error) => {
+              console.error('Error creating Advantage:', error);
+            });
+        }
       }
     },
   });
 
   useEffect(() => {
     if (getadvantageId === undefined) {
-      formik.setFieldValue('active', '1');
+      formik.setFieldValue('active', 1);
     } else {
-      formik.setFieldValue('active', newadvantage.advantageActive ? '1' : '0');
+      formik.setFieldValue('active', newadvantage.advantageActive ? 1 : 0);
     }
   }, [getadvantageId, newadvantage.advantageActive]);
+
+  const handleLanguageClick1 = (language) => {
+    setSelectedLanguage1(language);
+  };
 
   return (
     <div>
@@ -129,10 +199,20 @@ const Addadvantage = () => {
                 errors[fieldName] = 'This field is Required';
               }
             });
+
+            language.forEach((lang) => {
+              const titleFieldName = `title.${lang}`;
+
+              if (formik.touched.title && !formik.values.title[lang]) {
+                errors[titleFieldName] = `Title for ${lang} is Required`;
+              }
+            });
+
             if (Object.keys(errors).length > 0) {
               toast.error('Please fill in the required fields.');
               return;
             }
+
             formik.handleSubmit(e);
           }}
         >
@@ -145,10 +225,10 @@ const Addadvantage = () => {
                 <input
                   type="radio"
                   name="active"
-                  onChange={() => formik.setFieldValue('active', '1')}
+                  onChange={() => formik.setFieldValue('active', 1)}
                   onBlur={formik.handleBlur}
-                  value="1"
-                  checked={formik.values.active === '1'}
+                  value={1}
+                  checked={formik.values.active === 1}
                   className="text-blue-500 form-radio h-4 w-4"
                 />
                 <span className="ml-2">Active</span>
@@ -157,10 +237,10 @@ const Addadvantage = () => {
                 <input
                   type="radio"
                   name="active"
-                  onChange={() => formik.setFieldValue('active', '0')}
+                  onChange={() => formik.setFieldValue('active', 0)}
                   onBlur={formik.handleBlur}
-                  value="0"
-                  checked={formik.values.active === '0'}
+                  value={0}
+                  checked={formik.values.active === 0}
                   className="text-blue-500 form-radio h-4 w-4"
                 />
                 <span className="ml-2">Not Active</span>
@@ -170,17 +250,42 @@ const Addadvantage = () => {
           <label htmlFor="" className="mt-2">
             Title
           </label>
-          <CustomInput
-            type="text"
-            label="Enter advantage Title"
-            name="title"
-            onCh={formik.handleChange('title')}
-            onBl={formik.handleBlur('title')}
-            val={formik.values.title}
-          />
-          <div className="error">
-            {formik.touched.title && formik.errors.title}
+          <div className="flex">
+            {language.map((lang, index) => (
+              <label
+                key={lang}
+                className={`cursor-pointer capitalize border-[1px] border-[#5e3989]  rounded-t-lg px-5 ${
+                  lang === selectedLanguage1 ? 'font-bold' : ''
+                }`}
+                onClick={() => handleLanguageClick1(lang)}
+              >
+                {lang}
+              </label>
+            ))}
           </div>
+          {language.map((lang, index) => {
+            return (
+              <div
+                key={lang}
+                className={lang === selectedLanguage1 ? '' : 'hidden'}
+              >
+                {' '}
+                <CustomInput
+                  type="text"
+                  name={`title.${lang}`}
+                  onCh={formik.handleChange}
+                  onBl={formik.handleBlur}
+                  val={formik.values.title[lang]}
+                />
+                {formik.touched.title && formik.errors.title && (
+                  <div className="error" key={`${lang}-error`}>
+                    {formik.errors.title[lang]}
+                  </div>
+                )}
+              </div>
+            );
+          })}
+
           <label htmlFor="" className="mt-2">
             Icon
           </label>

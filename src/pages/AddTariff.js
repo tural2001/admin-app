@@ -86,37 +86,37 @@ const AddTariff = () => {
   const prevUpdatedTariffRef = useRef();
   const debounceTimeoutRef = useRef(null);
 
-  // useEffect(() => {
-  //   const prevUpdatedFaq = prevUpdatedTariffRef.current;
-  //   if (
-  //     isSuccess &&
-  //     updatedTariff !== undefined &&
-  //     updatedTariff !== prevUpdatedFaq
-  //   ) {
-  //     if (debounceTimeoutRef.current) {
-  //       clearTimeout(debounceTimeoutRef.current);
-  //     }
-  //     debounceTimeoutRef.current = setTimeout(() => {
-  //       toast.success('Tariff Updated Successfully!');
-  //       prevUpdatedTariffRef.current = updatedTariff;
-  //       navigate('/admin/tariff-list');
-  //     }, 1000);
-  //   }
-  //   if (
-  //     isSuccess &&
-  //     createdTariff !== undefined &&
-  //     updatedTariff !== undefined
-  //   ) {
-  //     toast.success('Tariff Added Successfully!');
-  //     navigate('/admin/tariff-list');
-  //     setTimeout(() => {
-  //       window.location.reload();
-  //     }, 1000);
-  //   }
-  //   if (isError) {
-  //     toast.error('Something Went Wrong!');
-  //   }
-  // }, [isSuccess, isError, createdTariff, updatedTariff, navigate]);
+  useEffect(() => {
+    const prevUpdatedFaq = prevUpdatedTariffRef.current;
+    if (
+      isSuccess &&
+      updatedTariff !== undefined &&
+      updatedTariff !== prevUpdatedFaq
+    ) {
+      if (debounceTimeoutRef.current) {
+        clearTimeout(debounceTimeoutRef.current);
+      }
+      debounceTimeoutRef.current = setTimeout(() => {
+        toast.success('Tariff Updated Successfully!');
+        prevUpdatedTariffRef.current = updatedTariff;
+        navigate('/admin/tariff-list');
+      }, 1000);
+    }
+    if (
+      isSuccess &&
+      createdTariff !== undefined &&
+      updatedTariff !== undefined
+    ) {
+      toast.success('Tariff Added Successfully!');
+      navigate('/admin/tariff-list');
+      setTimeout(() => {
+        window.location.reload();
+      }, 1000);
+    }
+    if (isError) {
+      toast.error('Something Went Wrong!');
+    }
+  }, [isSuccess, isError, createdTariff, updatedTariff, navigate]);
 
   const serviceState = useSelector((state) => state.service.services.data);
   console.log(serviceState);
