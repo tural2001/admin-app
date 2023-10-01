@@ -266,8 +266,8 @@ const AddCampaign = () => {
             });
 
             language.forEach((lang) => {
-              const nameFieldName = `question.${lang}`;
-              const descriptionFieldName = `answer.${lang}`;
+              const nameFieldName = `name.${lang}`;
+              const descriptionFieldName = `description.${lang}`;
 
               if (
                 formik.touched.description &&
@@ -275,11 +275,11 @@ const AddCampaign = () => {
               ) {
                 errors[
                   descriptionFieldName
-                ] = `Question for ${lang} is Required`;
+                ] = `Description for ${lang} is Required`;
               }
 
               if (formik.touched.name && !formik.values.name[lang]) {
-                errors[nameFieldName] = `Answer for ${lang} is Required`;
+                errors[nameFieldName] = `Name for ${lang} is Required`;
               }
             });
 
@@ -287,7 +287,7 @@ const AddCampaign = () => {
               toast.error('Please fill in the required fields.');
               return;
             }
-            console.log(formik.errors.answer);
+
             formik.handleSubmit(e);
           }}
         >

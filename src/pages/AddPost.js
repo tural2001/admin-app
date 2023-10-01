@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import CustomInput from '../components/CustomInput';
 import { useDispatch, useSelector } from 'react-redux';
 import { toast } from 'react-toastify';
@@ -17,11 +17,36 @@ import 'react-quill/dist/quill.snow.css';
 import { uploadImg } from '../features/upload/uploadSlice';
 import 'react-quill/dist/quill.snow.css';
 import Editor from '../components/Editor';
+import { language } from '../Language/languages';
 
 let schema = yup.object({
-  title: yup.string().required('Title s is Required'),
-  description: yup.string().required('Description is Required'),
-  slug: yup.string(),
+  title: yup.object().shape(
+    language.reduce(
+      (acc, lang) => ({
+        ...acc,
+        az: yup.string().required(`title for az is Required`),
+      }),
+      {}
+    )
+  ),
+  description: yup.object().shape(
+    language.reduce(
+      (acc, lang) => ({
+        ...acc,
+        az: yup.string().required(`Description for az is Required`),
+      }),
+      {}
+    )
+  ),
+  slug: yup.object().shape(
+    language.reduce(
+      (acc, lang) => ({
+        ...acc,
+        az: yup.string().required(`Slug for az is Required`),
+      }),
+      {}
+    )
+  ),
   image: yup.mixed().required('Image is Required'),
   meta_title: yup.string(),
   meta_description: yup.string(),
@@ -29,6 +54,11 @@ let schema = yup.object({
 });
 
 const AddPost = () => {
+  const [selectedLanguage1, setSelectedLanguage1] = useState('az');
+  const [selectedLanguage2, setSelectedLanguage2] = useState('az');
+  const [selectedLanguage3, setSelectedLanguage3] = useState('az');
+  const [selectedLanguage4, setSelectedLanguage4] = useState('az');
+  const [selectedLanguage5, setSelectedLanguage5] = useState('az');
   const [isFileDetected, setIsFileDetected] = useState(false);
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -39,15 +69,10 @@ const AddPost = () => {
   const {
     isSuccess,
     isError,
-    isLoading,
     createdPost,
-    postTitle,
-    postDescription,
+    PostData,
     postImage,
     updatedPost,
-    postMeta_title,
-    postMeta_description,
-    postSlug,
     postPublished,
   } = newPost;
 
@@ -60,42 +85,44 @@ const AddPost = () => {
 
   useEffect(() => {
     if (getpostId !== undefined) {
-      dispatch(getApost(getpostId));
+      language.forEach((selectedLanguage) => {
+        dispatch(getApost(getpostId, selectedLanguage));
+      });
     } else {
       dispatch(resetState());
     }
-  }, [dispatch, getpostId]);
+  }, [getpostId]);
+
+  const prevUpdatedPostRef = useRef();
+  const debounceTimeoutRef = useRef(null);
 
   useEffect(() => {
-    if (isSuccess && createdPost) {
+    const prevUpdatedPost = prevUpdatedPostRef.current;
+    if (
+      isSuccess &&
+      updatedPost !== undefined &&
+      updatedPost !== prevUpdatedPost
+    ) {
+      if (debounceTimeoutRef.current) {
+        clearTimeout(debounceTimeoutRef.current);
+      }
+      debounceTimeoutRef.current = setTimeout(() => {
+        toast.success('Post Updated Successfully!');
+        prevUpdatedPostRef.current = updatedPost;
+        navigate('/admin/post-list');
+      }, 1000);
+    }
+    if (isSuccess && createdPost !== undefined && updatedPost !== undefined) {
       toast.success('Post Added Successfully!');
       navigate('/admin/post-list');
       setTimeout(() => {
         window.location.reload();
-      }, 500);
-    }
-    if (isSuccess && updatedPost !== undefined) {
-      toast.success('Post Updated Successfully!');
-      navigate('/admin/post-list');
+      }, 1000);
     }
     if (isError) {
       toast.error('Something Went Wrong!');
     }
-  }, [
-    isSuccess,
-    isError,
-    isLoading,
-    createdPost,
-    postTitle,
-    postDescription,
-    postImage,
-    postMeta_title,
-    postSlug,
-    postMeta_description,
-    postPublished,
-    updatedPost,
-    navigate,
-  ]);
+  }, [isSuccess, isError, createdPost, updatedPost, navigate]);
 
   const formatDateTimeForServer = (dateTimeString) => {
     const date = new Date(dateTimeString);
@@ -111,39 +138,141 @@ const AddPost = () => {
   const formik = useFormik({
     enableReinitialize: true,
     initialValues: {
-      title: postTitle || '',
-      description: postDescription || '',
+      title: language.reduce((acc, lang) => {
+        acc[lang] = PostData ? PostData[lang]?.data?.title || '' : '';
+        return acc;
+      }, {}),
+      description: language.reduce((acc, lang) => {
+        acc[lang] = PostData ? PostData[lang]?.data?.description || '' : '';
+        return acc;
+      }, {}),
       image: postImage || null,
-      meta_title: postMeta_title || '',
-      meta_description: postMeta_description || '',
-      slug: postSlug || '',
+      meta_title: language.reduce((acc, lang) => {
+        acc[lang] = PostData ? PostData[lang]?.data?.meta_title || '' : '';
+        return acc;
+      }, {}),
+      meta_description: language.reduce((acc, lang) => {
+        acc[lang] = PostData
+          ? PostData[lang]?.data?.meta_description || ''
+          : '';
+        return acc;
+      }, {}),
+      slug: language.reduce((acc, lang) => {
+        acc[lang] = PostData ? PostData[lang]?.data?.slug || '' : '';
+        return acc;
+      }, {}),
       published_at: postPublished || '',
     },
     validationSchema: schema,
+    // onSubmit: (values) => {
+    //   alert(JSON.stringify(values));
+    //   const formattedPublishedAt = formatDateTimeForServer(values.published_at);
+
+    //   const updatedValues = {
+    //     ...values,
+    //     published_at: formattedPublishedAt,
+    //   };
+    //   // alert(JSON.stringify(updatedValues));
+    //   if (getpostId !== undefined) {
+    //     const data = { id: getpostId, post: updatedValues };
+    //     dispatch(updateApost(data));
+    //   } else {
+    //     dispatch(createApost(updatedValues));
+    //     formik.resetForm();
+    //     setTimeout(() => {
+    //       dispatch(resetState());
+    //     }, 1000);
+    //   }
+    // },
     onSubmit: (values) => {
       alert(JSON.stringify(values));
-      const formattedPublishedAt = formatDateTimeForServer(values.published_at);
-
-      const updatedValues = {
-        ...values,
-        published_at: formattedPublishedAt,
-      };
-      // alert(JSON.stringify(updatedValues));
+      const updatedLanguages = language.filter((lang) => values.title[lang]);
+      console.log(updatedLanguages);
       if (getpostId !== undefined) {
-        const data = { id: getpostId, post: updatedValues };
-        dispatch(updateApost(data));
+        updatedLanguages.forEach((lang) => {
+          const data = {
+            id: getpostId,
+            campaignData: {
+              name: values.name[lang],
+              description: values.description[lang],
+              image: values.image,
+              active: values.active === 1 ? 1 : 0,
+            },
+            selectedLanguage: lang,
+          };
+          dispatch(updateApost(data));
+        });
       } else {
-        dispatch(createApost(updatedValues));
-        formik.resetForm();
-        setTimeout(() => {
-          dispatch(resetState());
-        }, 1000);
+        if (updatedLanguages.length > 0) {
+          const firstLang = updatedLanguages[0];
+          const createData = {
+            values: {
+              title: values.title[firstLang],
+              description: values.description[firstLang],
+              meta_title: values.meta_title[firstLang],
+              meta_description: values.meta_description[firstLang],
+              slug: values.slug[firstLang],
+              image: values.image,
+              published_at: values.published_at,
+            },
+            selectedLanguage: firstLang,
+          };
+          dispatch(createApost(createData))
+            .then((createdCampaign) => {
+              console.log(createdCampaign);
+
+              updatedLanguages.slice(1).forEach((lang) => {
+                const updateData = {
+                  id: createdCampaign.payload.id,
+                  postData: {
+                    title: values.title[lang],
+                    description: values.description[lang],
+                    meta_title: values.meta_title[lang],
+                    meta_description: values.meta_description[lang],
+                    slug: values.slug[lang],
+                    image: values.image,
+                    published_at: values.published_at,
+                  },
+                  selectedLanguage: lang,
+                };
+                console.log(updateData);
+                dispatch(updateApost(updateData));
+              });
+
+              formik.resetForm();
+              setTimeout(() => {
+                dispatch(resetState());
+              }, 300);
+            })
+            .catch((error) => {
+              console.error('Error creating Campaign:', error);
+            });
+        }
       }
     },
   });
 
   const handleDescriptionChange = (newContent) => {
     formik.setFieldValue('description', newContent);
+  };
+
+  const handleLanguageClick1 = (language) => {
+    setSelectedLanguage1(language);
+  };
+
+  const handleLanguageClick2 = (language) => {
+    setSelectedLanguage2(language);
+  };
+
+  const handleLanguageClick3 = (language) => {
+    setSelectedLanguage3(language);
+  };
+
+  const handleLanguageClick4 = (language) => {
+    setSelectedLanguage4(language);
+  };
+  const handleLanguageClick5 = (language) => {
+    setSelectedLanguage5(language);
   };
   return (
     <div>
@@ -154,45 +283,120 @@ const AddPost = () => {
         <form
           onSubmit={(e) => {
             e.preventDefault();
-            const requiredFields = ['title', 'description', 'image'];
+            const requiredFields = ['title', 'description', 'slug', 'image'];
             const errors = {};
             requiredFields.forEach((fieldName) => {
               if (formik.touched[fieldName] && !formik.values[fieldName]) {
                 errors[fieldName] = 'This field is Required';
               }
             });
+
+            language.forEach((lang) => {
+              const titleFieldName = `title.${lang}`;
+              const descriptionFieldName = `description.${lang}`;
+              const slugFieldName = `slug.${lang}`;
+
+              if (
+                formik.touched.description &&
+                !formik.values.description[lang]
+              ) {
+                errors[
+                  descriptionFieldName
+                ] = `Description for ${lang} is Required`;
+              }
+
+              if (formik.touched.title && !formik.values.title[lang]) {
+                errors[titleFieldName] = `Title for ${lang} is Required`;
+              }
+              if (formik.touched.slug && !formik.values.slug[lang]) {
+                errors[slugFieldName] = `Slug for ${lang} is Required`;
+              }
+            });
+
             if (Object.keys(errors).length > 0) {
               toast.error('Please fill in the required fields.');
               return;
             }
+
             formik.handleSubmit(e);
           }}
         >
           <label htmlFor="" className="mt-2">
             Meta title
           </label>
-          <CustomInput
-            type="text"
-            label="Enter Meta Title"
-            name="meta_title"
-            onCh={formik.handleChange('meta_title')}
-            onBl={formik.handleBlur('meta_title')}
-            val={formik.values.meta_title}
-          />
-          <div className="error">
-            {formik.touched.meta_title && formik.errors.meta_title}
+          <div className="flex">
+            {language.map((lang, index) => (
+              <label
+                key={lang}
+                className={`cursor-pointer capitalize border-[1px] border-[#5e3989]  rounded-t-lg px-5 ${
+                  lang === selectedLanguage1 ? 'font-bold' : ''
+                }`}
+                onClick={() => handleLanguageClick1(lang)}
+              >
+                {lang}
+              </label>
+            ))}
           </div>
+          {language.map((lang, index) => {
+            return (
+              <div
+                key={lang}
+                className={lang === selectedLanguage1 ? '' : 'hidden'}
+              >
+                {' '}
+                <CustomInput
+                  type="text"
+                  name={`meta_title.${lang}`}
+                  onCh={formik.handleChange}
+                  onBl={formik.handleBlur}
+                  val={formik.values.meta_title[lang]}
+                />
+                {formik.touched.meta_title && formik.errors.meta_title && (
+                  <div className="error" key={`${lang}-error`}>
+                    {formik.errors.meta_title[lang]}
+                  </div>
+                )}
+              </div>
+            );
+          })}
           <label htmlFor="" className="mt-2">
             Meta description
           </label>
-          <CustomInput
-            type="text"
-            label="Enter Meta Description"
-            name="meta_description"
-            onCh={formik.handleChange('meta_description')}
-            onBl={formik.handleBlur('meta_description')}
-            val={formik.values.meta_description}
-          />
+          <div className="flex">
+            {language.map((lang, index) => (
+              <label
+                key={lang}
+                className={`cursor-pointer capitalize border-[1px] border-[#5e3989]  rounded-t-lg px-5 ${
+                  lang === selectedLanguage2 ? 'font-bold' : ''
+                }`}
+                onClick={() => handleLanguageClick2(lang)}
+              >
+                {lang}
+              </label>
+            ))}
+          </div>
+          {language.map((lang, index) => {
+            return (
+              <div
+                key={lang}
+                className={lang === selectedLanguage2 ? '' : 'hidden'}
+              >
+                <CustomInput
+                  type="text"
+                  name={`meta_description.${lang}`}
+                  onCh={formik.handleChange}
+                  onBl={formik.handleBlur}
+                  val={formik.values.meta_description[lang]}
+                />
+                {formik.touched.meta_description &&
+                  formik.errors.meta_description && (
+                    <div className="error" key={`${lang}-error`}>
+                      {formik.errors.meta_description[lang]}
+                    </div>
+                  )}
+              </div>
+            );
+          })}
           <label htmlFor="" className="mt-2">
             Description
           </label>
@@ -200,31 +404,80 @@ const AddPost = () => {
           <label htmlFor="" className="mt-2">
             Title
           </label>
-          <CustomInput
-            type="text"
-            label="Enter Post Title"
-            name="title"
-            onCh={formik.handleChange('title')}
-            onBl={formik.handleBlur('title')}
-            val={formik.values.title}
-          />
-          <div className="error">
-            {formik.touched.title && formik.errors.title}
+          <div className="flex">
+            {language.map((lang, index) => (
+              <label
+                key={lang}
+                className={`cursor-pointer capitalize border-[1px] border-[#5e3989]  rounded-t-lg px-5 ${
+                  lang === selectedLanguage3 ? 'font-bold' : ''
+                }`}
+                onClick={() => handleLanguageClick3(lang)}
+              >
+                {lang}
+              </label>
+            ))}
           </div>
+          {language.map((lang, index) => {
+            return (
+              <div
+                key={lang}
+                className={lang === selectedLanguage3 ? '' : 'hidden'}
+              >
+                <CustomInput
+                  type="text"
+                  name={`title.${lang}`}
+                  onCh={formik.handleChange}
+                  onBl={formik.handleBlur}
+                  val={formik.values.title[lang]}
+                />
+                {formik.touched.title && formik.errors.title && (
+                  <div className="error" key={`${lang}-error`}>
+                    {formik.errors.title[lang]}
+                  </div>
+                )}
+              </div>
+            );
+          })}
           <div className="error">
             {formik.touched.description && formik.errors.description}
           </div>
           <label htmlFor="" className="mt-2">
             Slug
           </label>
-          <CustomInput
-            type="text"
-            label="Enter Post Slug"
-            name="slug"
-            onCh={formik.handleChange('slug')}
-            onBl={formik.handleBlur('slug')}
-            val={formik.values.slug}
-          />
+          <div className="flex">
+            {language.map((lang, index) => (
+              <label
+                key={lang}
+                className={`cursor-pointer capitalize border-[1px] border-[#5e3989]  rounded-t-lg px-5 ${
+                  lang === selectedLanguage4 ? 'font-bold' : ''
+                }`}
+                onClick={() => handleLanguageClick4(lang)}
+              >
+                {lang}
+              </label>
+            ))}
+          </div>
+          {language.map((lang, index) => {
+            return (
+              <div
+                key={lang}
+                className={lang === selectedLanguage4 ? '' : 'hidden'}
+              >
+                <CustomInput
+                  type="text"
+                  name={`slug.${lang}`}
+                  onCh={formik.handleChange}
+                  onBl={formik.handleBlur}
+                  val={formik.values.slug[lang]}
+                />
+                {formik.touched.slug && formik.errors.slug && (
+                  <div className="error" key={`${lang}-error`}>
+                    {formik.errors.slug[lang]}
+                  </div>
+                )}
+              </div>
+            );
+          })}
           <label htmlFor="" className="mt-2">
             Date
           </label>

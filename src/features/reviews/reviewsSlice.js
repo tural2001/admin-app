@@ -1,5 +1,6 @@
 import { createSlice, createAsyncThunk, createAction } from '@reduxjs/toolkit';
 import reviewsService from './reviewsService';
+import { language } from '../../Language/languages';
 
 const initialState = {
   reviews: [],
@@ -36,12 +37,13 @@ export const createAreview = createAsyncThunk(
   async (reviewData, thunkAPI) => {
     try {
       const formdata = new FormData();
-      formdata.append('reviewer_name', reviewData.reviewer_name);
-      formdata.append('comment', reviewData.comment);
+      formdata.append('reviewer_name', reviewData.values.reviewer_name);
+      formdata.append('active', reviewData.values.active);
+      formdata.append('comment', reviewData.values.comment);
       formdata.append(
         'reviewer_image',
-        reviewData.reviewer_image[0],
-        reviewData.reviewer_image[0].name
+        reviewData.values.reviewer_image[0],
+        reviewData.values.reviewer_image[0].name
       );
       const response = await reviewsService.createReview(formdata);
       return response.data;
@@ -66,20 +68,21 @@ export const updateAreview = createAsyncThunk(
     console.log(reviewData);
     try {
       const formdata = new FormData();
-      formdata.append('active', reviewData.review.active);
-      formdata.append('reviewer_name', reviewData.review.reviewer_name);
-      formdata.append('comment', reviewData.review.comment);
-      if (reviewData.review.reviewer_image[0] instanceof File) {
+      formdata.append('active', reviewData.reviewData.active);
+      formdata.append('reviewer_name', reviewData.reviewData.reviewer_name);
+      formdata.append('comment', reviewData.reviewData.comment);
+      if (reviewData.reviewData.reviewer_image[0] instanceof File) {
         formdata.append(
           'reviewer_image',
-          reviewData.review.reviewer_image[0],
-          reviewData.review.reviewer_image[0].name
+          reviewData.reviewData.reviewer_image[0],
+          reviewData.reviewData.reviewer_image[0].name
         );
       }
       formdata.append('_method', 'PUT');
       const response = await reviewsService.updateReview(
         formdata,
-        reviewData.id
+        reviewData.id,
+        reviewData
       );
       return response.data;
     } catch (error) {
@@ -133,10 +136,10 @@ export const reviewsSlice = createSlice({
         state.isLoading = false;
         state.isSuccess = true;
         state.isError = false;
-        state.reviewActive = action.payload.data?.active;
-        state.reviewReviewer_name = action.payload.data?.reviewer_name;
-        state.reviewComment = action.payload.data?.comment;
-        state.reviewReviewer_image = action.payload.data?.reviewer_image;
+        state.ReviewData = action.payload;
+        state.reviewActive = action.payload[language[0]].data.active;
+        state.reviewReviewer_image =
+          action.payload[language[0]].data.reviewer_image;
       })
       .addCase(getAreview.rejected, (state, action) => {
         state.isLoading = false;

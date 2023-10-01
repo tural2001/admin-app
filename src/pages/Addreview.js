@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import CustomInput from '../components/CustomInput';
 import { useDispatch, useSelector } from 'react-redux';
 import { useFormik } from 'formik';
@@ -14,15 +14,34 @@ import {
 } from '../features/reviews/reviewsSlice';
 import Dropzone from 'react-dropzone';
 import { uploadImg } from '../features/upload/uploadSlice';
+import { language } from '../Language/languages';
 
 let schema = yup.object({
-  reviewer_name: yup.string().required('Name is Required'),
-  comment: yup.string().required('Comment is Required'),
+  reviewer_name: yup.object().shape(
+    language.reduce(
+      (acc, lang) => ({
+        ...acc,
+        az: yup.string().required(`Name for az is Required`),
+      }),
+      {}
+    )
+  ),
+  comment: yup.object().shape(
+    language.reduce(
+      (acc, lang) => ({
+        ...acc,
+        az: yup.string().required(`Comment for az is Required`),
+      }),
+      {}
+    )
+  ),
   reviewer_image: yup.mixed().required('Image is Required'),
   active: yup.string(),
 });
 
 const Addreview = () => {
+  const [selectedLanguage1, setSelectedLanguage1] = useState('az');
+  const [selectedLanguage2, setSelectedLanguage2] = useState('az');
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const location = useLocation();
@@ -32,12 +51,10 @@ const Addreview = () => {
   const {
     isSuccess,
     isError,
-    isLoading,
     createdReview,
     reviewActive,
-    reviewReviewer_name,
+    ReviewData,
     reviewReviewer_image,
-    reviewComment,
     updatedReview,
   } = newReview;
 
@@ -54,71 +71,146 @@ const Addreview = () => {
 
   useEffect(() => {
     if (getReviewId !== undefined) {
-      dispatch(getAreview(getReviewId));
+      language.forEach((selectedLanguage) => {
+        dispatch(getAreview(getReviewId, selectedLanguage));
+      });
     } else {
       dispatch(resetState());
     }
-  }, [dispatch, getReviewId]);
+  }, [getReviewId]);
+
+  const prevUpdatedReviewfRef = useRef();
+  const debounceTimeoutRef = useRef(null);
 
   useEffect(() => {
-    if (isSuccess && createdReview) {
-      toast.success('Review Added Successfully');
+    const prevUpdatedReview = prevUpdatedReviewfRef.current;
+    if (
+      isSuccess &&
+      updatedReview !== undefined &&
+      updatedReview !== prevUpdatedReview
+    ) {
+      if (debounceTimeoutRef.current) {
+        clearTimeout(debounceTimeoutRef.current);
+      }
+      debounceTimeoutRef.current = setTimeout(() => {
+        toast.success('Review Updated Successfully!');
+        prevUpdatedReviewfRef.current = updatedReview;
+        navigate('/admin/review-list');
+      }, 1000);
+    }
+    if (
+      isSuccess &&
+      createdReview !== undefined &&
+      updatedReview !== undefined
+    ) {
+      toast.success('Review Added Successfully!');
       navigate('/admin/review-list');
       setTimeout(() => {
         window.location.reload();
-      }, 500);
-    }
-    if (isSuccess && updatedReview !== undefined) {
-      toast.success('Review Updated Successfully!');
-      navigate('/admin/review-list');
+      }, 1000);
     }
     if (isError) {
-      toast.error('Something went wrong');
+      toast.error('Something Went Wrong!');
     }
-  }, [
-    isSuccess,
-    isError,
-    isLoading,
-    createdReview,
-    reviewActive,
-    reviewReviewer_image,
-    reviewReviewer_name,
-    reviewComment,
-    updatedReview,
-    navigate,
-  ]);
+  }, [isSuccess, isError, createdReview, updatedReview, navigate]);
 
   const formik = useFormik({
     enableReinitialize: true,
     initialValues: {
-      reviewer_name: reviewReviewer_name || '',
-      comment: reviewComment || '',
+      reviewer_name: language.reduce((acc, lang) => {
+        acc[lang] = ReviewData
+          ? ReviewData[lang]?.data?.reviewer_name || ''
+          : '';
+        return acc;
+      }, {}),
+      comment: language.reduce((acc, lang) => {
+        acc[lang] = ReviewData ? ReviewData[lang]?.data?.comment || '' : '';
+        return acc;
+      }, {}),
+
       reviewer_image: reviewReviewer_image || null,
       active: reviewActive ? 1 : 0,
     },
     validationSchema: schema,
     onSubmit: (values) => {
+      alert(JSON.stringify(values));
+      const updatedLanguages = language.filter(
+        (lang) => values.reviewer_name[lang]
+      );
+      console.log(updatedLanguages);
       if (getReviewId !== undefined) {
-        const data = { id: getReviewId, review: values };
-        console.log(data);
-        dispatch(updateAreview(data));
+        updatedLanguages.forEach((lang) => {
+          const data = {
+            id: getReviewId,
+            reviewData: {
+              reviewer_name: values.reviewer_name[lang],
+              comment: values.comment[lang],
+              reviewer_image: values.reviewer_image,
+              active: values.active === 1 ? 1 : 0,
+            },
+            selectedLanguage: lang,
+          };
+          dispatch(updateAreview(data));
+        });
       } else {
-        dispatch(createAreview(values));
-        formik.resetForm();
-        setTimeout(() => {
-          dispatch(resetState());
-        }, 300);
+        if (updatedLanguages.length > 0) {
+          const firstLang = updatedLanguages[0];
+          const createData = {
+            values: {
+              reviewer_name: values.reviewer_name[firstLang],
+              comment: values.comment[firstLang],
+              reviewer_image: values.reviewer_image,
+              active: values.active === 1 ? 1 : 0,
+            },
+            selectedLanguage: firstLang,
+          };
+          dispatch(createAreview(createData))
+            .then((createdReview) => {
+              console.log(createdReview);
+
+              updatedLanguages.slice(1).forEach((lang) => {
+                const updateData = {
+                  id: createdReview.payload.id,
+                  reviewData: {
+                    reviewer_name: values.reviewer_name[lang],
+                    comment: values.comment[lang],
+                    reviewer_image: values.reviewer_image,
+                    active: values.active === 1 ? 1 : 0,
+                  },
+                  selectedLanguage: lang,
+                };
+
+                dispatch(updateAreview(updateData));
+              });
+
+              formik.resetForm();
+              setTimeout(() => {
+                dispatch(resetState());
+              }, 300);
+            })
+            .catch((error) => {
+              console.error('Error creating Tariff:', error);
+            });
+        }
       }
     },
   });
 
   useEffect(() => {
     if (getReviewId === undefined) {
-      formik.setFieldValue('active', '1');
+      formik.setFieldValue('active', 1);
     } else {
-      formik.setFieldValue('active', newReview.reviewActive ? '1' : '0');
+      formik.setFieldValue('active', newReview.reviewActive ? 1 : 0);
     }
   }, [getReviewId, newReview.reviewActive]);
+
+  const handleLanguageClick1 = (language) => {
+    setSelectedLanguage1(language);
+  };
+
+  const handleLanguageClick2 = (language) => {
+    setSelectedLanguage2(language);
+  };
 
   return (
     <div>
@@ -133,7 +225,6 @@ const Addreview = () => {
               'reviewer_name',
               'comment',
               'reviewer_image',
-              'active',
             ];
             const errors = {};
             requiredFields.forEach((fieldName) => {
@@ -141,10 +232,28 @@ const Addreview = () => {
                 errors[fieldName] = 'This field is Required';
               }
             });
+
+            language.forEach((lang) => {
+              const nameFieldName = `reviewer_name.${lang}`;
+              const commentFieldName = `comment.${lang}`;
+
+              if (
+                formik.touched.reviewer_name &&
+                !formik.values.reviewer_name[lang]
+              ) {
+                errors[nameFieldName] = `Name for ${lang} is Required`;
+              }
+
+              if (formik.touched.comment && !formik.values.comment[lang]) {
+                errors[commentFieldName] = `Comment for ${lang} is Required`;
+              }
+            });
+
             if (Object.keys(errors).length > 0) {
               toast.error('Please fill in the required fields.');
               return;
             }
+
             formik.handleSubmit(e);
           }}
         >
@@ -157,10 +266,10 @@ const Addreview = () => {
                 <input
                   type="radio"
                   name="active"
-                  onChange={() => formik.setFieldValue('active', '1')}
+                  onChange={() => formik.setFieldValue('active', 1)}
                   onBlur={formik.handleBlur}
-                  value="1"
-                  checked={formik.values.active === '1'}
+                  value={1}
+                  checked={formik.values.active === 1}
                   className="text-blue-500 form-radio h-4 w-4"
                 />
                 <span className="ml-2">Active</span>
@@ -169,10 +278,10 @@ const Addreview = () => {
                 <input
                   type="radio"
                   name="active"
-                  onChange={() => formik.setFieldValue('active', '0')}
+                  onChange={() => formik.setFieldValue('active', 0)}
                   onBlur={formik.handleBlur}
-                  value="0"
-                  checked={formik.values.active === '0'}
+                  value={0}
+                  checked={formik.values.active === 0}
                   className="text-blue-500 form-radio h-4 w-4"
                 />
                 <span className="ml-2">Not Active</span>
@@ -185,33 +294,79 @@ const Addreview = () => {
           <label htmlFor="" className="mt-2">
             Name
           </label>
-          <CustomInput
-            type="text"
-            label="Enter Review Name"
-            name="reviewer_name"
-            onCh={formik.handleChange('reviewer_name')}
-            onBl={formik.handleBlur('reviewer_name')}
-            val={formik.values.reviewer_name}
-            id="reviews"
-          />
-          <div className="error">
-            {formik.touched.reviewer_name && formik.errors.reviewer_name}
+          <div className="flex">
+            {language.map((lang, index) => (
+              <label
+                key={lang}
+                className={`cursor-pointer capitalize border-[1px] border-[#5e3989]  rounded-t-lg px-5 ${
+                  lang === selectedLanguage1 ? 'font-bold' : ''
+                }`}
+                onClick={() => handleLanguageClick1(lang)}
+              >
+                {lang}
+              </label>
+            ))}
           </div>
+          {language.map((lang, index) => {
+            return (
+              <div
+                key={lang}
+                className={lang === selectedLanguage1 ? '' : 'hidden'}
+              >
+                {' '}
+                <CustomInput
+                  type="text"
+                  name={`reviewer_name.${lang}`}
+                  onCh={formik.handleChange}
+                  onBl={formik.handleBlur}
+                  val={formik.values.reviewer_name[lang]}
+                />
+                {formik.touched.reviewer_name &&
+                  formik.errors.reviewer_name && (
+                    <div className="error" key={`${lang}-error`}>
+                      {formik.errors.reviewer_name[lang]}
+                    </div>
+                  )}
+              </div>
+            );
+          })}
           <label htmlFor="" className="mt-2">
             Comment
           </label>
-          <CustomInput
-            type="text"
-            label="Enter Review Comment"
-            name="comment"
-            onCh={formik.handleChange('comment')}
-            onBl={formik.handleBlur('comment')}
-            val={formik.values.comment}
-            id="reviews"
-          />
-          <div className="error">
-            {formik.touched.comment && formik.errors.comment}
+          <div className="flex">
+            {language.map((lang, index) => (
+              <label
+                key={lang}
+                className={`cursor-pointer capitalize border-[1px] border-[#5e3989]  rounded-t-lg px-5 ${
+                  lang === selectedLanguage2 ? 'font-bold' : ''
+                }`}
+                onClick={() => handleLanguageClick2(lang)}
+              >
+                {lang}
+              </label>
+            ))}
           </div>
+          {language.map((lang) => {
+            return (
+              <div
+                key={lang}
+                className={lang === selectedLanguage2 ? '' : 'hidden'}
+              >
+                <CustomInput
+                  type="text"
+                  name={`comment.${lang}`}
+                  onCh={formik.handleChange}
+                  onBl={formik.handleBlur}
+                  val={formik.values.comment[lang]}
+                />
+                {formik.touched.comment && formik.errors.comment && (
+                  <div className="error" key={lang}>
+                    {formik.errors.comment[lang]}
+                  </div>
+                )}
+              </div>
+            );
+          })}
           <label htmlFor="" className="mt-2">
             Image
           </label>

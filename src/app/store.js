@@ -10,7 +10,6 @@ import faqReducer from '../features/faq/faqSlice';
 import settingReducer from '../features/settings/settingSlice';
 import userReducer from '../features/users/usersSlice';
 import countryReducer from '../features/countries/countriesSlice';
-import enquiryReducer from '../features/enquiry/enquirySlice';
 import uploadReducer from '../features/upload/uploadSlice';
 import partnerReducer from '../features/partners/partnersSlice';
 import structureReducer from '../features/structures/structuresSlice';
@@ -30,12 +29,10 @@ import faqformReducer from '../features/faqform/faqformSlice';
 import formdataReducer from '../features/formData/formDataSlice';
 import careerpageReducer from '../features/careerpage/careerpageSlice';
 import servicecategoryReducer from '../features/servicecategories/servicecategoriesSlice';
-import { languageReducer } from '../features/Language/languageSlice';
 
 export const store = configureStore({
   reducer: {
     auth: authReducer,
-    language: languageReducer,
     customer: customerReducer,
     product: productReducer,
     popup: popupReducer,
@@ -63,7 +60,6 @@ export const store = configureStore({
     setting: settingReducer,
     user: userReducer,
     country: countryReducer,
-    enquiry: enquiryReducer,
     upload: uploadReducer,
     partner: partnerReducer,
   },

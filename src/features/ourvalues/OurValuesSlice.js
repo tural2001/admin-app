@@ -1,5 +1,6 @@
 import { createSlice, createAsyncThunk, createAction } from '@reduxjs/toolkit';
 import ourvalueService from './OurValuesService';
+import { language } from '../../Language/languages';
 
 const initialState = {
   ourvalues: [],
@@ -47,10 +48,14 @@ export const createAourvalue = createAsyncThunk(
   async (ourvalueData, thunkAPI) => {
     try {
       const formdata = new FormData();
-      formdata.append('active', ourvalueData.active);
-      formdata.append('icon', ourvalueData.icon[0], ourvalueData.icon[0].name);
-      formdata.append('title', ourvalueData.title);
-      formdata.append('description', ourvalueData.description);
+      formdata.append('active', ourvalueData.values.active);
+      formdata.append(
+        'icon',
+        ourvalueData.values.icon[0],
+        ourvalueData.values.icon[0].name
+      );
+      formdata.append('title', ourvalueData.values.title);
+      formdata.append('description', ourvalueData.values.description);
       const response = await ourvalueService.createourvalue(formdata);
 
       return response.data;
@@ -65,21 +70,22 @@ export const updateAourvalue = createAsyncThunk(
     console.log(ourvalueData);
     try {
       const formdata = new FormData();
-      formdata.append('active', ourvalueData.ourvalue.active);
-      formdata.append('title', ourvalueData.ourvalue.title);
-      formdata.append('description', ourvalueData.ourvalue.description);
-      if (ourvalueData.ourvalue.icon[0] instanceof File) {
+      formdata.append('active', ourvalueData.ourvalueData.active);
+      formdata.append('title', ourvalueData.ourvalueData.title);
+      formdata.append('description', ourvalueData.ourvalueData.description);
+      if (ourvalueData.ourvalueData.icon[0] instanceof File) {
         formdata.append(
           'icon',
-          ourvalueData.ourvalue.icon[0],
-          ourvalueData.ourvalue.icon[0].name
+          ourvalueData.ourvalueData.icon[0],
+          ourvalueData.ourvalueData.icon[0].name
         );
       }
       formdata.append('_method', 'PUT');
 
       const response = await ourvalueService.updateourvalue(
         formdata,
-        ourvalueData.id
+        ourvalueData.id,
+        ourvalueData
       );
       return response.data;
     } catch (error) {
@@ -132,10 +138,9 @@ export const ourvalueSlice = createSlice({
         state.isLoading = false;
         state.isSuccess = true;
         state.isError = false;
-        state.ourvalueTitle = action.payload.data.title;
-        state.ourvalueDescription = action.payload.data.description;
-        state.ourvalueActive = action.payload.data.active;
-        state.ourvalueIcon = action.payload.data.icon;
+        state.OurvalueData = action.payload;
+        state.ourvalueActive = action.payload[language[0]].data.active;
+        state.ourvalueIcon = action.payload[language[0]].data.icon;
       })
       .addCase(getAourvalue.rejected, (state, action) => {
         state.isLoading = false;

@@ -46,7 +46,14 @@ export const createApage = createAsyncThunk(
   'pages/create-page',
   async (pageData, thunkAPI) => {
     try {
-      const response = await pageService.createpage(pageData);
+      const formdata = new FormData();
+      formdata.append('title', pageData.values.title);
+      formdata.append('slug', pageData.values.slug);
+      formdata.append('meta_title', pageData.values.meta_title);
+      formdata.append('meta_description', pageData.values.meta_description);
+      formdata.append('content', pageData.values.content);
+      formdata.append('_method', 'PUT');
+      const response = await pageService.createpage(formdata);
       return response.data;
     } catch (error) {
       return thunkAPI.rejectWithValue(error);
@@ -69,7 +76,8 @@ export const updateApage = createAsyncThunk(
 
       const response = await pageService.updatepage(
         formdata,
-        pageData.pageData.slug
+        pageData.pageData.slug,
+        pageData
       );
       return response.data;
     } catch (error) {
@@ -123,11 +131,7 @@ export const pageSlice = createSlice({
         state.isLoading = false;
         state.isSuccess = true;
         state.isError = false;
-        state.pageTitle = action.payload.data.title;
-        state.pageMeta_title = action.payload.data.meta_title;
-        state.pagelMeta_description = action.payload.data.meta_description;
-        state.pageSlug = action.payload.data.slug;
-        state.pageContent = action.payload.data.content;
+        state.PageData = action.payload;
       })
       .addCase(getApage.rejected, (state, action) => {
         state.isLoading = false;

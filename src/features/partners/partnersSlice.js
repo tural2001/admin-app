@@ -1,5 +1,6 @@
 import { createSlice, createAsyncThunk, createAction } from '@reduxjs/toolkit';
 import partnerService from './partnersService';
+import { language } from '../../Language/languages';
 
 const initialState = {
   partners: [],
@@ -25,12 +26,15 @@ export const createApartner = createAsyncThunk(
   async (partnerData, thunkAPI) => {
     try {
       const formdata = new FormData();
-      formdata.append('active', partnerData.active);
-      formdata.append('logo', partnerData.logo[0], partnerData.logo[0].name);
-      formdata.append('name', partnerData.name);
-
+      formdata.append('active', partnerData.values.active);
+      formdata.append(
+        'logo',
+        partnerData.values.logo[0],
+        partnerData.values.logo[0].name
+      );
+      formdata.append('name', partnerData.values.name);
       const response = await partnerService.createpartner(formdata);
-      return response.data; // Return the response data
+      return response.data;
     } catch (error) {
       return thunkAPI.rejectWithValue(error);
     }
@@ -42,22 +46,23 @@ export const updateApartner = createAsyncThunk(
   async (partnerData, thunkAPI) => {
     try {
       const formdata = new FormData();
-      formdata.append('active', partnerData.partner.active);
-      if (partnerData.partner.logo[0] instanceof File) {
+      formdata.append('active', partnerData.partnerData.active);
+      if (partnerData.partnerData.logo[0] instanceof File) {
         formdata.append(
           'logo',
-          partnerData.partner.logo[0],
-          partnerData.partner.logo[0].name
+          partnerData.partnerData.logo[0],
+          partnerData.partnerData.logo[0].name
         );
       }
-      formdata.append('name', partnerData.partner.name);
+      formdata.append('name', partnerData.partnerData.name);
       formdata.append('_method', 'PUT');
 
       const response = await partnerService.updatepartner(
         formdata,
-        partnerData.id
+        partnerData.id,
+        partnerData
       );
-      return response.data; // Return the response data
+      return response.data;
     } catch (error) {
       return thunkAPI.rejectWithValue(error);
     }
@@ -117,9 +122,9 @@ export const partnerSlice = createSlice({
         state.isLoading = false;
         state.isSuccess = true;
         state.isError = false;
-        state.partnerName = action.payload.data.name;
-        state.partnerLogo = action.payload.data.logo;
-        state.partnerActive = action.payload.data.active;
+        state.PartnerData = action.payload;
+        state.partnerLogo = action.payload[language[0]].data.logo;
+        state.partnerActive = action.payload[language[0]].data.active;
       })
       .addCase(getApartner.rejected, (state, action) => {
         state.isLoading = false;

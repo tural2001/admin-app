@@ -99,7 +99,7 @@ const ReviewList = () => {
                     className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"
                   >
                     {review.id}
-                  </th>{' '}
+                  </th>
                   <td
                     className={`px-6 py-4 ${
                       review.active === true ? 'text-green-500' : 'text-red-500'
@@ -109,18 +109,16 @@ const ReviewList = () => {
                   </td>
                   <td className="px-6 py-4">{review.reviewer_name}</td>
                   <td className="px-6 py-4">{review.comment}</td>
-                  {/* <td className="px-6 py-4">{review.reviewer_image}</td> */}
                   <td className="px-6 py-4">
                     <Popup
                       trigger={
                         <button>
-                          {' '}
                           <img
-                            src="https://azeronline.netlify.app/static/media/blog2.891d84e7b5ab348201fd.png"
+                            src={review.reviewer_image}
                             alt=""
                             width={150}
                             height={50}
-                          />{' '}
+                          />
                         </button>
                       }
                       modal
@@ -140,7 +138,7 @@ const ReviewList = () => {
                           alt=""
                           width={1110}
                           height={50}
-                        />{' '}
+                        />
                       </div>
                     </Popup>
                   </td>
@@ -151,7 +149,6 @@ const ReviewList = () => {
                     >
                       <VscEdit />
                     </Link>
-
                     <button
                       onClick={() => showModal(reviewstate[index]?.id)}
                       className="text-[25px] text-red-500 "

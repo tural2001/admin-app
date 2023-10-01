@@ -59,7 +59,6 @@ const AddTariff = () => {
   const {
     isSuccess,
     isError,
-    isLoading,
     createdTariff,
     tariffChannel,
     tariffSpeed,
@@ -255,15 +254,11 @@ const AddTariff = () => {
 
   const [isFileDetected, setIsFileDetected] = useState(false);
 
-  const onDrop = useCallback(
-    (acceptedFiles) => {
-      formik.setFieldValue('icon', acceptedFiles);
-      dispatch(uploadImg(acceptedFiles));
-      setIsFileDetected(true);
-    },
-    // eslint-disable-next-line no-use-before-define, react-hooks/exhaustive-deps
-    []
-  );
+  const onDrop = useCallback((acceptedFiles) => {
+    formik.setFieldValue('icon', acceptedFiles);
+    dispatch(uploadImg(acceptedFiles));
+    setIsFileDetected(true);
+  }, []);
   const imageState = useSelector((state) => state.upload.images.url);
 
   const handleLanguageClickAn = (language) => {

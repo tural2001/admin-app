@@ -1,5 +1,6 @@
 import { createSlice, createAsyncThunk, createAction } from '@reduxjs/toolkit';
 import postService from './postService';
+import { language } from '../../Language/languages';
 
 const initialState = {
   posts: [],
@@ -47,13 +48,17 @@ export const createApost = createAsyncThunk(
   async (postData, thunkAPI) => {
     try {
       const formdata = new FormData();
-      formdata.append('title', postData.title);
-      formdata.append('description', postData.description);
-      formdata.append('meta_title', postData.meta_title);
-      formdata.append('slug', postData.slug);
-      formdata.append('meta_description', postData.meta_description);
-      formdata.append('published_at', postData.published_at);
-      formdata.append('image', postData.image[0], postData.image[0].name);
+      formdata.append('title', postData.values.title);
+      formdata.append('description', postData.values.description);
+      formdata.append('meta_title', postData.values.meta_title);
+      formdata.append('slug', postData.values.slug);
+      formdata.append('meta_description', postData.values.meta_description);
+      formdata.append('published_at', postData.values.published_at);
+      formdata.append(
+        'image',
+        postData.values.image[0],
+        postData.values.image[0].name
+      );
       const response = await postService.createpost(formdata);
       return response.data;
     } catch (error) {
@@ -67,23 +72,24 @@ export const updateApost = createAsyncThunk(
     console.log(postData);
     try {
       const formdata = new FormData();
-      formdata.append('title', postData.post.title);
-      formdata.append('description', postData.post.description);
-      formdata.append('meta_title', postData.post.meta_title);
-      formdata.append('slug', postData.post.slug);
-      formdata.append('published_at', postData.post.published_at);
-      formdata.append('meta_description', postData.post.meta_description);
-      if (postData.post.image[0] instanceof File) {
+      formdata.append('title', postData.postData.title);
+      formdata.append('description', postData.postData.description);
+      formdata.append('meta_title', postData.postData.meta_title);
+      formdata.append('slug', postData.postData.slug);
+      formdata.append('published_at', postData.postData.published_at);
+      formdata.append('meta_description', postData.postData.meta_description);
+      if (postData.postData.image[0] instanceof File) {
         formdata.append(
           'image',
-          postData.post.image[0],
-          postData.post.image[0].name
+          postData.postData.image[0],
+          postData.postData.image[0].name
         );
       }
       formdata.append('_method', 'PUT');
       const response = await postService.updatepost(
         formdata,
-        postData.post.slug
+        postData.post.slug,
+        postData
       );
       return response.data;
     } catch (error) {
@@ -136,13 +142,9 @@ export const postsSlice = createSlice({
         state.isLoading = false;
         state.isSuccess = true;
         state.isError = false;
-        state.postTitle = action.payload.data.title;
-        state.postMeta_title = action.payload.data.meta_title;
-        state.postMeta_description = action.payload.data.meta_description;
-        state.postDescription = action.payload.data.description;
-        state.postPublished = action.payload.data.published_at;
-        state.postImage = action.payload.data.image;
-        state.postSlug = action.payload.data.slug;
+        state.PostData = action.payload;
+        state.postPublished = action.payload[language[0]].data.published_at;
+        state.postImage = action.payload[language[0]].data.image;
       })
       .addCase(getApost.rejected, (state, action) => {
         state.isLoading = false;

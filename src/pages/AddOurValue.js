@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import CustomInput from '../components/CustomInput';
 import { useDispatch, useSelector } from 'react-redux';
 import { toast } from 'react-toastify';
@@ -14,15 +14,34 @@ import {
   updateAourvalue,
 } from '../features/ourvalues/OurValuesSlice';
 import { uploadImg } from '../features/upload/uploadSlice';
+import { language } from '../Language/languages';
 
 let schema = yup.object({
-  title: yup.string().required('Title s is Required'),
-  description: yup.string().required('Description s is Required'),
+  title: yup.object().shape(
+    language.reduce(
+      (acc, lang) => ({
+        ...acc,
+        az: yup.string().required(`Title for az is Required`),
+      }),
+      {}
+    )
+  ),
+  description: yup.object().shape(
+    language.reduce(
+      (acc, lang) => ({
+        ...acc,
+        az: yup.string().required(`Description for az is Required`),
+      }),
+      {}
+    )
+  ),
   active: yup.string(),
   icon: yup.mixed().required('Icon is Required'),
 });
 
 const AddOurValue = () => {
+  const [selectedLanguage1, setSelectedLanguage1] = useState('az');
+  const [selectedLanguage2, setSelectedLanguage2] = useState('az');
   const [isFileDetected, setIsFileDetected] = useState(false);
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -35,9 +54,8 @@ const AddOurValue = () => {
     isError,
     isLoading,
     createdOurvalue,
-    ourvalueTitle,
     ourvalueActive,
-    ourvalueDescription,
+    OurvalueData,
     ourvalueIcon,
     updatedOurvalue,
   } = newourvalue;
@@ -48,74 +66,144 @@ const AddOurValue = () => {
     setIsFileDetected(true);
   }, []);
   const imageState = useSelector((state) => state.upload.images.url);
-  console.log(imageState);
   useEffect(() => {
     if (getourvalueId !== undefined) {
-      dispatch(getAourvalue(getourvalueId));
+      language.forEach((selectedLanguage) => {
+        dispatch(getAourvalue(getourvalueId, selectedLanguage));
+      });
     } else {
       dispatch(resetState());
     }
-  }, [dispatch, getourvalueId]);
+  }, [getourvalueId]);
+
+  const prevUpdatedOurvalueRef = useRef();
+  const debounceTimeoutRef = useRef(null);
 
   useEffect(() => {
-    if (isSuccess && createdOurvalue) {
-      toast.success('ourvalue Added Successfully!');
+    const prevUpdatedOurvalue = prevUpdatedOurvalueRef.current;
+    if (
+      isSuccess &&
+      updatedOurvalue !== undefined &&
+      updatedOurvalue !== prevUpdatedOurvalue
+    ) {
+      if (debounceTimeoutRef.current) {
+        clearTimeout(debounceTimeoutRef.current);
+      }
+      debounceTimeoutRef.current = setTimeout(() => {
+        toast.success('Ourvalue Updated Successfully!');
+        prevUpdatedOurvalueRef.current = updatedOurvalue;
+        navigate('/admin/our-value-list');
+      }, 1000);
+    }
+    if (
+      isSuccess &&
+      createdOurvalue !== undefined &&
+      updatedOurvalue !== undefined
+    ) {
+      toast.success('Ourvalue Added Successfully!');
       navigate('/admin/our-value-list');
       setTimeout(() => {
         window.location.reload();
-      }, 500);
-    }
-    if (isSuccess && updatedOurvalue !== undefined) {
-      toast.success('ourvalue Updated Successfully!');
-      navigate('/admin/our-value-list');
+      }, 1000);
     }
     if (isError) {
       toast.error('Something Went Wrong!');
     }
-  }, [
-    isSuccess,
-    isError,
-    isLoading,
-    createdOurvalue,
-    ourvalueTitle,
-    ourvalueDescription,
-    ourvalueActive,
-    ourvalueIcon,
-    updatedOurvalue,
-    navigate,
-  ]);
+  }, [isSuccess, isError, createAourvalue, updatedOurvalue, navigate]);
 
   const formik = useFormik({
     enableReinitialize: true,
     initialValues: {
-      title: ourvalueTitle || '',
-      description: ourvalueDescription || '',
+      title: language.reduce((acc, lang) => {
+        acc[lang] = OurvalueData ? OurvalueData[lang]?.data?.title || '' : '';
+        return acc;
+      }, {}),
+      description: language.reduce((acc, lang) => {
+        acc[lang] = OurvalueData
+          ? OurvalueData[lang]?.data?.description || ''
+          : '';
+        return acc;
+      }, {}),
       active: ourvalueActive ? 1 : 0,
       icon: ourvalueIcon || null,
     },
     validationSchema: schema,
     onSubmit: (values) => {
-      // alert(JSON.stringify(updatedValues));
+      alert(JSON.stringify(values));
+      const updatedLanguages = language.filter((lang) => values.title[lang]);
+      console.log(updatedLanguages);
       if (getourvalueId !== undefined) {
-        const data = { id: getourvalueId, ourvalue: values };
-        dispatch(updateAourvalue(data));
+        updatedLanguages.forEach((lang) => {
+          const data = {
+            id: getourvalueId,
+            ourvalueData: {
+              title: values.title[lang],
+              description: values.description[lang],
+              icon: values.icon,
+              active: values.active === 1 ? 1 : 0,
+            },
+            selectedLanguage: lang,
+          };
+          dispatch(updateAourvalue(data));
+        });
       } else {
-        dispatch(createAourvalue(values));
-        formik.resetForm();
-        setTimeout(() => {
-          dispatch(resetState());
-        }, 1000);
+        if (updatedLanguages.length > 0) {
+          const firstLang = updatedLanguages[0];
+          const createData = {
+            values: {
+              title: values.title[firstLang],
+              description: values.description[firstLang],
+              icon: values.icon,
+              active: values.active === 1 ? 1 : 0,
+            },
+            selectedLanguage: firstLang,
+          };
+          dispatch(createAourvalue(createData))
+            .then((createdOurvalue) => {
+              console.log(createdOurvalue);
+
+              updatedLanguages.slice(1).forEach((lang) => {
+                const updateData = {
+                  id: createdOurvalue.payload.id,
+                  ourvalueData: {
+                    title: values.title[lang],
+                    description: values.description[lang],
+                    icon: values.icon,
+                    active: values.active === 1 ? 1 : 0,
+                  },
+                  selectedLanguage: lang,
+                };
+
+                dispatch(updateAourvalue(updateData));
+              });
+
+              formik.resetForm();
+              setTimeout(() => {
+                dispatch(resetState());
+              }, 300);
+            })
+            .catch((error) => {
+              console.error('Error creating Ourvalue:', error);
+            });
+        }
       }
     },
   });
 
   useEffect(() => {
     if (getourvalueId === undefined) {
-      formik.setFieldValue('active', '1');
+      formik.setFieldValue('active', 1);
     } else {
-      formik.setFieldValue('active', newourvalue.ourvalueActive ? '1' : '0');
+      formik.setFieldValue('active', newourvalue.ourvalueActive ? 1 : 0);
     }
   }, [getourvalueId, newourvalue.ourvalueActive]);
+  const handleLanguageClick1 = (language) => {
+    setSelectedLanguage1(language);
+  };
+
+  const handleLanguageClick2 = (language) => {
+    setSelectedLanguage2(language);
+  };
 
   return (
     <div>
@@ -133,10 +221,29 @@ const AddOurValue = () => {
                 errors[fieldName] = 'This field is Required';
               }
             });
+
+            language.forEach((lang) => {
+              const titleFieldName = `title.${lang}`;
+              const descriptionFieldName = `description.${lang}`;
+
+              if (formik.touched.title && !formik.values.title[lang]) {
+                errors[titleFieldName] = `Name for ${lang} is Required`;
+              }
+              if (
+                formik.touched.description &&
+                !formik.values.description[lang]
+              ) {
+                errors[
+                  descriptionFieldName
+                ] = `Description for ${lang} is Required`;
+              }
+            });
+
             if (Object.keys(errors).length > 0) {
               toast.error('Please fill in the required fields.');
               return;
             }
+
             formik.handleSubmit(e);
           }}
         >
@@ -149,10 +256,10 @@ const AddOurValue = () => {
                 <input
                   type="radio"
                   name="active"
-                  onChange={() => formik.setFieldValue('active', '1')}
+                  onChange={() => formik.setFieldValue('active', 1)}
                   onBlur={formik.handleBlur}
-                  value="1"
-                  checked={formik.values.active === '1'}
+                  value={1}
+                  checked={formik.values.active === 1}
                   className="text-blue-500 form-radio h-4 w-4"
                 />
                 <span className="ml-2">Active</span>
@@ -161,10 +268,10 @@ const AddOurValue = () => {
                 <input
                   type="radio"
                   name="active"
-                  onChange={() => formik.setFieldValue('active', '0')}
+                  onChange={() => formik.setFieldValue('active', 0)}
                   onBlur={formik.handleBlur}
-                  value="0"
-                  checked={formik.values.active === '0'}
+                  value={0}
+                  checked={formik.values.active === 0}
                   className="text-blue-500 form-radio h-4 w-4"
                 />
                 <span className="ml-2">Not Active</span>
@@ -174,31 +281,78 @@ const AddOurValue = () => {
           <label htmlFor="" className="mt-2">
             Title
           </label>
-          <CustomInput
-            type="text"
-            label="Enter Our Value Title"
-            name="title"
-            onCh={formik.handleChange('title')}
-            onBl={formik.handleBlur('title')}
-            val={formik.values.title}
-          />
-          <div className="error">
-            {formik.touched.title && formik.errors.title}
+          <div className="flex">
+            {language.map((lang, index) => (
+              <label
+                key={lang}
+                className={`cursor-pointer capitalize border-[1px] border-[#5e3989]  rounded-t-lg px-5 ${
+                  lang === selectedLanguage1 ? 'font-bold' : ''
+                }`}
+                onClick={() => handleLanguageClick1(lang)}
+              >
+                {lang}
+              </label>
+            ))}
           </div>
+          {language.map((lang, index) => {
+            return (
+              <div
+                key={lang}
+                className={lang === selectedLanguage1 ? '' : 'hidden'}
+              >
+                {' '}
+                <CustomInput
+                  type="text"
+                  name={`title.${lang}`}
+                  onCh={formik.handleChange}
+                  onBl={formik.handleBlur}
+                  val={formik.values.title[lang]}
+                />
+                {formik.touched.title && formik.errors.title && (
+                  <div className="error" key={`${lang}-error`}>
+                    {formik.errors.title[lang]}
+                  </div>
+                )}
+              </div>
+            );
+          })}
           <label htmlFor="" className="mt-2">
             Description
           </label>
-          <CustomInput
-            type="text"
-            label="Enter Our Value Description"
-            name="description"
-            onCh={formik.handleChange('description')}
-            onBl={formik.handleBlur('description')}
-            val={formik.values.description}
-          />
-          <div className="error">
-            {formik.touched.description && formik.errors.description}
+          <div className="flex">
+            {language.map((lang, index) => (
+              <label
+                key={lang}
+                className={`cursor-pointer capitalize border-[1px] border-[#5e3989]  rounded-t-lg px-5 ${
+                  lang === selectedLanguage2 ? 'font-bold' : ''
+                }`}
+                onClick={() => handleLanguageClick2(lang)}
+              >
+                {lang}
+              </label>
+            ))}
           </div>
+          {language.map((lang, index) => {
+            return (
+              <div
+                key={lang}
+                className={lang === selectedLanguage2 ? '' : 'hidden'}
+              >
+                <CustomInput
+                  type="text"
+                  name={`description.${lang}`}
+                  onCh={formik.handleChange}
+                  onBl={formik.handleBlur}
+                  val={formik.values.description[lang]}
+                />
+                {formik.touched.description && formik.errors.description && (
+                  <div className="error" key={`${lang}-error`}>
+                    {formik.errors.description[lang]}
+                  </div>
+                )}
+              </div>
+            );
+          })}
           <label htmlFor="" className="mt-2">
             Icon
           </label>
