@@ -48,17 +48,13 @@ export const createApost = createAsyncThunk(
   async (postData, thunkAPI) => {
     try {
       const formdata = new FormData();
-      formdata.append('title', postData.values.title);
-      formdata.append('description', postData.values.description);
-      formdata.append('meta_title', postData.values.meta_title);
-      formdata.append('slug', postData.values.slug);
-      formdata.append('meta_description', postData.values.meta_description);
-      formdata.append('published_at', postData.values.published_at);
-      formdata.append(
-        'image',
-        postData.values.image[0],
-        postData.values.image[0].name
-      );
+      formdata.append('title', postData.title);
+      formdata.append('description', postData.description);
+      formdata.append('meta_title', postData.meta_title);
+      formdata.append('slug', postData.slug);
+      formdata.append('meta_description', postData.meta_description);
+      formdata.append('published_at', postData.published_at);
+      formdata.append('image', postData.image[0], postData.image[0].name);
       const response = await postService.createpost(formdata);
       return response.data;
     } catch (error) {
@@ -142,9 +138,12 @@ export const postsSlice = createSlice({
         state.isLoading = false;
         state.isSuccess = true;
         state.isError = false;
-        state.PostData = action.payload;
-        state.postPublished = action.payload[language[0]].data.published_at;
-        state.postImage = action.payload[language[0]].data.image;
+        state.postTitle = action.payload.data.title;
+        state.postSlug = action.payload.data.slug;
+        state.postDescription = action.payload.data.description;
+        state.postPublished = action.payload.data.published_at;
+        state.postImage = action.payload.data.image;
+        // state.postImage = action.payload[language[0]].data.image;
       })
       .addCase(getApost.rejected, (state, action) => {
         state.isLoading = false;

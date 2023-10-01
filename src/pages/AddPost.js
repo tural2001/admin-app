@@ -18,35 +18,25 @@ import { uploadImg } from '../features/upload/uploadSlice';
 import 'react-quill/dist/quill.snow.css';
 import Editor from '../components/Editor';
 import { language } from '../Language/languages';
+import { base_url } from '../utils/base_url';
+import axios from 'axios';
+import { config } from '../utils/axiosconfig';
+
+import ReactQuill, { Quill } from 'react-quill';
+import 'react-quill/dist/quill.snow.css'; // Stil dosyasını içe aktarın
+
+import ImageUploader from 'quill-image-uploader';
+import ImageResize from 'quill-image-resize-module-react';
+import BlotFormatter from 'quill-blot-formatter';
+
+Quill.register('modules/imageUploader', ImageUploader);
+Quill.register('modules/imageResize', ImageResize);
+Quill.register('modules/blotFormatter', BlotFormatter);
 
 let schema = yup.object({
-  title: yup.object().shape(
-    language.reduce(
-      (acc, lang) => ({
-        ...acc,
-        az: yup.string().required(`title for az is Required`),
-      }),
-      {}
-    )
-  ),
-  description: yup.object().shape(
-    language.reduce(
-      (acc, lang) => ({
-        ...acc,
-        az: yup.string().required(`Description for az is Required`),
-      }),
-      {}
-    )
-  ),
-  slug: yup.object().shape(
-    language.reduce(
-      (acc, lang) => ({
-        ...acc,
-        az: yup.string().required(`Slug for az is Required`),
-      }),
-      {}
-    )
-  ),
+  title: yup.string(),
+  description: yup.string(),
+  slug: yup.string(),
   image: yup.mixed().required('Image is Required'),
   meta_title: yup.string(),
   meta_description: yup.string(),
@@ -54,11 +44,11 @@ let schema = yup.object({
 });
 
 const AddPost = () => {
-  const [selectedLanguage1, setSelectedLanguage1] = useState('az');
-  const [selectedLanguage2, setSelectedLanguage2] = useState('az');
-  const [selectedLanguage3, setSelectedLanguage3] = useState('az');
-  const [selectedLanguage4, setSelectedLanguage4] = useState('az');
-  const [selectedLanguage5, setSelectedLanguage5] = useState('az');
+  // const [selectedLanguage1, setSelectedLanguage1] = useState('az');
+  // const [selectedLanguage2, setSelectedLanguage2] = useState('az');
+  // const [selectedLanguage3, setSelectedLanguage3] = useState('az');
+  // const [selectedLanguage4, setSelectedLanguage4] = useState('az');
+  // const [selectedLanguage5, setSelectedLanguage5] = useState('az');
   const [isFileDetected, setIsFileDetected] = useState(false);
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -70,10 +60,12 @@ const AddPost = () => {
     isSuccess,
     isError,
     createdPost,
-    PostData,
+    postTitle,
+    postSlug,
+    postDescription,
+    postPublished,
     postImage,
     updatedPost,
-    postPublished,
   } = newPost;
 
   const onDrop = useCallback((acceptedFiles) => {
@@ -85,9 +77,7 @@ const AddPost = () => {
 
   useEffect(() => {
     if (getpostId !== undefined) {
-      language.forEach((selectedLanguage) => {
-        dispatch(getApost(getpostId, selectedLanguage));
-      });
+      dispatch(getApost(getpostId));
     } else {
       dispatch(resetState());
     }
@@ -96,33 +86,33 @@ const AddPost = () => {
   const prevUpdatedPostRef = useRef();
   const debounceTimeoutRef = useRef(null);
 
-  useEffect(() => {
-    const prevUpdatedPost = prevUpdatedPostRef.current;
-    if (
-      isSuccess &&
-      updatedPost !== undefined &&
-      updatedPost !== prevUpdatedPost
-    ) {
-      if (debounceTimeoutRef.current) {
-        clearTimeout(debounceTimeoutRef.current);
-      }
-      debounceTimeoutRef.current = setTimeout(() => {
-        toast.success('Post Updated Successfully!');
-        prevUpdatedPostRef.current = updatedPost;
-        navigate('/admin/post-list');
-      }, 1000);
-    }
-    if (isSuccess && createdPost !== undefined && updatedPost !== undefined) {
-      toast.success('Post Added Successfully!');
-      navigate('/admin/post-list');
-      setTimeout(() => {
-        window.location.reload();
-      }, 1000);
-    }
-    if (isError) {
-      toast.error('Something Went Wrong!');
-    }
-  }, [isSuccess, isError, createdPost, updatedPost, navigate]);
+  // useEffect(() => {
+  //   const prevUpdatedPost = prevUpdatedPostRef.current;
+  //   if (
+  //     isSuccess &&
+  //     updatedPost !== undefined &&
+  //     updatedPost !== prevUpdatedPost
+  //   ) {
+  //     if (debounceTimeoutRef.current) {
+  //       clearTimeout(debounceTimeoutRef.current);
+  //     }
+  //     debounceTimeoutRef.current = setTimeout(() => {
+  //       toast.success('Post Updated Successfully!');
+  //       prevUpdatedPostRef.current = updatedPost;
+  //       navigate('/admin/post-list');
+  //     }, 1000);
+  //   }
+  //   if (isSuccess && createdPost !== undefined && updatedPost !== undefined) {
+  //     toast.success('Post Added Successfully!');
+  //     navigate('/admin/post-list');
+  //     setTimeout(() => {
+  //       window.location.reload();
+  //     }, 1000);
+  //   }
+  //   if (isError) {
+  //     toast.error('Something Went Wrong!');
+  //   }
+  // }, [isSuccess, isError, createdPost, updatedPost, navigate]);
 
   const formatDateTimeForServer = (dateTimeString) => {
     const date = new Date(dateTimeString);
@@ -138,116 +128,33 @@ const AddPost = () => {
   const formik = useFormik({
     enableReinitialize: true,
     initialValues: {
-      title: language.reduce((acc, lang) => {
-        acc[lang] = PostData ? PostData[lang]?.data?.title || '' : '';
-        return acc;
-      }, {}),
-      description: language.reduce((acc, lang) => {
-        acc[lang] = PostData ? PostData[lang]?.data?.description || '' : '';
-        return acc;
-      }, {}),
+      title: postTitle || '',
+      description: postDescription || '',
       image: postImage || null,
-      meta_title: language.reduce((acc, lang) => {
-        acc[lang] = PostData ? PostData[lang]?.data?.meta_title || '' : '';
-        return acc;
-      }, {}),
-      meta_description: language.reduce((acc, lang) => {
-        acc[lang] = PostData
-          ? PostData[lang]?.data?.meta_description || ''
-          : '';
-        return acc;
-      }, {}),
-      slug: language.reduce((acc, lang) => {
-        acc[lang] = PostData ? PostData[lang]?.data?.slug || '' : '';
-        return acc;
-      }, {}),
+      meta_title: '',
+      meta_description: '',
+      slug: postSlug || '',
       published_at: postPublished || '',
     },
     validationSchema: schema,
-    // onSubmit: (values) => {
-    //   alert(JSON.stringify(values));
-    //   const formattedPublishedAt = formatDateTimeForServer(values.published_at);
-
-    //   const updatedValues = {
-    //     ...values,
-    //     published_at: formattedPublishedAt,
-    //   };
-    //   // alert(JSON.stringify(updatedValues));
-    //   if (getpostId !== undefined) {
-    //     const data = { id: getpostId, post: updatedValues };
-    //     dispatch(updateApost(data));
-    //   } else {
-    //     dispatch(createApost(updatedValues));
-    //     formik.resetForm();
-    //     setTimeout(() => {
-    //       dispatch(resetState());
-    //     }, 1000);
-    //   }
-    // },
     onSubmit: (values) => {
       alert(JSON.stringify(values));
-      const updatedLanguages = language.filter((lang) => values.title[lang]);
-      console.log(updatedLanguages);
+      const formattedPublishedAt = formatDateTimeForServer(values.published_at);
+
+      const updatedValues = {
+        ...values,
+        published_at: formattedPublishedAt,
+      };
+      // alert(JSON.stringify(updatedValues));
       if (getpostId !== undefined) {
-        updatedLanguages.forEach((lang) => {
-          const data = {
-            id: getpostId,
-            campaignData: {
-              name: values.name[lang],
-              description: values.description[lang],
-              image: values.image,
-              active: values.active === 1 ? 1 : 0,
-            },
-            selectedLanguage: lang,
-          };
-          dispatch(updateApost(data));
-        });
+        const data = { id: getpostId, post: updatedValues };
+        dispatch(updateApost(data));
       } else {
-        if (updatedLanguages.length > 0) {
-          const firstLang = updatedLanguages[0];
-          const createData = {
-            values: {
-              title: values.title[firstLang],
-              description: values.description[firstLang],
-              meta_title: values.meta_title[firstLang],
-              meta_description: values.meta_description[firstLang],
-              slug: values.slug[firstLang],
-              image: values.image,
-              published_at: values.published_at,
-            },
-            selectedLanguage: firstLang,
-          };
-          dispatch(createApost(createData))
-            .then((createdCampaign) => {
-              console.log(createdCampaign);
-
-              updatedLanguages.slice(1).forEach((lang) => {
-                const updateData = {
-                  id: createdCampaign.payload.id,
-                  postData: {
-                    title: values.title[lang],
-                    description: values.description[lang],
-                    meta_title: values.meta_title[lang],
-                    meta_description: values.meta_description[lang],
-                    slug: values.slug[lang],
-                    image: values.image,
-                    published_at: values.published_at,
-                  },
-                  selectedLanguage: lang,
-                };
-                console.log(updateData);
-                dispatch(updateApost(updateData));
-              });
-
-              formik.resetForm();
-              setTimeout(() => {
-                dispatch(resetState());
-              }, 300);
-            })
-            .catch((error) => {
-              console.error('Error creating Campaign:', error);
-            });
-        }
+        dispatch(createApost(updatedValues));
+        formik.resetForm();
+        setTimeout(() => {
+          dispatch(resetState());
+        }, 1000);
       }
     },
   });
@@ -256,24 +163,46 @@ const AddPost = () => {
     formik.setFieldValue('description', newContent);
   };
 
-  const handleLanguageClick1 = (language) => {
-    setSelectedLanguage1(language);
+  const [editorHtml, setEditorHtml] = useState('');
+  const [files, setFiles] = useState([]);
+  const reactQuillRef = useRef(null);
+
+  const handleChange = (html) => {
+    setEditorHtml(html);
+    // this.props.onDescriptionChange(html); // Eğer bu özelliği kullanıyorsanız, burada da kullanabilirsiniz.
   };
 
-  const handleLanguageClick2 = (language) => {
-    setSelectedLanguage2(language);
+  const handleDrop = async (acceptedFiles) => {
+    try {
+      const file = acceptedFiles[0];
+
+      const formData = new FormData();
+      formData.append('file', file);
+
+      const response = await axios.post(
+        `${base_url}/api/upload-media`,
+        formData,
+        {
+          headers: config.getHeaders('az'),
+        }
+      );
+
+      const imageUrl = response.data.url;
+
+      const quill = reactQuillRef.current.getEditor();
+      const range = quill.getSelection();
+
+      quill.clipboard.dangerouslyPasteHTML(
+        range ? range.index : 0,
+        `<img src="${imageUrl}"  alt="Resim" />`
+      );
+
+      setFiles([]);
+    } catch (error) {
+      console.error('Image upload error:', error);
+    }
   };
 
-  const handleLanguageClick3 = (language) => {
-    setSelectedLanguage3(language);
-  };
-
-  const handleLanguageClick4 = (language) => {
-    setSelectedLanguage4(language);
-  };
-  const handleLanguageClick5 = (language) => {
-    setSelectedLanguage5(language);
-  };
   return (
     <div>
       <h3 className="mb-4 title">
@@ -290,38 +219,14 @@ const AddPost = () => {
                 errors[fieldName] = 'This field is Required';
               }
             });
-
-            language.forEach((lang) => {
-              const titleFieldName = `title.${lang}`;
-              const descriptionFieldName = `description.${lang}`;
-              const slugFieldName = `slug.${lang}`;
-
-              if (
-                formik.touched.description &&
-                !formik.values.description[lang]
-              ) {
-                errors[
-                  descriptionFieldName
-                ] = `Description for ${lang} is Required`;
-              }
-
-              if (formik.touched.title && !formik.values.title[lang]) {
-                errors[titleFieldName] = `Title for ${lang} is Required`;
-              }
-              if (formik.touched.slug && !formik.values.slug[lang]) {
-                errors[slugFieldName] = `Slug for ${lang} is Required`;
-              }
-            });
-
             if (Object.keys(errors).length > 0) {
               toast.error('Please fill in the required fields.');
               return;
             }
-
             formik.handleSubmit(e);
           }}
         >
-          <label htmlFor="" className="mt-2">
+          {/* <label htmlFor="" className="mt-2">
             Meta title
           </label>
           <div className="flex">
@@ -396,15 +301,15 @@ const AddPost = () => {
                   )}
               </div>
             );
-          })}
+          })} */}
           <label htmlFor="" className="mt-2">
             Description
           </label>
-          <Editor onDescriptionChange={handleDescriptionChange} />
+          {/* <Editor onDescriptionChange={handleDescriptionChange} /> */}
           <label htmlFor="" className="mt-2">
             Title
           </label>
-          <div className="flex">
+          {/* <div className="flex">
             {language.map((lang, index) => (
               <label
                 key={lang}
@@ -416,66 +321,40 @@ const AddPost = () => {
                 {lang}
               </label>
             ))}
-          </div>
-          {language.map((lang, index) => {
-            return (
-              <div
-                key={lang}
-                className={lang === selectedLanguage3 ? '' : 'hidden'}
-              >
-                <CustomInput
-                  type="text"
-                  name={`title.${lang}`}
-                  onCh={formik.handleChange}
-                  onBl={formik.handleBlur}
-                  val={formik.values.title[lang]}
-                />
-                {formik.touched.title && formik.errors.title && (
-                  <div className="error" key={`${lang}-error`}>
-                    {formik.errors.title[lang]}
-                  </div>
-                )}
-              </div>
-            );
-          })}
+          </div> */}
+
+          {/* <CustomInput
+            type="text"
+            name="description"
+            onCh={formik.handleChange('description')}
+            onBl={formik.handleBlur('description')}
+            val={formik.values.description}
+          /> */}
+
+          <CustomInput
+            type="text"
+            name="title"
+            onCh={formik.handleChange('title')}
+            onBl={formik.handleBlur('title')}
+            val={formik.values.title}
+          />
+
           <div className="error">
             {formik.touched.description && formik.errors.description}
           </div>
           <label htmlFor="" className="mt-2">
             Slug
           </label>
-          <div className="flex">
-            {language.map((lang, index) => (
-              <label
-                key={lang}
-                className={`cursor-pointer capitalize border-[1px] border-[#5e3989]  rounded-t-lg px-5 ${
-                  lang === selectedLanguage4 ? 'font-bold' : ''
-                }`}
-                onClick={() => handleLanguageClick4(lang)}
-              >
-                {lang}
-              </label>
-            ))}
-          </div>
+
           {language.map((lang, index) => {
             return (
-              <div
-                key={lang}
-                className={lang === selectedLanguage4 ? '' : 'hidden'}
-              >
-                <CustomInput
-                  type="text"
-                  name={`slug.${lang}`}
-                  onCh={formik.handleChange}
-                  onBl={formik.handleBlur}
-                  val={formik.values.slug[lang]}
-                />
-                {formik.touched.slug && formik.errors.slug && (
-                  <div className="error" key={`${lang}-error`}>
-                    {formik.errors.slug[lang]}
-                  </div>
-                )}
-              </div>
+              <CustomInput
+                type="text"
+                name={`slug`}
+                onCh={formik.handleChange('slug')}
+                onBl={formik.handleBlur('slug')}
+                val={formik.values.slug}
+              />
             );
           })}
           <label htmlFor="" className="mt-2">
@@ -488,6 +367,84 @@ const AddPost = () => {
             val={formik.values.published_at || ''}
             onCh={formik.handleChange('published_at')}
             onBl={formik.handleBlur('published_at')}
+          />
+          <Dropzone onDrop={handleDrop}>
+            {({ getRootProps, getInputProps }) => (
+              <div
+                {...getRootProps()}
+                style={{
+                  border: '1px solid #ccc',
+                  padding: '10px',
+                  textAlign: 'center',
+                  cursor: 'pointer',
+                }}
+              >
+                <input {...getInputProps()} />
+                <p>Drag and drop an image here, or click to select one</p>
+              </div>
+            )}
+          </Dropzone>
+
+          <ReactQuill
+            ref={reactQuillRef}
+            name="description"
+            onChange={formik.handleChange(`description`)}
+            value={formik.values.description}
+            theme="snow"
+            style={{
+              minHeight: '5vh',
+            }}
+            modules={{
+              toolbar: {
+                container: [
+                  ['bold', 'italic', 'underline', 'strike'],
+                  ['blockquote', 'code-block'],
+
+                  [{ header: 1 }, { header: 2 }],
+                  [{ list: 'ordered' }, { list: 'bullet' }],
+                  [{ script: 'sub' }, { script: 'super' }],
+                  [{ indent: '-1' }, { indent: '+1' }],
+                  [{ direction: 'rtl' }],
+
+                  [{ size: ['small', false, 'large', 'huge'] }],
+                  [{ header: [1, 2, 3, 4, 5, 6, false] }],
+
+                  [{ color: [] }, { background: [] }],
+                  [{ font: [] }],
+                  [{ align: [] }],
+
+                  ['clean'],
+                ],
+              },
+              clipboard: {
+                matchVisual: false,
+              },
+              imageResize: {
+                parchment: Quill.import('parchment'),
+                modules: ['Resize', 'DisplaySize'],
+              },
+              blotFormatter: {},
+            }}
+            formats={[
+              'header',
+              'font',
+              'size',
+              'bold',
+              'italic',
+              'underline',
+              'align',
+              'strike',
+              'script',
+              'blockquote',
+              'background',
+              'list',
+              'bullet',
+              'indent',
+              'link',
+              'image',
+              'color',
+              'code-block',
+            ]}
           />
           <label htmlFor="" className="mt-2">
             Image
