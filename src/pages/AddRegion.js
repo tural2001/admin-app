@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, { useEffect } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import CustomInput from '../components/CustomInput';
 import { useDispatch, useSelector } from 'react-redux';
 import { toast } from 'react-toastify';
@@ -14,15 +14,34 @@ import {
   updateAregion,
 } from '../features/regions/regionSlice';
 import { getcolors } from '../features/color/colorSlice';
+import { language } from '../Language/languages';
 
 let schema = yup.object({
-  name: yup.string().required('Name is Required'),
-  description: yup.string().required('Description is Required'),
+  name: yup.object().shape(
+    language.reduce(
+      (acc, lang) => ({
+        ...acc,
+        az: yup.string().required(`Name for az is Required`),
+      }),
+      {}
+    )
+  ),
+  description: yup.object().shape(
+    language.reduce(
+      (acc, lang) => ({
+        ...acc,
+        az: yup.string().required(`Description for az is Required`),
+      }),
+      {}
+    )
+  ),
   active: yup.string(),
   color_id: yup.string().required('Color is Required'),
   handle: yup.string(),
 });
 const AddRegion = () => {
+  const [selectedLanguage1, setSelectedLanguage1] = useState('az');
+  const [selectedLanguage2, setSelectedLanguage2] = useState('az');
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const location = useLocation();
@@ -33,10 +52,7 @@ const AddRegion = () => {
   const {
     isSuccess,
     isError,
-    isLoading,
-    createdRegion,
-    regionName,
-    regionDescription,
+    RegionData,
     regionHandle,
     regionActive,
     regionColor,
@@ -45,40 +61,38 @@ const AddRegion = () => {
 
   useEffect(() => {
     if (getregionId !== undefined) {
-      dispatch(getAregion(getregionId));
+      language.forEach((selectedLanguage) => {
+        dispatch(getAregion(getregionId, selectedLanguage));
+      });
     } else {
       dispatch(resetState());
     }
   }, [dispatch, getregionId]);
 
-  useEffect(() => {
-    if (isSuccess && createdRegion) {
-      toast.success('region Added Successfully!');
-      navigate('/admin/region-list');
-      setTimeout(() => {
-        window.location.reload();
-      }, 500);
-    }
-    if (isSuccess && updatedRegion !== undefined) {
-      toast.success('region Updated Successfully!');
-      navigate('/admin/region-list');
-    }
-    if (isError) {
-      toast.error('Something Went Wrong!');
-    }
-  }, [
-    isSuccess,
-    isError,
-    isLoading,
-    createdRegion,
-    regionName,
-    regionDescription,
-    regionActive,
-    regionHandle,
-    regionColor,
-    updatedRegion,
-    navigate,
-  ]);
+  const prevUpdatedRegionRef = useRef();
+  const debounceTimeoutRef = useRef(null);
+
+  // useEffect(() => {
+  //   const prevUpdatedRegion = prevUpdatedRegionRef.current;
+  //   if (
+  //     isSuccess &&
+  //     updatedRegion !== undefined &&
+  //     updatedRegion !== prevUpdatedRegion
+  //   ) {
+  //     if (debounceTimeoutRef.current) {
+  //       clearTimeout(debounceTimeoutRef.current);
+  //     }
+  //     debounceTimeoutRef.current = setTimeout(() => {
+  //       toast.success('Region Updated Successfully!');
+  //       prevUpdatedRegionRef.current = updatedRegion;
+  //       navigate('/admin/region-list');
+  //     }, 1000);
+  //   }
+
+  //   if (isError) {
+  //     toast.error('Something Went Wrong!');
+  //   }
+  // }, [isSuccess, isError, updatedRegion]);
   useEffect(() => {
     dispatch(getcolors());
   }, []);
@@ -88,34 +102,56 @@ const AddRegion = () => {
   const formik = useFormik({
     enableReinitialize: true,
     initialValues: {
-      name: regionName || '',
-      description: regionDescription || '',
+      name: language.reduce((acc, lang) => {
+        acc[lang] = RegionData ? RegionData[lang]?.data?.name || '' : '';
+        return acc;
+      }, {}),
+      description: language.reduce((acc, lang) => {
+        acc[lang] = RegionData ? RegionData[lang]?.data?.description || '' : '';
+        return acc;
+      }, {}),
       active: regionActive ? 1 : 0,
       color_id: regionColor || '',
       handle: regionHandle || '',
     },
     validationSchema: schema,
     onSubmit: (values) => {
+      alert(JSON.stringify(values));
+      const updatedLanguages = language.filter((lang) => values.name[lang]);
+      console.log(updatedLanguages);
       if (getregionId !== undefined) {
-        const data = { id: getregionId, regionData: values };
-        dispatch(updateAregion(data));
-      } else {
-        dispatch(createAregion(values));
-        formik.resetForm();
-        setTimeout(() => {
-          dispatch(resetState());
-        }, 300);
+        updatedLanguages.forEach((lang) => {
+          const data = {
+            id: getregionId,
+            regionData: {
+              name: values.name[lang],
+              description: values.description[lang],
+              handle: values.handle,
+              color_id: values.color_id,
+              active: values.active === 1 ? 1 : 0,
+            },
+            selectedLanguage: lang,
+          };
+          dispatch(updateAregion(data));
+        });
       }
     },
   });
 
   useEffect(() => {
     if (getregionId === undefined) {
-      formik.setFieldValue('active', '1');
+      formik.setFieldValue('active', 1);
     } else {
-      formik.setFieldValue('active', newRegion.regionActive ? '1' : '0');
+      formik.setFieldValue('active', newRegion.regionActive ? 1 : 0);
     }
   }, [getregionId, newRegion.regionActive]);
+
+  const handleLanguageClick1 = (language) => {
+    setSelectedLanguage1(language);
+  };
+  const handleLanguageClick2 = (language) => {
+    setSelectedLanguage2(language);
+  };
   return (
     <div>
       <h3 className="mb-4 title">
@@ -125,16 +161,28 @@ const AddRegion = () => {
         <form
           onSubmit={(e) => {
             e.preventDefault();
-            const requiredFields = [
-              'name',
-              'description',
-              'active',
-              'color_id',
-            ];
+            const requiredFields = ['name', 'description', 'color_id'];
             const errors = {};
             requiredFields.forEach((fieldName) => {
               if (formik.touched[fieldName] && !formik.values[fieldName]) {
                 errors[fieldName] = 'This field is Required';
+              }
+            });
+
+            language.forEach((lang) => {
+              const nameFieldName = `name.${lang}`;
+              const descriptionFieldName = `description.${lang}`;
+
+              if (formik.touched.name && !formik.values.name[lang]) {
+                errors[nameFieldName] = `Name for ${lang} is Required`;
+              }
+              if (
+                formik.touched.description &&
+                !formik.values.description[lang]
+              ) {
+                errors[
+                  descriptionFieldName
+                ] = `description for ${lang} is Required`;
               }
             });
             if (Object.keys(errors).length > 0) {
@@ -154,10 +202,10 @@ const AddRegion = () => {
                 <input
                   type="radio"
                   name="active"
-                  onChange={() => formik.setFieldValue('active', '1')}
+                  onChange={() => formik.setFieldValue('active', 1)}
                   onBlur={formik.handleBlur}
-                  value="1"
-                  checked={formik.values.active === '1'}
+                  value={1}
+                  checked={formik.values.active === 1}
                   className="text-blue-500 form-radio h-4 w-4"
                 />
                 <span className="ml-2">Active</span>
@@ -166,47 +214,86 @@ const AddRegion = () => {
                 <input
                   type="radio"
                   name="active"
-                  onChange={() => formik.setFieldValue('active', '0')}
+                  onChange={() => formik.setFieldValue('active', 0)}
                   onBlur={formik.handleBlur}
-                  value="0"
-                  checked={formik.values.active === '0'}
+                  value={0}
+                  checked={formik.values.active === 0}
                   className="text-blue-500 form-radio h-4 w-4"
                 />
                 <span className="ml-2">Not Active</span>
               </label>
             </div>
           </div>
-          <div className="error">
-            {formik.touched.active && formik.errors.active}
-          </div>
           <label htmlFor="" className="mt-2">
             Name
           </label>
-          <CustomInput
-            type="text"
-            label="Enter Region Name"
-            name="name"
-            onCh={formik.handleChange('name')}
-            onBl={formik.handleBlur('name')}
-            val={formik.values.name}
-          />
-          <div className="error">
-            {formik.touched.name && formik.errors.name}
+          <div className="flex">
+            {language.map((lang, index) => (
+              <label
+                key={lang}
+                className={`cursor-pointer capitalize border-[1px] border-[#5e3989]  rounded-t-lg px-5 ${
+                  lang === selectedLanguage1 ? 'font-bold text-[#5e3989]' : ''
+                }`}
+                onClick={() => handleLanguageClick1(lang)}
+              >
+                {lang}
+              </label>
+            ))}
           </div>
+          {language.map((lang) => {
+            return (
+              <div
+                key={lang}
+                className={lang === selectedLanguage1 ? '' : 'hidden'}
+              >
+                <CustomInput
+                  type="text"
+                  name={`name.${lang}`}
+                  onCh={formik.handleChange}
+                  onBl={formik.handleBlur}
+                  val={formik.values.name[lang]}
+                />
+                {formik.touched.name && formik.errors.name && (
+                  <div className="error">{formik.errors.name[lang]}</div>
+                )}
+              </div>
+            );
+          })}
           <label htmlFor="" className="mt-2">
             Description
           </label>
-          <CustomInput
-            type="text"
-            label="Enter Region Description"
-            name="description"
-            onCh={formik.handleChange('description')}
-            onBl={formik.handleBlur('description')}
-            val={formik.values.description}
-          />
-          <div className="error">
-            {formik.touched.description && formik.errors.description}
+          <div className="flex">
+            {language.map((lang, index) => (
+              <label
+                key={lang}
+                className={`cursor-pointer capitalize border-[1px] border-[#5e3989]  rounded-t-lg px-5 ${
+                  lang === selectedLanguage2 ? 'font-bold text-[#5e3989]' : ''
+                }`}
+                onClick={() => handleLanguageClick2(lang)}
+              >
+                {lang}
+              </label>
+            ))}
           </div>
+          {language.map((lang) => {
+            return (
+              <div
+                key={lang}
+                className={lang === selectedLanguage2 ? '' : 'hidden'}
+              >
+                <CustomInput
+                  type="text"
+                  name={`description.${lang}`}
+                  onCh={formik.handleChange}
+                  onBl={formik.handleBlur}
+                  val={formik.values.description[lang]}
+                />
+                {formik.touched.description && formik.errors.description && (
+                  <div className="error">{formik.errors.description[lang]}</div>
+                )}
+              </div>
+            );
+          })}
           <label htmlFor="" className="mt-2">
             Handle
           </label>

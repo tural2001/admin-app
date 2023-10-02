@@ -1,5 +1,6 @@
 import { createSlice, createAsyncThunk, createAction } from '@reduxjs/toolkit';
 import paymentService from './paymentsService';
+import { language } from '../../Language/languages';
 
 const initialState = {
   payments: [],
@@ -47,13 +48,17 @@ export const createApayment = createAsyncThunk(
   async (paymentData, thunkAPI) => {
     try {
       const formdata = new FormData();
-      formdata.append('active', paymentData.active);
-      formdata.append('image', paymentData.image[0], paymentData.image[0].name);
-      formdata.append('name', paymentData.name);
-      formdata.append('meta_title', paymentData.meta_title);
-      formdata.append('meta_description', paymentData.meta_description);
-      formdata.append('redirect_link', paymentData.redirect_link);
-      formdata.append('description', paymentData.description);
+      formdata.append('active', paymentData.values.active);
+      formdata.append(
+        'image',
+        paymentData?.values.image[0],
+        paymentData?.values.image[0].name
+      );
+      formdata.append('name', paymentData.values.name);
+      formdata.append('meta_title', paymentData.values.meta_title);
+      formdata.append('meta_description', paymentData.values.meta_description);
+      formdata.append('redirect_link', paymentData.values.redirect_link);
+      formdata.append('description', paymentData.values.description);
       const response = await paymentService.createpayment(formdata);
       return response.data;
     } catch (error) {
@@ -67,24 +72,28 @@ export const updateApayment = createAsyncThunk(
     console.log(paymentData);
     try {
       const formdata = new FormData();
-      formdata.append('active', paymentData.payment.active);
-      formdata.append('name', paymentData.payment.name);
-      formdata.append('meta_title', paymentData.payment.meta_title);
-      formdata.append('meta_description', paymentData.payment.meta_description);
-      if (paymentData.payment.image[0] instanceof File) {
+      formdata.append('active', paymentData.paymentData.active);
+      formdata.append('name', paymentData.paymentData.name);
+      formdata.append('meta_title', paymentData.paymentData.meta_title);
+      formdata.append(
+        'meta_description',
+        paymentData.paymentData.meta_description
+      );
+      if (paymentData.paymentData.image[0] instanceof File) {
         formdata.append(
           'image',
-          paymentData.payment.image[0],
-          paymentData.payment.image[0].name
+          paymentData.paymentData.image[0],
+          paymentData.paymentData.image[0].name
         );
       }
-      formdata.append('description', paymentData.payment.description);
-      formdata.append('redirect_link', paymentData.payment.redirect_link);
+      formdata.append('description', paymentData.paymentData.description);
+      formdata.append('redirect_link', paymentData.paymentData.redirect_link);
       formdata.append('_method', 'PUT');
 
       const response = await paymentService.updatepayment(
         formdata,
-        paymentData.id
+        paymentData.id,
+        paymentData
       );
       return response.data;
     } catch (error) {
@@ -137,13 +146,11 @@ export const paymentSlice = createSlice({
         state.isLoading = false;
         state.isSuccess = true;
         state.isError = false;
-        state.paymentName = action.payload.data.name;
-        state.paymentMeta_title = action.payload.data.meta_title;
-        state.paymentMeta_description = action.payload.data.meta_description;
-        state.paymentActive = action.payload.data.active;
-        state.paymentDescription = action.payload.data.description;
-        state.paymentRedirect_link = action.payload.data.redirect_link;
-        state.paymentImage = action.payload.data.image;
+        state.PaymentData = action.payload;
+        state.paymentActive = action.payload[language[0]].data.active;
+        state.paymentRedirect_link =
+          action.payload[language[0]].data.redirect_link;
+        state.paymentImage = action.payload[language[0]].data.image;
       })
       .addCase(getApayment.rejected, (state, action) => {
         state.isLoading = false;

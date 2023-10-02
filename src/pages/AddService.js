@@ -39,8 +39,25 @@ let schema = yup.object({
   icon: yup.mixed().required('Icon is Required'),
   active: yup.string(),
   partner: yup.string(),
-  meta_title: yup.string(),
-  meta_description: yup.string(),
+  parent_id: yup.number().required('Parent ID is Required'),
+  meta_title: yup.object().shape(
+    language.reduce(
+      (acc, lang) => ({
+        ...acc,
+        az: yup.string(),
+      }),
+      {}
+    )
+  ),
+  meta_description: yup.object().shape(
+    language.reduce(
+      (acc, lang) => ({
+        ...acc,
+        az: yup.string(),
+      }),
+      {}
+    )
+  ),
 });
 
 const AddService = () => {
@@ -58,12 +75,12 @@ const AddService = () => {
   const {
     isSuccess,
     isError,
-    isLoading,
     createdService,
     serviceActive,
     serviceData,
     serviceIcon,
     updatedService,
+    serviceParentId,
     servicePartner,
   } = newService;
 
@@ -116,7 +133,7 @@ const AddService = () => {
       createdService !== undefined &&
       updatedService !== undefined
     ) {
-      toast.success('Tariff Added Successfully!');
+      toast.success('Service Added Successfully!');
       navigate('/admin/service-list');
       setTimeout(() => {
         window.location.reload();
@@ -129,6 +146,7 @@ const AddService = () => {
 
   const servicecstate =
     useSelector((state) => state.servicecategory?.serviceC?.data) || [];
+
   const formik = useFormik({
     enableReinitialize: true,
     initialValues: {
@@ -138,6 +156,7 @@ const AddService = () => {
       }, {}),
       active: serviceActive ? 1 : 0,
       partner: servicePartner ? 1 : 0,
+      parent_id: serviceParentId || null,
       description: language.reduce((acc, lang) => {
         acc[lang] = serviceData
           ? serviceData[lang]?.data?.description || ''
@@ -161,19 +180,20 @@ const AddService = () => {
     validationSchema: schema,
     onSubmit: (values) => {
       alert(JSON.stringify(values));
-      const updatedLanguages = language.filter((lang) => values.name[lang]);
+      const updatedLanguages = language.filter((lang) => values.title[lang]);
       console.log(updatedLanguages);
       if (getServiceId !== undefined) {
         updatedLanguages.forEach((lang) => {
           const data = {
             id: getServiceId,
-            tariffData: {
+            serviceData: {
               title: values.title[lang],
               description: values.description[lang],
               meta_title: values.meta_title[lang],
               meta_description: values.meta_description[lang],
               active: values.active === 1 ? 1 : 0,
               partner: values.partner === 1 ? 1 : 0,
+              parent_id: values.parent_id,
               icon: values.icon,
             },
             selectedLanguage: lang,
@@ -183,6 +203,7 @@ const AddService = () => {
       } else {
         if (updatedLanguages.length > 0) {
           const firstLang = updatedLanguages[0];
+          const ParentID = parseInt(values.parent_id);
           const createData = {
             values: {
               title: values.title[firstLang],
@@ -191,10 +212,12 @@ const AddService = () => {
               meta_description: values.meta_description[firstLang],
               active: values.active === 1 ? 1 : 0,
               partner: values.partner === 1 ? 1 : 0,
+              parent_id: ParentID,
               icon: values.icon,
             },
             selectedLanguage: firstLang,
           };
+          console.log(createData);
           dispatch(createAservice(createData))
             .then((createdService) => {
               console.log(createdService);
@@ -202,13 +225,14 @@ const AddService = () => {
               updatedLanguages.slice(1).forEach((lang) => {
                 const updateData = {
                   id: createdService.payload.id,
-                  tariffData: {
+                  serviceData: {
                     title: values.title[lang],
                     description: values.description[lang],
                     meta_title: values.meta_title[lang],
                     meta_description: values.meta_description[lang],
                     active: values.active === 1 ? 1 : 0,
                     partner: values.partner === 1 ? 1 : 0,
+                    parent_id: values.parent_id,
                     icon: values.icon,
                   },
                   selectedLanguage: lang,
@@ -232,14 +256,14 @@ const AddService = () => {
 
   useEffect(() => {
     if (getServiceId === undefined) {
-      formik.setFieldValue('active', '1');
-      formik.setFieldValue('partner', '0');
+      formik.setFieldValue('active', 1);
+      formik.setFieldValue('partner', 0);
     } else {
-      formik.setFieldValue('active', newService.serviceActive ? '1' : '0');
-      formik.setFieldValue('partner', newService.servicePartner ? '1' : '0');
+      formik.setFieldValue('active', newService.serviceActive ? 1 : 0);
+      formik.setFieldValue('partner', newService.servicePartner ? 1 : 0);
     }
   }, [getServiceId, newService.serviceActive]);
-
+  console.log(servicecstate);
   const handleLanguageClick1 = (language) => {
     setSelectedLanguage1(language);
   };
@@ -279,19 +303,11 @@ const AddService = () => {
 
             language.forEach((lang) => {
               const titleFieldName = `title.${lang}`;
-              const parent_idFieldName = `parent_id.${lang}`;
-              const iconFieldName = `icon.${lang}`;
+
               const descriptionFieldName = `description.${lang}`;
 
               if (formik.touched.title && !formik.values.title[lang]) {
                 errors[titleFieldName] = `Name for ${lang} is Required`;
-              }
-
-              if (formik.touched.parent_id && !formik.values.parent_id[lang]) {
-                errors[parent_idFieldName] = `Name for ${lang} is Required`;
-              }
-              if (formik.touched.icon && !formik.values.icon[lang]) {
-                errors[iconFieldName] = `Name for ${lang} is Required`;
               }
               if (
                 formik.touched.description &&
@@ -302,12 +318,11 @@ const AddService = () => {
                 ] = `Description for ${lang} is Required`;
               }
             });
-
+            console.log(errors);
             if (Object.keys(errors).length > 0) {
               toast.error('Please fill in the required fields.');
               return;
             }
-            console.log(formik.errors.answer);
             formik.handleSubmit(e);
           }}
         >
@@ -320,10 +335,10 @@ const AddService = () => {
                 <input
                   type="radio"
                   name="active"
-                  onChange={() => formik.setFieldValue('active', '1')}
+                  onChange={() => formik.setFieldValue('active', 1)}
                   onBlur={formik.handleBlur}
-                  value="1"
-                  checked={formik.values.active === '1'}
+                  value={1}
+                  checked={formik.values.active === 1}
                   className="text-blue-500 form-radio h-4 w-4"
                 />
                 <span className="ml-2">Active</span>
@@ -332,10 +347,10 @@ const AddService = () => {
                 <input
                   type="radio"
                   name="active"
-                  onChange={() => formik.setFieldValue('active', '0')}
+                  onChange={() => formik.setFieldValue('active', 0)}
                   onBlur={formik.handleBlur}
-                  value="0"
-                  checked={formik.values.active === '0'}
+                  value={0}
+                  checked={formik.values.active === 0}
                   className="text-blue-500 form-radio h-4 w-4"
                 />
                 <span className="ml-2">Not Active</span>
@@ -354,10 +369,10 @@ const AddService = () => {
                 <input
                   type="radio"
                   name="partner"
-                  onChange={() => formik.setFieldValue('partner', '1')}
+                  onChange={() => formik.setFieldValue('partner', 1)}
                   onBlur={formik.handleBlur}
-                  value="1"
-                  checked={formik.values.partner === '1'}
+                  value={1}
+                  checked={formik.values.partner === 1}
                   className="text-blue-500 form-radio h-4 w-4"
                 />
                 <span className="ml-2">Partner</span>
@@ -366,10 +381,10 @@ const AddService = () => {
                 <input
                   type="radio"
                   name="partner"
-                  onChange={() => formik.setFieldValue('partner', '0')}
+                  onChange={() => formik.setFieldValue('partner', 0)}
                   onBlur={formik.handleBlur}
-                  value="0"
-                  checked={formik.values.partner === '0'}
+                  value={0}
+                  checked={formik.values.partner === 0}
                   className="text-blue-500 form-radio h-4 w-4"
                 />
                 <span className="ml-2">Not partner</span>
@@ -381,11 +396,11 @@ const AddService = () => {
           </label>
           <select
             className="text-[#637381] mt-2 bg-inherit w text-[15px] font-medium rounded-lg block w-1/8 p-2.5 focus:ring-0 hom"
-            id="country_id"
-            name="country_id"
-            onChange={formik.handleChange('country_id')}
-            onBlur={formik.handleBlur('country_id')}
-            value={formik.values.country_id}
+            id="parent_id"
+            name="parent_id"
+            onChange={formik.handleChange('parent_id')}
+            onBlur={formik.handleBlur('parent_id')}
+            value={formik.values.parent_id}
           >
             <option value="">Select Service</option>
             {servicecstate?.map((service) => (

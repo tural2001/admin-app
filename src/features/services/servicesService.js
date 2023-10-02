@@ -16,9 +16,9 @@ const createservice = async (service) => {
   });
   return response.data;
 };
-const updateservice = async (service, id) => {
+const updateservice = async (service, id, serviceData) => {
   const response = await axios.post(`${base_url}/api/services/${id}`, service, {
-    headers: config.getHeaders(service.selectedLanguage),
+    headers: config.getHeaders(serviceData.selectedLanguage),
   });
   return response.data;
 };

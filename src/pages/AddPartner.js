@@ -17,15 +17,7 @@ import { uploadImg } from '../features/upload/uploadSlice';
 import { language } from '../Language/languages';
 
 let schema = yup.object({
-  name: yup.object().shape(
-    language.reduce(
-      (acc, lang) => ({
-        ...acc,
-        az: yup.string().required(`Name for az is Required`),
-      }),
-      {}
-    )
-  ),
+  name: yup.string().required('Name is required'),
   logo: yup.mixed().required('Logo is Required'),
   active: yup.string(),
 });
@@ -43,7 +35,7 @@ const AddPartner = () => {
     isSuccess,
     isError,
     createdPartner,
-    partnerData,
+    PartnerName,
     partnerLogo,
     partnerActive,
     updatedPartner,
@@ -61,115 +53,58 @@ const AddPartner = () => {
 
   useEffect(() => {
     if (getPartnerId !== undefined) {
-      language.forEach((selectedLanguage) => {
-        dispatch(getApartner(getPartnerId, selectedLanguage));
-      });
+      dispatch(getApartner(getPartnerId));
     } else {
       dispatch(resetState());
     }
-  }, [getPartnerId]);
-
-  const prevUpdatedPartnerRef = useRef();
-  const debounceTimeoutRef = useRef(null);
+  }, [dispatch, getPartnerId]);
 
   useEffect(() => {
-    const prevUpdatedPartner = prevUpdatedPartnerRef.current;
-    if (
-      isSuccess &&
-      updatedPartner !== undefined &&
-      updatedPartner !== prevUpdatedPartner
-    ) {
-      if (debounceTimeoutRef.current) {
-        clearTimeout(debounceTimeoutRef.current);
-      }
-      debounceTimeoutRef.current = setTimeout(() => {
-        toast.success('Partner Updated Successfully!');
-        prevUpdatedPartnerRef.current = updatedPartner;
-        navigate('/admin/partner-list');
-      }, 1000);
-    }
-    if (
-      isSuccess &&
-      createdPartner !== undefined &&
-      updatedPartner !== undefined
-    ) {
+    if (isSuccess && createdPartner !== undefined) {
       toast.success('Partner Added Successfully!');
       navigate('/admin/partner-list');
       setTimeout(() => {
         window.location.reload();
       }, 1000);
     }
+    if (isSuccess && updatedPartner !== undefined) {
+      toast.success('Partner Updated Successfully!');
+      navigate('/admin/partner-list');
+    }
     if (isError) {
       toast.error('Something Went Wrong!');
     }
-  }, [isSuccess, isError, createdPartner, updatedPartner, navigate]);
+  }, [
+    isSuccess,
+    isError,
+    isSuccess,
+    isError,
+    createdPartner,
+    PartnerName,
+    partnerLogo,
+    partnerActive,
+    updatedPartner,
+    navigate,
+  ]);
 
   const formik = useFormik({
     enableReinitialize: true,
     initialValues: {
-      name: language.reduce((acc, lang) => {
-        acc[lang] = partnerData ? partnerData[lang]?.data?.name || '' : '';
-        return acc;
-      }, {}),
+      name: PartnerName || '',
       logo: partnerLogo || null,
       active: partnerActive ? 1 : 0,
     },
     validationSchema: schema,
     onSubmit: (values) => {
-      alert(JSON.stringify(values));
-      const updatedLanguages = language.filter((lang) => values.name[lang]);
-      console.log(updatedLanguages);
       if (getPartnerId !== undefined) {
-        updatedLanguages.forEach((lang) => {
-          const data = {
-            id: getPartnerId,
-            partnerData: {
-              name: values.name[lang],
-              active: values.active === 1 ? 1 : 0,
-              logo: values.logo,
-            },
-            selectedLanguage: lang,
-          };
-          dispatch(updateApartner(data));
-        });
+        const data = { id: getPartnerId, partnerData: values };
+        dispatch(updateApartner(data));
       } else {
-        if (updatedLanguages.length > 0) {
-          const firstLang = updatedLanguages[0];
-          const createData = {
-            values: {
-              name: values.name[firstLang],
-              active: values.active === 1 ? 1 : 0,
-              logo: values.logo,
-            },
-            selectedLanguage: firstLang,
-          };
-          dispatch(createApartner(createData))
-            .then((createdPartner) => {
-              console.log(createdPartner);
-
-              updatedLanguages.slice(1).forEach((lang) => {
-                const updateData = {
-                  id: createdPartner.payload.id,
-                  partnerData: {
-                    name: values.name[lang],
-                    active: values.active === 1 ? 1 : 0,
-                    logo: values.logo,
-                  },
-                  selectedLanguage: lang,
-                };
-
-                dispatch(updateApartner(updateData));
-              });
-
-              formik.resetForm();
-              setTimeout(() => {
-                dispatch(resetState());
-              }, 300);
-            })
-            .catch((error) => {
-              console.error('Error creating Partner:', error);
-            });
-        }
+        dispatch(createApartner(values));
+        formik.resetForm();
+        setTimeout(() => {
+          dispatch(resetState());
+        }, 300);
       }
     },
   });
@@ -199,14 +134,6 @@ const AddPartner = () => {
             requiredFields.forEach((fieldName) => {
               if (formik.touched[fieldName] && !formik.values[fieldName]) {
                 errors[fieldName] = 'This field is Required';
-              }
-            });
-
-            language.forEach((lang) => {
-              const nameFieldName = `name.${lang}`;
-
-              if (formik.touched.name && !formik.values.name[lang]) {
-                errors[nameFieldName] = `Name for ${lang} is Required`;
               }
             });
 
@@ -255,40 +182,17 @@ const AddPartner = () => {
           <label htmlFor="" className="mt-1">
             Name
           </label>
-          <div className="flex">
-            {language.map((lang, index) => (
-              <label
-                key={lang}
-                className={`cursor-pointer capitalize border-[1px] border-[#5e3989]  rounded-t-lg px-5 ${
-                  lang === selectedLanguage1 ? 'font-bold' : ''
-                }`}
-                onClick={() => handleLanguageClick1(lang)}
-              >
-                {lang}
-              </label>
-            ))}
+
+          <CustomInput
+            type="text"
+            name={`name`}
+            onCh={formik.handleChange('name')}
+            onBl={formik.handleBlur('name')}
+            val={formik.values.name}
+          />
+          <div className="error">
+            {formik.touched.name && formik.errors.name}
           </div>
-          {language.map((lang, index) => {
-            return (
-              <div
-                key={lang}
-                className={lang === selectedLanguage1 ? '' : 'hidden'}
-              >
-                <CustomInput
-                  type="text"
-                  name={`name.${lang}`}
-                  onCh={formik.handleChange}
-                  onBl={formik.handleBlur}
-                  val={formik.values.name[lang]}
-                />
-                {formik.touched.name && formik.errors.name && (
-                  <div className="error" key={`${lang}-error`}>
-                    {formik.errors.name[lang]}
-                  </div>
-                )}
-              </div>
-            );
-          })}
           <label htmlFor="" className="mt-3">
             Logo
           </label>

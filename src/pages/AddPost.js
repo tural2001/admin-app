@@ -33,22 +33,46 @@ Quill.register('modules/imageUploader', ImageUploader);
 Quill.register('modules/imageResize', ImageResize);
 Quill.register('modules/blotFormatter', BlotFormatter);
 
-let schema = yup.object({
-  title: yup.string(),
-  description: yup.string(),
-  slug: yup.string(),
-  image: yup.mixed().required('Image is Required'),
-  meta_title: yup.string(),
-  meta_description: yup.string(),
-  published_at: yup.date(),
-});
+// let schema = yup.object({
+//   title: yup.object().shape(
+//     language.reduce(
+//       (acc, lang) => ({
+//         ...acc,
+//         az: yup.string().required(`Name for az is Required`),
+//       }),
+//       {}
+//     )
+//   ),
+//   description: yup.object().shape(
+//     language.reduce(
+//       (acc, lang) => ({
+//         ...acc,
+//         az: yup.string().required(`Description for az is Required`),
+//       }),
+//       {}
+//     )
+//   ),
+//   slug: yup.object().shape(
+//     language.reduce(
+//       (acc, lang) => ({
+//         ...acc,
+//         az: yup.string().required(`Slug for az is Required`),
+//       }),
+//       {}
+//     )
+//   ),
+//   image: yup.mixed().required('Image is Required'),
+//   meta_title: yup.string(),
+//   meta_description: yup.string(),
+//   published_at: yup.date(),
+// });
 
 const AddPost = () => {
-  // const [selectedLanguage1, setSelectedLanguage1] = useState('az');
-  // const [selectedLanguage2, setSelectedLanguage2] = useState('az');
-  // const [selectedLanguage3, setSelectedLanguage3] = useState('az');
-  // const [selectedLanguage4, setSelectedLanguage4] = useState('az');
-  // const [selectedLanguage5, setSelectedLanguage5] = useState('az');
+  const [selectedLanguage1, setSelectedLanguage1] = useState('az');
+  const [selectedLanguage2, setSelectedLanguage2] = useState('az');
+  const [selectedLanguage3, setSelectedLanguage3] = useState('az');
+  const [selectedLanguage4, setSelectedLanguage4] = useState('az');
+  const [selectedLanguage5, setSelectedLanguage5] = useState('az');
   const [isFileDetected, setIsFileDetected] = useState(false);
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -60,9 +84,7 @@ const AddPost = () => {
     isSuccess,
     isError,
     createdPost,
-    postTitle,
-    postSlug,
-    postDescription,
+    PostData,
     postPublished,
     postImage,
     updatedPost,
@@ -124,37 +146,140 @@ const AddPost = () => {
 
     return formattedDate;
   };
+  console.log(PostData);
 
   const formik = useFormik({
     enableReinitialize: true,
     initialValues: {
-      title: postTitle || '',
-      description: postDescription || '',
+      title: language.reduce((acc, lang) => {
+        acc[lang] = PostData ? PostData[lang]?.data?.title || '' : '';
+        return acc;
+      }, {}),
+      description: language.reduce((acc, lang) => {
+        acc[lang] = PostData ? PostData[lang]?.data?.description || '' : '';
+        return acc;
+      }, {}),
       image: postImage || null,
-      meta_title: '',
-      meta_description: '',
-      slug: postSlug || '',
+      meta_title: language.reduce((acc, lang) => {
+        acc[lang] = PostData ? PostData[lang]?.data?.meta_title || '' : '';
+        return acc;
+      }, {}),
+      meta_description: language.reduce((acc, lang) => {
+        acc[lang] = PostData
+          ? PostData[lang]?.data?.meta_description || ''
+          : '';
+        return acc;
+      }, {}),
+      slug: language.reduce((acc, lang) => {
+        acc[lang] = PostData ? PostData[lang]?.data?.slug || '' : '';
+        return acc;
+      }, {}),
       published_at: postPublished || '',
     },
-    validationSchema: schema,
+    // validationSchema: schema,
+    // onSubmit: (values) => {
+    //   alert(JSON.stringify(values));
+    //   const formattedPublishedAt = formatDateTimeForServer(values.published_at);
+
+    //   const updatedValues = {
+    //     ...values,
+    //     published_at: formattedPublishedAt,
+    //   };
+    //   // alert(JSON.stringify(updatedValues));
+    //   if (getpostId !== undefined) {
+    //     const data = { id: getpostId, post: updatedValues };
+    //     dispatch(updateApost(data));
+    //   } else {
+    //     dispatch(createApost(updatedValues));
+    //     formik.resetForm();
+    //     setTimeout(() => {
+    //       dispatch(resetState());
+    //     }, 1000);
+    //   }
+    // },
     onSubmit: (values) => {
       alert(JSON.stringify(values));
       const formattedPublishedAt = formatDateTimeForServer(values.published_at);
-
-      const updatedValues = {
-        ...values,
-        published_at: formattedPublishedAt,
-      };
-      // alert(JSON.stringify(updatedValues));
+      console.log(formattedPublishedAt);
+      const updatedLanguages = language.filter((lang) => values.title[lang]);
+      console.log(updatedLanguages);
       if (getpostId !== undefined) {
-        const data = { id: getpostId, post: updatedValues };
-        dispatch(updateApost(data));
+        updatedLanguages.forEach((lang) => {
+          const data = {
+            slug: getpostId,
+            postData: {
+              title: values.title[lang],
+              description: values.description[lang],
+              slug: values.slug[lang],
+              meta_title: values.meta_title[lang],
+              meta_description: values.meta_description[lang],
+              published_at: formattedPublishedAt,
+              image: values.image,
+            },
+            selectedLanguage: lang,
+          };
+          // const updatedValues = {
+          //   ...data,
+          //   published_at: formattedPublishedAt,
+          // };
+          dispatch(updateApost(data));
+        });
       } else {
-        dispatch(createApost(updatedValues));
-        formik.resetForm();
-        setTimeout(() => {
-          dispatch(resetState());
-        }, 1000);
+        if (updatedLanguages.length > 0) {
+          const formattedPublishedAt = formatDateTimeForServer(
+            values.published_at
+          );
+
+          const firstLang = updatedLanguages[0];
+          console.log(firstLang);
+          const createData = {
+            values: {
+              title: values.title[firstLang],
+              description: values.description[firstLang],
+              slug: values.slug[firstLang],
+              meta_title: values.meta_title[firstLang],
+              meta_description: values.meta_description[firstLang],
+              published_at: formattedPublishedAt,
+              image: values.image,
+            },
+            selectedLanguage: firstLang,
+          };
+          console.log(createData);
+          dispatch(createApost(createData))
+            .then((createdPost) => {
+              const formattedPublishedAt = formatDateTimeForServer(
+                values.published_at
+              );
+
+              console.log(createdPost);
+
+              updatedLanguages.slice(1).forEach((lang) => {
+                const updateData = {
+                  slug: createdPost.payload.slug,
+                  postData: {
+                    title: values.title[lang],
+                    description: values.description[lang],
+                    slug: values.slug[lang],
+                    meta_title: values.meta_title[lang],
+                    meta_description: values.meta_description[lang],
+                    published_at: formattedPublishedAt,
+                    image: values.image,
+                  },
+                  selectedLanguage: lang,
+                };
+                console.log(updateData);
+                dispatch(updateApost(updateData));
+              });
+
+              formik.resetForm();
+              setTimeout(() => {
+                dispatch(resetState());
+              }, 300);
+            })
+            .catch((error) => {
+              console.error('Error creating Post:', error);
+            });
+        }
       }
     },
   });
@@ -171,6 +296,37 @@ const AddPost = () => {
     setEditorHtml(html);
     // this.props.onDescriptionChange(html); // Eğer bu özelliği kullanıyorsanız, burada da kullanabilirsiniz.
   };
+
+  // const handleDrop = async (acceptedFiles) => {
+  //   try {
+  //     const file = acceptedFiles[0];
+
+  //     const formData = new FormData();
+  //     formData.append('file', file);
+
+  //     const response = await axios.post(
+  //       `${base_url}/api/upload-media`,
+  //       formData,
+  //       {
+  //         headers: config.getHeaders('az'),
+  //       }
+  //     );
+
+  //     const imageUrl = response.data.url;
+
+  //     const quill = reactQuillRef.current.getEditor();
+  //     const range = quill.getSelection();
+
+  //     quill.clipboard.dangerouslyPasteHTML(
+  //       range ? range.index : 0,
+  //       `<img src="${imageUrl}"  alt="Resim" />`
+  //     );
+
+  //     setFiles([]);
+  //   } catch (error) {
+  //     console.error('Image upload error:', error);
+  //   }
+  // };
 
   const handleDrop = async (acceptedFiles) => {
     try {
@@ -192,15 +348,39 @@ const AddPost = () => {
       const quill = reactQuillRef.current.getEditor();
       const range = quill.getSelection();
 
+      const selectedLangDescription = `description.${selectedLanguage4}`;
+
       quill.clipboard.dangerouslyPasteHTML(
         range ? range.index : 0,
-        `<img src="${imageUrl}"  alt="Resim" />`
+        `<img src="${imageUrl}" alt="Resim" /><p>${formik.values[selectedLangDescription]}</p>`
       );
 
       setFiles([]);
+
+      // Otomatik olarak ekledikten sonra, formik değerini güncelleyebiliriz
+      formik.setFieldValue(
+        selectedLangDescription,
+        `${formik.values[selectedLangDescription]}<img src="${imageUrl}" alt="Resim" />`
+      );
     } catch (error) {
       console.error('Image upload error:', error);
     }
+  };
+
+  const handleLanguageClick1 = (language) => {
+    setSelectedLanguage1(language);
+  };
+  const handleLanguageClick2 = (language) => {
+    setSelectedLanguage2(language);
+  };
+  const handleLanguageClick3 = (language) => {
+    setSelectedLanguage3(language);
+  };
+  const handleLanguageClick4 = (language) => {
+    setSelectedLanguage4(language);
+  };
+  const handleLanguageClick5 = (language) => {
+    setSelectedLanguage5(language);
   };
 
   return (
@@ -219,14 +399,38 @@ const AddPost = () => {
                 errors[fieldName] = 'This field is Required';
               }
             });
+
+            language.forEach((lang) => {
+              const titleFieldName = `title.${lang}`;
+              const descriptionFieldName = `description.${lang}`;
+              const slugFieldName = `slug.${lang}`;
+
+              if (
+                formik.touched.description &&
+                !formik.values.description[lang]
+              ) {
+                errors[
+                  descriptionFieldName
+                ] = `Description for ${lang} is Required`;
+              }
+
+              if (formik.touched.title && !formik.values.title[lang]) {
+                errors[titleFieldName] = `title for ${lang} is Required`;
+              }
+              if (formik.touched.slug && !formik.values.slug[lang]) {
+                errors[slugFieldName] = `slug for ${lang} is Required`;
+              }
+            });
+
             if (Object.keys(errors).length > 0) {
               toast.error('Please fill in the required fields.');
               return;
             }
+
             formik.handleSubmit(e);
           }}
         >
-          {/* <label htmlFor="" className="mt-2">
+          <label htmlFor="" className="mt-2">
             Meta title
           </label>
           <div className="flex">
@@ -301,15 +505,120 @@ const AddPost = () => {
                   )}
               </div>
             );
-          })} */}
+          })}
           <label htmlFor="" className="mt-2">
             Description
           </label>
+          <div className="flex">
+            {language.map((lang, index) => (
+              <label
+                key={lang}
+                className={`cursor-pointer capitalize border-[1px] border-[#5e3989]  rounded-t-lg px-5 ${
+                  lang === selectedLanguage4 ? 'font-bold' : ''
+                }`}
+                onClick={() => handleLanguageClick4(lang)}
+              >
+                {lang}
+              </label>
+            ))}
+          </div>
+          {language.map((lang, index) => {
+            return (
+              <div
+                key={lang}
+                className={lang === selectedLanguage4 ? '' : 'hidden'}
+              >
+                <Dropzone onDrop={handleDrop}>
+                  {({ getRootProps, getInputProps }) => (
+                    <div
+                      {...getRootProps()}
+                      style={{
+                        border: '1px solid #ccc',
+                        padding: '10px',
+                        textAlign: 'center',
+                        cursor: 'pointer',
+                      }}
+                    >
+                      <input {...getInputProps()} />
+                      <p>Drag and drop an image here, or click to select one</p>
+                    </div>
+                  )}
+                </Dropzone>
+
+                <ReactQuill
+                  ref={reactQuillRef}
+                  name={`description.${lang}`}
+                  onChange={formik.handleChange(`description.${lang}`)}
+                  value={formik.values.description[lang]}
+                  theme="snow"
+                  style={{
+                    minHeight: '5vh',
+                  }}
+                  modules={{
+                    toolbar: {
+                      container: [
+                        ['bold', 'italic', 'underline', 'strike'],
+                        ['blockquote', 'code-block'],
+
+                        [{ header: 1 }, { header: 2 }],
+                        [{ list: 'ordered' }, { list: 'bullet' }],
+                        [{ script: 'sub' }, { script: 'super' }],
+                        [{ indent: '-1' }, { indent: '+1' }],
+                        [{ direction: 'rtl' }],
+
+                        [{ size: ['small', false, 'large', 'huge'] }],
+                        [{ header: [1, 2, 3, 4, 5, 6, false] }],
+
+                        [{ color: [] }, { background: [] }],
+                        [{ font: [] }],
+                        [{ align: [] }],
+
+                        ['clean'],
+                      ],
+                    },
+                    clipboard: {
+                      matchVisual: false,
+                    },
+                    imageResize: {
+                      parchment: Quill.import('parchment'),
+                      modules: ['Resize', 'DisplaySize'],
+                    },
+                    blotFormatter: {},
+                  }}
+                  formats={[
+                    'header',
+                    'font',
+                    'size',
+                    'bold',
+                    'italic',
+                    'underline',
+                    'align',
+                    'strike',
+                    'script',
+                    'blockquote',
+                    'background',
+                    'list',
+                    'bullet',
+                    'indent',
+                    'link',
+                    'image',
+                    'color',
+                    'code-block',
+                  ]}
+                />
+                {formik.touched.description && formik.errors.description && (
+                  <div className="error" key={`${lang}-error`}>
+                    {formik.errors.description[lang]}
+                  </div>
+                )}
+              </div>
+            );
+          })}
           {/* <Editor onDescriptionChange={handleDescriptionChange} /> */}
           <label htmlFor="" className="mt-2">
             Title
           </label>
-          {/* <div className="flex">
+          <div className="flex">
             {language.map((lang, index) => (
               <label
                 key={lang}
@@ -321,40 +630,63 @@ const AddPost = () => {
                 {lang}
               </label>
             ))}
-          </div> */}
-
-          {/* <CustomInput
-            type="text"
-            name="description"
-            onCh={formik.handleChange('description')}
-            onBl={formik.handleBlur('description')}
-            val={formik.values.description}
-          /> */}
-
-          <CustomInput
-            type="text"
-            name="title"
-            onCh={formik.handleChange('title')}
-            onBl={formik.handleBlur('title')}
-            val={formik.values.title}
-          />
-
-          <div className="error">
-            {formik.touched.description && formik.errors.description}
           </div>
+          {language.map((lang, index) => {
+            return (
+              <div
+                key={lang}
+                className={lang === selectedLanguage3 ? '' : 'hidden'}
+              >
+                <CustomInput
+                  type="text"
+                  name={`title.${lang}`}
+                  onCh={formik.handleChange}
+                  onBl={formik.handleBlur}
+                  val={formik.values.title[lang]}
+                />
+                {formik.touched.title && formik.errors.title && (
+                  <div className="error" key={`${lang}-error`}>
+                    {formik.errors.title[lang]}
+                  </div>
+                )}
+              </div>
+            );
+          })}
           <label htmlFor="" className="mt-2">
             Slug
           </label>
-
+          <div className="flex">
+            {language.map((lang, index) => (
+              <label
+                key={lang}
+                className={`cursor-pointer capitalize border-[1px] border-[#5e3989]  rounded-t-lg px-5 ${
+                  lang === selectedLanguage5 ? 'font-bold' : ''
+                }`}
+                onClick={() => handleLanguageClick5(lang)}
+              >
+                {lang}
+              </label>
+            ))}
+          </div>
           {language.map((lang, index) => {
             return (
-              <CustomInput
-                type="text"
-                name={`slug`}
-                onCh={formik.handleChange('slug')}
-                onBl={formik.handleBlur('slug')}
-                val={formik.values.slug}
-              />
+              <div
+                key={lang}
+                className={lang === selectedLanguage5 ? '' : 'hidden'}
+              >
+                <CustomInput
+                  type="text"
+                  name={`slug.${lang}`}
+                  onCh={formik.handleChange}
+                  onBl={formik.handleBlur}
+                  val={formik.values.slug[lang]}
+                />
+                {formik.touched.slug && formik.errors.slug && (
+                  <div className="error" key={`${lang}-error`}>
+                    {formik.errors.slug[lang]}
+                  </div>
+                )}
+              </div>
             );
           })}
           <label htmlFor="" className="mt-2">
@@ -368,84 +700,7 @@ const AddPost = () => {
             onCh={formik.handleChange('published_at')}
             onBl={formik.handleBlur('published_at')}
           />
-          <Dropzone onDrop={handleDrop}>
-            {({ getRootProps, getInputProps }) => (
-              <div
-                {...getRootProps()}
-                style={{
-                  border: '1px solid #ccc',
-                  padding: '10px',
-                  textAlign: 'center',
-                  cursor: 'pointer',
-                }}
-              >
-                <input {...getInputProps()} />
-                <p>Drag and drop an image here, or click to select one</p>
-              </div>
-            )}
-          </Dropzone>
 
-          <ReactQuill
-            ref={reactQuillRef}
-            name="description"
-            onChange={formik.handleChange(`description`)}
-            value={formik.values.description}
-            theme="snow"
-            style={{
-              minHeight: '5vh',
-            }}
-            modules={{
-              toolbar: {
-                container: [
-                  ['bold', 'italic', 'underline', 'strike'],
-                  ['blockquote', 'code-block'],
-
-                  [{ header: 1 }, { header: 2 }],
-                  [{ list: 'ordered' }, { list: 'bullet' }],
-                  [{ script: 'sub' }, { script: 'super' }],
-                  [{ indent: '-1' }, { indent: '+1' }],
-                  [{ direction: 'rtl' }],
-
-                  [{ size: ['small', false, 'large', 'huge'] }],
-                  [{ header: [1, 2, 3, 4, 5, 6, false] }],
-
-                  [{ color: [] }, { background: [] }],
-                  [{ font: [] }],
-                  [{ align: [] }],
-
-                  ['clean'],
-                ],
-              },
-              clipboard: {
-                matchVisual: false,
-              },
-              imageResize: {
-                parchment: Quill.import('parchment'),
-                modules: ['Resize', 'DisplaySize'],
-              },
-              blotFormatter: {},
-            }}
-            formats={[
-              'header',
-              'font',
-              'size',
-              'bold',
-              'italic',
-              'underline',
-              'align',
-              'strike',
-              'script',
-              'blockquote',
-              'background',
-              'list',
-              'bullet',
-              'indent',
-              'link',
-              'image',
-              'color',
-              'code-block',
-            ]}
-          />
           <label htmlFor="" className="mt-2">
             Image
           </label>

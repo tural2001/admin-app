@@ -48,14 +48,18 @@ export const createAservice = createAsyncThunk(
   async (serviceData, thunkAPI) => {
     try {
       const formdata = new FormData();
-      formdata.append('active', serviceData.active);
-      formdata.append('partner', serviceData.partner);
-      formdata.append('icon', serviceData.icon[0], serviceData.icon[0].name);
-      formdata.append('title', serviceData.title);
-      formdata.append('parent_id', serviceData.parent_id);
-      formdata.append('meta_title', serviceData.meta_title);
-      formdata.append('meta_description', serviceData.meta_description);
-      formdata.append('description', serviceData.description);
+      formdata.append('active', serviceData.values.active);
+      formdata.append('partner', serviceData.values.partner);
+      formdata.append(
+        'icon',
+        serviceData.values.icon[0],
+        serviceData.values.icon[0].name
+      );
+      formdata.append('title', serviceData.values.title);
+      formdata.append('parent_id', serviceData.values.parent_id);
+      formdata.append('meta_title', serviceData.values.meta_title);
+      formdata.append('meta_description', serviceData.values.meta_description);
+      formdata.append('description', serviceData.values.description);
       const response = await serviceService.createservice(formdata);
       return response.data;
     } catch (error) {
@@ -69,25 +73,29 @@ export const updateAservice = createAsyncThunk(
     console.log(serviceData);
     try {
       const formdata = new FormData();
-      formdata.append('active', serviceData.service.active);
-      formdata.append('partner', serviceData.service.partner);
-      formdata.append('title', serviceData.service.title);
-      formdata.append('parent_id', serviceData.service.parent_id);
-      formdata.append('meta_title', serviceData.service.meta_title);
-      formdata.append('meta_description', serviceData.service.meta_description);
-      if (serviceData.service.icon[0] instanceof File) {
+      formdata.append('active', serviceData.serviceData.active);
+      formdata.append('partner', serviceData.serviceData.partner);
+      formdata.append('title', serviceData.serviceData.title);
+      formdata.append('parent_id', serviceData.serviceData.parent_id);
+      formdata.append('meta_title', serviceData.serviceData.meta_title);
+      formdata.append(
+        'meta_description',
+        serviceData.serviceData.meta_description
+      );
+      if (serviceData.serviceData.icon[0] instanceof File) {
         formdata.append(
           'icon',
-          serviceData.service.icon[0],
-          serviceData.service.icon[0].name
+          serviceData.serviceData.icon[0],
+          serviceData.serviceData.icon[0].name
         );
       }
-      formdata.append('description', serviceData.service.description);
+      formdata.append('description', serviceData.serviceData.description);
       formdata.append('_method', 'PUT');
 
       const response = await serviceService.updateservice(
         formdata,
-        serviceData.id
+        serviceData.id,
+        serviceData
       );
       return response.data;
     } catch (error) {

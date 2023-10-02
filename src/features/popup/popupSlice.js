@@ -1,6 +1,7 @@
 import { createSlice, createAsyncThunk, createAction } from '@reduxjs/toolkit';
 
 import popupService from './popupService';
+import { language } from '../../Language/languages';
 
 const initialState = {
   popups: [],
@@ -66,19 +67,23 @@ export const updateApopup = createAsyncThunk(
     console.log(popupData);
     try {
       const formdata = new FormData();
-      formdata.append('active', popupData.popup.active);
-      formdata.append('content', popupData.popup.content);
-      if (popupData.popup.image[0] instanceof File) {
+      formdata.append('active', popupData.popupData.active);
+      formdata.append('content', popupData.popupData.content);
+      if (popupData.popupData.image[0] instanceof File) {
         formdata.append(
           'image',
-          popupData.popup.image[0],
-          popupData.popup.image[0].name
+          popupData.popupData.image[0],
+          popupData.popupData.image[0].name
         );
       }
-      formdata.append('handle', popupData.popup.handle);
+      formdata.append('handle', popupData.popupData.handle);
       formdata.append('_method', 'PUT');
 
-      const response = await popupService.updatepopup(formdata, popupData.id);
+      const response = await popupService.updatepopup(
+        formdata,
+        popupData.id,
+        popupData
+      );
       return response.data;
     } catch (error) {
       return thunkAPI.rejectWithValue(error);
@@ -130,10 +135,10 @@ export const popupSlice = createSlice({
         state.isLoading = false;
         state.isSuccess = true;
         state.isError = false;
-        state.popupContent = action.payload.data.content;
-        state.popupActive = action.payload.data.active;
-        state.popupHandle = action.payload.data.handle;
-        state.popupImage = action.payload.data.image;
+        state.PopupData = action.payload;
+        state.popupHandle = action.payload[language[0]].data.handle;
+        state.popupActive = action.payload[language[0]].data.active;
+        state.popupImage = action.payload[language[0]].data.image;
       })
       .addCase(getApopup.rejected, (state, action) => {
         state.isLoading = false;

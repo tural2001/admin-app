@@ -11,7 +11,6 @@ const getTariffs = async (selectedLanguage) => {
 };
 
 const createTariff = async (tariff) => {
-  console.log(tariff);
   const response = await axios.post(`${base_url}/api/tariffs`, tariff, {
     headers: config.getHeaders(tariff.selectedLanguage),
   });
@@ -19,7 +18,6 @@ const createTariff = async (tariff) => {
 };
 
 const updateTariff = async (tariff, id, TariffData) => {
-  console.log(TariffData);
   const response = await axios.post(`${base_url}/api/tariffs/${id}`, tariff, {
     headers: config.getHeaders(TariffData.selectedLanguage),
   });

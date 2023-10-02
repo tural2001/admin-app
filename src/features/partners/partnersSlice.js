@@ -26,13 +26,9 @@ export const createApartner = createAsyncThunk(
   async (partnerData, thunkAPI) => {
     try {
       const formdata = new FormData();
-      formdata.append('active', partnerData.values.active);
-      formdata.append(
-        'logo',
-        partnerData.values.logo[0],
-        partnerData.values.logo[0].name
-      );
-      formdata.append('name', partnerData.values.name);
+      formdata.append('active', partnerData.active);
+      formdata.append('logo', partnerData.logo[0], partnerData.logo[0].name);
+      formdata.append('name', partnerData.name);
       const response = await partnerService.createpartner(formdata);
       return response.data;
     } catch (error) {
@@ -44,6 +40,7 @@ export const createApartner = createAsyncThunk(
 export const updateApartner = createAsyncThunk(
   'partners/update-partner',
   async (partnerData, thunkAPI) => {
+    console.log(partnerData);
     try {
       const formdata = new FormData();
       formdata.append('active', partnerData.partnerData.active);
@@ -59,8 +56,7 @@ export const updateApartner = createAsyncThunk(
 
       const response = await partnerService.updatepartner(
         formdata,
-        partnerData.id,
-        partnerData
+        partnerData.id
       );
       return response.data;
     } catch (error) {
@@ -118,13 +114,12 @@ export const partnerSlice = createSlice({
         state.isLoading = true;
       })
       .addCase(getApartner.fulfilled, (state, action) => {
-        console.log(action.payload);
         state.isLoading = false;
         state.isSuccess = true;
         state.isError = false;
-        state.PartnerData = action.payload;
-        state.partnerLogo = action.payload[language[0]].data.logo;
-        state.partnerActive = action.payload[language[0]].data.active;
+        state.PartnerName = action.payload.data.name;
+        state.partnerLogo = action.payload.data.logo;
+        state.partnerActive = action.payload.data.active;
       })
       .addCase(getApartner.rejected, (state, action) => {
         state.isLoading = false;

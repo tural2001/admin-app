@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import CustomInput from '../components/CustomInput';
 import { useDispatch, useSelector } from 'react-redux';
 import { toast } from 'react-toastify';
@@ -7,7 +7,6 @@ import { useFormik } from 'formik';
 import * as yup from 'yup';
 
 import {
-  createApopup,
   getApopup,
   resetState,
   updateApopup,
@@ -15,15 +14,26 @@ import {
 import { useLocation, useNavigate } from 'react-router-dom';
 import Dropzone from 'react-dropzone';
 import { uploadImg } from '../features/upload/uploadSlice';
+import { language } from '../Language/languages';
 
 let schema = yup.object({
-  content: yup.string().required('Content is Required'),
+  content: yup.object().shape(
+    language.reduce(
+      (acc, lang) => ({
+        ...acc,
+        az: yup.string().required(`Content for az is Required`),
+      }),
+      {}
+    )
+  ),
   handle: yup.string().required('Handle is Required'),
-  image: yup.mixed().required('Image is Required'),
+  image: yup.mixed(),
   active: yup.string(),
 });
 
 const Addpopup = () => {
+  const [selectedLanguage1, setSelectedLanguage1] = useState('az');
+
   const [isFileDetected, setIsFileDetected] = useState(false);
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -33,9 +43,7 @@ const Addpopup = () => {
   const {
     isSuccess,
     isError,
-    isLoading,
-    createdPopup,
-    popupContent,
+    PopupData,
     popupActive,
     popupHandle,
     popupImage,
@@ -55,70 +63,85 @@ const Addpopup = () => {
 
   useEffect(() => {
     if (getPopupId !== undefined) {
-      dispatch(getApopup(getPopupId));
+      language.forEach((selectedLanguage) => {
+        dispatch(getApopup(getPopupId, selectedLanguage));
+      });
     } else {
       dispatch(resetState());
     }
   }, [dispatch, getPopupId]);
 
+  const prevUpdatedPopupRef = useRef();
+  const debounceTimeoutRef = useRef(null);
+
   useEffect(() => {
-    if (isSuccess && createdPopup) {
-      toast.success('Popup Added Successfully!');
-      navigate('/admin/popup-list');
-      setTimeout(() => {
-        window.location.reload();
-      }, 500);
+    const prevUpdatedPopup = prevUpdatedPopupRef.current;
+    if (
+      isSuccess &&
+      updatedPopup !== undefined &&
+      updatedPopup !== prevUpdatedPopup
+    ) {
+      if (debounceTimeoutRef.current) {
+        clearTimeout(debounceTimeoutRef.current);
+      }
+      debounceTimeoutRef.current = setTimeout(() => {
+        toast.success('Popup Updated Successfully!');
+        prevUpdatedPopupRef.current = updatedPopup;
+        navigate('/admin/popup-list');
+      }, 1000);
     }
-    if (isSuccess && updatedPopup !== undefined) {
-      toast.success('Popup Updated Successfully!');
-      navigate('/admin/popup-list');
-    }
+
     if (isError) {
       toast.error('Something Went Wrong!');
     }
-  }, [
-    isSuccess,
-    isError,
-    isLoading,
-    createdPopup,
-    popupContent,
-    popupActive,
-    popupHandle,
-    popupImage,
-    updatedPopup,
-    navigate,
-  ]);
+  }, [isSuccess, isError, updatedPopup]);
 
+  console.log(newPopup);
   const formik = useFormik({
     enableReinitialize: true,
     initialValues: {
-      content: popupContent || '',
+      content: language.reduce((acc, lang) => {
+        acc[lang] = PopupData ? PopupData[lang]?.data?.content || '' : '';
+        return acc;
+      }, {}),
       active: popupActive ? 1 : 0,
       handle: popupHandle || '',
       image: popupImage || null,
     },
     validationSchema: schema,
     onSubmit: (values) => {
+      alert(JSON.stringify(values));
+      const updatedLanguages = language.filter((lang) => values.content[lang]);
+      console.log(updatedLanguages);
       if (getPopupId !== undefined) {
-        const data = { id: getPopupId, popup: values };
-        dispatch(updateApopup(data));
-      } else {
-        dispatch(createApopup(values));
-        formik.resetForm();
-        setTimeout(() => {
-          dispatch(resetState());
-        }, 1000);
+        updatedLanguages.forEach((lang) => {
+          const data = {
+            id: getPopupId,
+            popupData: {
+              content: values.content[lang],
+              handle: values.handle,
+              image: values.image,
+              active: values.active === 1 ? 1 : 0,
+            },
+            selectedLanguage: lang,
+          };
+          dispatch(updateApopup(data));
+        });
       }
     },
   });
 
   useEffect(() => {
     if (getPopupId === undefined) {
-      formik.setFieldValue('active', '1');
+      formik.setFieldValue('active', 1);
     } else {
-      formik.setFieldValue('active', newPopup.popupActive ? '1' : '0');
+      formik.setFieldValue('active', newPopup.popupActive ? 1 : 0);
     }
   }, [getPopupId, newPopup.popupActive]);
+
+  const handleLanguageClick1 = (language) => {
+    setSelectedLanguage1(language);
+  };
 
   return (
     <div>
@@ -129,17 +152,27 @@ const Addpopup = () => {
         <form
           onSubmit={(e) => {
             e.preventDefault();
-            const requiredFields = ['content', 'handle', 'image'];
+            const requiredFields = ['content', 'handle'];
             const errors = {};
             requiredFields.forEach((fieldName) => {
               if (formik.touched[fieldName] && !formik.values[fieldName]) {
                 errors[fieldName] = 'This field is Required';
               }
             });
+
+            language.forEach((lang) => {
+              const contentFieldName = `content.${lang}`;
+
+              if (formik.touched.content && !formik.values.content[lang]) {
+                errors[contentFieldName] = `Content for ${lang} is Required`;
+              }
+            });
+
             if (Object.keys(errors).length > 0) {
               toast.error('Please fill in the required fields.');
               return;
             }
+
             formik.handleSubmit(e);
           }}
         >
@@ -153,10 +186,10 @@ const Addpopup = () => {
                 <input
                   type="radio"
                   name="active"
-                  onChange={() => formik.setFieldValue('active', '1')}
+                  onChange={() => formik.setFieldValue('active', 1)}
                   onBlur={formik.handleBlur}
-                  value="1"
-                  checked={formik.values.active === '1'}
+                  value={1}
+                  checked={formik.values.active === 1}
                   className="text-blue-500 form-radio h-4 w-4"
                 />
                 <span className="ml-2">Active</span>
@@ -165,18 +198,15 @@ const Addpopup = () => {
                 <input
                   type="radio"
                   name="active"
-                  onChange={() => formik.setFieldValue('active', '0')}
+                  onChange={() => formik.setFieldValue('active', 0)}
                   onBlur={formik.handleBlur}
-                  value="0"
-                  checked={formik.values.active === '0'}
+                  value={0}
+                  checked={formik.values.active === 0}
                   className="text-blue-500 form-radio h-4 w-4"
                 />
                 <span className="ml-2">Not Active</span>
               </label>
             </div>
-          </div>
-          <div className="error">
-            {formik.touched.active && formik.errors.active}
           </div>
           <label htmlFor="" className="">
             Handle
@@ -195,18 +225,38 @@ const Addpopup = () => {
           <label htmlFor="" className="mt-2">
             Content
           </label>
-          <CustomInput
-            type="text"
-            label="Enter Popup Contnent"
-            name="content"
-            onCh={formik.handleChange('content')}
-            onBl={formik.handleBlur('content')}
-            val={formik.values.content}
-            id="content"
-          />
-          <div className="error">
-            {formik.touched.content && formik.errors.content}
+          <div className="flex">
+            {language.map((lang, index) => (
+              <label
+                key={lang}
+                className={`cursor-pointer capitalize border-[1px] border-[#5e3989]  rounded-t-lg px-5 ${
+                  lang === selectedLanguage1 ? 'font-bold text-[#5e3989]' : ''
+                }`}
+                onClick={() => handleLanguageClick1(lang)}
+              >
+                {lang}
+              </label>
+            ))}
           </div>
+          {language.map((lang) => {
+            return (
+              <div
+                key={lang}
+                className={lang === selectedLanguage1 ? '' : 'hidden'}
+              >
+                <CustomInput
+                  type="text"
+                  name={`content.${lang}`}
+                  onCh={formik.handleChange}
+                  onBl={formik.handleBlur}
+                  val={formik.values.content[lang]}
+                />
+                {formik.touched.content && formik.errors.content && (
+                  <div className="error">{formik.errors.content[lang]}</div>
+                )}
+              </div>
+            );
+          })}
           <label htmlFor="" className="mt-2">
             Image
           </label>

@@ -1,5 +1,6 @@
 import { createSlice, createAsyncThunk, createAction } from '@reduxjs/toolkit';
 import regionService from './regionService';
+import { language } from '../../Language/languages';
 
 const initialState = {
   regions: [],
@@ -22,9 +23,9 @@ export const getregions = createAsyncThunk(
 
 export const getAregion = createAsyncThunk(
   'regions/get-region',
-  async (id, thunkAPI) => {
+  async (handle, thunkAPI) => {
     try {
-      return await regionService.getregion(id);
+      return await regionService.getregion(handle);
     } catch (error) {
       return thunkAPI.rejectWithValue(error);
     }
@@ -33,9 +34,9 @@ export const getAregion = createAsyncThunk(
 
 export const deleteAregion = createAsyncThunk(
   'regions/delete-region',
-  async (id, thunkAPI) => {
+  async (handle, thunkAPI) => {
     try {
-      return await regionService.deleteregion(id);
+      return await regionService.deleteregion(handle);
     } catch (error) {
       return thunkAPI.rejectWithValue(error);
     }
@@ -69,7 +70,8 @@ export const updateAregion = createAsyncThunk(
 
       const response = await regionService.updateregion(
         formdata,
-        regionData.id
+        regionData.id,
+        regionData
       );
       return response.data;
     } catch (error) {
@@ -123,11 +125,10 @@ export const regionSlice = createSlice({
         state.isLoading = false;
         state.isSuccess = true;
         state.isError = false;
-        state.regionName = action.payload.data.name;
-        state.regionActive = action.payload.data.active;
-        state.regionColor = action.payload.data.color_id;
-        state.regionDescription = action.payload.data.description;
-        state.regionHandle = action.payload.data.handle;
+        state.RegionData = action.payload;
+        state.regionActive = action.payload[language[0]].data.active;
+        state.regionColor = action.payload[language[0]].data.color_id;
+        state.regionHandle = action.payload[language[0]].data.handle;
       })
       .addCase(getAregion.rejected, (state, action) => {
         state.isLoading = false;
