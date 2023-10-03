@@ -57,6 +57,7 @@ import CareerpageList from './pages/Careerpage';
 import Addcareerpage from './pages/Addcareerpage';
 import ServiceCList from './pages/ServiceCList';
 import AddServiceC from './pages/AddServiceC';
+import { TranslationProvider } from './components/TranslationContext';
 
 function App() {
   return (
@@ -74,7 +75,9 @@ function App() {
           path="/admin"
           element={
             <PrivateRoutes>
-              <MainLayout />
+              <TranslationProvider>
+                <MainLayout />
+              </TranslationProvider>
             </PrivateRoutes>
           }
         >

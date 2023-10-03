@@ -13,8 +13,11 @@ import {
 import Popup from 'reactjs-popup';
 import ReactPaginate from 'react-paginate';
 import { BsArrowLeft, BsArrowRight } from 'react-icons/bs';
+import { useTranslation } from '../components/TranslationContext';
 
 const CampaignList = () => {
+  const { translate, language } = useTranslation();
+
   const [open, setOpen] = useState(false);
   const [campaignId, setcampaignId] = useState('');
   const showModal = (e) => {
@@ -44,31 +47,31 @@ const CampaignList = () => {
     }, 1000);
   };
 
-  const [currentPage, setCurrentPage] = useState(0); // Sayfa numarasını saklar
-  const itemsPerPage = 7; // Her sayfada kaç yapı gösterileceği
+  const [currentPage, setCurrentPage] = useState(0);
+  const itemsPerPage = 7;
 
   const filteredCampaign = campaignstate?.slice(
     currentPage * itemsPerPage,
     (currentPage + 1) * itemsPerPage
   );
 
-  const pageCount = Math.ceil(campaignstate?.length / itemsPerPage); // Toplam sayfa sayısını hesaplar
+  const pageCount = Math.ceil(campaignstate?.length / itemsPerPage);
 
   const handlePageClick = (data) => {
-    setCurrentPage(data.selected); // Sayfa numarasını günceller
+    setCurrentPage(data.selected);
   };
 
   return (
     <div>
       <div className="flex justify-between gap-3 mb-4">
-        <h3 className="title">Campaign</h3>{' '}
+        <h3 className="title">{translate('Campaigns', language)}</h3>{' '}
         <Link
           to="/admin/campaign"
           className="flex justify-center items-center pr-3 gap-1 rounded-lg add_button_2"
         >
           {' '}
           <span className="mb-1 ml-2 text-[30px] hover:text-white">+</span>
-          Add Campaign
+          {translate('Add_Campaign', language)}
         </Link>
       </div>
       <div>

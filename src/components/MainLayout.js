@@ -31,9 +31,16 @@ import {
   user,
   users,
 } from '../assets';
+import { useTranslation } from './TranslationContext';
 const { Header, Sider, Content } = Layout;
 
 const MainLayout = () => {
+  const { translate, changeLanguage, currentLanguage } = useTranslation();
+
+  const handleLanguageChange = (e) => {
+    const newLanguage = e.target.value;
+    changeLanguage(newLanguage);
+  };
   const [collapsed, setCollapsed] = useState(false);
   const {
     token: { colorBgContainer },
@@ -256,7 +263,7 @@ const MainLayout = () => {
               onClick: () => setCollapsed(!collapsed),
             }
           )}
-          <div className="d-flex gap-3 aling-items-center">
+          <div className="d-flex gap-3 aling-items-center ">
             <div className="d-flex gap-15 align-items-center dropdown ">
               <div
                 role="button"
@@ -308,6 +315,16 @@ const MainLayout = () => {
                     <img src={signout} alt="" className="w-6" /> Signout
                   </button>
                 </li>
+              </div>
+              <div className="">
+                <select
+                  className="rounded-3xl px-[10px] py-0 mt-9 text-[14px] "
+                  onChange={handleLanguageChange}
+                  value={currentLanguage}
+                >
+                  <option value="az">Azerbaijani</option>
+                  <option value="en">English</option>
+                </select>
               </div>
             </div>
           </div>

@@ -15,6 +15,7 @@ import {
 } from '../features/advantages/advantagesSlice';
 import { uploadImg } from '../features/upload/uploadSlice';
 import { language } from '../Language/languages';
+import { useTranslation } from '../components/TranslationContext';
 
 let schema = yup.object({
   title: yup.object().shape(
@@ -188,6 +189,7 @@ const Addadvantage = () => {
       <h3 className="mb-4 title">
         {getadvantageId !== undefined ? 'Edit' : 'Add'} advantage
       </h3>
+
       <div>
         <form
           onSubmit={(e) => {

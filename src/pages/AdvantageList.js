@@ -13,6 +13,8 @@ import {
   getadvantages,
   resetState,
 } from '../features/advantages/advantagesSlice';
+import { Add_Advantages } from '../Language/az';
+import { useTranslation } from '../components/TranslationContext';
 
 const AdvantageList = () => {
   const [open, setOpen] = useState(false);
@@ -57,20 +59,18 @@ const AdvantageList = () => {
     setCurrentPage(data.selected);
   };
 
-  // useEffect(() => {
-  //   formik.setFieldValue('active', new. ? '0' : '1');
-  // }, [newVacancy.vacancyActive]);
+  const { translate, language } = useTranslation();
 
   return (
     <div>
       <div className="flex justify-between gap-3 mb-4">
-        <h3 className="title">Advantages</h3>
+        <h3 className="title">{translate('Advantages', language)}</h3>
         <Link
           to={`/admin/advantage`}
           className="flex justify-center items-center pr-3 gap-1 rounded-lg add_button_2"
         >
           <span className="mb-1 ml-2 text-[30px] hover:text-white">+</span>
-          Add advantage
+          {translate('Add_Advantages', language)}
         </Link>
       </div>
       <div>
