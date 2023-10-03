@@ -10,6 +10,7 @@ import { toast } from 'react-toastify';
 import { BsArrowLeft, BsArrowRight } from 'react-icons/bs';
 import Popup from 'reactjs-popup';
 import ReactPaginate from 'react-paginate';
+import { useTranslation } from '../components/TranslationContext';
 
 const Popuplist = () => {
   const [open, setOpen] = useState(false);
@@ -52,11 +53,12 @@ const Popuplist = () => {
   const handlePageClick = (data) => {
     setCurrentPage(data.selected);
   };
+  const { translate, Language } = useTranslation();
 
   return (
     <div>
       <div className="flex justify-between gap-3 mb-4">
-        <h3 className="title">Popups</h3>
+        <h3 className="title-popup"> {translate('Popups', Language)}</h3>
       </div>
       <div>
         <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
@@ -67,16 +69,24 @@ const Popuplist = () => {
                   No
                 </th>
                 <th scope="col" className="px-6 py-3">
-                  <div className="flex items-center">Status</div>
+                  <div className="flex items-center">
+                    {translate('Status', Language)}
+                  </div>
                 </th>
                 <th scope="col" className="px-6 py-3">
-                  <div className="flex items-center">Content</div>
+                  <div className="flex items-center">
+                    {translate('Content', Language)}
+                  </div>
                 </th>
                 <th scope="col" className="px-6 py-3">
-                  <div className="flex items-center">Handle</div>
+                  <div className="flex items-center">
+                    {translate('Handle', Language)}
+                  </div>
                 </th>
                 <th scope="col" className="px-6 py-3">
-                  <div className="flex items-center">Image</div>
+                  <div className="flex items-center">
+                    {translate('Image', Language)}
+                  </div>
                 </th>
                 <th scope="col" className="px-6 py-3"></th>
               </tr>
@@ -98,7 +108,9 @@ const Popuplist = () => {
                       popup.active === true ? 'text-green-500' : 'text-red-500'
                     }`}
                   >
-                    {popup.active === true ? 'Active' : 'Not Active'}
+                    {popup.active === true
+                      ? `${translate('Active', Language)}`
+                      : `${translate('Not_Active', Language)}`}
                   </td>
                   <td className="px-6 py-4">{popup.content}</td>
                   <td className="px-6 py-4">{popup.handle}</td>
@@ -175,7 +187,7 @@ const Popuplist = () => {
         performAction={() => {
           deletePopup(popupId);
         }}
-        title={`Are you sure you want to delete  this faq ?`}
+        title={translate('Popup_Modal', Language)}
       />
     </div>
   );

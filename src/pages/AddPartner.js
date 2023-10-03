@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import CustomInput from '../components/CustomInput';
 import { useDispatch, useSelector } from 'react-redux';
 import { toast } from 'react-toastify';
@@ -14,7 +14,7 @@ import {
   updateApartner,
 } from '../features/partners/partnersSlice';
 import { uploadImg } from '../features/upload/uploadSlice';
-import { language } from '../Language/languages';
+import { useTranslation } from '../components/TranslationContext';
 
 let schema = yup.object({
   name: yup.string().required('Name is required'),
@@ -23,7 +23,6 @@ let schema = yup.object({
 });
 
 const AddPartner = () => {
-  const [selectedLanguage1, setSelectedLanguage1] = useState('az');
   const [isFileDetected, setIsFileDetected] = useState(false);
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -117,13 +116,14 @@ const AddPartner = () => {
     }
   }, [getPartnerId, newPartner.partnerActive]);
 
-  const handleLanguageClick1 = (language) => {
-    setSelectedLanguage1(language);
-  };
+  const { translate, Language } = useTranslation();
+
   return (
     <div>
       <h3 className="mb-4 title">
-        {getPartnerId !== undefined ? 'Edit' : 'Add'} Partner
+        {getPartnerId !== undefined
+          ? `${translate('Edit_Partner', Language)}`
+          : `${translate('Add_Partner', Language)}`}{' '}
       </h3>
       <div>
         <form
@@ -146,7 +146,7 @@ const AddPartner = () => {
           }}
         >
           <label htmlFor="" className="mt-2">
-            Status
+            {translate('Status', Language)}
           </label>
           <div className="my-2">
             <div className="mt-1">
@@ -160,7 +160,7 @@ const AddPartner = () => {
                   checked={formik.values.active === 1}
                   className="text-blue-500 form-radio h-4 w-4"
                 />
-                <span className="ml-2">Active</span>
+                <span className="ml-2"> {translate('Yes', Language)}</span>
               </label>
               <label className="inline-flex items-center ml-6">
                 <input
@@ -172,7 +172,7 @@ const AddPartner = () => {
                   checked={formik.values.active === 0}
                   className="text-blue-500 form-radio h-4 w-4"
                 />
-                <span className="ml-2">Not Active</span>
+                <span className="ml-2">{translate('No', Language)}</span>
               </label>
             </div>
           </div>
@@ -180,9 +180,8 @@ const AddPartner = () => {
             {formik.touched.active && formik.errors.active}
           </div>
           <label htmlFor="" className="mt-1">
-            Name
+            {translate('Name', Language)}
           </label>
-
           <CustomInput
             type="text"
             name={`name`}
@@ -194,7 +193,7 @@ const AddPartner = () => {
             {formik.touched.name && formik.errors.name}
           </div>
           <label htmlFor="" className="mt-3">
-            Logo
+            {translate('Logo', Language)}
           </label>
           <div className="flex justify-space w-full gap-10">
             <div className="mt-2 text-center">
@@ -219,14 +218,11 @@ const AddPartner = () => {
                           <div className="flex flex-col items-center justify-center pt-5 pb-6">
                             {isFileDetected ? (
                               <p className="mb-2 text-sm text-yellow-600 dark:text-yellow-400">
-                                File detected
+                                {translate('File_Detected', Language)}
                               </p>
                             ) : (
                               <p className="mb-2 text-sm text-gray-500 dark:text-gray-400">
-                                <span className="font-semibold">
-                                  Click to upload
-                                </span>{' '}
-                                or drag and drop
+                                {translate('Image_Drop', Language)}
                               </p>
                             )}
 
@@ -245,12 +241,6 @@ const AddPartner = () => {
                                 d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"
                               ></path>
                             </svg>
-                            <p className="mb-2 text-sm text-gray-500 dark:text-gray-400">
-                              <span className="font-semibold">
-                                Click to upload
-                              </span>{' '}
-                              or drag and drop
-                            </p>
                             <p className="text-xs text-gray-500 dark:text-gray-400">
                               SVG, PNG, JPG or GIF (MAX. 800x400px)
                             </p>
@@ -278,7 +268,9 @@ const AddPartner = () => {
             type="submit"
             className="mt-10 text-purple-700 hover:text-white border border-purple-700 hover:bg-purple-800 focus:ring-4 focus:outline-none focus:ring-purple-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center mr-2 mb-2 add_button"
           >
-            {getPartnerId !== undefined ? 'Edit' : 'Add'} partner
+            {getPartnerId !== undefined
+              ? `${translate('Edit', Language)}`
+              : `${translate('Add', Language)}`}{' '}
           </button>
         </form>
       </div>

@@ -17,6 +17,7 @@ import { getcountries } from '../features/countries/countriesSlice';
 import { gettariffs } from '../features/tariffs/tariffSlice';
 import { uploadImg } from '../features/upload/uploadSlice';
 import { language } from '../Language/languages';
+import { useTranslation } from '../components/TranslationContext';
 
 let schema = yup.object({
   name: yup.object().shape(
@@ -206,11 +207,14 @@ const Addchannel = () => {
   const handleLanguageClick1 = (language) => {
     setSelectedLanguage1(language);
   };
+  const { translate, Language } = useTranslation();
 
   return (
     <div>
       <h3 className="mb-4 title">
-        {getchannelId !== undefined ? 'Edit' : 'Add'} Channel
+        {getchannelId !== undefined
+          ? `${translate('Edit_Channel', Language)}`
+          : `${translate('Add_Channel', Language)}`}
       </h3>
       <div>
         <form
@@ -242,9 +246,9 @@ const Addchannel = () => {
         >
           {' '}
           <label htmlFor="" className="mt-2">
-            Status
+            {translate('Status', Language)}
           </label>
-          <div className="my-4">
+          <div className="my-2">
             <div className="mt-1">
               <label className="inline-flex items-center">
                 <input
@@ -256,7 +260,7 @@ const Addchannel = () => {
                   checked={formik.values.active === 1}
                   className="text-blue-500 form-radio h-4 w-4"
                 />
-                <span className="ml-2">Active</span>
+                <span className="ml-2">{translate('Yes', Language)}</span>
               </label>
               <label className="inline-flex items-center ml-6">
                 <input
@@ -268,15 +272,15 @@ const Addchannel = () => {
                   checked={formik.values.active === 0}
                   className="text-blue-500 form-radio h-4 w-4"
                 />
-                <span className="ml-2">Not Active</span>
+                <span className="ml-2">{translate('No', Language)}</span>
               </label>
             </div>
           </div>
           <div className="error">
             {formik.touched.active && formik.errors.active}
           </div>
-          <label htmlFor="" className="mt-2">
-            Name
+          <label htmlFor="" className="">
+            {translate('Name', Language)}
           </label>
           <div className="flex">
             {language.map((lang, index) => (
@@ -297,7 +301,6 @@ const Addchannel = () => {
                 key={lang}
                 className={lang === selectedLanguage1 ? '' : 'hidden'}
               >
-                {' '}
                 <CustomInput
                   type="text"
                   name={`name.${lang}`}
@@ -314,7 +317,7 @@ const Addchannel = () => {
             );
           })}
           <label htmlFor="" className="mt-2">
-            Country
+            {translate('Country', Language)}
           </label>
           <select
             className="text-[#637381] mt-2 bg-inherit w text-[15px] font-medium rounded-lg block w-1/8 p-2.5 focus:ring-0 hom"
@@ -324,7 +327,7 @@ const Addchannel = () => {
             onBlur={formik.handleBlur('country_id')}
             value={formik.values.country_id}
           >
-            <option value="">Select Country</option>
+            <option value=""> {translate('Select_Country', Language)}</option>
             {countryState?.map((country) => (
               <option key={country.id} value={country.id}>
                 {country.name}
@@ -335,7 +338,7 @@ const Addchannel = () => {
             {formik.touched.country_id && formik.errors.country_id}
           </div>
           <label htmlFor="" className="mt-2">
-            Tariff
+            {translate('Tariff', Language)}{' '}
           </label>
           <select
             className="text-[#637381] mt-2 bg-inherit w text-[15px] font-medium rounded-lg block w-1/8 p-2.5 focus:ring-0 hom"
@@ -345,7 +348,7 @@ const Addchannel = () => {
             onBlur={formik.handleBlur('tariff_id')}
             value={formik.values.tariff_id}
           >
-            <option value="">Select Tariff</option>
+            <option value=""> {translate('Select_Tariff', Language)}</option>
             {tariffState?.map((tariff) => (
               <option key={tariff.id} value={tariff.id}>
                 {tariff.name}
@@ -356,7 +359,7 @@ const Addchannel = () => {
             {formik.touched.tariff_id && formik.errors.tariff_id}
           </div>
           <label htmlFor="" className="mt-2">
-            Image
+            {translate('Image', Language)}
           </label>
           <div className="">
             <div className="text-center">
@@ -383,14 +386,11 @@ const Addchannel = () => {
                               <div className="flex flex-col items-center justify-center pt-5 pb-6">
                                 {isFileDetected ? (
                                   <p className="mb-2 text-sm text-yellow-600 dark:text-yellow-400">
-                                    File detected
+                                    {translate('File_Detected', Language)}
                                   </p>
                                 ) : (
                                   <p className="mb-2 text-sm text-gray-500 dark:text-gray-400">
-                                    <span className="font-semibold">
-                                      Click to upload
-                                    </span>{' '}
-                                    or drag and drop
+                                    {translate('Image_Drop', Language)}
                                   </p>
                                 )}
 
@@ -409,12 +409,6 @@ const Addchannel = () => {
                                     d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"
                                   ></path>
                                 </svg>
-                                <p className="mb-2 text-sm text-gray-500 dark:text-gray-400">
-                                  <span className="font-semibold">
-                                    Click to upload
-                                  </span>{' '}
-                                  or drag and drop
-                                </p>
                                 <p className="text-xs text-gray-500 dark:text-gray-400">
                                   SVG, PNG, JPG or GIF (MAX. 800x400px)
                                 </p>
@@ -444,7 +438,9 @@ const Addchannel = () => {
             type="submit"
             className="mt-10 text-purple-700 hover:text-white border border-purple-700 hover:bg-purple-800 focus:ring-4 focus:outline-none focus:ring-purple-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center mr-2 mb-2 add_button"
           >
-            {getchannelId !== undefined ? 'Edit' : 'Add'} channel
+            {getchannelId !== undefined
+              ? `${translate('Edit', Language)}`
+              : `${translate('Add', Language)}`}
           </button>
         </form>
       </div>

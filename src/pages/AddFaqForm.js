@@ -11,6 +11,7 @@ import {
   updateAfaqform,
 } from '../features/faqform/faqformSlice';
 import { useLocation, useNavigate } from 'react-router-dom';
+import { useTranslation } from '../components/TranslationContext';
 
 let schema = yup.object({
   name: yup.string().required('Name is Required'),
@@ -92,10 +93,14 @@ const AddFaqForm = (e) => {
     },
   });
 
+  const { translate, Language } = useTranslation();
+
   return (
     <div>
       <h3 className="mb-4 title">
-        {getfaqformId !== undefined ? 'Edit' : 'Add'} Faq Form
+        {getfaqformId !== undefined
+          ? `${translate('Edit_Faq_Form', Language)}`
+          : `${translate('Add_Faq_Form', Language)}`}{' '}
       </h3>
       <div className="">
         <form
@@ -117,7 +122,7 @@ const AddFaqForm = (e) => {
         >
           <div className="mt-2">
             <label htmlFor="" className="mt-2">
-              Name
+              {translate('Name', Language)}
             </label>
             <CustomInput
               type="text"
@@ -131,7 +136,7 @@ const AddFaqForm = (e) => {
               {formik.touched.name && formik.errors.name}
             </div>
             <label htmlFor="" className="mt-2">
-              Phone
+              {translate('Phone', Language)}
             </label>
             <CustomInput
               type="text"
@@ -145,7 +150,7 @@ const AddFaqForm = (e) => {
               {formik.touched.phone && formik.errors.phone}
             </div>
             <label htmlFor="" className="mt-2">
-              Question
+              {translate('Question', Language)}
             </label>
             <CustomInput
               type="text"
@@ -163,7 +168,9 @@ const AddFaqForm = (e) => {
             type="submit"
             className="mt-10 text-purple-700 hover:text-white border border-purple-700 hover:bg-purple-800 focus:ring-4 focus:outline-none focus:ring-purple-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center mr-2 mb-2 add_button"
           >
-            {getfaqformId !== undefined ? 'Edit' : 'Add'} Faq Form
+            {getfaqformId !== undefined
+              ? `${translate('Edit', Language)}`
+              : `${translate('Add', Language)}`}{' '}
           </button>
         </form>
       </div>

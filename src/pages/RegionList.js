@@ -5,6 +5,7 @@ import { VscEdit } from 'react-icons/vsc';
 import { getregions, resetState } from '../features/regions/regionSlice';
 import ReactPaginate from 'react-paginate';
 import { BsArrowLeft, BsArrowRight } from 'react-icons/bs';
+import { useTranslation } from '../components/TranslationContext';
 
 const RegionList = () => {
   const dispatch = useDispatch();
@@ -28,11 +29,12 @@ const RegionList = () => {
     setCurrentPage(data?.selected);
   };
   console.log(filteredRegion);
+  const { translate, Language } = useTranslation();
 
   return (
     <div>
       <div className="flex justify-between gap-3 mb-4">
-        <h3 className="title">Regions</h3>
+        <h3 className="title"> {translate('Regions', Language)}</h3>
       </div>
       <div>
         <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
@@ -43,19 +45,33 @@ const RegionList = () => {
                   No
                 </th>
                 <th scope="col" className="px-6 py-3">
-                  <div className="flex items-center">Status</div>
+                  <div className="flex items-center">
+                    {' '}
+                    {translate('Status', Language)}
+                  </div>
                 </th>
                 <th scope="col" className="px-6 py-3">
-                  <div className="flex items-center">Name</div>
+                  <div className="flex items-center">
+                    {' '}
+                    {translate('Name', Language)}
+                  </div>
                 </th>
                 <th scope="col" className="px-6 py-3">
-                  <div className="flex items-center">Description</div>
+                  <div className="flex items-center">
+                    {' '}
+                    {translate('Description', Language)}
+                  </div>
                 </th>
                 <th scope="col" className="px-6 py-3">
-                  <div className="flex items-center">Handle</div>
+                  <div className="flex items-center">
+                    {' '}
+                    {translate('Handle', Language)}
+                  </div>
                 </th>
                 <th scope="col" className="px-6 py-3">
-                  <div className="flex items-center">Color</div>
+                  <div className="flex items-center">
+                    {translate('Color', Language)}
+                  </div>
                 </th>
                 <th scope="col" className="px-6 py-3"></th>
               </tr>
@@ -77,7 +93,9 @@ const RegionList = () => {
                       region.active === true ? 'text-green-500' : 'text-red-500'
                     }`}
                   >
-                    {region.active === true ? 'Active' : 'Not Active'}
+                    {region.active === true
+                      ? `${translate('Active', Language)}`
+                      : `${translate('Not_Active', Language)}`}
                   </td>
                   <td className="px-6 py-4">{region.name}</td>
                   <td className="px-6 py-4">{region.description}</td>

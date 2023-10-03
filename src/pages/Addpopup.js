@@ -15,6 +15,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import Dropzone from 'react-dropzone';
 import { uploadImg } from '../features/upload/uploadSlice';
 import { language } from '../Language/languages';
+import { useTranslation } from '../components/TranslationContext';
 
 let schema = yup.object({
   content: yup.object().shape(
@@ -143,10 +144,14 @@ const Addpopup = () => {
     setSelectedLanguage1(language);
   };
 
+  const { translate, Language } = useTranslation();
+
   return (
     <div>
-      <h3 className="mb-4 title">
-        {getPopupId !== undefined ? 'Edit' : 'Add'} Popup
+      <h3 className="mb-4 title-popup">
+        {getPopupId !== undefined
+          ? `${translate('Edit_Popup', Language)}`
+          : `${translate('Add_Popup', Language)}`}{' '}
       </h3>
       <div>
         <form
@@ -178,7 +183,7 @@ const Addpopup = () => {
         >
           {' '}
           <label htmlFor="" className="mt-2">
-            Status
+            {translate('Status', Language)}
           </label>
           <div className="my-2">
             <div className="mt-1">
@@ -192,7 +197,7 @@ const Addpopup = () => {
                   checked={formik.values.active === 1}
                   className="text-blue-500 form-radio h-4 w-4"
                 />
-                <span className="ml-2">Active</span>
+                <span className="ml-2"> {translate('Yes', Language)}</span>
               </label>
               <label className="inline-flex items-center ml-6">
                 <input
@@ -204,12 +209,12 @@ const Addpopup = () => {
                   checked={formik.values.active === 0}
                   className="text-blue-500 form-radio h-4 w-4"
                 />
-                <span className="ml-2">Not Active</span>
+                <span className="ml-2">{translate('No', Language)}</span>
               </label>
             </div>
           </div>
           <label htmlFor="" className="">
-            Handle
+            {translate('Handle', Language)}
           </label>
           <CustomInput
             type="text"
@@ -223,7 +228,7 @@ const Addpopup = () => {
             {formik.touched.handle && formik.errors.handle}
           </div>
           <label htmlFor="" className="mt-2">
-            Content
+            {translate('Content', Language)}
           </label>
           <div className="flex">
             {language.map((lang, index) => (
@@ -258,7 +263,7 @@ const Addpopup = () => {
             );
           })}
           <label htmlFor="" className="mt-2">
-            Image
+            {translate('Image', Language)}
           </label>
           <div className="flex justify-space w-full gap-10">
             <div className="mt-2 text-center">
@@ -282,14 +287,11 @@ const Addpopup = () => {
                           <div className="flex flex-col items-center justify-center pt-5 pb-6">
                             {isFileDetected ? (
                               <p className="mb-2 text-sm text-yellow-600 dark:text-yellow-400">
-                                File detected
+                                {translate('File_Detected', Language)}
                               </p>
                             ) : (
                               <p className="mb-2 text-sm text-gray-500 dark:text-gray-400">
-                                <span className="font-semibold">
-                                  Click to upload
-                                </span>{' '}
-                                or drag and drop
+                                {translate('Image_Drop', Language)}
                               </p>
                             )}
 
@@ -308,12 +310,6 @@ const Addpopup = () => {
                                 d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"
                               ></path>
                             </svg>
-                            <p className="mb-2 text-sm text-gray-500 dark:text-gray-400">
-                              <span className="font-semibold">
-                                Click to upload
-                              </span>{' '}
-                              or drag and drop
-                            </p>
                             <p className="text-xs text-gray-500 dark:text-gray-400">
                               SVG, PNG, JPG or GIF (MAX. 800x400px)
                             </p>
@@ -341,7 +337,9 @@ const Addpopup = () => {
             type="submit"
             className="mt-10 text-purple-700 hover:text-white border border-purple-700 hover:bg-purple-800 focus:ring-4 focus:outline-none focus:ring-purple-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center mr-2 mb-2 add_button"
           >
-            {getPopupId !== undefined ? 'Edit' : 'Add'} Popup
+            {getPopupId !== undefined
+              ? `${translate('Edit', Language)}`
+              : `${translate('Add', Language)}`}{' '}
           </button>
         </form>
       </div>

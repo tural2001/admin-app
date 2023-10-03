@@ -12,6 +12,7 @@ import {
 import { toast } from 'react-toastify';
 import ReactPaginate from 'react-paginate';
 import { BsArrowLeft, BsArrowRight } from 'react-icons/bs';
+import { useTranslation } from '../components/TranslationContext';
 
 const TariffList = () => {
   const [open, setOpen] = useState(false);
@@ -54,17 +55,18 @@ const TariffList = () => {
     setCurrentPage(data.selected);
   };
   console.log(filteredTariff);
+  const { translate, Language } = useTranslation();
 
   return (
     <div>
       <div className="flex justify-between gap-3 mb-4">
-        <h3 className="title">Tariffs</h3>
+        <h3 className="title"> {translate('Tariffs', Language)}</h3>
         <Link
           to={`/admin/tariff`}
           className="flex justify-center items-center pr-3 gap-1 rounded-lg add_button_2"
         >
           <span className="mb-1 ml-2 text-[30px] hover:text-white">+</span>
-          Add Tariff
+          {translate('Add_Tariff', Language)}
         </Link>
       </div>
       <div>
@@ -76,25 +78,39 @@ const TariffList = () => {
                   No
                 </th>
                 <th scope="col" className="px-6 py-3">
-                  <div className="flex items-center">Status</div>
+                  <div className="flex items-center">
+                    {translate('Status', Language)}
+                  </div>
                 </th>
                 <th scope="col" className="px-6 py-3">
-                  <div className="flex items-center">Name</div>
+                  <div className="flex items-center">
+                    {translate('Name', Language)}
+                  </div>
                 </th>
                 <th scope="col" className="px-6 py-3">
-                  <div className="flex items-center">Service</div>
+                  <div className="flex items-center">
+                    {translate('Service', Language)}
+                  </div>
                 </th>
                 <th scope="col" className="px-6 py-3">
-                  <div className="flex items-center">Type</div>
+                  <div className="flex items-center">
+                    {translate('Type', Language)}
+                  </div>
                 </th>
                 <th scope="col" className="px-6 py-3">
-                  <div className="flex items-center">Description</div>
+                  <div className="flex items-center">
+                    {translate('Description', Language)}
+                  </div>
                 </th>
                 <th scope="col" className="px-6 py-3">
-                  <div className="flex items-center">Price</div>
+                  <div className="flex items-center">
+                    {translate('Price', Language)}
+                  </div>
                 </th>
                 <th scope="col" className="px-6 py-3">
-                  <div className="flex items-center">Speed</div>
+                  <div className="flex items-center">
+                    {translate('Speed', Language)}
+                  </div>
                 </th>
                 <th scope="col" className="px-6 py-3"></th>
               </tr>
@@ -163,7 +179,7 @@ const TariffList = () => {
         performAction={() => {
           deleteTariff(tariffId);
         }}
-        title={`Are you sure you want to delete  this tariff ?`}
+        title={translate('Tariff_Modal', Language)}
       />
     </div>
   );

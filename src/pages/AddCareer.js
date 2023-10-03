@@ -14,6 +14,7 @@ import {
   updateAcareer,
 } from '../features/career/careerSlice';
 import { uploadImg } from '../features/upload/uploadSlice';
+import { useTranslation } from '../components/TranslationContext';
 
 let schema = yup.object({
   name: yup.string().required('Name is Required'),
@@ -118,16 +119,20 @@ const AddCareer = () => {
 
   useEffect(() => {
     if (getcareerId === undefined) {
-      formik.setFieldValue('active', '1');
+      formik.setFieldValue('active', 1);
     } else {
-      formik.setFieldValue('active', newcareer.campaignActive ? '1' : '0');
+      formik.setFieldValue('active', newcareer.campaignActive ? 1 : 0);
     }
   }, [getcareerId, newcareer.campaignActive]);
+
+  const { translate, Language } = useTranslation();
 
   return (
     <div>
       <h3 className="mb-4 title">
-        {getcareerId !== undefined ? 'Edit' : 'Add'} Career Form
+        {getcareerId !== undefined
+          ? `${translate('Edit_Career', Language)}`
+          : `${translate('Add_Career', Language)}`}
       </h3>
       <div>
         <form
@@ -164,29 +169,29 @@ const AddCareer = () => {
                 <input
                   type="radio"
                   name="active"
-                  onChange={() => formik.setFieldValue('active', '1')}
+                  onChange={() => formik.setFieldValue('active', 1)}
                   onBlur={formik.handleBlur}
-                  value="1"
-                  checked={formik.values.active === '1'}
+                  value={1}
+                  checked={formik.values.active === 1}
                   className="text-blue-500 form-radio h-4 w-4"
                 />
-                <span className="ml-2">Active</span>
+                <span className="ml-2">{translate('Yes', Language)}</span>
               </label>
               <label className="inline-flex items-center ml-6">
                 <input
                   type="radio"
                   name="active"
-                  onChange={() => formik.setFieldValue('active', '0')}
+                  onChange={() => formik.setFieldValue('active', 0)}
                   onBlur={formik.handleBlur}
-                  value="0"
-                  checked={formik.values.active === '0'}
+                  value={0}
+                  checked={formik.values.active === 0}
                   className="text-blue-500 form-radio h-4 w-4"
                 />
-                <span className="ml-2">Not Active</span>
+                <span className="ml-2">{translate('No', Language)}</span>
               </label>
             </div>
           </div>
-          <label htmlFor="">Name</label>
+          <label htmlFor="">{translate('Name', Language)}</label>
           <CustomInput
             type="text"
             label="Enter career name"
@@ -198,7 +203,7 @@ const AddCareer = () => {
           <div className="error">
             {formik.touched.name && formik.errors.name}
           </div>
-          <label htmlFor="">Phone</label>
+          <label htmlFor="">{translate('Phone', Language)}</label>
           <CustomInput
             type="number"
             label="Enter career Phone"
@@ -210,7 +215,7 @@ const AddCareer = () => {
           <div className="error">
             {formik.touched.phone && formik.errors.phone}
           </div>
-          <label htmlFor="">Email</label>
+          <label htmlFor="">{translate('Email', Language)}</label>
           <CustomInput
             type="email"
             label="Enter career email"
@@ -223,7 +228,7 @@ const AddCareer = () => {
             {formik.touched.email && formik.errors.email}
           </div>
           <label htmlFor="" className="my-2">
-            Vacancy name
+            {translate('Vacancy_Name', Language)}
           </label>
           <CustomInput
             type="text"
@@ -237,7 +242,7 @@ const AddCareer = () => {
             {formik.touched.vacancy_name && formik.errors.vacancy_name}
           </div>
           <label htmlFor="" className="my-2">
-            Notes
+            {translate('Notes', Language)}
           </label>
           <CustomInput
             type="email"
@@ -251,7 +256,7 @@ const AddCareer = () => {
             {formik.touched.notes && formik.errors.notes}
           </div>
           <label htmlFor="" className="mt-2">
-            Cv
+            {translate('Cv', Language)}
           </label>
           <div className="">
             <div className="text-center">
@@ -278,14 +283,11 @@ const AddCareer = () => {
                               <div className="flex flex-col items-center justify-center pt-5 pb-6">
                                 {isFileDetected ? (
                                   <p className="mb-2 text-sm text-yellow-600 dark:text-yellow-400">
-                                    File detected
+                                    {translate('File_Detected', Language)}{' '}
                                   </p>
                                 ) : (
                                   <p className="mb-2 text-sm text-gray-500 dark:text-gray-400">
-                                    <span className="font-semibold">
-                                      Click to upload
-                                    </span>{' '}
-                                    or drag and drop
+                                    {translate('Image_Drop', Language)}
                                   </p>
                                 )}
 
@@ -304,12 +306,6 @@ const AddCareer = () => {
                                     d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"
                                   ></path>
                                 </svg>
-                                <p className="mb-2 text-sm text-gray-500 dark:text-gray-400">
-                                  <span className="font-semibold">
-                                    Click to upload
-                                  </span>{' '}
-                                  or drag and drop
-                                </p>
                                 <p className="text-xs text-gray-500 dark:text-gray-400">
                                   SVG, PNG, JPG or GIF (MAX. 800x400px)
                                 </p>
@@ -342,7 +338,9 @@ const AddCareer = () => {
             type="submit"
             className="mt-10 text-purple-700 hover:text-white border border-purple-700 hover:bg-purple-800 focus:ring-4 focus:outline-none focus:ring-purple-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center mr-2 mb-2 add_button"
           >
-            {getcareerId !== undefined ? 'Edit' : 'Add'} Career Form
+            {getcareerId !== undefined
+              ? `${translate('Edit_Career', Language)}`
+              : `${translate('Add_Career', Language)}`}{' '}
           </button>
         </form>
       </div>

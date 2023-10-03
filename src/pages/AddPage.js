@@ -15,6 +15,7 @@ import {
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 import { language } from '../Language/languages';
+import { useTranslation } from '../components/TranslationContext';
 
 let schema = yup.object({
   title: yup.object().shape(
@@ -246,11 +247,14 @@ const AddPage = () => {
   const handleLanguageClick5 = (language) => {
     setSelectedLanguage5(language);
   };
+  const { translate, Language } = useTranslation();
 
   return (
     <div>
       <h3 className="mb-4 title">
-        {getpageId !== undefined ? 'Edit' : 'Add'} Page
+        {getpageId !== undefined
+          ? `${translate('Edit_Page', Language)}`
+          : `${translate('Add_Page', Language)}`}{' '}
       </h3>
       <div>
         <form
@@ -285,9 +289,8 @@ const AddPage = () => {
             formik.handleSubmit(e);
           }}
         >
-          {' '}
           <label htmlFor="" className="mt-2">
-            Meta title
+            {translate('Meta_Title', Language)}
           </label>
           <div className="flex">
             {language.map((lang, index) => (
@@ -319,7 +322,7 @@ const AddPage = () => {
             );
           })}
           <label htmlFor="" className="mt-2">
-            Meta description
+            {translate('Meta_Description', Language)}
           </label>
           <div className="flex">
             {language.map((lang, index) => (
@@ -351,7 +354,7 @@ const AddPage = () => {
             );
           })}
           <label htmlFor="" className="mt-2">
-            Slug
+            {translate('Slug', Language)}
           </label>
           <div className="flex">
             {language.map((lang, index) => (
@@ -383,7 +386,7 @@ const AddPage = () => {
             );
           })}
           <label htmlFor="" className="mt-2">
-            Title
+            {translate('Title', Language)}
           </label>
           <div className="flex">
             {language.map((lang, index) => (
@@ -404,7 +407,6 @@ const AddPage = () => {
                 key={lang}
                 className={lang === selectedLanguage4 ? '' : 'hidden'}
               >
-                {' '}
                 <CustomInput
                   type="text"
                   name={`title.${lang}`}
@@ -421,7 +423,7 @@ const AddPage = () => {
             );
           })}
           <label htmlFor="" className="mt-2">
-            Content
+            {translate('Content', Language)}
           </label>
           <div className="flex">
             {language.map((lang, index) => (
@@ -463,7 +465,9 @@ const AddPage = () => {
             type="submit"
             className="mt-10 text-purple-700 hover:text-white border border-purple-700 hover:bg-purple-800 focus:ring-4 focus:outline-none focus:ring-purple-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center mr-2 mb-2 add_button"
           >
-            {getpageId !== undefined ? 'Edit' : 'Add'} Page
+            {getpageId !== undefined
+              ? `${translate('Edit_Page', Language)}`
+              : `${translate('Add_Page', Language)}`}{' '}
           </button>
         </form>
       </div>

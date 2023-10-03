@@ -183,11 +183,14 @@ const Addadvantage = () => {
   const handleLanguageClick1 = (language) => {
     setSelectedLanguage1(language);
   };
+  const { translate, Language } = useTranslation();
 
   return (
     <div>
       <h3 className="mb-4 title">
-        {getadvantageId !== undefined ? 'Edit' : 'Add'} advantage
+        {getadvantageId !== undefined
+          ? `${translate('Edit_Advantage', Language)}`
+          : `${translate('Add_Advantage', language)}`}
       </h3>
 
       <div>
@@ -219,7 +222,7 @@ const Addadvantage = () => {
           }}
         >
           <label htmlFor="" className="mt-2">
-            Status
+            {translate('Status', Language)}
           </label>
           <div className="my-3">
             <div className="mt-1">
@@ -233,7 +236,7 @@ const Addadvantage = () => {
                   checked={formik.values.active === 1}
                   className="text-blue-500 form-radio h-4 w-4"
                 />
-                <span className="ml-2">Active</span>
+                <span className="ml-2"> {translate('Yes', Language)}</span>
               </label>
               <label className="inline-flex items-center ml-6">
                 <input
@@ -245,12 +248,12 @@ const Addadvantage = () => {
                   checked={formik.values.active === 0}
                   className="text-blue-500 form-radio h-4 w-4"
                 />
-                <span className="ml-2">Not Active</span>
+                <span className="ml-2"> {translate('No', Language)}</span>
               </label>
             </div>
           </div>
           <label htmlFor="" className="mt-2">
-            Title
+            {translate('Title', Language)}
           </label>
           <div className="flex">
             {language.map((lang, index) => (
@@ -289,7 +292,7 @@ const Addadvantage = () => {
           })}
 
           <label htmlFor="" className="mt-2">
-            Icon
+            {translate('Icon', Language)}
           </label>
           <div className="">
             <div className="text-center">
@@ -315,14 +318,11 @@ const Addadvantage = () => {
                               <div className="flex flex-col items-center justify-center pt-5 pb-6">
                                 {isFileDetected ? (
                                   <p className="mb-2 text-sm text-yellow-600 dark:text-yellow-400">
-                                    File detected
+                                    {translate('File_Detected', Language)}
                                   </p>
                                 ) : (
                                   <p className="mb-2 text-sm text-gray-500 dark:text-gray-400">
-                                    <span className="font-semibold">
-                                      Click to upload
-                                    </span>{' '}
-                                    or drag and drop
+                                    {translate('Image_Drop', Language)}
                                   </p>
                                 )}
 
@@ -341,12 +341,6 @@ const Addadvantage = () => {
                                     d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"
                                   ></path>
                                 </svg>
-                                <p className="mb-2 text-sm text-gray-500 dark:text-gray-400">
-                                  <span className="font-semibold">
-                                    Click to upload
-                                  </span>{' '}
-                                  or drag and drop
-                                </p>
                                 <p className="text-xs text-gray-500 dark:text-gray-400">
                                   SVG, PNG, JPG or GIF (MAX. 800x400px)
                                 </p>
@@ -376,7 +370,9 @@ const Addadvantage = () => {
             type="submit"
             className="mt-10 text-purple-700 hover:text-white border border-purple-700 hover:bg-purple-800 focus:ring-4 focus:outline-none focus:ring-purple-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center mr-2 mb-2 add_button"
           >
-            {getadvantageId !== undefined ? 'Edit' : 'Add'} Advantage
+            {getadvantageId !== undefined
+              ? `${translate('Edit', Language)}`
+              : `${translate('Add', language)}`}
           </button>
         </form>
       </div>

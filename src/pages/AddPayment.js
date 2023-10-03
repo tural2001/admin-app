@@ -16,6 +16,7 @@ import {
 } from '../features/payments/paymentsSlice';
 import { uploadImg } from '../features/upload/uploadSlice';
 import { language } from '../Language/languages';
+import { useTranslation } from '../components/TranslationContext';
 
 let schema = yup.object({
   name: yup.object().shape(
@@ -75,7 +76,6 @@ const AddPayment = () => {
   const {
     isSuccess,
     isError,
-    isLoading,
     createdPayment,
     PaymentData,
     paymentActive,
@@ -107,37 +107,37 @@ const AddPayment = () => {
   const prevUpdatedPaymentRef = useRef();
   const debounceTimeoutRef = useRef(null);
 
-  // useEffect(() => {
-  //   const prevUpdatedPayment = prevUpdatedPaymentRef.current;
-  //   if (
-  //     isSuccess &&
-  //     updatedPayment !== undefined &&
-  //     updatedPayment !== prevUpdatedPayment
-  //   ) {
-  //     if (debounceTimeoutRef.current) {
-  //       clearTimeout(debounceTimeoutRef.current);
-  //     }
-  //     debounceTimeoutRef.current = setTimeout(() => {
-  //       toast.success('Payment Updated Successfully!');
-  //       prevUpdatedPaymentRef.current = updatedPayment;
-  //       navigate('/admin/payment-list');
-  //     }, 1000);
-  //   }
-  //   if (
-  //     isSuccess &&
-  //     createdPayment !== undefined &&
-  //     updatedPayment !== undefined
-  //   ) {
-  //     toast.success('Payment Added Successfully!');
-  //     navigate('/admin/payment-list');
-  //     setTimeout(() => {
-  //       window.location.reload();
-  //     }, 1000);
-  //   }
-  //   if (isError) {
-  //     toast.error('Something Went Wrong!');
-  //   }
-  // }, [isSuccess, isError, createdPayment, updatedPayment, navigate]);
+  useEffect(() => {
+    const prevUpdatedPayment = prevUpdatedPaymentRef.current;
+    if (
+      isSuccess &&
+      updatedPayment !== undefined &&
+      updatedPayment !== prevUpdatedPayment
+    ) {
+      if (debounceTimeoutRef.current) {
+        clearTimeout(debounceTimeoutRef.current);
+      }
+      debounceTimeoutRef.current = setTimeout(() => {
+        toast.success('Payment Updated Successfully!');
+        prevUpdatedPaymentRef.current = updatedPayment;
+        navigate('/admin/payment-list');
+      }, 1000);
+    }
+    if (
+      isSuccess &&
+      createdPayment !== undefined &&
+      updatedPayment !== undefined
+    ) {
+      toast.success('Payment Added Successfully!');
+      navigate('/admin/payment-list');
+      setTimeout(() => {
+        window.location.reload();
+      }, 1000);
+    }
+    if (isError) {
+      toast.error('Something Went Wrong!');
+    }
+  }, [isSuccess, isError, createdPayment, updatedPayment, navigate]);
 
   const formik = useFormik({
     enableReinitialize: true,
@@ -260,10 +260,14 @@ const AddPayment = () => {
     setSelectedLanguage4(language);
   };
 
+  const { translate, Language } = useTranslation();
+
   return (
     <div>
       <h3 className="mb-4 title">
-        {getPaymentId !== undefined ? 'Edit' : 'Add'} Payment
+        {getPaymentId !== undefined
+          ? `${translate('Edit_Payment', Language)}`
+          : `${translate('Add_Payment', Language)}`}{' '}
       </h3>
       <div>
         <form
@@ -293,7 +297,7 @@ const AddPayment = () => {
           }}
         >
           <label htmlFor="" className="mt-2">
-            Status
+            {translate('Status', Language)}
           </label>
           <div className="my-2">
             <div className="mt-1">
@@ -307,7 +311,7 @@ const AddPayment = () => {
                   checked={formik.values.active === 1}
                   className="text-blue-500 form-radio h-4 w-4"
                 />
-                <span className="ml-2">Active</span>
+                <span className="ml-2"> {translate('Yes', Language)}</span>
               </label>
               <label className="inline-flex items-center ml-6">
                 <input
@@ -319,13 +323,13 @@ const AddPayment = () => {
                   checked={formik.values.active === 0}
                   className="text-blue-500 form-radio h-4 w-4"
                 />
-                <span className="ml-2">Not Active</span>
+                <span className="ml-2">{translate('No', Language)}</span>
               </label>
             </div>
           </div>
 
           <label htmlFor="" className="mt-2">
-            Meta title
+            {translate('Meta_Title', Language)}
           </label>
           <div className="flex">
             {language.map((lang, index) => (
@@ -358,7 +362,7 @@ const AddPayment = () => {
             );
           })}
           <label htmlFor="" className="mt-2">
-            Meta description
+            {translate('Meta_Description', Language)}
           </label>
           <div className="flex">
             {language.map((lang, index) => (
@@ -390,7 +394,7 @@ const AddPayment = () => {
             );
           })}
           <label htmlFor="" className="mt-2">
-            Name
+            {translate('Name', Language)}
           </label>
           <div className="flex">
             {language.map((lang, index) => (
@@ -427,7 +431,7 @@ const AddPayment = () => {
             );
           })}
           <label htmlFor="" className="mt-2">
-            Description
+            {translate('Description', Language)}
           </label>
           <div className="flex">
             {language.map((lang, index) => (
@@ -459,18 +463,17 @@ const AddPayment = () => {
             );
           })}
           <label htmlFor="" className="mt-2">
-            Link
+            {translate('Link', Language)}
           </label>
           <CustomInput
             type="text"
-            label="Enter link"
             name="redirect_link"
             onCh={formik.handleChange('redirect_link')}
             onBl={formik.handleBlur('redirect_link')}
             val={formik.values.redirect_link}
           />
           <label htmlFor="" className="mt-2">
-            Image
+            {translate('Image', Language)}
           </label>
           <div className="">
             <div className="text-center">
@@ -497,14 +500,11 @@ const AddPayment = () => {
                               <div className="flex flex-col items-center justify-center pt-5 pb-6">
                                 {isFileDetected ? (
                                   <p className="mb-2 text-sm text-yellow-600 dark:text-yellow-400">
-                                    File detected
+                                    {translate('File_Detected', Language)}
                                   </p>
                                 ) : (
                                   <p className="mb-2 text-sm text-gray-500 dark:text-gray-400">
-                                    <span className="font-semibold">
-                                      Click to upload
-                                    </span>{' '}
-                                    or drag and drop
+                                    {translate('Image_Drop', Language)}
                                   </p>
                                 )}
 
@@ -523,12 +523,6 @@ const AddPayment = () => {
                                     d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"
                                   ></path>
                                 </svg>
-                                <p className="mb-2 text-sm text-gray-500 dark:text-gray-400">
-                                  <span className="font-semibold">
-                                    Click to upload
-                                  </span>{' '}
-                                  or drag and drop
-                                </p>
                                 <p className="text-xs text-gray-500 dark:text-gray-400">
                                   SVG, PNG, JPG or GIF (MAX. 800x400px)
                                 </p>
@@ -558,7 +552,9 @@ const AddPayment = () => {
             type="submit"
             className="mt-10 text-purple-700 hover:text-white border border-purple-700 hover:bg-purple-800 focus:ring-4 focus:outline-none focus:ring-purple-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center mr-2 mb-2 add_button"
           >
-            {getPaymentId !== undefined ? 'Edit' : 'Add'} payment
+            {getPaymentId !== undefined
+              ? `${translate('Edit', Language)}`
+              : `${translate('Add', Language)}`}{' '}
           </button>
         </form>
       </div>

@@ -14,6 +14,7 @@ import {
   getourvalues,
   resetState,
 } from '../features/ourvalues/OurValuesSlice';
+import { useTranslation } from '../components/TranslationContext';
 
 const OurValueList = () => {
   const [open, setOpen] = useState(false);
@@ -57,17 +58,18 @@ const OurValueList = () => {
   const handlePageClick = (data) => {
     setCurrentPage(data.selected);
   };
+  const { translate, Language } = useTranslation();
 
   return (
     <div>
       <div className="flex justify-between gap-3 mb-4">
-        <h3 className="title">Our Values</h3>
+        <h3 className="title">{translate('Our_Values', Language)}</h3>
         <Link
           to={`/admin/our-value`}
           className="flex justify-center items-center pr-3 gap-1 rounded-lg add_button_2"
         >
           <span className="mb-1 ml-2 text-[30px] hover:text-white">+</span>
-          Add Our Value
+          {translate('Add_Our_Value', Language)}
         </Link>
       </div>
       <div>
@@ -79,16 +81,28 @@ const OurValueList = () => {
                   No
                 </th>
                 <th scope="col" className="px-6 py-3">
-                  <div className="flex items-center">Status</div>
+                  <div className="flex items-center">
+                    {' '}
+                    {translate('Status', Language)}
+                  </div>
                 </th>
                 <th scope="col" className="px-6 py-3">
-                  <div className="flex items-center">Title</div>
+                  <div className="flex items-center">
+                    {' '}
+                    {translate('Title', Language)}
+                  </div>
                 </th>
                 <th scope="col" className="px-6 py-3">
-                  <div className="flex items-center">Description</div>
+                  <div className="flex items-center">
+                    {' '}
+                    {translate('Description', Language)}
+                  </div>
                 </th>
                 <th scope="col" className="px-6 py-3">
-                  <div className="flex items-center">Icon</div>
+                  <div className="flex items-center">
+                    {' '}
+                    {translate('Icon', Language)}
+                  </div>
                 </th>
                 <th scope="col" className="px-6 py-3"></th>
               </tr>
@@ -112,7 +126,9 @@ const OurValueList = () => {
                         : 'text-red-500'
                     }`}
                   >
-                    {ourvalue.active === true ? 'Active' : 'Not Active'}
+                    {ourvalue.active === true
+                      ? `${translate('Active', Language)}`
+                      : `${translate('Not_Active', Language)}`}
                   </td>
                   <td className="px-6 py-4">{ourvalue.title}</td>
                   <td className="px-6 py-4">{ourvalue.description}</td>
@@ -187,7 +203,7 @@ const OurValueList = () => {
         performAction={() => {
           deleteourvalue(ourvalueId);
         }}
-        title={`Are you sure you want to delete  this ourvalue ?`}
+        title={translate('Our_Value_Modal', Language)}
       />
     </div>
   );

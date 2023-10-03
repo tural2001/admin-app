@@ -8,13 +8,13 @@ import * as yup from 'yup';
 
 import { useLocation, useNavigate } from 'react-router-dom';
 import {
-  createAregion,
   getAregion,
   resetState,
   updateAregion,
 } from '../features/regions/regionSlice';
 import { getcolors } from '../features/color/colorSlice';
 import { language } from '../Language/languages';
+import { useTranslation } from '../components/TranslationContext';
 
 let schema = yup.object({
   name: yup.object().shape(
@@ -72,27 +72,27 @@ const AddRegion = () => {
   const prevUpdatedRegionRef = useRef();
   const debounceTimeoutRef = useRef(null);
 
-  // useEffect(() => {
-  //   const prevUpdatedRegion = prevUpdatedRegionRef.current;
-  //   if (
-  //     isSuccess &&
-  //     updatedRegion !== undefined &&
-  //     updatedRegion !== prevUpdatedRegion
-  //   ) {
-  //     if (debounceTimeoutRef.current) {
-  //       clearTimeout(debounceTimeoutRef.current);
-  //     }
-  //     debounceTimeoutRef.current = setTimeout(() => {
-  //       toast.success('Region Updated Successfully!');
-  //       prevUpdatedRegionRef.current = updatedRegion;
-  //       navigate('/admin/region-list');
-  //     }, 1000);
-  //   }
+  useEffect(() => {
+    const prevUpdatedRegion = prevUpdatedRegionRef.current;
+    if (
+      isSuccess &&
+      updatedRegion !== undefined &&
+      updatedRegion !== prevUpdatedRegion
+    ) {
+      if (debounceTimeoutRef.current) {
+        clearTimeout(debounceTimeoutRef.current);
+      }
+      debounceTimeoutRef.current = setTimeout(() => {
+        toast.success('Region Updated Successfully!');
+        prevUpdatedRegionRef.current = updatedRegion;
+        navigate('/admin/region-list');
+      }, 1000);
+    }
 
-  //   if (isError) {
-  //     toast.error('Something Went Wrong!');
-  //   }
-  // }, [isSuccess, isError, updatedRegion]);
+    if (isError) {
+      toast.error('Something Went Wrong!');
+    }
+  }, [isSuccess, isError, updatedRegion]);
   useEffect(() => {
     dispatch(getcolors());
   }, []);
@@ -152,10 +152,15 @@ const AddRegion = () => {
   const handleLanguageClick2 = (language) => {
     setSelectedLanguage2(language);
   };
+
+  const { translate, Language } = useTranslation();
+
   return (
     <div>
       <h3 className="mb-4 title">
-        {getregionId !== undefined ? 'Edit' : 'Add'} Region
+        {getregionId !== undefined
+          ? `${translate('Edit_Region', Language)}`
+          : `${translate('Add_Regipn', Language)}`}{' '}
       </h3>
       <div>
         <form
@@ -194,7 +199,7 @@ const AddRegion = () => {
         >
           {' '}
           <label htmlFor="" className="mt-2">
-            Status
+            {translate('Status', Language)}
           </label>
           <div className="my-2">
             <div className="mt-1">
@@ -208,7 +213,7 @@ const AddRegion = () => {
                   checked={formik.values.active === 1}
                   className="text-blue-500 form-radio h-4 w-4"
                 />
-                <span className="ml-2">Active</span>
+                <span className="ml-2"> {translate('Yes', Language)}</span>
               </label>
               <label className="inline-flex items-center ml-6">
                 <input
@@ -220,12 +225,33 @@ const AddRegion = () => {
                   checked={formik.values.active === 0}
                   className="text-blue-500 form-radio h-4 w-4"
                 />
-                <span className="ml-2">Not Active</span>
+                <span className="ml-2">{translate('No', Language)}</span>
               </label>
             </div>
           </div>
           <label htmlFor="" className="mt-2">
-            Name
+            {translate('Color', Language)}
+          </label>
+          <select
+            className="text-[#637381] mt-2 bg-inherit w text-[15px] font-medium rounded-lg block w-1/8 p-2.5 focus:ring-0 hom"
+            id="color"
+            name="color_id"
+            onChange={formik.handleChange('color_id')}
+            onBlur={formik.handleBlur('color_id')}
+            value={formik.values.color_id}
+          >
+            <option value="">{translate('Select_Color', Language)}</option>
+            {colorState?.map((color) => (
+              <option key={color.id} value={color.id}>
+                {color.name}
+              </option>
+            ))}
+          </select>
+          <div className="error">
+            {formik.touched.color_id && formik.errors.color_id}
+          </div>
+          <label htmlFor="" className="mt-2">
+            {translate('Name', Language)}
           </label>
           <div className="flex">
             {language.map((lang, index) => (
@@ -260,7 +286,7 @@ const AddRegion = () => {
             );
           })}
           <label htmlFor="" className="mt-2">
-            Description
+            {translate('Description', Language)}
           </label>
           <div className="flex">
             {language.map((lang, index) => (
@@ -295,7 +321,7 @@ const AddRegion = () => {
             );
           })}
           <label htmlFor="" className="mt-2">
-            Handle
+            {translate('Handle', Language)}
           </label>
           <CustomInput
             type="text"
@@ -306,32 +332,13 @@ const AddRegion = () => {
             val={formik.values.handle}
             readOnly={'readOnly'}
           />
-          <label htmlFor="" className="mt-2">
-            Color
-          </label>
-          <select
-            className="text-[#637381] mt-2 bg-inherit w text-[15px] font-medium rounded-lg block w-1/8 p-2.5 focus:ring-0 hom"
-            id="color"
-            name="color_id"
-            onChange={formik.handleChange('color_id')}
-            onBlur={formik.handleBlur('color_id')}
-            value={formik.values.color_id}
-          >
-            <option value="">Select Color</option>
-            {colorState?.map((color) => (
-              <option key={color.id} value={color.id}>
-                {color.name}
-              </option>
-            ))}
-          </select>
-          <div className="error">
-            {formik.touched.color_id && formik.errors.color_id}
-          </div>
           <button
             type="submit"
             className="mt-10 text-purple-700 hover:text-white border border-purple-700 hover:bg-purple-800 focus:ring-4 focus:outline-none focus:ring-purple-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center mr-2 mb-2 add_button"
           >
-            {getregionId !== undefined ? 'Edit' : 'Add'} Region
+            {getregionId !== undefined
+              ? `${translate('Edit', Language)}`
+              : `${translate('Add', Language)}`}{' '}
           </button>
         </form>
       </div>

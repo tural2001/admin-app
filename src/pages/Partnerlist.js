@@ -12,6 +12,7 @@ import { VscEdit } from 'react-icons/vsc';
 import Popup from 'reactjs-popup';
 import ReactPaginate from 'react-paginate';
 import { BsArrowLeft, BsArrowRight } from 'react-icons/bs';
+import { useTranslation } from '../components/TranslationContext';
 
 const Partnerlist = () => {
   const [open, setOpen] = useState(false);
@@ -54,17 +55,18 @@ const Partnerlist = () => {
   const handlePageClick = (data) => {
     setCurrentPage(data.selected);
   };
+  const { translate, Language } = useTranslation();
 
   return (
     <div>
       <div className="flex justify-between gap-3 mb-4">
-        <h3 className="title">Partners</h3>
+        <h3 className="title"> {translate('Partners', Language)}</h3>
         <Link
           to={`/admin/partner`}
           className="flex justify-center items-center pr-3 gap-1 rounded-lg add_button_2"
         >
           <span className="mb-1 ml-2 text-[30px] hover:text-white">+</span>
-          Add Partner
+          {translate('Add_Partner', Language)}
         </Link>
       </div>
       <div>
@@ -76,13 +78,22 @@ const Partnerlist = () => {
                   No
                 </th>
                 <th scope="col" className="px-6 py-3">
-                  <div className="flex items-center">Status</div>
+                  <div className="flex items-center">
+                    {' '}
+                    {translate('Status', Language)}
+                  </div>
                 </th>
                 <th scope="col" className="px-6 py-3">
-                  <div className="flex items-center">Name</div>
+                  <div className="flex items-center">
+                    {' '}
+                    {translate('Name', Language)}
+                  </div>
                 </th>
                 <th scope="col" className="px-6 py-3">
-                  <div className="flex items-center">Logo</div>
+                  <div className="flex items-center">
+                    {' '}
+                    {translate('Logo', Language)}
+                  </div>
                 </th>
                 <th scope="col" className="px-6 py-3"></th>
               </tr>
@@ -106,7 +117,9 @@ const Partnerlist = () => {
                         : 'text-red-500'
                     }`}
                   >
-                    {partner.active === true ? 'Active' : 'Not Active'}
+                    {partner.active === true
+                      ? `${translate('Active', Language)}`
+                      : `${translate('Not_Active', Language)}`}
                   </td>
                   <td className="px-6 py-4">{partner.name}</td>
                   {/* <td className="px-6 py-4">{partner.logo}</td> */}
@@ -151,7 +164,6 @@ const Partnerlist = () => {
                     >
                       <VscEdit />
                     </Link>
-
                     <button
                       onClick={() => showModal(filteredPartner[index]?.id)}
                       className="text-[25px] text-red-500 "
@@ -182,7 +194,7 @@ const Partnerlist = () => {
         performAction={() => {
           deletePartner(partnerId);
         }}
-        title={`Are you sure you want to delete  this faq ?`}
+        title={translate('Partner_Modal', Language)}
       />
     </div>
   );

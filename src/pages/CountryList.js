@@ -13,6 +13,7 @@ import {
 } from '../features/countries/countriesSlice';
 import ReactPaginate from 'react-paginate';
 import { BsArrowLeft, BsArrowRight } from 'react-icons/bs';
+import { useTranslation } from '../components/TranslationContext';
 
 const CountryList = () => {
   const [open, setOpen] = useState(false);
@@ -57,18 +58,19 @@ const CountryList = () => {
   const handlePageClick = (data) => {
     setCurrentPage(data.selected);
   };
+  const { translate, Language } = useTranslation();
 
   return (
     <div>
       <div className="flex justify-between gap-3 mb-4">
-        <h3 className="title">Countries</h3>{' '}
+        <h3 className="title"> {translate('Countries', Language)}</h3>{' '}
         <Link
           to="/admin/country"
           className="flex justify-center items-center pr-3 gap-1 rounded-lg add_button_2"
         >
           {' '}
           <span className="mb-1 ml-2 text-[30px] hover:text-white">+</span>
-          Add Countries
+          {translate('Add_Country', Language)}
         </Link>
       </div>
       <div>
@@ -80,10 +82,14 @@ const CountryList = () => {
                   No
                 </th>
                 <th scope="col" className="px-6 py-3">
-                  <div className="flex items-center">Status</div>
+                  <div className="flex items-center">
+                    {translate('Status', Language)}
+                  </div>
                 </th>
                 <th scope="col" className="px-6 py-3">
-                  <div className="flex items-center">Name</div>
+                  <div className="flex items-center">
+                    {translate('Name', Language)}
+                  </div>
                 </th>
                 <th scope="col" className="px-6 py-3"></th>
               </tr>
@@ -107,7 +113,9 @@ const CountryList = () => {
                         : 'text-red-500'
                     }`}
                   >
-                    {country.active === true ? 'Active' : 'Not Active'}
+                    {country.active === true
+                      ? `${translate('Active', Language)}`
+                      : `${translate('Not_Active', Language)}`}
                   </td>
                   <td className="px-6 py-4">{country.name}</td>
                   <td className="px-6 py-16 flex gap-2">
@@ -148,7 +156,7 @@ const CountryList = () => {
         performAction={() => {
           deleteCountry(countryId);
         }}
-        title={`Are you sure you want to delete  this Country ?`}
+        title={translate('Country_Modal', Language)}
       />
     </div>
   );

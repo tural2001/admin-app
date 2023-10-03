@@ -9,6 +9,7 @@ import { deleteApost, getposts, resetState } from '../features/posts/postSlice';
 import Popup from 'reactjs-popup';
 import ReactPaginate from 'react-paginate';
 import { BsArrowLeft, BsArrowRight } from 'react-icons/bs';
+import { useTranslation } from '../components/TranslationContext';
 
 const PostList = () => {
   const [open, setOpen] = useState(false);
@@ -52,16 +53,18 @@ const PostList = () => {
     setCurrentPage(data.selected);
   };
 
+  const { translate, Language } = useTranslation();
+
   return (
     <div>
       <div className="flex justify-between gap-3 mb-4">
-        <h3 className="title">Posts</h3>
+        <h3 className="title"> {translate('Posts', Language)}</h3>
         <Link
           to={`/admin/post`}
           className="flex justify-center items-center pr-3 gap-1 rounded-lg add_button_2"
         >
           <span className="mb-1 ml-2 text-[30px] hover:text-white">+</span>
-          Add Post
+          {translate('Add_Post', Language)}
         </Link>
       </div>
       <div>
@@ -73,27 +76,41 @@ const PostList = () => {
                   No
                 </th>
                 <th scope="col" className="px-6 py-3">
-                  <div className="flex items-center">Meta title</div>
+                  <div className="flex items-center">
+                    {translate('Meta_Title', Language)}
+                  </div>
                 </th>
                 <th scope="col" className="px-6 py-3">
-                  <div className="flex items-center">Meta description</div>
+                  <div className="flex items-center">
+                    {translate('Meta_Description', Language)}
+                  </div>
                 </th>
                 <th scope="col" className="px-6 py-3">
-                  <div className="flex items-center">Title</div>
+                  <div className="flex items-center">
+                    {translate('Title', Language)}
+                  </div>
                 </th>
                 <th scope="col" className="px-6 py-3">
-                  <div className="flex items-center">Description</div>
+                  <div className="flex items-center">
+                    {translate('Description', Language)}
+                  </div>
                 </th>
                 <th scope="col" className="px-6 py-3">
-                  <div className="flex items-center">Slug</div>
+                  <div className="flex items-center">
+                    {' '}
+                    {translate('Slug', Language)}
+                  </div>
                 </th>
                 <th scope="col" className="px-6 py-3">
-                  <div className="flex items-center">Published</div>
+                  <div className="flex items-center">
+                    {translate('Published', Language)}
+                  </div>
                 </th>
                 <th scope="col" className="px-6 py-3">
-                  <div className="flex items-center">Image</div>
+                  <div className="flex items-center">
+                    {translate('Image', Language)}
+                  </div>
                 </th>
-
                 <th scope="col" className="px-6 py-3"></th>
               </tr>
             </thead>
@@ -189,7 +206,7 @@ const PostList = () => {
         performAction={() => {
           deletePost(postId);
         }}
-        title={`Are you sure you want to delete  this Post ?`}
+        title={translate('Post_Modal', Language)}
       />
     </div>
   );

@@ -13,6 +13,7 @@ import {
   resetState,
   updateAcareerpage,
 } from '../features/careerpage/careerpageSlice';
+import { useTranslation } from '../components/TranslationContext';
 
 let schema = yup.object({
   name: yup.object().shape(
@@ -244,10 +245,15 @@ const Addcareerpage = (e) => {
   const handleLanguageClick3 = (language) => {
     setSelectedLanguage3(language);
   };
+
+  const { translate, Language } = useTranslation();
+
   return (
     <div>
       <h3 className="mb-4 title">
-        {getcareerpageId !== undefined ? 'Edit' : 'Add'} career
+        {getcareerpageId !== undefined
+          ? `${translate('Edit_Career', Language)}`
+          : `${translate('Add_Career', Language)}`}
       </h3>
       <div className="">
         <form
@@ -308,10 +314,10 @@ const Addcareerpage = (e) => {
           }}
         >
           <label htmlFor="" className="mt-2">
-            Status
+            <span className=""> {translate('Status', Language)}</span>
           </label>
           <div className="mt-2">
-            <div className="my-4">
+            <div className="my-2">
               <div className="mt-1">
                 <label className="inline-flex items-center">
                   <input
@@ -323,7 +329,7 @@ const Addcareerpage = (e) => {
                     checked={formik.values.active === 1}
                     className="text-blue-500 form-radio h-4 w-4"
                   />
-                  <span className="ml-2">Active</span>
+                  <span className="ml-2"> {translate('Yes', Language)}</span>
                 </label>
                 <label className="inline-flex items-center ml-6">
                   <input
@@ -335,7 +341,7 @@ const Addcareerpage = (e) => {
                     checked={formik.values.active === 0}
                     className="text-blue-500 form-radio h-4 w-4"
                   />
-                  <span className="ml-2">Not Active</span>
+                  <span className="ml-2">{translate('No', Language)}</span>
                 </label>
               </div>
             </div>
@@ -343,7 +349,7 @@ const Addcareerpage = (e) => {
               {formik.touched.active && formik.errors.active}
             </div>
             <label htmlFor="" className="mt-2">
-              Name
+              {translate('Name', Language)}
             </label>
             <div className="flex">
               {language.map((lang, index) => (
@@ -380,7 +386,7 @@ const Addcareerpage = (e) => {
               );
             })}
             <label htmlFor="" className="mt-2">
-              Address
+              {translate('Address', Language)}
             </label>
             <div className="flex">
               {language.map((lang) => (
@@ -418,7 +424,7 @@ const Addcareerpage = (e) => {
               );
             })}
             <label htmlFor="" className="my-2">
-              Description
+              {translate('Description', Language)}{' '}
             </label>
             <div className="flex">
               {language.map((lang) => (
@@ -459,7 +465,9 @@ const Addcareerpage = (e) => {
             type="submit"
             className="mt-10 text-purple-700 hover:text-white border border-purple-700 hover:bg-purple-800 focus:ring-4 focus:outline-none focus:ring-purple-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center mr-2 mb-2 add_button"
           >
-            {getcareerpageId !== undefined ? 'Edit' : 'Add'} career
+            {getAcareerpage !== undefined
+              ? `${translate('Edit', Language)}`
+              : `${translate('Add', Language)}`}
           </button>
         </form>
       </div>

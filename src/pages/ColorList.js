@@ -12,6 +12,7 @@ import {
   getcolors,
   resetState,
 } from '../features/color/colorSlice';
+import { useTranslation } from '../components/TranslationContext';
 
 const ColorList = () => {
   const [open, setOpen] = useState(false);
@@ -54,17 +55,20 @@ const ColorList = () => {
   const handlePageClick = (data) => {
     setCurrentPage(data.selected);
   };
+
+  const { translate, Language } = useTranslation();
+
   return (
     <div>
       <div className="flex justify-between gap-3 mb-4">
-        <h3 className="title">Colors</h3>{' '}
+        <h3 className="title">{translate('Colors', Language)}</h3>{' '}
         <Link
           to="/admin/color"
           className="flex justify-center items-center pr-3 gap-1 rounded-lg add_button_2"
         >
           {' '}
           <span className="mb-1 ml-2 text-[30px] hover:text-white">+</span>
-          Add color
+          {translate('Add_Color', Language)}
         </Link>
       </div>
       <div>
@@ -76,13 +80,22 @@ const ColorList = () => {
                   No
                 </th>
                 <th scope="col" className="px-6 py-3">
-                  <div className="flex items-center">Status</div>
+                  <div className="flex items-center">
+                    {' '}
+                    {translate('Status', Language)}
+                  </div>
                 </th>
                 <th scope="col" className="px-6 py-3">
-                  <div className="flex items-center">Name</div>
+                  <div className="flex items-center">
+                    {' '}
+                    {translate('Name', Language)}
+                  </div>
                 </th>
                 <th scope="col" className="px-6 py-3">
-                  <div className="flex items-center">Code</div>
+                  <div className="flex items-center">
+                    {' '}
+                    {translate('Code', Language)}
+                  </div>
                 </th>
                 <th scope="col" className="px-6 py-3"></th>
               </tr>
@@ -104,7 +117,9 @@ const ColorList = () => {
                       color.active === true ? 'text-green-500' : 'text-red-500'
                     }`}
                   >
-                    {color.active === true ? 'Active' : 'Not Active'}
+                    {color.active === true
+                      ? `${translate('Active', Language)}`
+                      : `${translate('Not_Active', Language)}`}
                   </td>
                   <td className="px-6 py-4">{color.name}</td>
                   <td className="px-6 py-4">{color.code}</td>
@@ -115,7 +130,6 @@ const ColorList = () => {
                     >
                       <VscEdit />
                     </Link>
-
                     <button
                       onClick={() => showModal(colorstate[index]?.id)}
                       className="text-[25px] text-red-500 "
@@ -146,7 +160,7 @@ const ColorList = () => {
         performAction={() => {
           deletecolor(colorId);
         }}
-        title={`Are you sure you want to delete  this color ?`}
+        title={translate('Code_Modal', Language)}
       />
     </div>
   );

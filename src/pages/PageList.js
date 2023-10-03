@@ -5,6 +5,7 @@ import { VscEdit } from 'react-icons/vsc';
 import { getpages, resetState } from '../features/pagess/pagesSlice';
 import ReactPaginate from 'react-paginate';
 import { BsArrowLeft, BsArrowRight } from 'react-icons/bs';
+import { useTranslation } from '../components/TranslationContext';
 
 const PageList = () => {
   const dispatch = useDispatch();
@@ -28,11 +29,12 @@ const PageList = () => {
   const handlePageClick = (data) => {
     setCurrentPage(data.selected);
   };
+  const { translate, Language } = useTranslation();
 
   return (
     <div>
       <div className="flex justify-between gap-3 mb-4">
-        <h3 className="title">Pages</h3>
+        <h3 className="title">{translate('Pages', Language)}</h3>
       </div>
       <div>
         <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
@@ -43,19 +45,29 @@ const PageList = () => {
                   No
                 </th>
                 <th scope="col" className="px-6 py-3">
-                  <div className="flex items-center">Meta title</div>
+                  <div className="items-center  ">
+                    {translate('Meta_Title', Language)}
+                  </div>
                 </th>
                 <th scope="col" className="px-6 py-3">
-                  <div className="flex items-center">Meta description</div>
+                  <div className="flex items-center">
+                    {translate('Meta_Description', Language)}
+                  </div>
                 </th>
                 <th scope="col" className="px-6 py-3">
-                  <div className="flex items-center">Slug</div>
+                  <div className="flex items-center">
+                    {translate('Slug', Language)}
+                  </div>
                 </th>
                 <th scope="col" className="px-6 py-3">
-                  <div className="flex items-center">Title</div>
+                  <div className="flex items-center">
+                    {translate('Title', Language)}
+                  </div>
                 </th>
                 <th scope="col" className="px-6 py-3">
-                  <div className="flex items-center">Content</div>
+                  <div className="flex items-center">
+                    {translate('Content', Language)}
+                  </div>
                 </th>
                 <th scope="col" className="px-6 py-3"></th>
               </tr>

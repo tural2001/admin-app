@@ -1,8 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { Link } from 'react-router-dom';
 import CustomModal from '../components/CustomModal';
-import { VscEdit } from 'react-icons/vsc';
 import { RiDeleteBin5Line } from 'react-icons/ri';
 import { toast } from 'react-toastify';
 import ReactPaginate from 'react-paginate';
@@ -12,6 +10,7 @@ import {
   getcareers,
   resetState,
 } from '../features/career/careerSlice';
+import { useTranslation } from '../components/TranslationContext';
 
 const CareerList = () => {
   const [open, setOpen] = useState(false);
@@ -56,10 +55,12 @@ const CareerList = () => {
     setCurrentPage(data.selected);
   };
 
+  const { translate, Language } = useTranslation();
+
   return (
     <div>
       <div className="flex justify-between gap-3 mb-4">
-        <h3 className="title">career</h3>{' '}
+        <h3 className="title">{translate('Careers', Language)}</h3>{' '}
       </div>
       <div>
         <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
@@ -70,22 +71,34 @@ const CareerList = () => {
                   No
                 </th>
                 <th scope="col" className="px-6 py-3">
-                  <div className="flex items-center">Name</div>
+                  <div className="flex items-center">
+                    {translate('Name', Language)}
+                  </div>
                 </th>
                 <th scope="col" className="px-6 py-3">
-                  <div className="flex items-center">Phone</div>
+                  <div className="flex items-center">
+                    {translate('Phone', Language)}
+                  </div>
                 </th>
                 <th scope="col" className="px-6 py-3">
-                  <div className="flex items-center">Email</div>
+                  <div className="flex items-center">
+                    {translate('Email', Language)}
+                  </div>
                 </th>
                 <th scope="col" className="px-6 py-3">
-                  <div className="flex items-center">Vacancy Name</div>
+                  <div className="flex items-center">
+                    {translate('Vacancy_Name', Language)}
+                  </div>
                 </th>
                 <th scope="col" className="px-6 py-3">
-                  <div className="flex items-center">Notes</div>
+                  <div className="flex items-center">
+                    {translate('Notes', Language)}
+                  </div>
                 </th>
                 <th scope="col" className="px-6 py-3">
-                  <div className="flex items-center">Cv</div>
+                  <div className="flex items-center">
+                    {translate('Cv', Language)}
+                  </div>
                 </th>
 
                 <th scope="col" className="px-6 py-3"></th>
@@ -156,7 +169,7 @@ const CareerList = () => {
         performAction={() => {
           deletecareer(careerId);
         }}
-        title={`Are you sure you want to delete  this career?`}
+        title={translate('Career_Modal', Language)}
       />
     </div>
   );

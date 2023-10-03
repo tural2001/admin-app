@@ -322,8 +322,8 @@ const MainLayout = () => {
                   onChange={handleLanguageChange}
                   value={currentLanguage}
                 >
-                  <option value="az">Azerbaijani</option>
-                  <option value="en">English</option>
+                  <option value="az">Az</option>
+                  <option value="en">En</option>
                 </select>
               </div>
             </div>

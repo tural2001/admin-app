@@ -17,6 +17,7 @@ import { getservices } from '../features/services/servicesSlice';
 import { language } from '../Language/languages';
 import { uploadImg } from '../features/upload/uploadSlice';
 import Dropzone from 'react-dropzone';
+import { useTranslation } from '../components/TranslationContext';
 
 let schema = yup.object({
   name: yup.object().shape(
@@ -268,10 +269,15 @@ const AddTariff = () => {
   const handleLanguageClickQu = (language) => {
     setSelectedLanguageQu(language);
   };
+
+  const { translate, Language } = useTranslation();
+
   return (
     <div>
       <h3 className="mb-4 title">
-        {getTariffId !== undefined ? 'Edit' : 'Add'} Tariff
+        {getTariffId !== undefined
+          ? `${translate('Edit_Tariff', Language)}`
+          : `${translate('Add_Tariff', Language)}`}{' '}
       </h3>
       <div>
         <form
@@ -320,9 +326,9 @@ const AddTariff = () => {
         >
           {' '}
           <label htmlFor="" className="mt-2">
-            Status
+            {translate('Status', Language)}
           </label>
-          <div className="my-4">
+          <div className="my-2">
             <div className="mt-1">
               <label className="inline-flex items-center">
                 <input
@@ -334,7 +340,7 @@ const AddTariff = () => {
                   checked={formik.values.active === 1}
                   className="text-blue-500 form-radio h-4 w-4"
                 />
-                <span className="ml-2">Active</span>
+                <span className="ml-2">{translate('Yes', Language)}</span>
               </label>
               <label className="inline-flex items-center ml-6">
                 <input
@@ -346,7 +352,7 @@ const AddTariff = () => {
                   checked={formik.values.active === 0}
                   className="text-blue-500 form-radio h-4 w-4"
                 />
-                <span className="ml-2">Not Active</span>
+                <span className="ml-2">{translate('No', Language)} </span>
               </label>
             </div>
           </div>
@@ -354,7 +360,7 @@ const AddTariff = () => {
             {formik.touched.active && formik.errors.active}
           </div>
           <label htmlFor="" className="mt-2">
-            Service Id
+            {translate('Service', Language)}{' '}
           </label>
           <select
             className="text-[#637381] mt-2 bg-inherit w text-[15px] font-medium rounded-lg block w-1/8 p-2.5 focus:ring-0 hom"
@@ -364,7 +370,7 @@ const AddTariff = () => {
             onBlur={formik.handleBlur('service_id')}
             value={formik.values.service_id}
           >
-            <option value="">Select Service</option>
+            <option value=""> {translate('Select_Service', Language)} </option>
             {serviceState?.map((service) => (
               <option key={service.id} value={service.id}>
                 {service.title}
@@ -375,7 +381,7 @@ const AddTariff = () => {
             {formik.touched.service_id && formik.errors.service_id}
           </div>
           <label htmlFor="" className="mt-2">
-            Type
+            {translate('Type', Language)}{' '}
           </label>
           <div className="my-2">
             <div className="mt-1">
@@ -389,7 +395,10 @@ const AddTariff = () => {
                   checked={formik.values.type === 1}
                   className="text-blue-500 form-radio h-4 w-4"
                 />
-                <span className="ml-2">Fərdi</span>
+                <span className="ml-2">
+                  {' '}
+                  {translate('İndividual', Language)}{' '}
+                </span>
               </label>
               <label className="inline-flex items-center ml-6">
                 <input
@@ -401,7 +410,10 @@ const AddTariff = () => {
                   checked={formik.values.type === 2}
                   className="text-blue-500 form-radio h-4 w-4"
                 />
-                <span className="ml-2">Biznes</span>
+                <span className="ml-2">
+                  {' '}
+                  {translate('Business', Language)}{' '}
+                </span>
               </label>
             </div>
           </div>
@@ -409,7 +421,7 @@ const AddTariff = () => {
             {formik.touched.type && formik.errors.type}
           </div>
           <label htmlFor="" className="mt-2">
-            Most wanted
+            {translate('Most_Wanted', Language)}{' '}
           </label>
           <div className="my-2">
             <div className="mt-1">
@@ -427,7 +439,7 @@ const AddTariff = () => {
                   }
                   className="text-blue-500 form-radio h-4 w-4"
                 />
-                <span className="ml-2">Most Wanted</span>
+                <span className="ml-2">{translate('Yes', Language)}</span>
               </label>
               <label className="inline-flex items-center ml-6">
                 <input
@@ -439,7 +451,7 @@ const AddTariff = () => {
                   checked={formik.values.most_wanted === 0}
                   className="text-blue-500 form-radio h-4 w-4"
                 />
-                <span className="ml-2">Not Most Wanted</span>
+                <span className="ml-2">{translate('No', Language)}</span>
               </label>
             </div>
           </div>
@@ -447,7 +459,7 @@ const AddTariff = () => {
             {formik.touched.most_wanted && formik.errors.most_wanted}
           </div>
           <label htmlFor="" className="mt-2">
-            Channel
+            {translate('Channel', Language)}
           </label>
           <div className="my-2">
             <div className="mt-1">
@@ -465,7 +477,7 @@ const AddTariff = () => {
                   }
                   className="text-blue-500 form-radio h-4 w-4"
                 />
-                <span className="ml-2">Yes</span>
+                <span className="ml-2"> {translate('Yes', Language)}</span>
               </label>
               <label className="inline-flex items-center ml-6">
                 <input
@@ -477,7 +489,7 @@ const AddTariff = () => {
                   checked={formik.values.channel === 0}
                   className="text-blue-500 form-radio h-4 w-4"
                 />
-                <span className="ml-2">No</span>
+                <span className="ml-2"> {translate('No', Language)}</span>
               </label>
             </div>
           </div>
@@ -485,7 +497,7 @@ const AddTariff = () => {
             {formik.touched.channel && formik.errors.channel}
           </div>
           <label htmlFor="" className="mt-2">
-            Name
+            {translate('Name', Language)}
           </label>
           <div className="flex">
             {language.map((lang, index) => (
@@ -523,7 +535,7 @@ const AddTariff = () => {
             );
           })}
           <label htmlFor="" className="mt-2">
-            Description
+            {translate('Description', Language)}
           </label>
           <div className="flex">
             {language.map((lang, index) => (
@@ -560,7 +572,7 @@ const AddTariff = () => {
             );
           })}
           <label htmlFor="" className="mt-2">
-            Speed
+            {translate('Speed', Language)}
           </label>
           <CustomInput
             type="number"
@@ -574,7 +586,7 @@ const AddTariff = () => {
             {formik.touched.speed && formik.errors.speed}
           </div>
           <label htmlFor="" className="mt-2">
-            Price
+            {translate('Price', Language)}
           </label>
           <CustomInput
             type="number"
@@ -588,7 +600,7 @@ const AddTariff = () => {
             {formik.touched.price && formik.errors.price}
           </div>
           <label htmlFor="" className="mt-2">
-            Icon
+            {translate('Icon', Language)}
           </label>
           <div className="">
             <div className="text-center">
@@ -615,14 +627,11 @@ const AddTariff = () => {
                               <div className="flex flex-col items-center justify-center pt-5 pb-6">
                                 {isFileDetected ? (
                                   <p className="mb-2 text-sm text-yellow-600 dark:text-yellow-400">
-                                    File detected
+                                    {translate('File_Detected', Language)}
                                   </p>
                                 ) : (
                                   <p className="mb-2 text-sm text-gray-500 dark:text-gray-400">
-                                    <span className="font-semibold">
-                                      Click to upload
-                                    </span>{' '}
-                                    or drag and drop
+                                    {translate('Image_Drop', Language)}
                                   </p>
                                 )}
 
@@ -641,12 +650,6 @@ const AddTariff = () => {
                                     d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"
                                   ></path>
                                 </svg>
-                                <p className="mb-2 text-sm text-gray-500 dark:text-gray-400">
-                                  <span className="font-semibold">
-                                    Click to upload
-                                  </span>{' '}
-                                  or drag and drop
-                                </p>
                                 <p className="text-xs text-gray-500 dark:text-gray-400">
                                   SVG, PNG, JPG or GIF (MAX. 800x400px)
                                 </p>
@@ -676,7 +679,9 @@ const AddTariff = () => {
             type="submit"
             className="mt-10 text-purple-700 hover:text-white border border-purple-700 hover:bg-purple-800 focus:ring-4 focus:outline-none focus:ring-purple-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center mr-2 mb-2 add_button"
           >
-            {getTariffId !== undefined ? 'Edit' : 'Add'} Tariff
+            {getTariffId !== undefined
+              ? `${translate('Edit', Language)}`
+              : `${translate('Add', Language)}`}{' '}
           </button>
         </form>
       </div>

@@ -13,6 +13,7 @@ import {
 import Popup from 'reactjs-popup';
 import ReactPaginate from 'react-paginate';
 import { BsArrowLeft, BsArrowRight } from 'react-icons/bs';
+import { useTranslation } from '../components/TranslationContext';
 
 const PaymentList = () => {
   const [open, setOpen] = useState(false);
@@ -56,16 +57,18 @@ const PaymentList = () => {
     setCurrentPage(data.selected);
   };
 
+  const { translate, Language } = useTranslation();
+
   return (
     <div>
       <div className="flex justify-between gap-3 mb-4">
-        <h3 className="title">Payments</h3>
+        <h3 className="title"> {translate('Payments', Language)}</h3>
         <Link
           to={`/admin/payment`}
           className="flex justify-center items-center pr-3 gap-1 rounded-lg add_button_2"
         >
           <span className="mb-1 ml-2 text-[30px] hover:text-white">+</span>
-          Add Payment
+          {translate('Add_Payment', Language)}
         </Link>
       </div>
       <div>
@@ -77,25 +80,39 @@ const PaymentList = () => {
                   No
                 </th>
                 <th scope="col" className="px-6 py-3">
-                  <div className="flex items-center">Status</div>
+                  <div className="flex items-center">
+                    {translate('Status', Language)}
+                  </div>
                 </th>
                 <th scope="col" className="px-6 py-3">
-                  <div className="flex items-center">Meta title</div>
+                  <div className="flex items-center">
+                    {translate('Meta_Title', Language)}
+                  </div>
                 </th>
                 <th scope="col" className="px-6 py-3">
-                  <div className="flex items-center">Meta description</div>
+                  <div className="flex items-center">
+                    {translate('Meta_Description', Language)}
+                  </div>
                 </th>
                 <th scope="col" className="px-6 py-3">
-                  <div className="flex items-center">Name</div>
+                  <div className="flex items-center">
+                    {translate('Name', Language)}
+                  </div>
                 </th>
                 <th scope="col" className="px-6 py-3">
-                  <div className="flex items-center">Description</div>
+                  <div className="flex items-center">
+                    {translate('Description', Language)}
+                  </div>
                 </th>
                 <th scope="col" className="px-6 py-3">
-                  <div className="flex items-center">Redirect link</div>
+                  <div className="flex items-center">
+                    {translate('Redirect_Link', Language)}
+                  </div>
                 </th>
                 <th scope="col" className="px-6 py-3">
-                  <div className="flex items-center">Image</div>
+                  <div className="flex items-center">
+                    {translate('Image', Language)}
+                  </div>
                 </th>
 
                 <th scope="col" className="px-6 py-3"></th>
@@ -120,7 +137,9 @@ const PaymentList = () => {
                         : 'text-red-500'
                     }`}
                   >
-                    {payment.active === true ? 'Active' : 'Not Active'}
+                    {payment.active === true
+                      ? `${translate('Active', Language)}`
+                      : `${translate('Not_Active', Language)}`}
                   </td>
                   <td className="px-6 py-4">{payment.meta_title}</td>
                   <td className="px-6 py-4">{payment.meta_description}</td>
@@ -185,7 +204,6 @@ const PaymentList = () => {
                     >
                       <VscEdit />
                     </Link>
-
                     <button
                       onClick={() => showModal(filteredPayment[index]?.id)}
                       className="text-[25px] text-red-500 "
@@ -216,7 +234,7 @@ const PaymentList = () => {
         performAction={() => {
           deletePayment(paymentId);
         }}
-        title={`Are you sure you want to delete  this structure ?`}
+        title={translate('Payment_Modal', Language)}
       />
     </div>
   );

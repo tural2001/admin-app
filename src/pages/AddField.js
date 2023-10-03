@@ -14,6 +14,7 @@ import {
   updateAfield,
 } from '../features/form/formSlice';
 import { language } from '../Language/languages';
+import { useTranslation } from '../components/TranslationContext';
 
 let schema = yup.object({
   label: yup.object().shape(
@@ -242,10 +243,15 @@ const AddForm = () => {
   const handleLanguageClick2 = (language) => {
     setSelectedLanguage2(language);
   };
+
+  const { translate, Language } = useTranslation();
+
   return (
     <div>
       <h3 className="mb-4 title">
-        {getfieldId !== undefined ? 'Edit' : 'Add'} Form
+        {getfieldId !== undefined
+          ? `${translate('Edit_Field', Language)}`
+          : `${translate('Add_Field', Language)}`}
       </h3>
       <div>
         <form
@@ -258,7 +264,6 @@ const AddForm = () => {
                 errors[fieldName] = 'This field is Required';
               }
             });
-
             language.forEach((lang) => {
               const labelFieldName = `label.${lang}`;
 
@@ -274,7 +279,7 @@ const AddForm = () => {
           }}
         >
           <label htmlFor="" className="mt-2">
-            Label
+            {translate('Label', Language)}
           </label>
           <div className="flex">
             {language.map((lang, index) => (
@@ -309,7 +314,7 @@ const AddForm = () => {
             );
           })}
           <label htmlFor="" className="mt-2">
-            Type
+            {translate('Type', Language)}
           </label>
           <select
             className="text-[#637381] mt-2 bg-inherit w text-[15px] font-medium rounded-lg block w-1/8 p-2.5 focus:ring-0 hom"
@@ -330,7 +335,7 @@ const AddForm = () => {
             {formik.touched.type && formik.errors.type}
           </div>
           <label htmlFor="" className="mt-2">
-            Name
+            {translate('Name', Language)}
           </label>
           <CustomInput
             type="text"
@@ -344,7 +349,7 @@ const AddForm = () => {
             {formik.touched.name && formik.errors.name}
           </div>
           <label htmlFor="" className="mt-2">
-            Required
+            {translate('Required', Language)}
           </label>
           <div className="my-2">
             <div className="mt-1">
@@ -358,7 +363,7 @@ const AddForm = () => {
                   checked={formik.values.required === 1}
                   className="text-blue-500 form-radio h-4 w-4"
                 />
-                <span className="ml-2">Required</span>
+                <span className="ml-2"> {translate('Required', Language)}</span>
               </label>
               <label className="inline-flex items-center ml-6">
                 <input
@@ -370,7 +375,9 @@ const AddForm = () => {
                   checked={formik.values.required === 0}
                   className="text-blue-500 form-radio h-4 w-4"
                 />
-                <span className="ml-2">Not required</span>
+                <span className="ml-2">
+                  {translate('Not_Required', Language)}
+                </span>
               </label>
             </div>
           </div>
@@ -382,7 +389,7 @@ const AddForm = () => {
           formik.values.type === '6' ? (
             <>
               <label htmlFor="" className="mt-2">
-                Data
+                {translate('Data', Language)}
               </label>
               <div className="flex">
                 {language.map((lang, index) => (
@@ -424,7 +431,9 @@ const AddForm = () => {
             type="submit"
             className="mt-10 text-purple-700 hover:text-white border border-purple-700 hover:bg-purple-800 focus:ring-4 focus:outline-none focus:ring-purple-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center mr-2 mb-2 add_button"
           >
-            {getfieldId !== undefined ? 'Edit' : 'Add'} field
+            {getfieldId !== undefined
+              ? `${translate('Edit', Language)}`
+              : `${translate('Add', Language)}`}{' '}
           </button>
         </form>
       </div>

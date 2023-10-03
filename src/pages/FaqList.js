@@ -8,6 +8,7 @@ import { VscEdit } from 'react-icons/vsc';
 import { toast } from 'react-toastify';
 import ReactPaginate from 'react-paginate';
 import { BsArrowLeft, BsArrowRight } from 'react-icons/bs';
+import { useTranslation } from '../components/TranslationContext';
 
 const FaqList = () => {
   const [open, setOpen] = useState(false);
@@ -50,17 +51,20 @@ const FaqList = () => {
   const handlePageClick = (data) => {
     setCurrentPage(data.selected);
   };
+
+  const { translate, Language } = useTranslation();
+
   return (
     <div>
       <div className="flex justify-between gap-3 mb-4">
-        <h3 className="title">Faqs</h3>{' '}
+        <h3 className="title">{translate('Faqs', Language)}</h3>{' '}
         <Link
           to="/admin/faq"
           className="flex justify-center items-center pr-3 gap-1 rounded-lg add_button_2"
         >
           {' '}
           <span className="mb-1 ml-2 text-[30px] hover:text-white">+</span>
-          Add Faq
+          {translate('Add_Faq', Language)}
         </Link>
       </div>
       <div>
@@ -73,50 +77,17 @@ const FaqList = () => {
                 </th>
                 <th scope="col" className="px-6 py-3">
                   <div className="flex items-center">
-                    Status
-                    <a href="#/">
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        className="w-3 h-3 ml-1"
-                        aria-hidden="true"
-                        fill="currentColor"
-                        viewBox="0 0 320 512"
-                      >
-                        <path d="M27.66 224h264.7c24.6 0 36.89-29.78 19.54-47.12l-132.3-136.8c-5.406-5.406-12.47-8.107-19.53-8.107c-7.055 0-14.09 2.701-19.45 8.107L8.119 176.9C-9.229 194.2 3.055 224 27.66 224zM292.3 288H27.66c-24.6 0-36.89 29.77-19.54 47.12l132.5 136.8C145.9 477.3 152.1 480 160 480c7.053 0 14.12-2.703 19.53-8.109l132.3-136.8C329.2 317.8 316.9 288 292.3 288z" />
-                      </svg>
-                    </a>
+                    {translate('Status', Language)}
                   </div>
                 </th>
                 <th scope="col" className="px-6 py-3">
                   <div className="flex items-center">
-                    Question
-                    <a href="#/">
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        className="w-3 h-3 ml-1"
-                        aria-hidden="true"
-                        fill="currentColor"
-                        viewBox="0 0 320 512"
-                      >
-                        <path d="M27.66 224h264.7c24.6 0 36.89-29.78 19.54-47.12l-132.3-136.8c-5.406-5.406-12.47-8.107-19.53-8.107c-7.055 0-14.09 2.701-19.45 8.107L8.119 176.9C-9.229 194.2 3.055 224 27.66 224zM292.3 288H27.66c-24.6 0-36.89 29.77-19.54 47.12l132.5 136.8C145.9 477.3 152.1 480 160 480c7.053 0 14.12-2.703 19.53-8.109l132.3-136.8C329.2 317.8 316.9 288 292.3 288z" />
-                      </svg>
-                    </a>
+                    {translate('Question', Language)}
                   </div>
                 </th>
                 <th scope="col" className="px-6 py-3">
                   <div className="flex items-center">
-                    Answer
-                    <a href="#/">
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        className="w-3 h-3 ml-1"
-                        aria-hidden="true"
-                        fill="currentColor"
-                        viewBox="0 0 320 512"
-                      >
-                        <path d="M27.66 224h264.7c24.6 0 36.89-29.78 19.54-47.12l-132.3-136.8c-5.406-5.406-12.47-8.107-19.53-8.107c-7.055 0-14.09 2.701-19.45 8.107L8.119 176.9C-9.229 194.2 3.055 224 27.66 224zM292.3 288H27.66c-24.6 0-36.89 29.77-19.54 47.12l132.5 136.8C145.9 477.3 152.1 480 160 480c7.053 0 14.12-2.703 19.53-8.109l132.3-136.8C329.2 317.8 316.9 288 292.3 288z" />
-                      </svg>
-                    </a>
+                    {translate('Answer', Language)}
                   </div>
                 </th>
                 <th scope="col" className="px-6 py-3"></th>
@@ -139,7 +110,9 @@ const FaqList = () => {
                       faq.active === true ? 'text-green-500' : 'text-red-500'
                     }`}
                   >
-                    {faq.active === true ? 'Active' : 'Not Active'}
+                    {faq.active === true
+                      ? `${translate('Active', Language)}`
+                      : `${translate('Not_Active', Language)}`}
                   </td>
                   <td className="px-6 py-4">{faq.question}</td>
                   <td className="px-6 py-4">{faq.answer}</td>
@@ -150,7 +123,6 @@ const FaqList = () => {
                     >
                       <VscEdit />
                     </Link>
-
                     <button
                       onClick={() => showModal(filteredFaq[index]?.id)}
                       className="text-[25px] text-red-500 "
@@ -181,7 +153,7 @@ const FaqList = () => {
         performAction={() => {
           deleteFaq(faqId);
         }}
-        title={`Are you sure you want to delete  this faq ?`}
+        title={translate('Faq_Modal', Language)}
       />
     </div>
   );

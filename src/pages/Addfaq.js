@@ -10,6 +10,7 @@ import { createAfaq, getAfaq, updateAfaq } from '../features/faq/faqSlice';
 import { resetState } from '../features/faq/faqSlice';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { language } from '../Language/languages';
+import { useTranslation } from '../components/TranslationContext';
 
 let schema = yup.object({
   question: yup.object().shape(
@@ -211,10 +212,15 @@ const Addfaq = (e) => {
   const handleLanguageClick2 = (language) => {
     setSelectedLanguage2(language);
   };
+
+  const { translate, Language } = useTranslation();
+
   return (
     <div>
       <h3 className="mb-4 title">
-        {getFaqId !== undefined ? 'Edit' : 'Add'} Faq
+        {getFaqId !== undefined
+          ? `${translate('Edit_Faq', Language)}`
+          : `${translate('Add_Faq', Language)}`}{' '}
       </h3>
       <div className="">
         <form
@@ -250,10 +256,10 @@ const Addfaq = (e) => {
           }}
         >
           <label htmlFor="" className="mt-2">
-            Status
+            {translate('Status', Language)}
           </label>
           <div className="mt-2">
-            <div className="my-4">
+            <div className="my-2">
               <div className="mt-1">
                 <label className="inline-flex items-center">
                   <input
@@ -265,7 +271,7 @@ const Addfaq = (e) => {
                     checked={formik.values.active === 1}
                     className="text-blue-500 form-radio h-4 w-4"
                   />
-                  <span className="ml-2">Active</span>
+                  <span className="ml-2"> {translate('Yes', Language)}</span>
                 </label>
                 <label className="inline-flex items-center ml-6">
                   <input
@@ -277,7 +283,7 @@ const Addfaq = (e) => {
                     checked={formik.values.active === 0}
                     className="text-blue-500 form-radio h-4 w-4"
                   />
-                  <span className="ml-2">Not Active</span>
+                  <span className="ml-2"> {translate('No', Language)}</span>
                 </label>
               </div>
             </div>
@@ -285,7 +291,7 @@ const Addfaq = (e) => {
               {formik.touched.active && formik.errors.active}
             </div>
             <label htmlFor="" className="my-2">
-              Question
+              {translate('Question', Language)}
             </label>
             <div className="flex">
               {language.map((lang, index) => (
@@ -320,7 +326,7 @@ const Addfaq = (e) => {
               );
             })}
             <label htmlFor="" className="my-2">
-              Answer
+              {translate('Answer', Language)}
             </label>
             <div className="flex">
               {language.map((lang, index) => (
@@ -359,7 +365,9 @@ const Addfaq = (e) => {
             type="submit"
             className="mt-10 text-purple-700 hover:text-white border border-purple-700 hover:bg-purple-800 focus:ring-4 focus:outline-none focus:ring-purple-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center mr-2 mb-2 add_button"
           >
-            {getFaqId !== undefined ? 'Edit' : 'Add'} Faq
+            {getFaqId !== undefined
+              ? `${translate('Edit', Language)}`
+              : `${translate('Add', Language)}`}
           </button>
         </form>
       </div>

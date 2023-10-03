@@ -13,7 +13,6 @@ import {
   getadvantages,
   resetState,
 } from '../features/advantages/advantagesSlice';
-import { Add_Advantages } from '../Language/az';
 import { useTranslation } from '../components/TranslationContext';
 
 const AdvantageList = () => {
@@ -59,18 +58,18 @@ const AdvantageList = () => {
     setCurrentPage(data.selected);
   };
 
-  const { translate, language } = useTranslation();
+  const { translate, Language } = useTranslation();
 
   return (
     <div>
       <div className="flex justify-between gap-3 mb-4">
-        <h3 className="title">{translate('Advantages', language)}</h3>
+        <h3 className="title">{translate('Advantages', Language)}</h3>
         <Link
           to={`/admin/advantage`}
           className="flex justify-center items-center pr-3 gap-1 rounded-lg add_button_2"
         >
           <span className="mb-1 ml-2 text-[30px] hover:text-white">+</span>
-          {translate('Add_Advantages', language)}
+          {translate('Add_Advantages', Language)}
         </Link>
       </div>
       <div>
@@ -82,13 +81,22 @@ const AdvantageList = () => {
                   No
                 </th>
                 <th scope="col" className="px-6 py-3">
-                  <div className="flex items-center">Status</div>
+                  <div className="flex items-center">
+                    {' '}
+                    {translate('Status', Language)}
+                  </div>
                 </th>
                 <th scope="col" className="px-6 py-3">
-                  <div className="flex items-center">Title</div>
+                  <div className="flex items-center">
+                    {' '}
+                    {translate('Title', Language)}
+                  </div>
                 </th>
                 <th scope="col" className="px-6 py-3">
-                  <div className="flex items-center">Icon</div>
+                  <div className="flex items-center">
+                    {' '}
+                    {translate('Icon', Language)}
+                  </div>
                 </th>
                 <th scope="col" className="px-6 py-3"></th>
               </tr>
@@ -112,7 +120,9 @@ const AdvantageList = () => {
                         : 'text-red-500'
                     }`}
                   >
-                    {advantage.active === true ? 'Active' : 'Not Active'}
+                    {advantage.active === true
+                      ? `${translate('Active', Language)}`
+                      : `${translate('Not_Active', Language)}`}
                   </td>
                   <td className="px-6 py-4">{advantage.title}</td>
                   <td className="px-6 py-4">
@@ -186,7 +196,7 @@ const AdvantageList = () => {
         performAction={() => {
           deleteadvantage(advantageId);
         }}
-        title={`Are you sure you want to delete  this advantage ?`}
+        title={translate('Advantage_Modal', Language)}
       />
     </div>
   );

@@ -16,7 +16,7 @@ import { BsArrowLeft, BsArrowRight } from 'react-icons/bs';
 import { useTranslation } from '../components/TranslationContext';
 
 const CampaignList = () => {
-  const { translate, language } = useTranslation();
+  const { translate, Language } = useTranslation();
 
   const [open, setOpen] = useState(false);
   const [campaignId, setcampaignId] = useState('');
@@ -64,14 +64,14 @@ const CampaignList = () => {
   return (
     <div>
       <div className="flex justify-between gap-3 mb-4">
-        <h3 className="title">{translate('Campaigns', language)}</h3>{' '}
+        <h3 className="title">{translate('Campaigns', Language)}</h3>{' '}
         <Link
           to="/admin/campaign"
           className="flex justify-center items-center pr-3 gap-1 rounded-lg add_button_2"
         >
           {' '}
           <span className="mb-1 ml-2 text-[30px] hover:text-white">+</span>
-          {translate('Add_Campaign', language)}
+          {translate('Add_Campaign', Language)}
         </Link>
       </div>
       <div>
@@ -83,16 +83,27 @@ const CampaignList = () => {
                   No
                 </th>
                 <th scope="col" className="px-6 py-3">
-                  <div className="flex items-center">Status</div>
+                  <div className="flex items-center">
+                    {translate('Status', Language)}
+                  </div>
                 </th>
                 <th scope="col" className="px-6 py-3">
-                  <div className="flex items-center">Name</div>
+                  <div className="flex items-center">
+                    {' '}
+                    {translate('Name', Language)}
+                  </div>
                 </th>
                 <th scope="col" className="px-6 py-3">
-                  <div className="flex items-center">Description</div>
+                  <div className="flex items-center">
+                    {' '}
+                    {translate('Description', Language)}
+                  </div>
                 </th>
                 <th scope="col" className="px-6 py-3">
-                  <div className="flex items-center">Image</div>
+                  <div className="flex items-center">
+                    {' '}
+                    {translate('Image', Language)}
+                  </div>
                 </th>
 
                 <th scope="col" className="px-6 py-3"></th>
@@ -117,7 +128,9 @@ const CampaignList = () => {
                         : 'text-red-500'
                     }`}
                   >
-                    {campaign.active === true ? 'Active' : 'Not Active'}
+                    {campaign.active === true
+                      ? `${translate('Active', Language)}`
+                      : `${translate('Not_Active', Language)}`}
                   </td>
                   <td className="px-6 py-4">{campaign.name}</td>
                   <td
@@ -205,7 +218,7 @@ const CampaignList = () => {
         performAction={() => {
           deleteCampaign(campaignId);
         }}
-        title={`Are you sure you want to delete  this campaign?`}
+        title={translate('Campaign_Modal', Language)}
       />
     </div>
   );

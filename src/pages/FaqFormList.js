@@ -12,6 +12,7 @@ import { VscEdit } from 'react-icons/vsc';
 import { toast } from 'react-toastify';
 import ReactPaginate from 'react-paginate';
 import { BsArrowLeft, BsArrowRight } from 'react-icons/bs';
+import { useTranslation } from '../components/TranslationContext';
 
 const FaqFormList = () => {
   const [open, setOpen] = useState(false);
@@ -55,10 +56,12 @@ const FaqFormList = () => {
   const handlePageClick = (data) => {
     setCurrentPage(data.selected);
   };
+  const { translate, Language } = useTranslation();
+
   return (
     <div>
       <div className="flex justify-between gap-3 mb-4">
-        <h3 className="title">Faq Forms</h3>{' '}
+        <h3 className="title">{translate('Faq_Forms', Language)}</h3>
       </div>
       <div>
         <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
@@ -69,13 +72,19 @@ const FaqFormList = () => {
                   No
                 </th>
                 <th scope="col" className="px-6 py-3">
-                  <div className="flex items-center">Name</div>
+                  <div className="flex items-center">
+                    {translate('Name', Language)}
+                  </div>
                 </th>
                 <th scope="col" className="px-6 py-3">
-                  <div className="flex items-center">Phone</div>
+                  <div className="flex items-center">
+                    {translate('Phone', Language)}
+                  </div>
                 </th>
                 <th scope="col" className="px-6 py-3">
-                  <div className="flex items-center">Question</div>
+                  <div className="flex items-center">
+                    {translate('Question', Language)}
+                  </div>
                 </th>
                 <th scope="col" className="px-6 py-3"></th>
               </tr>
@@ -133,7 +142,7 @@ const FaqFormList = () => {
         performAction={() => {
           deletefaqform(faqformId);
         }}
-        title={`Are you sure you want to delete  this faqform ?`}
+        title={translate('Faq_Form_Modal', Language)}
       />
     </div>
   );

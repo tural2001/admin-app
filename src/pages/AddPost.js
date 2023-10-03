@@ -28,6 +28,7 @@ import 'react-quill/dist/quill.snow.css'; // Stil dosyasını içe aktarın
 import ImageUploader from 'quill-image-uploader';
 import ImageResize from 'quill-image-resize-module-react';
 import BlotFormatter from 'quill-blot-formatter';
+import { useTranslation } from '../components/TranslationContext';
 
 Quill.register('modules/imageUploader', ImageUploader);
 Quill.register('modules/imageResize', ImageResize);
@@ -383,10 +384,14 @@ const AddPost = () => {
     setSelectedLanguage5(language);
   };
 
+  const { translate, Language } = useTranslation();
+
   return (
     <div>
       <h3 className="mb-4 title">
-        {getpostId !== undefined ? 'Edit' : 'Add'} Post
+        {getpostId !== undefined
+          ? `${translate('Edit_Post', Language)}`
+          : `${translate('Add_Post', Language)}`}{' '}
       </h3>
       <div>
         <form
@@ -431,7 +436,7 @@ const AddPost = () => {
           }}
         >
           <label htmlFor="" className="mt-2">
-            Meta title
+            {translate('Meta_Title', Language)}
           </label>
           <div className="flex">
             {language.map((lang, index) => (
@@ -452,7 +457,6 @@ const AddPost = () => {
                 key={lang}
                 className={lang === selectedLanguage1 ? '' : 'hidden'}
               >
-                {' '}
                 <CustomInput
                   type="text"
                   name={`meta_title.${lang}`}
@@ -469,7 +473,7 @@ const AddPost = () => {
             );
           })}
           <label htmlFor="" className="mt-2">
-            Meta description
+            {translate('Meta_Description', Language)}
           </label>
           <div className="flex">
             {language.map((lang, index) => (
@@ -507,7 +511,7 @@ const AddPost = () => {
             );
           })}
           <label htmlFor="" className="mt-2">
-            Description
+            {translate('Description', Language)}
           </label>
           <div className="flex">
             {language.map((lang, index) => (
@@ -540,7 +544,7 @@ const AddPost = () => {
                       }}
                     >
                       <input {...getInputProps()} />
-                      <p>Drag and drop an image here, or click to select one</p>
+                      <p> {translate('Image_Drop', Language)}</p>
                     </div>
                   )}
                 </Dropzone>
@@ -616,7 +620,7 @@ const AddPost = () => {
           })}
           {/* <Editor onDescriptionChange={handleDescriptionChange} /> */}
           <label htmlFor="" className="mt-2">
-            Title
+            {translate('Title', Language)}{' '}
           </label>
           <div className="flex">
             {language.map((lang, index) => (
@@ -653,7 +657,7 @@ const AddPost = () => {
             );
           })}
           <label htmlFor="" className="mt-2">
-            Slug
+            {translate('Slug', Language)}{' '}
           </label>
           <div className="flex">
             {language.map((lang, index) => (
@@ -690,7 +694,7 @@ const AddPost = () => {
             );
           })}
           <label htmlFor="" className="mt-2">
-            Date
+            {translate('Date', Language)}{' '}
           </label>
           <CustomInput
             type="datetime-local"
@@ -700,9 +704,8 @@ const AddPost = () => {
             onCh={formik.handleChange('published_at')}
             onBl={formik.handleBlur('published_at')}
           />
-
           <label htmlFor="" className="mt-2">
-            Image
+            {translate('Image', Language)}{' '}
           </label>
           <div className="">
             <div className="text-center">
@@ -729,14 +732,11 @@ const AddPost = () => {
                               <div className="flex flex-col items-center justify-center pt-5 pb-6">
                                 {isFileDetected ? (
                                   <p className="mb-2 text-sm text-yellow-600 dark:text-yellow-400">
-                                    File detected
+                                    {translate('File_Detected', Language)}{' '}
                                   </p>
                                 ) : (
                                   <p className="mb-2 text-sm text-gray-500 dark:text-gray-400">
-                                    <span className="font-semibold">
-                                      Click to upload
-                                    </span>{' '}
-                                    or drag and drop
+                                    {translate('Image_Drop', Language)}
                                   </p>
                                 )}
 
@@ -755,12 +755,6 @@ const AddPost = () => {
                                     d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"
                                   ></path>
                                 </svg>
-                                <p className="mb-2 text-sm text-gray-500 dark:text-gray-400">
-                                  <span className="font-semibold">
-                                    Click to upload
-                                  </span>{' '}
-                                  or drag and drop
-                                </p>
                                 <p className="text-xs text-gray-500 dark:text-gray-400">
                                   SVG, PNG, JPG or GIF (MAX. 800x400px)
                                 </p>
@@ -790,7 +784,9 @@ const AddPost = () => {
             type="submit"
             className="mt-10 text-purple-700 hover:text-white border border-purple-700 hover:bg-purple-800 focus:ring-4 focus:outline-none focus:ring-purple-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center mr-2 mb-2 add_button"
           >
-            {getpostId !== undefined ? 'Edit' : 'Add'} post
+            {getpostId !== undefined
+              ? `${translate('Edit', Language)}`
+              : `${translate('Add', Language)}`}{' '}
           </button>
         </form>
       </div>

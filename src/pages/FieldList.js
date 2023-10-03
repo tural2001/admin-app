@@ -11,6 +11,7 @@ import {
 } from '../features/form/formSlice';
 import ReactPaginate from 'react-paginate';
 import { BsArrowLeft, BsArrowRight } from 'react-icons/bs';
+import { useTranslation } from '../components/TranslationContext';
 
 const FieldList = () => {
   const [open, setOpen] = useState(false);
@@ -54,16 +55,18 @@ const FieldList = () => {
     setCurrentPage(data.selected);
   };
 
+  const { translate, Language } = useTranslation();
+
   return (
     <div>
       <div className="flex justify-between gap-3 mb-4">
-        <h3 className="title">Fields</h3>{' '}
+        <h3 className="title"> {translate('Fields', Language)}</h3>
         <Link
           to="/admin/field"
           className="flex justify-center items-center pr-3 gap-1 rounded-lg add_button_2"
         >
           <span className="mb-1 ml-2 text-[30px] hover:text-white">+</span>
-          Add Field
+          {translate('Add_Field', Language)}{' '}
         </Link>
       </div>
       <div>
@@ -75,19 +78,34 @@ const FieldList = () => {
                   No
                 </th>
                 <th scope="col" className="px-6 py-3">
-                  <div className="flex items-center">Label</div>
+                  <div className="flex items-center">
+                    {' '}
+                    {translate('Label', Language)}{' '}
+                  </div>
                 </th>
                 <th scope="col" className="px-6 py-3">
-                  <div className="flex items-center">Type</div>
+                  <div className="flex items-center">
+                    {' '}
+                    {translate('Type', Language)}{' '}
+                  </div>
                 </th>
                 <th scope="col" className="px-6 py-3">
-                  <div className="flex items-center">Name</div>
+                  <div className="flex items-center">
+                    {' '}
+                    {translate('Name', Language)}{' '}
+                  </div>
                 </th>
                 <th scope="col" className="px-6 py-3">
-                  <div className="flex items-center">Required</div>
+                  <div className="flex items-center">
+                    {' '}
+                    {translate('Required', Language)}
+                  </div>
                 </th>
                 <th scope="col" className="px-6 py-3">
-                  <div className="flex items-center">Data</div>
+                  <div className="flex items-center">
+                    {' '}
+                    {translate('Data', Language)}{' '}
+                  </div>
                 </th>
                 <th scope="col" className="px-6 py-3"></th>
               </tr>
@@ -111,7 +129,9 @@ const FieldList = () => {
                         : 'text-red-500'
                     }`}
                   >
-                    {field.required === true ? 'Required' : 'Not required'}
+                    {field.required === true
+                      ? `${translate('Required', Language)}`
+                      : `${translate('Not_Required', Language)}`}
                   </td>
                   <td className="px-6 py-4">{field.data}</td>
                   <td className="px-6 py-16 flex gap-2">
@@ -151,7 +171,7 @@ const FieldList = () => {
         performAction={() => {
           deleteField(fieldId);
         }}
-        title="Are you sure you want to delete this category?"
+        title={translate('Field_Modal', Language)}
       />
     </div>
   );
