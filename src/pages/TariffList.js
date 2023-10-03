@@ -133,7 +133,7 @@ const TariffList = () => {
                     </Link>
 
                     <button
-                      onClick={() => showModal(tariffstate[index]?.id)}
+                      onClick={() => showModal(filteredTariff[index]?.id)}
                       className="text-[25px] text-red-500 "
                     >
                       <RiDeleteBin5Line />

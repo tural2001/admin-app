@@ -106,11 +106,6 @@ const Partnerlist = () => {
                         : 'text-red-500'
                     }`}
                   >
-                    {/* {partner.active === true ? (
-                      <img src={active} alt="" />
-                    ) : (
-                      <img src={notactive} alt="" />
-                    )} */}
                     {partner.active === true ? 'Active' : 'Not Active'}
                   </td>
                   <td className="px-6 py-4">{partner.name}</td>
@@ -158,7 +153,7 @@ const Partnerlist = () => {
                     </Link>
 
                     <button
-                      onClick={() => showModal(partnerState[index]?.id)}
+                      onClick={() => showModal(filteredPartner[index]?.id)}
                       className="text-[25px] text-red-500 "
                     >
                       <RiDeleteBin5Line />

@@ -55,7 +55,6 @@ const AddCampaign = () => {
   const {
     isSuccess,
     isError,
-    isLoading,
     createdCampaign,
     CampaignData,
     campaignActive,

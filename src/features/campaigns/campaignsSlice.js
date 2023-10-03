@@ -57,6 +57,7 @@ export const createAcampaign = createAsyncThunk(
       formdata.append('name', campaignData.values.name);
       formdata.append('description', campaignData.values.description);
       const response = await campaignService.createcampaign(formdata);
+      console.log(response.data);
       return response.data;
     } catch (error) {
       return thunkAPI.rejectWithValue(error);

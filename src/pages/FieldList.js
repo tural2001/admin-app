@@ -122,7 +122,7 @@ const FieldList = () => {
                       <VscEdit />
                     </Link>
                     <button
-                      onClick={() => showModal(fieldstate[index]?.id)}
+                      onClick={() => showModal(filteredField[index]?.id)}
                       className="text-[25px] text-red-500"
                     >
                       <RiDeleteBin5Line />

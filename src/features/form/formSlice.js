@@ -1,8 +1,9 @@
 import { createSlice, createAsyncThunk, createAction } from '@reduxjs/toolkit';
 import formService from './formService';
+import { language } from '../../Language/languages';
 
 const initialState = {
-  forms: [],
+  fields: [],
   isError: false,
   isLoading: false,
   isSuccess: false,
@@ -48,16 +49,13 @@ export const createAfield = createAsyncThunk(
     console.log(fieldData);
     try {
       const formdata = new FormData();
-      formdata.append('label', fieldData.label);
-      formdata.append('name', fieldData.name);
-      formdata.append('required', fieldData.required);
-      formdata.append('data', fieldData.data);
-      formdata.append('type', fieldData.type);
+      formdata.append('label', fieldData.values.label);
+      formdata.append('name', fieldData.values.name);
+      formdata.append('type', fieldData.values.type);
+      formdata.append('data', fieldData.values.data);
+      formdata.append('required', fieldData.values.required);
       const response = await formService.createfield(formdata);
-      console.log(response.data);
-      return response.data;
-      // const response = await formService.createfield(fieldData);
-      // return response.data;
+      return response;
     } catch (error) {
       return thunkAPI.rejectWithValue(error);
     }
@@ -70,16 +68,17 @@ export const updateAfield = createAsyncThunk(
     console.log(fieldData);
     try {
       const formdata = new FormData();
-      formdata.append('label', fieldData.field.label);
-      formdata.append('name', fieldData.field.name);
-      formdata.append('required', fieldData.field.required);
-      formdata.append('data', fieldData.field.data);
-      formdata.append('type', fieldData.field.type);
+      formdata.append('label', fieldData.fieldData.label);
+      formdata.append('name', fieldData.fieldData.name);
+      formdata.append('required', fieldData.fieldData.required);
+      formdata.append('data', fieldData.fieldData.data);
+      formdata.append('type', fieldData.fieldData.type);
       formdata.append('_method', 'PUT');
       const response = await formService.updatefield(
         formdata,
         fieldData.id,
-        fieldData.formId
+        fieldData.formId,
+        fieldData
       );
       console.log(response.data);
       return response.data;
@@ -92,7 +91,7 @@ export const updateAfield = createAsyncThunk(
 export const resetState = createAction('Reset_all');
 
 export const formSlice = createSlice({
-  name: 'forms',
+  name: 'fields',
   initialState,
   reducers: {},
   extraReducers: (builder) => {
@@ -119,7 +118,8 @@ export const formSlice = createSlice({
         state.isLoading = false;
         state.isSuccess = true;
         state.isError = false;
-        state.createdField = action.payload;
+        console.log(action.payload);
+        state.createdfield = action.payload;
       })
       .addCase(createAfield.rejected, (state, action) => {
         state.isLoading = false;
@@ -134,11 +134,10 @@ export const formSlice = createSlice({
         state.isLoading = false;
         state.isSuccess = true;
         state.isError = false;
-        state.fieldLabel = action.payload.label;
-        state.fieldRequired = action.payload.required;
-        state.fielddata = action.payload.data;
-        state.fieldName = action.payload.name;
-        state.fieldType = action.payload.type;
+        state.FieldData = action.payload;
+        state.fieldRequired = action.payload[language[0]].required;
+        state.fieldName = action.payload[language[0]].name;
+        state.fieldType = action.payload[language[0]].type;
       })
       .addCase(getAfield.rejected, (state, action) => {
         state.isLoading = false;

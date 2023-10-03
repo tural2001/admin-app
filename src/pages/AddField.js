@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, { useEffect } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import CustomInput from '../components/CustomInput';
 import { useDispatch, useSelector } from 'react-redux';
 import { useFormik } from 'formik';
@@ -13,16 +13,35 @@ import {
   resetState,
   updateAfield,
 } from '../features/form/formSlice';
+import { language } from '../Language/languages';
 
 let schema = yup.object({
-  label: yup.string().required('Label is Required'),
+  label: yup.object().shape(
+    language.reduce(
+      (acc, lang) => ({
+        ...acc,
+        az: yup.string().required(`Label for az is Required`),
+      }),
+      {}
+    )
+  ),
   type: yup.string().required('Type is Required'),
   name: yup.string().required('Name is Required'),
   required: yup.string(),
-  data: yup.string(),
+  data: yup.object().shape(
+    language.reduce(
+      (acc, lang) => ({
+        ...acc,
+        az: yup.string(),
+      }),
+      {}
+    )
+  ),
 });
 
 const AddForm = () => {
+  const [selectedLanguage1, setSelectedLanguage1] = useState('az');
+  const [selectedLanguage2, setSelectedLanguage2] = useState('az');
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const location = useLocation();
@@ -34,9 +53,8 @@ const AddForm = () => {
     isError,
     isLoading,
     createdField,
-    fieldLabel,
     fieldName,
-    fielddata,
+    FieldData,
     fieldType,
     fieldRequired,
     updatedField,
@@ -45,72 +63,160 @@ const AddForm = () => {
 
   useEffect(() => {
     if (getfieldId !== undefined) {
-      dispatch(getAfield(getfieldId));
-      dispatch(getfields());
+      language.forEach((selectedLanguage) => {
+        dispatch(getAfield(getfieldId, selectedLanguage));
+        dispatch(getfields(selectedLanguage));
+      });
     } else {
       dispatch(resetState());
     }
   }, [dispatch, getfieldId]);
 
+  const prevUpdatedFieldRef = useRef();
+  const debounceTimeoutRef = useRef(null);
+
   useEffect(() => {
-    if (isSuccess && createdField === '') {
-      toast.success('Field Added Successfully');
+    const prevUpdatedField = prevUpdatedFieldRef.current;
+    if (
+      isSuccess &&
+      updatedField !== undefined &&
+      updatedField !== prevUpdatedField
+    ) {
+      if (debounceTimeoutRef.current) {
+        clearTimeout(debounceTimeoutRef.current);
+      }
+      debounceTimeoutRef.current = setTimeout(() => {
+        toast.success('Faq Updated Successfully!');
+        prevUpdatedFieldRef.current = updatedField;
+        navigate('/admin/field-list');
+      }, 1000);
+    }
+
+    if (isError) {
+      toast.error('Something Went Wrong!');
+    }
+  }, [isSuccess, isError, updatedField]);
+  useEffect(() => {
+    if (isSuccess && createdField !== undefined && updatedField !== undefined) {
+      toast.success('Field Added Successfully!');
       navigate('/admin/field-list');
       setTimeout(() => {
         window.location.reload();
       }, 1000);
     }
-    if (isSuccess && updatedField !== undefined) {
-      toast.success('Field Updated Successfully!');
-      navigate(`/admin/field-list`);
-    }
     if (isError) {
-      toast.error('Something went wrong');
+      toast.error('Something Went Wrong!');
     }
   }, [
     isSuccess,
     isError,
     isLoading,
     createdField,
-    fieldLabel,
-    fieldName,
-    fielddata,
-    fieldType,
-    fieldRequired,
+    FieldData,
     updatedField,
     navigate,
   ]);
-
+  console.log(FieldData);
   const formik = useFormik({
     enableReinitialize: true,
     initialValues: {
-      label: fieldLabel || '',
+      label: language.reduce((acc, lang) => {
+        acc[lang] = FieldData ? FieldData[lang]?.label || '' : '';
+        return acc;
+      }, {}),
       type: fieldType || '',
       name: fieldName || '',
       required: fieldRequired ? 1 : 0,
-      data: fielddata || '',
+      data: language.reduce((acc, lang) => {
+        acc[lang] = FieldData ? FieldData[lang]?.data || '' : '';
+        return acc;
+      }, {}),
     },
     validationSchema: schema,
+    // onSubmit: (values) => {
+    //   if (getfieldId !== undefined) {
+    //     const data = { id: getfieldId, field: values };
+    //     console.log(data);
+    //     dispatch(updateAfield(data));
+    //   } else {
+    //     dispatch(createAfield(values));
+    //     formik.resetForm();
+    //     setTimeout(() => {
+    //       dispatch(resetState());
+    //     }, 300);
+    //   }
+    // },
     onSubmit: (values) => {
+      alert(JSON.stringify(values));
+      const updatedLanguages = language.filter((lang) => values.label[lang]);
+      console.log(updatedLanguages);
       if (getfieldId !== undefined) {
-        const data = { id: getfieldId, field: values };
-        console.log(data);
-        dispatch(updateAfield(data));
+        updatedLanguages.forEach((lang) => {
+          const data = {
+            id: getfieldId,
+            fieldData: {
+              label: values.label[lang],
+              data: values.data[lang],
+              type: values.type,
+              name: values.name,
+              required: values.required,
+            },
+            selectedLanguage: lang,
+          };
+          dispatch(updateAfield(data));
+        });
       } else {
-        dispatch(createAfield(values));
-        formik.resetForm();
-        setTimeout(() => {
-          dispatch(resetState());
-        }, 300);
+        if (updatedLanguages.length > 0) {
+          const firstLang = updatedLanguages[0];
+          const createData = {
+            values: {
+              label: values.label[firstLang],
+              data: values.data[firstLang],
+              type: values.type,
+              name: values.name,
+              required: values.required,
+            },
+            selectedLanguage: firstLang,
+          };
+          console.log(createData);
+          dispatch(createAfield(createData))
+            .then((createdfield) => {
+              console.log(createdfield);
+
+              updatedLanguages.slice(1).forEach((lang) => {
+                const updateData = {
+                  id: createdfield.payload.id,
+                  fieldData: {
+                    label: values.label[lang],
+                    data: values.data[lang],
+                    type: values.type,
+                    name: values.name,
+                    required: values.required,
+                  },
+                  selectedLanguage: lang,
+                };
+
+                dispatch(updateAfield(updateData));
+              });
+
+              formik.resetForm();
+              setTimeout(() => {
+                dispatch(resetState());
+              }, 300);
+            })
+            .catch((error) => {
+              console.error('Error creating Field:', error);
+            });
+        }
       }
     },
   });
 
   useEffect(() => {
     if (getfieldId === undefined) {
-      formik.setFieldValue('required', '1');
+      formik.setFieldValue('required', 1);
     } else {
-      formik.setFieldValue('required', newField.fieldRequired ? '1' : '0');
+      formik.setFieldValue('required', newField.fieldRequired ? 1 : 0);
     }
   }, [getfieldId, newField.fieldRequired]);
 
@@ -129,7 +235,13 @@ const AddForm = () => {
   //     formik.setFieldTouched('data', false);
   //   }
   // }, [formik.values.type]);
+  const handleLanguageClick1 = (language) => {
+    setSelectedLanguage1(language);
+  };
 
+  const handleLanguageClick2 = (language) => {
+    setSelectedLanguage2(language);
+  };
   return (
     <div>
       <h3 className="mb-4 title">
@@ -146,6 +258,14 @@ const AddForm = () => {
                 errors[fieldName] = 'This field is Required';
               }
             });
+
+            language.forEach((lang) => {
+              const labelFieldName = `label.${lang}`;
+
+              if (formik.touched.label && !formik.values.label[lang]) {
+                errors[labelFieldName] = `Question for ${lang} is Required`;
+              }
+            });
             if (Object.keys(errors).length > 0) {
               toast.error('Please fill in the required fields.');
               return;
@@ -156,17 +276,38 @@ const AddForm = () => {
           <label htmlFor="" className="mt-2">
             Label
           </label>
-          <CustomInput
-            type="text"
-            label="Enter Label"
-            name="label"
-            onCh={formik.handleChange('label')}
-            onBl={formik.handleBlur('label')}
-            val={formik.values.label}
-          />
-          <div className="error">
-            {formik.touched.label && formik.errors.label}
+          <div className="flex">
+            {language.map((lang, index) => (
+              <label
+                key={lang}
+                className={`cursor-pointer capitalize border-[1px] border-[#5e3989]  rounded-t-lg px-5 ${
+                  lang === selectedLanguage1 ? 'font-bold text-[#5e3989]' : ''
+                }`}
+                onClick={() => handleLanguageClick1(lang)}
+              >
+                {lang}
+              </label>
+            ))}
           </div>
+          {language.map((lang) => {
+            return (
+              <div
+                key={lang}
+                className={lang === selectedLanguage1 ? '' : 'hidden'}
+              >
+                <CustomInput
+                  type="text"
+                  name={`label.${lang}`}
+                  onCh={formik.handleChange}
+                  onBl={formik.handleBlur}
+                  val={formik.values.label[lang]}
+                />
+                {formik.touched.label && formik.errors.label && (
+                  <div className="error">{formik.errors.label[lang]}</div>
+                )}
+              </div>
+            );
+          })}
           <label htmlFor="" className="mt-2">
             Type
           </label>
@@ -211,10 +352,10 @@ const AddForm = () => {
                 <input
                   type="radio"
                   name="required"
-                  onChange={() => formik.setFieldValue('required', '1')}
+                  onChange={() => formik.setFieldValue('required', 1)}
                   onBlur={formik.handleBlur}
-                  value="1"
-                  checked={formik.values.required === '1'}
+                  value={1}
+                  checked={formik.values.required === 1}
                   className="text-blue-500 form-radio h-4 w-4"
                 />
                 <span className="ml-2">Required</span>
@@ -223,10 +364,10 @@ const AddForm = () => {
                 <input
                   type="radio"
                   name="required"
-                  onChange={() => formik.setFieldValue('required', '0')}
+                  onChange={() => formik.setFieldValue('required', 0)}
                   onBlur={formik.handleBlur}
-                  value="0"
-                  checked={formik.values.required === '0'}
+                  value={0}
+                  checked={formik.values.required === 0}
                   className="text-blue-500 form-radio h-4 w-4"
                 />
                 <span className="ml-2">Not required</span>
@@ -243,17 +384,40 @@ const AddForm = () => {
               <label htmlFor="" className="mt-2">
                 Data
               </label>
-              <CustomInput
-                type="text"
-                label="Enter data"
-                name="data"
-                onCh={formik.handleChange('data')}
-                onBl={formik.handleBlur('data')}
-                val={formik.values.data}
-              />
-              <div className="error">
-                {formik.touched.data && formik.errors.data}
+              <div className="flex">
+                {language.map((lang, index) => (
+                  <label
+                    key={lang}
+                    className={`cursor-pointer capitalize border-[1px] border-[#5e3989]  rounded-t-lg px-5 ${
+                      lang === selectedLanguage2
+                        ? 'font-bold text-[#5e3989]'
+                        : ''
+                    }`}
+                    onClick={() => handleLanguageClick2(lang)}
+                  >
+                    {lang}
+                  </label>
+                ))}
               </div>
+              {language.map((lang) => {
+                return (
+                  <div
+                    key={lang}
+                    className={lang === selectedLanguage2 ? '' : 'hidden'}
+                  >
+                    <CustomInput
+                      type="text"
+                      name={`data.${lang}`}
+                      onCh={formik.handleChange}
+                      onBl={formik.handleBlur}
+                      val={formik.values.data[lang]}
+                    />
+                    {formik.touched.data && formik.errors.data && (
+                      <div className="error">{formik.errors.data[lang]}</div>
+                    )}
+                  </div>
+                );
+              })}
             </>
           ) : null}
           <button

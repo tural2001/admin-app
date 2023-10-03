@@ -152,13 +152,13 @@ const OurValueList = () => {
                   </td>
                   <td className="px-6 py-16 flex gap-2">
                     <Link
-                      to={`/admin/our-value/${ourvaluestate[index]?.id}`}
+                      to={`/admin/our-value/${filteredourvalue[index]?.id}`}
                       className="text-[25px] text-blue-500 "
                     >
                       <VscEdit />
                     </Link>
                     <button
-                      onClick={() => showModal(ourvaluestate[index]?.id)}
+                      onClick={() => showModal(filteredourvalue[index]?.id)}
                       className="text-[25px] text-red-500 "
                     >
                       <RiDeleteBin5Line />

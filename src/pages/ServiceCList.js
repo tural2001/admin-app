@@ -147,14 +147,14 @@ const ServiceCList = () => {
                   </td>
                   <td className="px-6 py-4 flex gap-2">
                     <Link
-                      to={`/admin/service-category/${servicecstate[index]?.id}`}
+                      to={`/admin/service-category/${filteredServiceC[index]?.id}`}
                       className="text-[25px] text-blue-500 "
                     >
                       <VscEdit />
                     </Link>
 
                     <button
-                      onClick={() => showModal(servicecstate[index]?.id)}
+                      onClick={() => showModal(filteredServiceC[index]?.id)}
                       className="text-[25px] text-red-500 "
                     >
                       <RiDeleteBin5Line />

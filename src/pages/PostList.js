@@ -160,7 +160,7 @@ const PostList = () => {
                       <VscEdit />
                     </Link>
                     <button
-                      onClick={() => showModal(poststate[index]?.slug)}
+                      onClick={() => showModal(filteredPost[index]?.slug)}
                       className="text-[25px] text-red-500 "
                     >
                       <RiDeleteBin5Line />

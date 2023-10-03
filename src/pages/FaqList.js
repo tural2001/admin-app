@@ -152,7 +152,7 @@ const FaqList = () => {
                     </Link>
 
                     <button
-                      onClick={() => showModal(faqstate[index]?.id)}
+                      onClick={() => showModal(filteredFaq[index]?.id)}
                       className="text-[25px] text-red-500 "
                     >
                       <RiDeleteBin5Line />

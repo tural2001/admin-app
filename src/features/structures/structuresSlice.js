@@ -1,6 +1,7 @@
 import { createSlice, createAsyncThunk, createAction } from '@reduxjs/toolkit';
 
 import structureService from './structuresService';
+import { language } from '../../Language/languages';
 
 const initialState = {
   structures: [],
@@ -48,14 +49,14 @@ export const createAstructure = createAsyncThunk(
   async (structureData, thunkAPI) => {
     try {
       const formdata = new FormData();
-      formdata.append('active', structureData.active);
+      formdata.append('active', structureData.values.active);
       formdata.append(
         'image',
-        structureData.image[0],
-        structureData.image[0].name
+        structureData.values.image[0],
+        structureData.values.image[0].name
       );
-      formdata.append('profession', structureData.profession);
-      formdata.append('name', structureData.name);
+      formdata.append('profession', structureData.values.profession);
+      formdata.append('name', structureData.values.name);
       const response = await structureService.createstructure(formdata);
       return response.data;
     } catch (error) {
@@ -69,21 +70,22 @@ export const updateAstructure = createAsyncThunk(
     console.log(structureData);
     try {
       const formdata = new FormData();
-      formdata.append('active', structureData.structure.active);
-      formdata.append('name', structureData.structure.name);
-      if (structureData.structure.image[0] instanceof File) {
+      formdata.append('active', structureData.structureData.active);
+      formdata.append('name', structureData.structureData.name);
+      if (structureData.structureData.image[0] instanceof File) {
         formdata.append(
           'image',
-          structureData.structure.image[0],
-          structureData.structure.image[0].name
+          structureData.structureData.image[0],
+          structureData.structureData.image[0].name
         );
       }
-      formdata.append('profession', structureData.structure.profession);
+      formdata.append('profession', structureData.structureData.profession);
       formdata.append('_method', 'PUT');
 
       const response = await structureService.updatestructure(
         formdata,
-        structureData.id
+        structureData.id,
+        structureData
       );
       return response.data;
     } catch (error) {
@@ -136,10 +138,9 @@ export const structuresSlice = createSlice({
         state.isLoading = false;
         state.isSuccess = true;
         state.isError = false;
-        state.structureName = action.payload.data.name;
-        state.structureActive = action.payload.data.active;
-        state.structureProfession = action.payload.data.profession;
-        state.structureImage = action.payload.data.image;
+        state.StructurData = action.payload;
+        state.structureActive = action.payload[language[0]].data.active;
+        state.structureImage = action.payload[language[0]].data.image;
       })
       .addCase(getAstructure.rejected, (state, action) => {
         state.isLoading = false;

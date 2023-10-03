@@ -3,7 +3,10 @@ import { base_url } from '../../utils/base_url';
 import { config } from '../../utils/axiosconfig';
 
 const getformdatas = async () => {
-  const response = await axios.get(`${base_url}/api/form-data`, config);
+  const selectedLanguage = 'az';
+  const response = await axios.get(`${base_url}/api/form-data`, {
+    headers: config.getHeaders(selectedLanguage),
+  });
   return response.data;
 };
 
@@ -26,16 +29,21 @@ const getformdatas = async () => {
 // };
 
 const getformdata = async (id) => {
-  const response = await axios.get(`${base_url}/api/form-data/${id}`, config);
+  const selectedLanguage = 'az';
+
+  const response = await axios.get(`${base_url}/api/form-data/${id}`, {
+    headers: config.getHeaders(selectedLanguage),
+  });
   console.log(response.data);
   return response.data;
 };
 
 const deleteformdata = async (id) => {
-  const response = await axios.delete(
-    `${base_url}/api/form-data/${id}`,
-    config
-  );
+  const selectedLanguage = 'az';
+
+  const response = await axios.delete(`${base_url}/api/form-data/${id}`, {
+    headers: config.getHeaders(selectedLanguage),
+  });
   return response.data;
 };
 

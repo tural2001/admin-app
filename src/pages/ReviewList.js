@@ -144,13 +144,13 @@ const ReviewList = () => {
                   </td>
                   <td className="px-6 py-4 flex gap-2">
                     <Link
-                      to={`/admin/review/${reviewstate[index]?.id}`}
+                      to={`/admin/review/${filteredReview[index]?.id}`}
                       className="text-[25px] text-blue-500 "
                     >
                       <VscEdit />
                     </Link>
                     <button
-                      onClick={() => showModal(reviewstate[index]?.id)}
+                      onClick={() => showModal(filteredReview[index]?.id)}
                       className="text-[25px] text-red-500 "
                     >
                       <RiDeleteBin5Line />

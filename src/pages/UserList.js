@@ -101,14 +101,14 @@ const UserList = () => {
                   <td className="px-6 py-4">{user.email}</td>
                   <td className="px-6 py-4 flex gap-2">
                     <Link
-                      to={`/admin/user/${userstate[index]?.id}`}
+                      to={`/admin/user/${filteredUser[index]?.id}`}
                       className="text-[25px] text-blue-500 "
                     >
                       <VscEdit />
                     </Link>
 
                     <button
-                      onClick={() => showModal(userstate[index]?.id)}
+                      onClick={() => showModal(filteredUser[index]?.id)}
                       className="text-[25px] text-red-500 "
                     >
                       <RiDeleteBin5Line />

@@ -84,7 +84,8 @@ export const updateServicecategories = createAsyncThunk(
       formdata.append('_method', 'PUT');
       const response = await servicecategoriesService.updateservicecategories(
         formdata,
-        servicecategoryData.id
+        servicecategoryData.id,
+        servicecategoryData
       );
       return response.data;
     } catch (error) {

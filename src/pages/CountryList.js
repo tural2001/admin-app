@@ -44,18 +44,18 @@ const CountryList = () => {
     }, 100);
   };
 
-  const [currentPage, setCurrentPage] = useState(0); // Sayfa numarasını saklar
-  const itemsPerPage = 7; // Her sayfada kaç yapı gösterileceği
+  const [currentPage, setCurrentPage] = useState(0);
+  const itemsPerPage = 7;
 
   const filteredCountry = countrystate?.slice(
     currentPage * itemsPerPage,
     (currentPage + 1) * itemsPerPage
   );
 
-  const pageCount = Math.ceil(countrystate?.length / itemsPerPage); // Toplam sayfa sayısını hesaplar
+  const pageCount = Math.ceil(countrystate?.length / itemsPerPage);
 
   const handlePageClick = (data) => {
-    setCurrentPage(data.selected); // Sayfa numarasını günceller
+    setCurrentPage(data.selected);
   };
 
   return (
@@ -112,7 +112,7 @@ const CountryList = () => {
                   <td className="px-6 py-4">{country.name}</td>
                   <td className="px-6 py-16 flex gap-2">
                     <Link
-                      to={`/admin/country/${countrystate[index]?.id}`}
+                      to={`/admin/country/${filteredCountry[index]?.id}`}
                       className="text-[25px] text-blue-500 "
                     >
                       <VscEdit />

@@ -85,7 +85,7 @@ const RegionList = () => {
                   <td className="px-6 py-4">{region.color.name.az}</td>
                   <td className="px-6 py-16 flex gap-2">
                     <Link
-                      to={`/admin/region/${regionstate[index]?.handle}`}
+                      to={`/admin/region/${filteredRegion[index]?.handle}`}
                       className="text-[25px] text-blue-500 "
                     >
                       <VscEdit />

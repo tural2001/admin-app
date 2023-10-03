@@ -20,13 +20,13 @@ import channelReducer from '../features/channels/channelsSlice';
 import slideReducer from '../features/slides/slidesSlice';
 import regionReducer from '../features/regions/regionSlice';
 import postReducer from '../features/posts/postSlice';
-import formReducer from '../features/form/formSlice';
 import advantageReducer from '../features/advantages/advantagesSlice';
 import ourvalueReducer from '../features/ourvalues/OurValuesSlice';
 import colorReducer from '../features/color/colorSlice';
 import careerReducer from '../features/career/careerSlice';
 import faqformReducer from '../features/faqform/faqformSlice';
 import formdataReducer from '../features/formData/formDataSlice';
+import fieldReducer from '../features/form/formSlice';
 import careerpageReducer from '../features/careerpage/careerpageSlice';
 import servicecategoryReducer from '../features/servicecategories/servicecategoriesSlice';
 
@@ -40,7 +40,7 @@ export const store = configureStore({
     tariff: tariffReducer,
     servicecategory: servicecategoryReducer,
     region: regionReducer,
-    field: formReducer,
+    field: fieldReducer,
     post: postReducer,
     advantage: advantageReducer,
     ourvalue: ourvalueReducer,

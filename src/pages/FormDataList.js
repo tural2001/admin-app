@@ -202,7 +202,7 @@ const FormDataList = () => {
                     <td className="px-6 py-4">{formatDate(form.updated_at)}</td>
                     <td className="px-6 py-16 flex gap-2">
                       <button
-                        onClick={() => showModal(formdatastate[index]?.id)}
+                        onClick={() => showModal(filteredformdata[index]?.id)}
                         className="text-[25px] text-red-500 "
                       >
                         <RiDeleteBin5Line />

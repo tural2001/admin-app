@@ -179,7 +179,7 @@ const SlideList = () => {
                     </Link>
 
                     <button
-                      onClick={() => showModal(slidestate[index]?.id)}
+                      onClick={() => showModal(filteredSlide[index]?.id)}
                       className="text-[25px] text-red-500 "
                     >
                       <RiDeleteBin5Line />

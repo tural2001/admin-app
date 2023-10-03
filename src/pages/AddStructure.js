@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import CustomInput from '../components/CustomInput';
 import { useDispatch, useSelector } from 'react-redux';
 import { toast } from 'react-toastify';
@@ -14,15 +14,35 @@ import {
   updateAstructure,
 } from '../features/structures/structuresSlice';
 import { uploadImg } from '../features/upload/uploadSlice';
+import { language } from '../Language/languages';
 
 let schema = yup.object({
-  name: yup.string().required('Name is Required'),
-  profession: yup.string().required('Profession is Required'),
+  name: yup.object().shape(
+    language.reduce(
+      (acc, lang) => ({
+        ...acc,
+        az: yup.string().required(`Name for az is Required`),
+      }),
+      {}
+    )
+  ),
+  profession: yup.object().shape(
+    language.reduce(
+      (acc, lang) => ({
+        ...acc,
+        az: yup.string(),
+      }),
+      {}
+    )
+  ),
   image: yup.mixed().required('Image is Required'),
   active: yup.string(),
 });
 
 const AddStructure = () => {
+  const [selectedLanguage1, setSelectedLanguage1] = useState('az');
+  const [selectedLanguage2, setSelectedLanguage2] = useState('az');
+
   const [isFileDetected, setIsFileDetected] = useState(false);
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -33,11 +53,9 @@ const AddStructure = () => {
   const {
     isSuccess,
     isError,
-    isLoading,
     createdStructure,
-    structureName,
+    StructurData,
     structureActive,
-    structureProfession,
     structureImage,
     updatedStructure,
   } = newStructure;
@@ -55,70 +73,143 @@ const AddStructure = () => {
 
   useEffect(() => {
     if (getStructureId !== undefined) {
-      dispatch(getAstructure(getStructureId));
+      language.forEach((selectedLanguage) => {
+        dispatch(getAstructure(getStructureId, selectedLanguage));
+      });
     } else {
       dispatch(resetState());
     }
-  }, [dispatch, getStructureId]);
+  }, [getStructureId]);
+
+  const prevUpdatedStructurenRef = useRef();
+  const debounceTimeoutRef = useRef(null);
 
   useEffect(() => {
-    if (isSuccess && createdStructure) {
+    const prevUpdatedStructure = prevUpdatedStructurenRef.current;
+    if (
+      isSuccess &&
+      updatedStructure !== undefined &&
+      updatedStructure !== prevUpdatedStructure
+    ) {
+      if (debounceTimeoutRef.current) {
+        clearTimeout(debounceTimeoutRef.current);
+      }
+      debounceTimeoutRef.current = setTimeout(() => {
+        toast.success('Structure Updated Successfully!');
+        prevUpdatedStructurenRef.current = updatedStructure;
+        navigate('/admin/structure-list');
+      }, 1000);
+    }
+    if (
+      isSuccess &&
+      createdStructure !== undefined &&
+      updatedStructure !== undefined
+    ) {
+      toast.success('Structure Added Successfully!');
       navigate('/admin/structure-list');
       setTimeout(() => {
         window.location.reload();
-      }, 500);
-      toast.success('Structure Added Successfully!');
-    }
-    if (isSuccess && updatedStructure !== undefined) {
-      toast.success('Structure Updated Successfully!');
-      navigate('/admin/structure-list');
+      }, 1000);
     }
     if (isError) {
       toast.error('Something Went Wrong!');
     }
-  }, [
-    isSuccess,
-    isError,
-    isLoading,
-    createdStructure,
-    structureName,
-    structureActive,
-    structureProfession,
-    structureImage,
-    updatedStructure,
-    navigate,
-  ]);
+  }, [isSuccess, isError, createdStructure, updatedStructure, navigate]);
 
   const formik = useFormik({
     enableReinitialize: true,
     initialValues: {
-      name: structureName || '',
+      name: language.reduce((acc, lang) => {
+        acc[lang] = StructurData ? StructurData[lang]?.data?.name || '' : '';
+        return acc;
+      }, {}),
       active: structureActive ? 1 : 0,
-      profession: structureProfession || '',
+      profession: language.reduce((acc, lang) => {
+        acc[lang] = StructurData
+          ? StructurData[lang]?.data?.profession || ''
+          : '';
+        return acc;
+      }, {}),
       image: typeof structureImage === 'string' ? structureImage : null,
     },
     validationSchema: schema,
     onSubmit: (values) => {
+      alert(JSON.stringify(values));
+      const updatedLanguages = language.filter((lang) => values.name[lang]);
+      console.log(updatedLanguages);
       if (getStructureId !== undefined) {
-        const data = { id: getStructureId, structure: values };
-        dispatch(updateAstructure(data));
+        updatedLanguages.forEach((lang) => {
+          const data = {
+            id: getStructureId,
+            structureData: {
+              name: values.name[lang],
+              profession: values.profession[lang],
+              image: values.image,
+              active: values.active === 1 ? 1 : 0,
+            },
+            selectedLanguage: lang,
+          };
+          dispatch(updateAstructure(data));
+        });
       } else {
-        dispatch(createAstructure(values));
-        formik.resetForm();
-        setTimeout(() => {
-          dispatch(resetState());
-        }, 1000);
+        if (updatedLanguages.length > 0) {
+          const firstLang = updatedLanguages[0];
+          const createData = {
+            values: {
+              name: values.name[firstLang],
+              profession: values.profession[firstLang],
+              image: values.image,
+              active: values.active === 1 ? 1 : 0,
+            },
+            selectedLanguage: firstLang,
+          };
+          dispatch(createAstructure(createData))
+            .then((createdStructure) => {
+              console.log(createdStructure);
+
+              updatedLanguages.slice(1).forEach((lang) => {
+                const updateData = {
+                  id: createdStructure.payload.id,
+                  structureData: {
+                    name: values.name[lang],
+                    profession: values.profession[lang],
+                    image: values.image,
+                    active: values.active === 1 ? 1 : 0,
+                  },
+                  selectedLanguage: lang,
+                };
+                console.log(updateData);
+                dispatch(updateAstructure(updateData));
+              });
+
+              formik.resetForm();
+              setTimeout(() => {
+                dispatch(resetState());
+              }, 300);
+            })
+            .catch((error) => {
+              console.error('Error creating Structure:', error);
+            });
+        }
       }
     },
   });
 
   useEffect(() => {
     if (getStructureId === undefined) {
-      formik.setFieldValue('active', '1');
+      formik.setFieldValue('active', 1);
     } else {
-      formik.setFieldValue('active', newStructure.structureActive ? '1' : '0');
+      formik.setFieldValue('active', newStructure.structureActive ? 1 : 0);
     }
   }, [getStructureId, newStructure.structureActive]);
+
+  const handleLanguageClick1 = (language) => {
+    setSelectedLanguage1(language);
+  };
+
+  const handleLanguageClick2 = (language) => {
+    setSelectedLanguage2(language);
+  };
   return (
     <div>
       <h3 className="mb-4 title">
@@ -128,11 +219,19 @@ const AddStructure = () => {
         <form
           onSubmit={(e) => {
             e.preventDefault();
-            const requiredFields = ['name', 'profession', 'image'];
+            const requiredFields = ['name', 'image'];
             const errors = {};
             requiredFields.forEach((fieldName) => {
               if (formik.touched[fieldName] && !formik.values[fieldName]) {
                 errors[fieldName] = 'This field is Required';
+              }
+            });
+
+            language.forEach((lang) => {
+              const nameFieldName = `name.${lang}`;
+
+              if (formik.touched.name && !formik.values.name[lang]) {
+                errors[nameFieldName] = `Name for ${lang} is Required`;
               }
             });
             if (Object.keys(errors).length > 0) {
@@ -152,10 +251,10 @@ const AddStructure = () => {
                 <input
                   type="radio"
                   name="active"
-                  onChange={() => formik.setFieldValue('active', '1')}
+                  onChange={() => formik.setFieldValue('active', 1)}
                   onBlur={formik.handleBlur}
-                  value="1"
-                  checked={formik.values.active === '1'}
+                  value={1}
+                  checked={formik.values.active === 1}
                   className="text-blue-500 form-radio h-4 w-4"
                 />
                 <span className="ml-2">Active</span>
@@ -164,10 +263,10 @@ const AddStructure = () => {
                 <input
                   type="radio"
                   name="active"
-                  onChange={() => formik.setFieldValue('active', '0')}
+                  onChange={() => formik.setFieldValue('active', 0)}
                   onBlur={formik.handleBlur}
-                  value="0"
-                  checked={formik.values.active === '0'}
+                  value={0}
+                  checked={formik.values.active === 0}
                   className="text-blue-500 form-radio h-4 w-4"
                 />
                 <span className="ml-2">Not Active</span>
@@ -180,31 +279,79 @@ const AddStructure = () => {
           <label htmlFor="" className="mt-2">
             Name
           </label>
-          <CustomInput
-            type="text"
-            label="Enter Structure Name"
-            name="name"
-            onCh={formik.handleChange('name')}
-            onBl={formik.handleBlur('name')}
-            val={formik.values.name}
-          />
-          <div className="error">
-            {formik.touched.name && formik.errors.name}
-          </div>{' '}
+          <div className="flex">
+            {language.map((lang, index) => (
+              <label
+                key={lang}
+                className={`cursor-pointer capitalize border-[1px] border-[#5e3989]  rounded-t-lg px-5 ${
+                  lang === selectedLanguage1 ? 'font-bold' : ''
+                }`}
+                onClick={() => handleLanguageClick1(lang)}
+              >
+                {lang}
+              </label>
+            ))}
+          </div>
+          {language.map((lang, index) => {
+            return (
+              <div
+                key={lang}
+                className={lang === selectedLanguage1 ? '' : 'hidden'}
+              >
+                {' '}
+                <CustomInput
+                  type="text"
+                  name={`name.${lang}`}
+                  onCh={formik.handleChange}
+                  onBl={formik.handleBlur}
+                  val={formik.values.name[lang]}
+                />
+                {formik.touched.name && formik.errors.name && (
+                  <div className="error" key={`${lang}-error`}>
+                    {formik.errors.name[lang]}
+                  </div>
+                )}
+              </div>
+            );
+          })}
           <label htmlFor="" className="mt-2">
             Profession
           </label>
-          <CustomInput
-            type="text"
-            label="Enter Structure Profession"
-            name="profession"
-            onCh={formik.handleChange('profession')}
-            onBl={formik.handleBlur('profession')}
-            val={formik.values.profession}
-          />
-          <div className="error">
-            {formik.touched.profession && formik.errors.profession}
+          <div className="flex">
+            {language.map((lang, index) => (
+              <label
+                key={lang}
+                className={`cursor-pointer capitalize border-[1px] border-[#5e3989]  rounded-t-lg px-5 ${
+                  lang === selectedLanguage2 ? 'font-bold' : ''
+                }`}
+                onClick={() => handleLanguageClick2(lang)}
+              >
+                {lang}
+              </label>
+            ))}
           </div>
+          {language.map((lang, index) => {
+            return (
+              <div
+                key={lang}
+                className={lang === selectedLanguage2 ? '' : 'hidden'}
+              >
+                {' '}
+                <CustomInput
+                  type="text"
+                  name={`profession.${lang}`}
+                  onCh={formik.handleChange}
+                  onBl={formik.handleBlur}
+                  val={formik.values.profession[lang]}
+                />
+                {formik.touched.profession && formik.errors.profession && (
+                  <div className="error" key={`${lang}-error`}>
+                    {formik.errors.profession[lang]}
+                  </div>
+                )}
+              </div>
+            );
+          })}
           <label htmlFor="" className="mt-2">
             Image
           </label>

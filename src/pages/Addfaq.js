@@ -198,9 +198,9 @@ const Addfaq = (e) => {
 
   useEffect(() => {
     if (getFaqId === undefined) {
-      formik.setFieldValue('active', '1');
+      formik.setFieldValue('active', 1);
     } else {
-      formik.setFieldValue('active', newFaq.FaqActive ? '1' : '0');
+      formik.setFieldValue('active', newFaq.FaqActive ? 1 : 0);
     }
   }, [getFaqId, newFaq.FaqActive]);
 
@@ -245,7 +245,7 @@ const Addfaq = (e) => {
               toast.error('Please fill in the required fields.');
               return;
             }
-            console.log(formik.errors.answer);
+
             formik.handleSubmit(e);
           }}
         >
@@ -259,10 +259,10 @@ const Addfaq = (e) => {
                   <input
                     type="radio"
                     name="active"
-                    onChange={() => formik.setFieldValue('active', '1')}
+                    onChange={() => formik.setFieldValue('active', 1)}
                     onBlur={formik.handleBlur}
-                    value="1"
-                    checked={formik.values.active === '1'}
+                    value={1}
+                    checked={formik.values.active === 1}
                     className="text-blue-500 form-radio h-4 w-4"
                   />
                   <span className="ml-2">Active</span>
@@ -271,10 +271,10 @@ const Addfaq = (e) => {
                   <input
                     type="radio"
                     name="active"
-                    onChange={() => formik.setFieldValue('active', '0')}
+                    onChange={() => formik.setFieldValue('active', 0)}
                     onBlur={formik.handleBlur}
-                    value="0"
-                    checked={formik.values.active === '0'}
+                    value={0}
+                    checked={formik.values.active === 0}
                     className="text-blue-500 form-radio h-4 w-4"
                   />
                   <span className="ml-2">Not Active</span>

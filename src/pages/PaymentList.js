@@ -180,14 +180,14 @@ const PaymentList = () => {
                   </td>
                   <td className="px-6 py-16 flex gap-2">
                     <Link
-                      to={`/admin/payment/${paymentstate[index]?.id}`}
+                      to={`/admin/payment/${filteredPayment[index]?.id}`}
                       className="text-[25px] text-blue-500 "
                     >
                       <VscEdit />
                     </Link>
 
                     <button
-                      onClick={() => showModal(paymentstate[index]?.id)}
+                      onClick={() => showModal(filteredPayment[index]?.id)}
                       className="text-[25px] text-red-500 "
                     >
                       <RiDeleteBin5Line />

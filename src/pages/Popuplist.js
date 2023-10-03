@@ -139,14 +139,14 @@ const Popuplist = () => {
                   </td>
                   <td className="px-6 py-16 flex gap-2">
                     <Link
-                      to={`/admin/popup/${popupstate[index]?.handle}`}
+                      to={`/admin/popup/${filteredPopup[index]?.handle}`}
                       className="text-[25px] text-blue-500 "
                     >
                       <VscEdit />
                     </Link>
 
                     <button
-                      onClick={() => showModal(popupstate[index]?.id)}
+                      onClick={() => showModal(filteredPopup[index]?.id)}
                       className="text-[25px] text-red-500 "
                     >
                       <RiDeleteBin5Line />

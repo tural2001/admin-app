@@ -19,11 +19,15 @@ const createservicecategories = async (servicecategories) => {
   );
   return response.data;
 };
-const updateservicecategories = async (servicecategories, id) => {
+const updateservicecategories = async (
+  servicecategories,
+  id,
+  servicecategoriesData
+) => {
   const response = await axios.post(
     `${base_url}/api/service-categories/${id}`,
     servicecategories,
-    { headers: config.getHeaders(servicecategories.selectedLanguage) }
+    { headers: config.getHeaders(servicecategoriesData.selectedLanguage) }
   );
   return response.data;
 };

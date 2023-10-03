@@ -97,14 +97,14 @@ const FaqFormList = () => {
                   <td className="px-6 py-4">{faqform.question}</td>
                   <td className="px-6 py-16 flex gap-2">
                     <Link
-                      to={`/admin/faq-form/${faqformstate[index]?.id}`}
+                      to={`/admin/faq-form/${filteredfaqform[index]?.id}`}
                       className="text-[25px] text-blue-500 "
                     >
                       <VscEdit />
                     </Link>
 
                     <button
-                      onClick={() => showModal(faqformstate[index]?.id)}
+                      onClick={() => showModal(filteredfaqform[index]?.id)}
                       className="text-[25px] text-red-500 "
                     >
                       <RiDeleteBin5Line />

@@ -11,6 +11,7 @@ const getcampaigns = async (selectedLanguage) => {
 };
 
 const createcampaign = async (campaign) => {
+  console.log(campaign);
   const response = await axios.post(`${base_url}/api/campaigns`, campaign, {
     headers: config.getHeaders(campaign.selectedLanguage),
   });

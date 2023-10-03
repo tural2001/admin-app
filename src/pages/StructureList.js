@@ -47,16 +47,15 @@ const StructureList = () => {
     }, 1000);
   };
 
-  // Sayfa numarasına göre yapıları filtrele
   const filteredStructures = structurestate?.slice(
     currentPage * itemsPerPage,
     (currentPage + 1) * itemsPerPage
   );
 
-  const pageCount = Math.ceil(structurestate?.length / itemsPerPage); // Toplam sayfa sayısını hesaplar
+  const pageCount = Math.ceil(structurestate?.length / itemsPerPage);
 
   const handlePageClick = (data) => {
-    setCurrentPage(data.selected); // Sayfa numarasını günceller
+    setCurrentPage(data.selected);
   };
 
   return (
