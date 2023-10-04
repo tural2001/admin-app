@@ -12,6 +12,7 @@ import {
 import ReactPaginate from 'react-paginate';
 import { BsArrowLeft, BsArrowRight } from 'react-icons/bs';
 import Popup from 'reactjs-popup';
+import { useTranslation } from '../components/TranslationContext';
 
 const ReviewList = () => {
   const [open, setOpen] = useState(false);
@@ -52,17 +53,18 @@ const ReviewList = () => {
   const handlePageClick = (data) => {
     setCurrentPage(data.selected); // Sayfa numarasını günceller
   };
+  const { translate, Language } = useTranslation();
 
   return (
     <div>
       <div className="flex justify-between gap-3 mb-4">
-        <h3 className="title">Reviews</h3>
+        <h3 className="title">{translate('Reviews', Language)}</h3>
         <Link
           to={`/admin/review`}
           className="flex justify-center items-center pr-3 gap-1 rounded-lg add_button_2"
         >
           <span className="mb-1 ml-2 text-[30px] hover:text-white">+</span>
-          Add Review
+          {translate('Add_Review', Language)}
         </Link>
       </div>
       <div>
@@ -74,16 +76,24 @@ const ReviewList = () => {
                   No
                 </th>
                 <th scope="col" className="px-6 py-3">
-                  <div className="flex items-center">Status</div>
+                  <div className="flex items-center">
+                    {translate('Status', Language)}
+                  </div>
                 </th>
                 <th scope="col" className="px-6 py-3">
-                  <div className="flex items-center">Reviewer name</div>
+                  <div className="flex items-center">
+                    {translate('Review_Name', Language)}
+                  </div>
                 </th>
                 <th scope="col" className="px-6 py-3">
-                  <div className="flex items-center">comment</div>
+                  <div className="flex items-center">
+                    {translate('Comment', Language)}
+                  </div>
                 </th>
                 <th scope="col" className="px-6 py-3">
-                  <div className="flex items-center">Image</div>
+                  <div className="flex items-center">
+                    {translate('Image', Language)}
+                  </div>
                 </th>
                 <th scope="col" className="px-6 py-3"></th>
               </tr>
@@ -179,7 +189,7 @@ const ReviewList = () => {
         performAction={() => {
           deleteReview(reviewId);
         }}
-        title="Are you sure you want to delete this category?"
+        title={translate('Review_Modal', Language)}
       />
     </div>
   );

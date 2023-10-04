@@ -18,10 +18,10 @@ const createpost = async (post, postData) => {
   return response.data;
 };
 
-const updatepost = async (post, slug, postData) => {
+const updatepost = async (post, id, postData) => {
   console.log(postData);
   const response = await axios.post(
-    `${base_url}/api/posts/${postData.slug}`,
+    `${base_url}/api/posts/${postData.id}`,
     post,
     {
       headers: config.getHeaders(postData.selectedLanguage),

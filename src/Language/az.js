@@ -1,3 +1,6 @@
+//Dashboard
+export const Dashboard = 'İdarə paneli';
+
 // Advantages
 export const Advantages = 'Üstünlüklər';
 export const Add_Advantages = 'Üstünlük əlavə et';
@@ -28,6 +31,7 @@ export const Address = 'Ünvan';
 export const Add_Career = 'Karyera əlavə et';
 export const Edit_Career = 'Karyera redakte et';
 export const Career_Modal = 'Bu karyeranı silmək istədiyinizə əminsiniz ?';
+export const Career_Forms = 'Karyera formları';
 export const Phone = 'Telefon';
 export const Vacancy_Name = 'Vakansiya adı';
 export const Notes = 'Notlar';
@@ -134,3 +138,48 @@ export const Business = 'Biznes';
 export const Individual = 'Fərdi';
 export const Tariff_Modal = 'Bu tarifi silmək istədiyinizə əminsiniz ?';
 export const Select_Service = 'Xidmət seç';
+//Structures
+export const Structures = 'Strukturlar';
+export const Add_Structure = 'Struktur əlavə et';
+export const Edit_Structure = 'Strukturu redakte et';
+export const Structure_Modal = 'Bu strukturu silmək istədiyinizə əminsiniz ?';
+export const Profession = 'Peşə';
+//Slides
+export const Slides = 'Slaydlar';
+export const Add_Slide = 'Slayd əlavə et';
+export const Edit_Slide = 'Slaydı redakte et';
+export const Slide_Modal = 'Bu slaydı silmək istədiyinizə əminsiniz ?';
+export const Show_Button = 'Düyməni göstər';
+export const Button_Text = 'Düymə Mətni';
+export const Button_Link = 'Düymə Bağlantısı';
+export const Order = 'Sifariş';
+//Service_Categories
+export const Service_Categories = 'Xidmət kateqoriyaları';
+export const Add_Service_Categories = 'Xidmət kateqoriyaları əlavə et';
+export const Edit_Service_Categories = 'Xidmət kateqoriyaları redakte et';
+export const Service_Category_Modal =
+  'Bu xidmət kateqoriyasını silmək istədiyinizə əminsiniz ?';
+//Service
+export const Services = 'Xidmətlər';
+export const Add_Service = 'Xidmətlər əlavə et';
+export const Edit_Service = 'Xidmətləri redakte et';
+export const Service_Modal = 'Bu xidməti silmək istədiyinizə əminsiniz ?';
+export const Partner = 'Tərəfdaş';
+//Review
+export const Reviews = 'Rəylər';
+export const Add_Review = 'Rəy əlavə et';
+export const Edit_Review = 'Rəyi redakte et';
+export const Review_Modal = 'Bu rəyi silmək istədiyinizə əminsiniz ?';
+export const Review_Name = 'Rəyçi adı';
+export const Comment = 'Şərh';
+//Settings
+export const Value = 'Dəyər';
+export const Key = 'Açar';
+export const Settings = 'Parametrlər';
+export const Add_Setting = 'Parametr əlavə et';
+export const Edit_Setting = 'Parametri redakte et';
+//Users
+export const Users = 'İstifadəçilər';
+export const Add_User = 'İstifadəçi əlavə et';
+export const Edit_User = 'İstifadəçini redakte et';
+export const User_Modal = 'Bu istifadəçini silmək istədiyinizə əminsiniz ?';

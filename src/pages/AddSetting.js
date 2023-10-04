@@ -11,6 +11,7 @@ import {
   resetState,
   updateAsetting,
 } from '../features/settings/settingSlice';
+import { useTranslation } from '../components/TranslationContext';
 
 let schema = yup.object({
   key: yup.string().required('Key is Required'),
@@ -88,10 +89,14 @@ const Addsetting = (e) => {
     },
   });
 
+  const { translate, Language } = useTranslation();
+
   return (
     <div>
       <h3 className="mb-4 title">
-        {getsettingId !== undefined ? 'Edit' : 'Add'} Setting
+        {getsettingId !== undefined
+          ? `${translate('Edit_Setting', Language)}`
+          : `${translate('Add_Setting', Language)}`}{' '}
       </h3>
       <div className="">
         <form
@@ -113,7 +118,7 @@ const Addsetting = (e) => {
         >
           <div className="mt-4">
             <label htmlFor="" className="mt-2">
-              Key
+              {translate('Key', Language)}
             </label>
             <CustomInput
               type="text"
@@ -128,7 +133,7 @@ const Addsetting = (e) => {
               {formik.touched.key && formik.errors.key}
             </div>
             <label htmlFor="" className="mt-2">
-              Value
+              {translate('Value', Language)}{' '}
             </label>
             <CustomInput
               type="text"
@@ -146,7 +151,9 @@ const Addsetting = (e) => {
             type="submit"
             className="mt-10 text-purple-700 hover:text-white border border-purple-700 hover:bg-purple-800 focus:ring-4 focus:outline-none focus:ring-purple-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center mr-2 mb-2 add_button"
           >
-            {getsettingId !== undefined ? 'Edit' : 'Add'} Setting
+            {getsettingId !== undefined
+              ? `${translate('Edit', Language)}`
+              : `${translate('Add', Language)}`}{' '}
           </button>
         </form>
       </div>

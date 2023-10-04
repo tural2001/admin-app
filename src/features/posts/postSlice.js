@@ -90,7 +90,7 @@ export const updateApost = createAsyncThunk(
       formdata.append('_method', 'PUT');
       const response = await postService.updatepost(
         formdata,
-        postData.postData.slug,
+        postData.postData.id,
         postData
       );
       return response.data;

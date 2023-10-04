@@ -14,6 +14,7 @@ import {
   resetState,
 } from '../features/servicecategories/servicecategoriesSlice';
 import { getservices } from '../features/services/servicesSlice';
+import { useTranslation } from '../components/TranslationContext';
 
 const ServiceCList = () => {
   const [open, setOpen] = useState(false);
@@ -55,17 +56,18 @@ const ServiceCList = () => {
   const handlePageClick = (data) => {
     setCurrentPage(data.selected);
   };
+  const { translate, Language } = useTranslation();
 
   return (
     <div>
       <div className="flex justify-between gap-3 mb-4">
-        <h3 className="title">Reviews</h3>
+        <h3 className="title">{translate('Service_Categories', Language)}</h3>
         <Link
           to={`/admin/service-category`}
           className="flex justify-center items-center pr-3 gap-1 rounded-lg add_button_2"
         >
           <span className="mb-1 ml-2 text-[30px] hover:text-white">+</span>
-          Add Review
+          {translate('Add_Service_Category', Language)}
         </Link>
       </div>
       <div>
@@ -77,13 +79,19 @@ const ServiceCList = () => {
                   No
                 </th>
                 <th scope="col" className="px-6 py-3">
-                  <div className="flex items-center">Status</div>
+                  <div className="flex items-center">
+                    {translate('Status', Language)}
+                  </div>
                 </th>
                 <th scope="col" className="px-6 py-3">
-                  <div className="flex items-center">Name</div>
+                  <div className="flex items-center">
+                    {translate('Name', Language)}
+                  </div>
                 </th>
                 <th scope="col" className="px-6 py-3">
-                  <div className="flex items-center">Icon</div>
+                  <div className="flex items-center">
+                    {translate('Icon', Language)}
+                  </div>
                 </th>
                 <th scope="col" className="px-6 py-3"></th>
               </tr>
@@ -107,7 +115,9 @@ const ServiceCList = () => {
                         : 'text-red-500'
                     }`}
                   >
-                    {servicec.active === true ? 'Active' : 'Not Active'}
+                    {servicec.active === true
+                      ? `${translate('Active', Language)}`
+                      : `${translate('Not_Active', Language)}`}
                   </td>
                   <td className="px-6 py-4">{servicec.name}</td>
                   {/* <td className="px-6 py-4">{review.reviewer_image}</td> */}
@@ -183,7 +193,7 @@ const ServiceCList = () => {
         performAction={() => {
           deleteReview(reviewId);
         }}
-        title="Are you sure you want to delete this category?"
+        title={translate('Service_Category_Modal', Language)}
       />
     </div>
   );

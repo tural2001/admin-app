@@ -12,6 +12,7 @@ import {
 } from '../features/users/usersSlice';
 import ReactPaginate from 'react-paginate';
 import { BsArrowLeft, BsArrowRight } from 'react-icons/bs';
+import { useTranslation } from '../components/TranslationContext';
 
 const UserList = () => {
   const [open, setOpen] = useState(false);
@@ -55,16 +56,18 @@ const UserList = () => {
   const handlePageClick = (data) => {
     setCurrentPage(data.selected);
   };
+  const { translate, Language } = useTranslation();
+
   return (
     <div>
       <div className="flex justify-between gap-3 mb-4">
-        <h3 className="title">Users</h3>
+        <h3 className="title"> {translate('Users', Language)}</h3>
         <Link
           to={`/admin/user`}
           className="flex justify-center items-center pr-3 gap-1 rounded-lg add_button_2"
         >
           <span className="mb-1 ml-2 text-[30px] hover:text-white">+</span>
-          Add user
+          {translate('Add_User', Language)}
         </Link>
       </div>
       <div>
@@ -76,10 +79,16 @@ const UserList = () => {
                   No
                 </th>
                 <th scope="col" className="px-6 py-3">
-                  <div className="flex items-center">Name</div>
+                  <div className="flex items-center">
+                    {' '}
+                    {translate('Name', Language)}
+                  </div>
                 </th>
                 <th scope="col" className="px-6 py-3">
-                  <div className="flex items-center">Email</div>
+                  <div className="flex items-center">
+                    {' '}
+                    {translate('Email', Language)}
+                  </div>
                 </th>
                 <th scope="col" className="px-6 py-3"></th>
               </tr>
@@ -137,7 +146,7 @@ const UserList = () => {
         performAction={() => {
           deleteUser(userId);
         }}
-        title={`Are you sure you want to delete  this user?`}
+        title={translate('User_Modal', Language)}
       />
     </div>
   );

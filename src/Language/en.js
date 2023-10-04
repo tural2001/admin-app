@@ -1,3 +1,6 @@
+//Dashboard
+export const Dashboard = 'Dashboard';
+
 //Advantages
 export const Advantages = 'Advantages';
 export const Status = 'Active';
@@ -27,6 +30,7 @@ export const Address = 'Address';
 export const Add_Career = 'Add Career';
 export const Edit_Career = 'Edit Career';
 export const Career_Modal = 'Are you sure you want to delete  this career ?';
+export const Career_Forms = 'Career Forms';
 export const Phone = 'Phone';
 export const Vacancy_Name = 'Vacancy Name';
 export const Notes = 'Notes';
@@ -129,3 +133,50 @@ export const Business = 'Business';
 export const Individual = 'Individual';
 export const Tariff_Modal = 'Are you sure you want to delete  this service ?';
 export const Select_Service = 'Select Service';
+//
+//Structures
+export const Structures = 'Structures';
+export const Add_Structure = 'Add Structure';
+export const Edit_Structure = 'Edit Structure';
+export const Structure_Modal =
+  'Are you sure you want to delete  this structure ?';
+export const Profession = 'Profession';
+//Slides
+export const Slides = 'Slides';
+export const Add_Slide = 'Add Slide';
+export const Edit_Slide = 'Edit Slide';
+export const Slide_Modal = 'Are you sure you want to delete  this slide ?';
+export const Show_Button = 'Show Button';
+export const Button_Text = 'Button Text';
+export const Button_Link = 'Button Link';
+export const Order = 'Order';
+//Service_Categories
+export const Service_Categories = 'Service Categories';
+export const Add_Service_Categories = 'Add Service Categories';
+export const Edit_Service_Categories = 'Edit Service Categories';
+export const Service_Category_Modal =
+  'Are you sure you want to delete  this service category ?';
+//Service
+export const Services = 'Services';
+export const Add_Service = 'Add Services';
+export const Edit_Service = 'Edit Page Services';
+export const Service_Modal = 'Are you sure you want to delete  this service ?';
+export const Partner = 'Partner';
+//Review
+export const Reviews = 'Reviews';
+export const Add_Review = 'Add Review';
+export const Edit_Review = 'Edit Review';
+export const Review_Modal = 'Are you sure you want to delete  this review ?';
+export const Review_Name = 'Review Name';
+export const Comment = 'Comment';
+//Settings
+export const Value = 'Value';
+export const Key = 'Key';
+export const Settings = 'Settings';
+export const Add_Setting = 'Add Setting';
+export const Edit_Setting = 'Edit Setting';
+//Users
+export const Users = 'Users';
+export const Add_User = 'Add User';
+export const Edit_User = 'Edit User';
+export const User_Modal = 'Are you sure you want to delete  this user ?';

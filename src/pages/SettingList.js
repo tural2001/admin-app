@@ -5,6 +5,7 @@ import { VscEdit } from 'react-icons/vsc';
 import ReactPaginate from 'react-paginate';
 import { BsArrowLeft, BsArrowRight } from 'react-icons/bs';
 import { getsettings, resetState } from '../features/settings/settingSlice';
+import { useTranslation } from '../components/TranslationContext';
 
 const SettingList = () => {
   const dispatch = useDispatch();
@@ -30,10 +31,13 @@ const SettingList = () => {
   const handlePageClick = (data) => {
     setCurrentPage(data.selected);
   };
+
+  const { translate, Language } = useTranslation();
+
   return (
     <div>
       <div className="flex justify-between gap-3 mb-4">
-        <h3 className="title">Settings</h3>{' '}
+        <h3 className="title"> {translate('Settings', Language)}</h3>{' '}
       </div>
       <div>
         <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
@@ -44,10 +48,14 @@ const SettingList = () => {
                   No
                 </th>
                 <th scope="col" className="px-6 py-3">
-                  <div className="flex items-center">Key</div>
+                  <div className="flex items-center">
+                    {translate('Key', Language)}
+                  </div>
                 </th>
                 <th scope="col" className="px-6 py-3">
-                  <div className="flex items-center">Value</div>
+                  <div className="flex items-center">
+                    {translate('Value', Language)}
+                  </div>
                 </th>
                 <th scope="col" className="px-6 py-3"></th>
               </tr>

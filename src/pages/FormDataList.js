@@ -15,6 +15,7 @@ import axios from 'axios';
 import { base_url } from '../utils/base_url';
 import { config } from '../utils/axiosconfig';
 import { x } from '../assets';
+import { useTranslation } from '../components/TranslationContext';
 
 const FormDataList = () => {
   const [open, setOpen] = useState(false);
@@ -84,10 +85,12 @@ const FormDataList = () => {
       });
   };
 
+  const { translate, Language } = useTranslation();
+
   return (
     <div>
       <div className="flex justify-between gap-3 mb-4">
-        <h3 className="title">Form Data List</h3>{' '}
+        <h3 className="title">{translate('Form_Data_List', Language)}</h3>{' '}
       </div>
       <div>
         <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
@@ -98,16 +101,24 @@ const FormDataList = () => {
                   No
                 </th>
                 <th scope="col" className="px-6 py-3">
-                  <div className="flex items-center">Data</div>
+                  <div className="flex items-center">
+                    {translate('Data', Language)}
+                  </div>
                 </th>
                 <th scope="col" className="px-6 py-3">
-                  <div className="flex items-center">Read At</div>
+                  <div className="flex items-center">
+                    {translate('Reat_At', Language)}
+                  </div>
                 </th>
                 <th scope="col" className="px-6 py-3">
-                  <div className="flex items-center">Created At</div>
+                  <div className="flex items-center">
+                    {translate('Create_At', Language)}
+                  </div>
                 </th>
                 <th scope="col" className="px-6 py-3">
-                  <div className="flex items-center">Updated At</div>
+                  <div className="flex items-center">
+                    {translate('Update_at', Language)}
+                  </div>
                 </th>
                 <th scope="col" className="px-6 py-3"></th>
               </tr>
@@ -127,7 +138,7 @@ const FormDataList = () => {
                     </th>
                     <td className="px-6 py-4">
                       <Popup
-                        trigger={<button>Read</button>}
+                        trigger={<button>{translate('Read', Language)}</button>}
                         modal
                         nested
                         contentStyle={{
@@ -153,11 +164,9 @@ const FormDataList = () => {
                                 try {
                                   const formDataObject = JSON.parse(form.data);
 
-                                  // Create an array of JSX elements to render
                                   const formDataElements = Object.keys(
                                     formDataObject
                                   ).map((key, index) => {
-                                    // Check if the value is a valid URL
                                     const isURL =
                                       /^(http|https):\/\/[^ "]+$/.test(
                                         formDataObject[key]
@@ -232,7 +241,7 @@ const FormDataList = () => {
         performAction={() => {
           deleteformdata(formdataId);
         }}
-        title="Are you sure you want to delete this category?"
+        title={translate('Form_Data_Modal', Language)}
       />
     </div>
   );

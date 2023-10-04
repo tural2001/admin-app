@@ -60,7 +60,7 @@ const CareerList = () => {
   return (
     <div>
       <div className="flex justify-between gap-3 mb-4">
-        <h3 className="title">{translate('Careers', Language)}</h3>{' '}
+        <h3 className="title">{translate('Career_Forms', Language)}</h3>{' '}
       </div>
       <div>
         <div className="relative overflow-x-auto shadow-md sm:rounded-lg">

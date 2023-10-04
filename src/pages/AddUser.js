@@ -12,6 +12,7 @@ import {
   resetState,
   updateAuser,
 } from '../features/users/usersSlice';
+import { useTranslation } from '../components/TranslationContext';
 
 let schema = yup.object({
   name: yup.string().required('Name is Required'),
@@ -94,10 +95,14 @@ const AddUser = () => {
     },
   });
 
+  const { translate, Language } = useTranslation();
+
   return (
     <div>
       <h3 className="mb-4 title">
-        {getuserId !== undefined ? 'Edit' : 'Add'} User
+        {getuserId !== undefined
+          ? `${translate('Edit_User', Language)}`
+          : `${translate('Add_User', Language)}`}{' '}
       </h3>
       <div className="">
         <form
@@ -165,7 +170,9 @@ const AddUser = () => {
             type="submit"
             className="mt-10 text-purple-700 hover:text-white border border-purple-700 hover:bg-purple-800 focus:ring-4 focus:outline-none focus:ring-purple-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center mr-2 mb-2 add_button"
           >
-            {getuserId !== undefined ? 'Edit' : 'Add'} user
+            {getuserId !== undefined
+              ? `${translate('Edit', Language)}`
+              : `${translate('Add', Language)}`}{' '}
           </button>
         </form>
       </div>

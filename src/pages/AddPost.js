@@ -256,7 +256,7 @@ const AddPost = () => {
 
               updatedLanguages.slice(1).forEach((lang) => {
                 const updateData = {
-                  slug: createdPost.payload.slug,
+                  id: createdPost.payload.id,
                   postData: {
                     title: values.title[lang],
                     description: values.description[lang],

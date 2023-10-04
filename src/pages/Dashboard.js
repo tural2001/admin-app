@@ -5,6 +5,7 @@ import { getfaqforms } from '../features/faqform/faqformSlice';
 import { getcareers } from '../features/career/careerSlice';
 import { getformdatas } from '../features/formData/formDataSlice';
 import { debounce } from 'lodash';
+import { useTranslation } from '../components/TranslationContext';
 
 const Dashboard = () => {
   const dispatch = useDispatch();
@@ -45,11 +46,12 @@ const Dashboard = () => {
 
     return new Date(dateTimeString).toLocaleString(undefined, options);
   };
+  const { translate, Language } = useTranslation();
 
   return (
     <div>
       <div className="flex justify-between gap-3 mb-4">
-        <h3 className="title">Dashboard</h3>
+        <h3 className="title"> {translate('Dashboard', Language)}</h3>
       </div>
       <div className="flex flex-col gap-10 w-full justify-between ">
         <div className=" overflow-x-auto shadow-md sm:rounded-lg">
@@ -57,7 +59,7 @@ const Dashboard = () => {
             htmlFor=""
             className="text-[20px] text-blue-500 flex justify-center items-center  label-title"
           >
-            Faq Form
+            {translate('Faq_Forms', Language)}
           </label>
           <table className="w-full text-sm text-left text-gray-500 dark:text-gray-400 mt-3">
             <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
@@ -66,13 +68,19 @@ const Dashboard = () => {
                   No
                 </th>
                 <th scope="col" className="px-6 py-3">
-                  <div className="flex items-center">Name</div>
+                  <div className="flex items-center">
+                    {translate('Name', Language)}
+                  </div>
                 </th>
                 <th scope="col" className="px-6 py-3">
-                  <div className="flex items-center">Phone</div>
+                  <div className="flex items-center">
+                    {translate('Phone', Language)}
+                  </div>
                 </th>
                 <th scope="col" className="px-6 py-3">
-                  <div className="flex items-center">Question</div>
+                  <div className="flex items-center">
+                    {translate('Question', Language)}
+                  </div>
                 </th>
                 <th scope="col" className="px-6 py-3"></th>
               </tr>
@@ -103,7 +111,7 @@ const Dashboard = () => {
             htmlFor=""
             className="text-[20px] text-blue-500 flex justify-center items-center label-title"
           >
-            Career Form
+            {translate('Career_Forms', Language)}
           </label>
           <table className="w-full text-sm text-left text-gray-500 dark:text-gray-400 mt-3">
             <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
@@ -112,23 +120,36 @@ const Dashboard = () => {
                   No
                 </th>
                 <th scope="col" className="px-6 py-3">
-                  <div className="flex items-center">Name</div>
+                  <div className="flex items-center">
+                    {translate('Name', Language)}
+                  </div>
                 </th>
                 <th scope="col" className="px-6 py-3">
-                  <div className="flex items-center">Phone</div>
+                  <div className="flex items-center">
+                    {translate('Phone', Language)}
+                  </div>
                 </th>
                 <th scope="col" className="px-6 py-3">
-                  <div className="flex items-center">Email</div>
+                  <div className="flex items-center">
+                    {translate('Email', Language)}
+                  </div>
                 </th>
                 <th scope="col" className="px-6 py-3">
-                  <div className="flex items-center">Vacancy Name</div>
+                  <div className="flex items-center">
+                    {translate('Vacancy_Name', Language)}
+                  </div>
                 </th>
                 <th scope="col" className="px-6 py-3">
-                  <div className="flex items-center">Notes</div>
+                  <div className="flex items-center">
+                    {translate('Notes', Language)}
+                  </div>
                 </th>
                 <th scope="col" className="px-6 py-3">
-                  <div className="flex items-center">Cv</div>
+                  <div className="flex items-center">
+                    {translate('Cv', Language)}
+                  </div>
                 </th>
+
                 <th scope="col" className="px-6 py-3"></th>
               </tr>
             </thead>

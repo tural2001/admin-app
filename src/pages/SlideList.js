@@ -10,6 +10,7 @@ import { getslides } from '../features/slides/slidesSlice';
 import Popup from 'reactjs-popup';
 import ReactPaginate from 'react-paginate';
 import { BsArrowLeft, BsArrowRight } from 'react-icons/bs';
+import { useTranslation } from '../components/TranslationContext';
 
 const SlideList = () => {
   const [open, setOpen] = useState(false);
@@ -52,16 +53,18 @@ const SlideList = () => {
     setCurrentPage(data.selected);
   };
 
+  const { translate, Language } = useTranslation();
+
   return (
     <div>
       <div className="flex justify-between gap-3 mb-4">
-        <h3 className="title">Slide</h3>
+        <h3 className="title"> {translate('Slides', Language)}</h3>
         <Link
           to={`/admin/slide`}
           className="flex justify-center items-center pr-3 gap-1 rounded-lg add_button_2"
         >
           <span className="mb-1 ml-2 text-[30px] hover:text-white">+</span>
-          Add slide
+          {translate('Add_Slide', Language)}
         </Link>
       </div>
       <div>
@@ -73,28 +76,52 @@ const SlideList = () => {
                   No
                 </th>
                 <th scope="col" className="px-6 py-3">
-                  <div className="flex items-center">Status</div>
+                  <div className="flex items-center">
+                    {' '}
+                    {translate('Status', Language)}
+                  </div>
                 </th>
                 <th scope="col" className="px-6 py-3">
-                  <div className="flex items-center">Order</div>
+                  <div className="flex items-center">
+                    {' '}
+                    {translate('Order', Language)}
+                  </div>
                 </th>
                 <th scope="col" className="px-6 py-3">
-                  <div className="flex items-center">Title</div>
+                  <div className="flex items-center">
+                    {' '}
+                    {translate('Title', Language)}
+                  </div>
                 </th>
                 <th scope="col" className="px-6 py-3">
-                  <div className="flex items-center">Description</div>
+                  <div className="flex items-center">
+                    {' '}
+                    {translate('Description', Language)}
+                  </div>
                 </th>
                 <th scope="col" className="px-6 py-3">
-                  <div className="flex items-center">Show button</div>
+                  <div className="flex items-center">
+                    {' '}
+                    {translate('Show_Button', Language)}
+                  </div>
                 </th>
                 <th scope="col" className="px-6 py-3">
-                  <div className="flex items-center">Button text</div>
+                  <div className="flex items-center">
+                    {' '}
+                    {translate('Button_Text', Language)}
+                  </div>
                 </th>
                 <th scope="col" className="px-6 py-3">
-                  <div className="flex items-center">Button link</div>
+                  <div className="flex items-center">
+                    {' '}
+                    {translate('Button_Link', Language)}
+                  </div>
                 </th>
                 <th scope="col" className="px-6 py-3">
-                  <div className="flex items-center">Image</div>
+                  <div className="flex items-center">
+                    {' '}
+                    {translate('Image', Language)}
+                  </div>
                 </th>
                 <th scope="col" className="px-6 py-3"></th>
               </tr>
@@ -116,7 +143,9 @@ const SlideList = () => {
                       slide.active === true ? 'text-green-500' : 'text-red-500'
                     }`}
                   >
-                    {slide.active === true ? 'Active' : 'Not Active'}
+                    {slide.active === true
+                      ? `${translate('Active', Language)}`
+                      : `${translate('Not_Active', Language)}`}
                   </td>
                   <td className="px-6 py-4">{slide.order}</td>
                   <td className="px-6 py-4">{slide.title}</td>
@@ -208,7 +237,7 @@ const SlideList = () => {
         performAction={() => {
           deleteSlide(slideId);
         }}
-        title={`Are you sure you want to delete  this slide?`}
+        title={translate('Slide_Modal', Language)}
       />
     </div>
   );

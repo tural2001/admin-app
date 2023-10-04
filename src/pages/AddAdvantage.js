@@ -224,7 +224,7 @@ const Addadvantage = () => {
           <label htmlFor="" className="mt-2">
             {translate('Status', Language)}
           </label>
-          <div className="my-3">
+          <div className="my-2">
             <div className="mt-1">
               <label className="inline-flex items-center">
                 <input
@@ -252,7 +252,7 @@ const Addadvantage = () => {
               </label>
             </div>
           </div>
-          <label htmlFor="" className="mt-2">
+          <label htmlFor="" className="mt-1">
             {translate('Title', Language)}
           </label>
           <div className="flex">
