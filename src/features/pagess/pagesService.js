@@ -26,15 +26,14 @@ const updatepage = async (page, slug, pageData) => {
 };
 
 const getpage = async (slug) => {
-  const data = {};
-  for (const lang of language) {
-    const response = await axios.get(`${base_url}/api/pages/${slug}`, {
-      headers: config.getHeaders(lang),
-    });
-    data[lang] = response.data;
-  }
+  const response = await axios.get(`${base_url}/api/pages/${slug}`, {
+    headers: config.getHeaders('az'),
+  });
+  return response.data;
 
-  return data;
+  // const response = await axios.get(`${base_url}/api/pages/${slug}`, {
+  //   {headers: config.getHeaders('az'),
+  //   return response.data;
 };
 
 const deletepage = async (slug, selectedLanguage) => {

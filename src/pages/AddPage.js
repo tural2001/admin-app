@@ -16,6 +16,9 @@ import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 import { language } from '../Language/languages';
 import { useTranslation } from '../components/TranslationContext';
+import axios from 'axios';
+import { config } from '../utils/axiosconfig';
+import { base_url } from '../utils/base_url';
 
 let schema = yup.object({
   title: yup.object().shape(
@@ -76,7 +79,7 @@ const AddPage = () => {
   const getpageId = location.pathname.split('/')[3];
   const newPage = useSelector((state) => state.page);
 
-  const { isSuccess, isError, createdPage, pageData, updatedPage } = newPage;
+  const { isSuccess, isError, createdPage, PageData, updatedPage } = newPage;
 
   useEffect(() => {
     if (getpageId !== undefined) {
@@ -123,24 +126,24 @@ const AddPage = () => {
     enableReinitialize: true,
     initialValues: {
       title: language.reduce((acc, lang) => {
-        acc[lang] = pageData ? pageData[lang]?.data?.title || '' : '';
+        acc[lang] = PageData ? PageData[lang]?.data?.title || '' : '';
         return acc;
       }, {}),
       slug: language.reduce((acc, lang) => {
-        acc[lang] = pageData ? pageData[lang]?.data?.slug || '' : '';
+        acc[lang] = PageData ? PageData[lang]?.data?.slug || '' : '';
         return acc;
       }, {}),
       content: language.reduce((acc, lang) => {
-        acc[lang] = pageData ? pageData[lang]?.data?.content || '' : '';
+        acc[lang] = PageData ? PageData[lang]?.data?.content || '' : '';
         return acc;
       }, {}),
       meta_title: language.reduce((acc, lang) => {
-        acc[lang] = pageData ? pageData[lang]?.data?.meta_title || '' : '';
+        acc[lang] = PageData ? PageData[lang]?.data?.meta_title || '' : '';
         return acc;
       }, {}),
       meta_description: language.reduce((acc, lang) => {
-        acc[lang] = pageData
-          ? pageData[lang]?.data?.meta_description || ''
+        acc[lang] = PageData
+          ? PageData[lang]?.data?.meta_description || ''
           : '';
         return acc;
       }, {}),
@@ -181,7 +184,6 @@ const AddPage = () => {
           dispatch(createApage(createData))
             .then((createdPage) => {
               console.log(createdPage);
-
               updatedLanguages.slice(1).forEach((lang) => {
                 const updateData = {
                   id: createdPage.payload.id,
@@ -194,10 +196,8 @@ const AddPage = () => {
                   },
                   selectedLanguage: lang,
                 };
-
                 dispatch(updateApage(updateData));
               });
-
               formik.resetForm();
               setTimeout(() => {
                 dispatch(resetState());
@@ -247,6 +247,8 @@ const AddPage = () => {
   const handleLanguageClick5 = (language) => {
     setSelectedLanguage5(language);
   };
+
+  console.log(PageData);
   const { translate, Language } = useTranslation();
 
   return (

@@ -35,7 +35,8 @@ import { useTranslation } from './TranslationContext';
 const { Header, Sider, Content } = Layout;
 
 const MainLayout = () => {
-  const { translate, changeLanguage, currentLanguage } = useTranslation();
+  const { translate, changeLanguage, currentLanguage, Language } =
+    useTranslation();
 
   const handleLanguageChange = (e) => {
     const newLanguage = e.target.value;
@@ -122,128 +123,127 @@ const MainLayout = () => {
             {
               key: '',
               icon: <img src={dashboard} className="w-6" alt="" />,
-              label: 'Dashboard',
+              label: `${translate('Dashboard', Language)}`,
             },
             {
               key: 'advantage-list',
               icon: <img src={advantage} className="w-6" alt="" />,
-              label: 'Advantage List',
+              label: `${translate('Advantage_List', Language)}`,
             },
             {
               key: 'campaign-list',
               icon: <img src={campaign} className="w-6" alt="" />,
-              label: 'Campaign List',
+              label: `${translate('Campaign_List', Language)}`,
             },
             {
               key: 'career-list',
               icon: <img src={campaign} className="w-6" alt="" />,
-              label: 'Career List',
+              label: `${translate('Career_List', Language)}`,
             },
             {
               key: 'career-form-list',
               icon: <img src={form} className="w-6" alt="" />,
-              label: 'Career Form List',
+              label: `${translate('Career_Form_List', Language)}`,
             },
             {
               key: 'channel-list',
               icon: <img src={channel} className="w-6" alt="" />,
-              label: 'Channel List',
+              label: `${translate('Channel_List', Language)}`,
             },
             {
               key: 'color-list',
               icon: <img src={color} className="w-6" alt="" />,
-              label: 'Color List',
+              label: `${translate('Channel_List', Language)}`,
             },
             {
               key: 'country-list',
               icon: <img src={country} className="w-6" alt="" />,
-              label: 'Country List',
+              label: `${translate('Country_List', Language)}`,
             },
             {
               key: 'faq-list',
               icon: <FcFaq className="fs-4" />,
-              label: 'Faq List',
+              label: `${translate('Faq_List', Language)}`,
             },
             {
               key: 'faq-form-list',
               icon: <img src={form} className="w-6" alt="" />,
-              label: 'Faq Form List',
+              label: `${translate('Faq_Form_List', Language)}`,
             },
             {
               key: 'our-value-list',
               icon: <img src={ourvalue} className="w-6" alt="" />,
-              label: 'Our-Value List',
+              label: `${translate('Our_Value_List', Language)}`,
             },
             {
               key: 'page-list',
               icon: <img src={page} className="w-6" alt="" />,
-              label: 'Page List',
+              label: `${translate('Page_List', Language)}`,
             },
             {
               key: 'partner-list',
               icon: <img src={partner} className="w-6" alt="" />,
-              label: 'Partner List',
+              label: `${translate('Partner_List', Language)}`,
             },
             {
               key: 'payment-list',
               icon: <img src={payment} className="w-6" alt="" />,
-              label: 'Payment List',
+              label: `${translate('Payment_List', Language)}`,
             },
             {
               key: 'popup-list',
               icon: <img src={popup} className="w-6" alt="" />,
-
-              label: 'Popup List',
+              label: `${translate('Popup_List', Language)}`,
             },
             {
               key: 'post-list',
               icon: <img src={post} className="w-6" alt="" />,
-              label: 'Post List',
+              label: `${translate('Post_List', Language)}`,
             },
             {
               key: 'region-list',
               icon: <img src={region} className="w-6" alt="" />,
-              label: 'Region List',
+              label: `${translate('Region_List', Language)}`,
             },
             {
               key: 'formdata-list',
               icon: <img src={form} className="w-6" alt="" />,
-              label: 'Register Form Data List',
+              label: `${translate('Register_Form_Data_List', Language)}`,
             },
             {
               key: 'field-list',
               icon: <img src={form} className="w-6" alt="" />,
-              label: 'Register Form Field List',
+              label: `${translate('Register_Field_Data_List', Language)}`,
             },
             {
               key: 'review-list',
               icon: <img src={review} className="w-6" alt="" />,
-              label: 'Review List',
+              label: `${translate('Review_List', Language)}`,
             },
             {
               key: 'service-list',
               icon: <img src={service} className="w-6" alt="" />,
-              label: 'Service List',
+              label: `${translate('Service_List', Language)}`,
             },
             {
               key: 'service-category-list',
               icon: <img src={service} className="w-6" alt="" />,
-              label: 'Service Category List',
+              label: `${translate('Service_Category_List', Language)}`,
             },
             {
               key: 'slide-list',
               icon: <img src={slide} className="w-6" alt="" />,
-              label: 'Slide List',
+              label: `${translate('Slide_List', Language)}`,
             },
             {
               key: 'structure-list',
               icon: <FcTreeStructure className="fs-4" />,
-              label: 'Structure List',
+              label: `${translate('Structure_List', Language)}`,
             },
             {
               key: 'tariff-list',
               icon: <img src={tariff} className="w-6" alt="" />,
-              label: 'Tariff List',
+              label: `${translate('Tariff_List', Language)}`,
             },
           ]}
         />

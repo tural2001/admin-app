@@ -131,7 +131,8 @@ export const pageSlice = createSlice({
         state.isLoading = false;
         state.isSuccess = true;
         state.isError = false;
-        state.PageData = action.payload;
+        console.log(action.payload);
+        state.PageData = action.payload.data.title;
       })
       .addCase(getApage.rejected, (state, action) => {
         state.isLoading = false;
