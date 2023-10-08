@@ -17,27 +17,28 @@ const createpage = async (page) => {
   return response.data;
 };
 
-const updatepage = async (page, slug, pageData) => {
-  console.log(slug);
-  const response = await axios.post(`${base_url}/api/pages/${slug}`, page, {
+const updatepage = async (page, id, pageData) => {
+  console.log(id);
+  const response = await axios.post(`${base_url}/api/pages/${id}`, page, {
     headers: config.getHeaders(pageData.selectedLanguage),
   });
   return response.data;
 };
 
-const getpage = async (slug) => {
-  const response = await axios.get(`${base_url}/api/pages/${slug}`, {
-    headers: config.getHeaders('az'),
-  });
-  return response.data;
+const getpage = async (id) => {
+  const data = {};
+  for (const lang of language) {
+    const response = await axios.get(`${base_url}/api/pages/edit/${id}`, {
+      headers: config.getHeaders(lang),
+    });
+    data[lang] = response.data;
+  }
 
-  // const response = await axios.get(`${base_url}/api/pages/${slug}`, {
-  //   {headers: config.getHeaders('az'),
-  //   return response.data;
+  return data;
 };
 
-const deletepage = async (slug, selectedLanguage) => {
-  const response = await axios.delete(`${base_url}/api/pages/${slug}`, {
+const deletepage = async (id, selectedLanguage) => {
+  const response = await axios.delete(`${base_url}/api/pages/${id}`, {
     headers: config.getHeaders(selectedLanguage),
   });
   return response.data;

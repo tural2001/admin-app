@@ -23,10 +23,10 @@ export const getposts = createAsyncThunk(
 
 export const getApost = createAsyncThunk(
   'posts/get-post',
-  async (slug, thunkAPI) => {
-    console.log(slug);
+  async (id, thunkAPI) => {
+    console.log(id);
     try {
-      return await postService.getpost(slug);
+      return await postService.getpost(id);
     } catch (error) {
       return thunkAPI.rejectWithValue(error);
     }

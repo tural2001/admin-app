@@ -207,7 +207,7 @@ const AddPost = () => {
       if (getpostId !== undefined) {
         updatedLanguages.forEach((lang) => {
           const data = {
-            slug: getpostId,
+            id: getpostId,
             postData: {
               title: values.title[lang],
               description: values.description[lang],
@@ -293,9 +293,9 @@ const AddPost = () => {
   const [files, setFiles] = useState([]);
   const reactQuillRef = useRef(null);
 
-  const handleChange = (html) => {
-    setEditorHtml(html);
-    // this.props.onDescriptionChange(html); // Eğer bu özelliği kullanıyorsanız, burada da kullanabilirsiniz.
+  const handleChange = (content) => {
+    setEditorHtml(content); // İçeriği güncelle
+    formik.setFieldValue(`description.${selectedLanguage4}`, content); // Formik değerini güncelle
   };
 
   // const handleDrop = async (acceptedFiles) => {
@@ -353,7 +353,7 @@ const AddPost = () => {
 
       quill.clipboard.dangerouslyPasteHTML(
         range ? range.index : 0,
-        `<img src="${imageUrl}" alt="Resim" /><p>${formik.values[selectedLangDescription]}</p>`
+        `<img src="${imageUrl}" alt="Resim" />`
       );
 
       setFiles([]);
@@ -361,7 +361,7 @@ const AddPost = () => {
       // Otomatik olarak ekledikten sonra, formik değerini güncelleyebiliriz
       formik.setFieldValue(
         selectedLangDescription,
-        `${formik.values[selectedLangDescription]}<img src="${imageUrl}" alt="Resim" />`
+        `<img src="${imageUrl}" alt="Resim" />`
       );
     } catch (error) {
       console.error('Image upload error:', error);
@@ -552,8 +552,8 @@ const AddPost = () => {
                 <ReactQuill
                   ref={reactQuillRef}
                   name={`description.${lang}`}
-                  onChange={formik.handleChange(`description.${lang}`)}
-                  value={formik.values.description[lang]}
+                  onChange={handleChange}
+                  value={editorHtml}
                   theme="snow"
                   style={{
                     minHeight: '5vh',

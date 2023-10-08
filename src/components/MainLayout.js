@@ -277,42 +277,46 @@ const MainLayout = () => {
               <div className="dropdown-menu" aria-labelledby="dropdownMenuLink">
                 <li>
                   <Link
-                    className="dropdown-item py-1 mb-1"
-                    style={{ height: 'auto', lineHeight: '20px' }}
+                    className="dropdown-item py-1 mb-1 pr-5"
+                    style={{
+                      height: 'auto',
+                      lineHeight: '20px',
+                    }}
                     to={`/admin/user/${getIdFromLocalStorage?.data?.id}`}
                   >
-                    View Profile
+                    {translate('View_Profile', Language)}{' '}
                   </Link>
                 </li>
                 <li>
                   <Link
-                    className="dropdown-item py-1 mb-1 flex  items-center gap-1"
+                    className="dropdown-item py-1 pr-5 mb-1 flex  items-center gap-1"
                     style={{ height: 'auto', lineHeight: '20px' }}
                     to="user-list"
                   >
                     {' '}
                     <img src={users} alt="" className="w-6" />
-                    User List
+                    {translate('User_List', Language)}{' '}
                   </Link>
                 </li>
                 <li>
                   <Link
-                    className="dropdown-item py-1 mb-1 flex  items-center gap-1"
+                    className="dropdown-item py-1 mb-1 pr-5  flex  items-center gap-1"
                     style={{ height: 'auto', lineHeight: '20px' }}
                     to="setting-list"
                   >
                     <img src={page} alt="" className="w-6" />
-                    Setting List
+                    {translate('Setting_List', Language)}{' '}
                   </Link>
                 </li>
                 <li>
                   <button
-                    className="dropdown-item py-1 mb-1 flex  items-center gap-1"
+                    className="dropdown-item py-1 mb-1 pr-5  flex  items-center gap-1"
                     onClick={handleSignoutClick}
                     style={{ height: 'auto', lineHeight: '20px' }}
                   >
                     {' '}
-                    <img src={signout} alt="" className="w-6" /> Signout
+                    <img src={signout} alt="" className="w-6" />{' '}
+                    {translate('Signout', Language)}{' '}
                   </button>
                 </li>
               </div>

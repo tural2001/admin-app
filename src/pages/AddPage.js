@@ -34,7 +34,7 @@ let schema = yup.object({
     language.reduce(
       (acc, lang) => ({
         ...acc,
-        az: yup.string().required(`Title for az is Required`),
+        az: yup.string(),
       }),
       {}
     )
@@ -52,7 +52,7 @@ let schema = yup.object({
     language.reduce(
       (acc, lang) => ({
         ...acc,
-        az: yup.string().required(`Meta Title for az is Required`),
+        az: yup.string(),
       }),
       {}
     )
@@ -61,7 +61,7 @@ let schema = yup.object({
     language.reduce(
       (acc, lang) => ({
         ...acc,
-        az: yup.string().required(`Meta Description for az is Required`),
+        az: yup.string(),
       }),
       {}
     )
@@ -79,7 +79,7 @@ const AddPage = () => {
   const getpageId = location.pathname.split('/')[3];
   const newPage = useSelector((state) => state.page);
 
-  const { isSuccess, isError, createdPage, PageData, updatedPage } = newPage;
+  const { isSuccess, isError, createdPage, PagessData, updatedPage } = newPage;
 
   useEffect(() => {
     if (getpageId !== undefined) {
@@ -89,11 +89,11 @@ const AddPage = () => {
     } else {
       dispatch(resetState());
     }
-  }, [getpageId]);
+  }, []);
 
   const prevUpdatedPageRef = useRef();
   const debounceTimeoutRef = useRef(null);
-
+  console.log(PagessData);
   useEffect(() => {
     const prevUpdatedPage = prevUpdatedPageRef.current;
     if (
@@ -121,29 +121,29 @@ const AddPage = () => {
       toast.error('Something Went Wrong!');
     }
   }, [isSuccess, isError, createdPage, updatedPage, navigate]);
-
+  console.log(PagessData);
   const formik = useFormik({
     enableReinitialize: true,
     initialValues: {
       title: language.reduce((acc, lang) => {
-        acc[lang] = PageData ? PageData[lang]?.data?.title || '' : '';
+        acc[lang] = PagessData ? PagessData[lang]?.data?.title || '' : '';
         return acc;
       }, {}),
       slug: language.reduce((acc, lang) => {
-        acc[lang] = PageData ? PageData[lang]?.data?.slug || '' : '';
+        acc[lang] = PagessData ? PagessData[lang]?.data?.slug || '' : '';
         return acc;
       }, {}),
       content: language.reduce((acc, lang) => {
-        acc[lang] = PageData ? PageData[lang]?.data?.content || '' : '';
+        acc[lang] = PagessData ? PagessData[lang]?.data?.content || '' : '';
         return acc;
       }, {}),
       meta_title: language.reduce((acc, lang) => {
-        acc[lang] = PageData ? PageData[lang]?.data?.meta_title || '' : '';
+        acc[lang] = PagessData ? PagessData[lang]?.data?.meta_title || '' : '';
         return acc;
       }, {}),
       meta_description: language.reduce((acc, lang) => {
-        acc[lang] = PageData
-          ? PageData[lang]?.data?.meta_description || ''
+        acc[lang] = PagessData
+          ? PagessData[lang]?.data?.meta_description || ''
           : '';
         return acc;
       }, {}),
@@ -168,45 +168,6 @@ const AddPage = () => {
           };
           dispatch(updateApage(data));
         });
-      } else {
-        if (updatedLanguages.length > 0) {
-          const firstLang = updatedLanguages[0];
-          const createData = {
-            values: {
-              title: values.title[firstLang],
-              content: values.content[firstLang],
-              slug: values.slug[firstLang],
-              meta_title: values.meta_title[firstLang],
-              meta_description: values.meta_description[firstLang],
-            },
-            selectedLanguage: firstLang,
-          };
-          dispatch(createApage(createData))
-            .then((createdPage) => {
-              console.log(createdPage);
-              updatedLanguages.slice(1).forEach((lang) => {
-                const updateData = {
-                  id: createdPage.payload.id,
-                  pageData: {
-                    title: values.title[lang],
-                    content: values.content[lang],
-                    slug: values.slug[lang],
-                    meta_title: values.meta_title[lang],
-                    meta_description: values.meta_description[lang],
-                  },
-                  selectedLanguage: lang,
-                };
-                dispatch(updateApage(updateData));
-              });
-              formik.resetForm();
-              setTimeout(() => {
-                dispatch(resetState());
-              }, 300);
-            })
-            .catch((error) => {
-              console.error('Error creating Page:', error);
-            });
-        }
       }
     },
   });
@@ -248,7 +209,6 @@ const AddPage = () => {
     setSelectedLanguage5(language);
   };
 
-  console.log(PageData);
   const { translate, Language } = useTranslation();
 
   return (
@@ -323,6 +283,7 @@ const AddPage = () => {
               </div>
             );
           })}
+
           <label htmlFor="" className="mt-2">
             {translate('Meta_Description', Language)}
           </label>
@@ -355,6 +316,7 @@ const AddPage = () => {
               </div>
             );
           })}
+
           <label htmlFor="" className="mt-2">
             {translate('Slug', Language)}
           </label>
@@ -387,6 +349,7 @@ const AddPage = () => {
               </div>
             );
           })}
+
           <label htmlFor="" className="mt-2">
             {translate('Title', Language)}
           </label>
@@ -424,6 +387,7 @@ const AddPage = () => {
               </div>
             );
           })}
+
           <label htmlFor="" className="mt-2">
             {translate('Content', Language)}
           </label>
@@ -449,9 +413,8 @@ const AddPage = () => {
                 <ReactQuill
                   theme="snow"
                   name={`content.${lang}`}
-                  className="mt-3"
                   onChange={formik.handleChange(`content.${lang}`)}
-                  value={formik.values.title[lang]}
+                  value={formik.values.content[lang]}
                   modules={module}
                 />
 

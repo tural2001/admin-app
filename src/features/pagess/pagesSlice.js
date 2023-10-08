@@ -22,9 +22,9 @@ export const getpages = createAsyncThunk(
 
 export const getApage = createAsyncThunk(
   'pages/get-page',
-  async (slug, thunkAPI) => {
+  async (id, thunkAPI) => {
     try {
-      return await pageService.getpage(slug);
+      return await pageService.getpage(id);
     } catch (error) {
       return thunkAPI.rejectWithValue(error);
     }
@@ -33,9 +33,9 @@ export const getApage = createAsyncThunk(
 
 export const deleteApage = createAsyncThunk(
   'pages/delete-page',
-  async (slug, thunkAPI) => {
+  async (id, thunkAPI) => {
     try {
-      return await pageService.deletepage(slug);
+      return await pageService.deletepage(id);
     } catch (error) {
       return thunkAPI.rejectWithValue(error);
     }
@@ -76,7 +76,7 @@ export const updateApage = createAsyncThunk(
 
       const response = await pageService.updatepage(
         formdata,
-        pageData.pageData.slug,
+        pageData.id,
         pageData
       );
       return response.data;
@@ -132,7 +132,7 @@ export const pageSlice = createSlice({
         state.isSuccess = true;
         state.isError = false;
         console.log(action.payload);
-        state.PageData = action.payload.data.title;
+        state.PagessData = action.payload;
       })
       .addCase(getApage.rejected, (state, action) => {
         state.isLoading = false;

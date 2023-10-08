@@ -30,12 +30,12 @@ const updatepost = async (post, id, postData) => {
   return response.data;
 };
 
-const getpost = async (slug) => {
+const getpost = async (id) => {
   console.log();
   const data = {};
 
   for (const lang of language) {
-    const response = await axios.get(`${base_url}/api/posts/${slug}`, {
+    const response = await axios.get(`${base_url}/api/posts/edit/${id}`, {
       headers: config.getHeaders(lang),
     });
 

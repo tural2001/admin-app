@@ -183,6 +183,12 @@ export const Users = 'İstifadəçilər';
 export const Add_User = 'İstifadəçi əlavə et';
 export const Edit_User = 'İstifadəçini redakte et';
 export const User_Modal = 'Bu istifadəçini silmək istədiyinizə əminsiniz ?';
+export const View_Profile = 'Profile baxmaq';
+export const SignOut = 'Çıxış etmək';
+export const SignIn = 'Daxil olmaq';
+export const Sign_Account = 'Hesabınıza daxil olun';
+export const Password = 'Parol';
+
 //Main Layout
 export const Advantage_List = 'Üstünlüklər siyahısı';
 export const Campaign_List = 'Kampaniyalar siyahısı';
@@ -204,7 +210,9 @@ export const Register_Form_Data_List = 'Qeydiyyat formları siyahısı';
 export const Register_Field_Data_List = 'Qeydiyyat sahələri siyahısı';
 export const Review_List = 'Rəylər siyahısı';
 export const Service_List = 'Xidmətlər siyahısı';
+export const Setting_list = 'Parametrlər siyahısı';
 export const Service_Category_List = 'Xidmətlər kateqoriyası siyahısı';
 export const Slide_List = 'Slaydlar siyahısı';
 export const Structure_List = 'Strukturlar siyahısı';
 export const Tariff_List = 'Tariflər siyahısı';
+export const User_List = 'İstifadəçilər siyahısı';

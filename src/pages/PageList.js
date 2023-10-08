@@ -94,7 +94,7 @@ const PageList = () => {
                   ></td>
                   <td className="px-6 py-4 flex gap-2">
                     <Link
-                      to={`/admin/page/${filteredPage[index]?.slug}`}
+                      to={`/admin/page/${filteredPage[index]?.id}`}
                       className="text-[25px] text-blue-500 "
                     >
                       <VscEdit />
