@@ -16,7 +16,6 @@ import {
 import 'react-quill/dist/quill.snow.css';
 import { uploadImg } from '../features/upload/uploadSlice';
 import 'react-quill/dist/quill.snow.css';
-import Editor from '../components/Editor';
 import { language } from '../Language/languages';
 import { base_url } from '../utils/base_url';
 import axios from 'axios';
@@ -72,7 +71,6 @@ const AddPost = () => {
   const [selectedLanguage1, setSelectedLanguage1] = useState('az');
   const [selectedLanguage2, setSelectedLanguage2] = useState('az');
   const [selectedLanguage3, setSelectedLanguage3] = useState('az');
-  const [selectedLanguage4, setSelectedLanguage4] = useState('az');
   const [selectedLanguage5, setSelectedLanguage5] = useState('az');
   const [isFileDetected, setIsFileDetected] = useState(false);
   const dispatch = useDispatch();
@@ -109,33 +107,33 @@ const AddPost = () => {
   const prevUpdatedPostRef = useRef();
   const debounceTimeoutRef = useRef(null);
 
-  // useEffect(() => {
-  //   const prevUpdatedPost = prevUpdatedPostRef.current;
-  //   if (
-  //     isSuccess &&
-  //     updatedPost !== undefined &&
-  //     updatedPost !== prevUpdatedPost
-  //   ) {
-  //     if (debounceTimeoutRef.current) {
-  //       clearTimeout(debounceTimeoutRef.current);
-  //     }
-  //     debounceTimeoutRef.current = setTimeout(() => {
-  //       toast.success('Post Updated Successfully!');
-  //       prevUpdatedPostRef.current = updatedPost;
-  //       navigate('/admin/post-list');
-  //     }, 1000);
-  //   }
-  //   if (isSuccess && createdPost !== undefined && updatedPost !== undefined) {
-  //     toast.success('Post Added Successfully!');
-  //     navigate('/admin/post-list');
-  //     setTimeout(() => {
-  //       window.location.reload();
-  //     }, 1000);
-  //   }
-  //   if (isError) {
-  //     toast.error('Something Went Wrong!');
-  //   }
-  // }, [isSuccess, isError, createdPost, updatedPost, navigate]);
+  useEffect(() => {
+    const prevUpdatedPost = prevUpdatedPostRef.current;
+    if (
+      isSuccess &&
+      updatedPost !== undefined &&
+      updatedPost !== prevUpdatedPost
+    ) {
+      if (debounceTimeoutRef.current) {
+        clearTimeout(debounceTimeoutRef.current);
+      }
+      debounceTimeoutRef.current = setTimeout(() => {
+        toast.success('Post Updated Successfully!');
+        prevUpdatedPostRef.current = updatedPost;
+        navigate('/admin/post-list');
+      }, 1000);
+    }
+    if (isSuccess && createdPost !== undefined && updatedPost !== undefined) {
+      toast.success('Post Added Successfully!');
+      navigate('/admin/post-list');
+      setTimeout(() => {
+        window.location.reload();
+      }, 1000);
+    }
+    if (isError) {
+      toast.error('Something Went Wrong!');
+    }
+  }, [isSuccess, isError, createdPost, updatedPost, navigate]);
 
   const formatDateTimeForServer = (dateTimeString) => {
     const date = new Date(dateTimeString);
@@ -147,7 +145,6 @@ const AddPost = () => {
 
     return formattedDate;
   };
-  console.log(PostData);
 
   const formik = useFormik({
     enableReinitialize: true,
@@ -175,35 +172,16 @@ const AddPost = () => {
         acc[lang] = PostData ? PostData[lang]?.data?.slug || '' : '';
         return acc;
       }, {}),
-      published_at: postPublished || '',
+      published_at: postPublished || undefined,
     },
     // validationSchema: schema,
-    // onSubmit: (values) => {
-    //   alert(JSON.stringify(values));
-    //   const formattedPublishedAt = formatDateTimeForServer(values.published_at);
-
-    //   const updatedValues = {
-    //     ...values,
-    //     published_at: formattedPublishedAt,
-    //   };
-    //   // alert(JSON.stringify(updatedValues));
-    //   if (getpostId !== undefined) {
-    //     const data = { id: getpostId, post: updatedValues };
-    //     dispatch(updateApost(data));
-    //   } else {
-    //     dispatch(createApost(updatedValues));
-    //     formik.resetForm();
-    //     setTimeout(() => {
-    //       dispatch(resetState());
-    //     }, 1000);
-    //   }
-    // },
     onSubmit: (values) => {
       alert(JSON.stringify(values));
-      const formattedPublishedAt = formatDateTimeForServer(values.published_at);
-      console.log(formattedPublishedAt);
+      const formattedPublishedAt = values.published_at
+        ? formatDateTimeForServer(values.published_at)
+        : [null];
       const updatedLanguages = language.filter((lang) => values.title[lang]);
-      console.log(updatedLanguages);
+
       if (getpostId !== undefined) {
         updatedLanguages.forEach((lang) => {
           const data = {
@@ -219,20 +197,14 @@ const AddPost = () => {
             },
             selectedLanguage: lang,
           };
-          // const updatedValues = {
-          //   ...data,
-          //   published_at: formattedPublishedAt,
-          // };
           dispatch(updateApost(data));
         });
       } else {
         if (updatedLanguages.length > 0) {
-          const formattedPublishedAt = formatDateTimeForServer(
-            values.published_at
-          );
-
+          const formattedPublishedAt = values.published_at
+            ? formatDateTimeForServer(values.published_at)
+            : [null];
           const firstLang = updatedLanguages[0];
-          console.log(firstLang);
           const createData = {
             values: {
               title: values.title[firstLang],
@@ -245,15 +217,11 @@ const AddPost = () => {
             },
             selectedLanguage: firstLang,
           };
-          console.log(createData);
           dispatch(createApost(createData))
             .then((createdPost) => {
-              const formattedPublishedAt = formatDateTimeForServer(
-                values.published_at
-              );
-
-              console.log(createdPost);
-
+              const formattedPublishedAt = values.published_at
+                ? formatDateTimeForServer(values.published_at)
+                : [null];
               updatedLanguages.slice(1).forEach((lang) => {
                 const updateData = {
                   id: createdPost.payload.id,
@@ -268,10 +236,8 @@ const AddPost = () => {
                   },
                   selectedLanguage: lang,
                 };
-                console.log(updateData);
                 dispatch(updateApost(updateData));
               });
-
               formik.resetForm();
               setTimeout(() => {
                 dispatch(resetState());
@@ -285,51 +251,35 @@ const AddPost = () => {
     },
   });
 
-  const handleDescriptionChange = (newContent) => {
-    formik.setFieldValue('description', newContent);
+  const [selectedLanguage4, setSelectedLanguage4] = useState('az');
+
+  const [editorHtml, setEditorHtml] = useState({});
+
+  useEffect(() => {
+    language?.forEach((lang) => {
+      const postDataDescription = PostData[lang]?.data?.description;
+      if (postDataDescription) {
+        setEditorHtml((prevEditorHtml) => ({
+          ...prevEditorHtml,
+          [lang]: postDataDescription,
+        }));
+      }
+    });
+  }, [PostData, language]);
+
+  const updateEditorHtml = (language, html) => {
+    setEditorHtml((prevEditorHtml) => ({
+      ...prevEditorHtml,
+      [language]: html,
+    }));
   };
 
-  const [editorHtml, setEditorHtml] = useState('');
-  const [files, setFiles] = useState([]);
-  const reactQuillRef = useRef(null);
-
-  const handleChange = (content) => {
-    setEditorHtml(content); // İçeriği güncelle
-    formik.setFieldValue(`description.${selectedLanguage4}`, content); // Formik değerini güncelle
+  const handleChange = (html, lang) => {
+    updateEditorHtml(lang, html);
+    formik.setFieldValue(`description.${lang}`, html);
   };
 
-  // const handleDrop = async (acceptedFiles) => {
-  //   try {
-  //     const file = acceptedFiles[0];
-
-  //     const formData = new FormData();
-  //     formData.append('file', file);
-
-  //     const response = await axios.post(
-  //       `${base_url}/api/upload-media`,
-  //       formData,
-  //       {
-  //         headers: config.getHeaders('az'),
-  //       }
-  //     );
-
-  //     const imageUrl = response.data.url;
-
-  //     const quill = reactQuillRef.current.getEditor();
-  //     const range = quill.getSelection();
-
-  //     quill.clipboard.dangerouslyPasteHTML(
-  //       range ? range.index : 0,
-  //       `<img src="${imageUrl}"  alt="Resim" />`
-  //     );
-
-  //     setFiles([]);
-  //   } catch (error) {
-  //     console.error('Image upload error:', error);
-  //   }
-  // };
-
-  const handleDrop = async (acceptedFiles) => {
+  const handleDrop = async (acceptedFiles, lang) => {
     try {
       const file = acceptedFiles[0];
 
@@ -346,23 +296,15 @@ const AddPost = () => {
 
       const imageUrl = response.data.url;
 
-      const quill = reactQuillRef.current.getEditor();
-      const range = quill.getSelection();
+      const imageHtml = `<img src="${imageUrl}" alt="Resim" />`;
 
-      const selectedLangDescription = `description.${selectedLanguage4}`;
+      const currentEditorContent = editorHtml[lang] || '';
 
-      quill.clipboard.dangerouslyPasteHTML(
-        range ? range.index : 0,
-        `<img src="${imageUrl}" alt="Resim" />`
-      );
+      const newEditorContent = currentEditorContent + imageHtml;
 
-      setFiles([]);
+      updateEditorHtml(lang, newEditorContent);
 
-      // Otomatik olarak ekledikten sonra, formik değerini güncelleyebiliriz
-      formik.setFieldValue(
-        selectedLangDescription,
-        `<img src="${imageUrl}" alt="Resim" />`
-      );
+      formik.setFieldValue(`description.${lang}`, newEditorContent);
     } catch (error) {
       console.error('Image upload error:', error);
     }
@@ -532,7 +474,9 @@ const AddPost = () => {
                 key={lang}
                 className={lang === selectedLanguage4 ? '' : 'hidden'}
               >
-                <Dropzone onDrop={handleDrop}>
+                <Dropzone
+                  onDrop={(acceptedFiles) => handleDrop(acceptedFiles, lang)}
+                >
                   {({ getRootProps, getInputProps }) => (
                     <div
                       {...getRootProps()}
@@ -550,10 +494,9 @@ const AddPost = () => {
                 </Dropzone>
 
                 <ReactQuill
-                  ref={reactQuillRef}
                   name={`description.${lang}`}
-                  onChange={handleChange}
-                  value={editorHtml}
+                  onChange={(value) => handleChange(value, lang)}
+                  value={editorHtml[lang] || ''}
                   theme="snow"
                   style={{
                     minHeight: '5vh',
