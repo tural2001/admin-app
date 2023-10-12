@@ -17,30 +17,31 @@ import { uploadImg } from '../features/upload/uploadSlice';
 import { language } from '../Language/languages';
 import { useTranslation } from '../components/TranslationContext';
 
-let schema = yup.object({
-  name: yup.object().shape(
-    language.reduce(
-      (acc, lang) => ({
-        ...acc,
-        az: yup.string().required(`Name for az is Required`),
-      }),
-      {}
-    )
-  ),
-  profession: yup.object().shape(
-    language.reduce(
-      (acc, lang) => ({
-        ...acc,
-        az: yup.string(),
-      }),
-      {}
-    )
-  ),
-  image: yup.mixed().required('Image is Required'),
-  active: yup.string(),
-});
-
 const AddStructure = () => {
+  const { translate, Language } = useTranslation();
+
+  let schema = yup.object({
+    name: yup.object().shape(
+      language.reduce(
+        (acc, lang) => ({
+          ...acc,
+          az: yup.string().required(`${translate('Required_Fill', Language)}`),
+        }),
+        {}
+      )
+    ),
+    profession: yup.object().shape(
+      language.reduce(
+        (acc, lang) => ({
+          ...acc,
+          az: yup.string(),
+        }),
+        {}
+      )
+    ),
+    image: yup.mixed().required(`${translate('Required_Fill', Language)}`),
+    active: yup.string(),
+  });
   const [selectedLanguage1, setSelectedLanguage1] = useState('az');
   const [selectedLanguage2, setSelectedLanguage2] = useState('az');
 
@@ -96,7 +97,7 @@ const AddStructure = () => {
         clearTimeout(debounceTimeoutRef.current);
       }
       debounceTimeoutRef.current = setTimeout(() => {
-        toast.success('Structure Updated Successfully!');
+        toast.success(`${translate('Updated', Language)}`);
         prevUpdatedStructurenRef.current = updatedStructure;
         navigate('/admin/structure-list');
       }, 1000);
@@ -106,14 +107,14 @@ const AddStructure = () => {
       createdStructure !== undefined &&
       updatedStructure !== undefined
     ) {
-      toast.success('Structure Added Successfully!');
+      toast.success(`${translate('Added', Language)}`);
       navigate('/admin/structure-list');
       setTimeout(() => {
         window.location.reload();
       }, 1000);
     }
     if (isError) {
-      toast.error('Something Went Wrong!');
+      toast.error(`${translate('Wrong', Language)}`);
     }
   }, [isSuccess, isError, createdStructure, updatedStructure, navigate]);
 
@@ -212,8 +213,6 @@ const AddStructure = () => {
     setSelectedLanguage2(language);
   };
 
-  const { translate, Language } = useTranslation();
-
   return (
     <div>
       <h3 className="mb-4 title">
@@ -241,7 +240,7 @@ const AddStructure = () => {
               }
             });
             if (Object.keys(errors).length > 0) {
-              toast.error('Please fill in the required fields.');
+              toast.error(`${translate('Fill', Language)}`);
               return;
             }
             formik.handleSubmit(e);

@@ -14,13 +14,14 @@ import {
 } from '../features/users/usersSlice';
 import { useTranslation } from '../components/TranslationContext';
 
-let schema = yup.object({
-  name: yup.string().required('Name is Required'),
-  email: yup.string().required('Email is Required'),
-  password: yup.string().required('Password is Required'),
-});
-
 const AddUser = () => {
+  const { translate, Language } = useTranslation();
+
+  let schema = yup.object({
+    name: yup.string().required(`${translate('Required_Fill', Language)}`),
+    email: yup.string().required(`${translate('Required_Fill', Language)}`),
+    password: yup.string().required(`${translate('Required_Fill', Language)}`),
+  });
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const location = useLocation();
@@ -47,18 +48,18 @@ const AddUser = () => {
 
   useEffect(() => {
     if (isSuccess && createdUser) {
-      toast.success('User Added Successfully!');
+      toast.success(`${translate('Added', Language)}`);
       navigate('/admin/user-list');
       setTimeout(() => {
         window.location.reload();
       }, 500);
     }
     if (isSuccess && updatedUser !== undefined) {
-      toast.success('User Updated Successfully!');
+      toast.success(`${translate('Updated', Language)}`);
       navigate('/admin/user-list');
     }
     if (isError) {
-      toast.error('Something Went Wrong!');
+      toast.error(`${translate('Wrong', Language)}`);
     }
   }, [
     isSuccess,
@@ -70,6 +71,8 @@ const AddUser = () => {
     userPassword,
     updatedUser,
     navigate,
+    translate,
+    Language,
   ]);
 
   const formik = useFormik({
@@ -94,8 +97,6 @@ const AddUser = () => {
       }
     },
   });
-
-  const { translate, Language } = useTranslation();
 
   return (
     <div>
@@ -125,7 +126,7 @@ const AddUser = () => {
               errors.email = 'Email is Required';
             }
             if (Object.keys(errors).length > 0) {
-              toast.error('Please fill in the required fields.');
+              toast.error(`${translate('Fill', Language)}`);
               return;
             }
             formik.handleSubmit(e);

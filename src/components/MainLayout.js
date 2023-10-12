@@ -191,6 +191,22 @@ const MainLayout = () => {
               label: `${translate('Payment_List', Language)}`,
             },
             {
+              key: 'payment-formdata-list',
+              icon: <img src={form} className="w-6" alt="" />,
+              label: `${translate(
+                'Payment_Register_Form_Data_List',
+                Language
+              )}`,
+            },
+            {
+              key: 'payment-field-list',
+              icon: <img src={form} className="w-6" alt="" />,
+              label: `${translate(
+                'Payment_Register_Field_Data_List',
+                Language
+              )}`,
+            },
+            {
               key: 'popup-list',
               icon: <img src={popup} className="w-6" alt="" />,
               label: `${translate('Popup_List', Language)}`,

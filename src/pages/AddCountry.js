@@ -16,20 +16,20 @@ import {
 import { language } from '../Language/languages';
 import { useTranslation } from '../components/TranslationContext';
 
-let schema = yup.object({
-  name: yup.object().shape(
-    language.reduce(
-      (acc, lang) => ({
-        ...acc,
-        az: yup.string().required(`Name for az is Required`),
-      }),
-      {}
-    )
-  ),
-  active: yup.string(),
-});
-
 const AddCountry = (e) => {
+  const { translate, Language } = useTranslation();
+  let schema = yup.object({
+    name: yup.object().shape(
+      language.reduce(
+        (acc, lang) => ({
+          ...acc,
+          az: yup.string().required(`${translate('Required_Fill', Language)}`),
+        }),
+        {}
+      )
+    ),
+    active: yup.string(),
+  });
   const [selectedLanguage1, setSelectedLanguage1] = useState('az');
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -69,7 +69,7 @@ const AddCountry = (e) => {
         clearTimeout(debounceTimeoutRef.current);
       }
       debounceTimeoutRef.current = setTimeout(() => {
-        toast.success('Country Updated Successfully!');
+        toast.success(`${translate('Updated', Language)}`);
         prevUpdatedCountyRef.current = updatedCountry;
         navigate('/admin/country-list');
       }, 1000);
@@ -79,14 +79,14 @@ const AddCountry = (e) => {
       createdCountry !== undefined &&
       updatedCountry !== undefined
     ) {
-      toast.success('Country Added Successfully!');
+      toast.success(`${translate('Added', Language)}`);
       navigate('/admin/country-list');
       setTimeout(() => {
         window.location.reload();
       }, 1000);
     }
     if (isError) {
-      toast.error('Something Went Wrong!');
+      toast.error(`${translate('Wrong', Language)}`);
     }
   }, [isSuccess, isError, createdCountry, updatedCountry, navigate]);
 
@@ -168,8 +168,6 @@ const AddCountry = (e) => {
     setSelectedLanguage1(language);
   };
 
-  const { translate, Language } = useTranslation();
-
   return (
     <div>
       <h3 className="mb-4 title">
@@ -198,7 +196,7 @@ const AddCountry = (e) => {
             });
 
             if (Object.keys(errors).length > 0) {
-              toast.error('Please fill in the required fields.');
+              toast.error(`${translate('Fill', Language)}`);
               return;
             }
 

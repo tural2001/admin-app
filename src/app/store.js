@@ -26,7 +26,9 @@ import colorReducer from '../features/color/colorSlice';
 import careerReducer from '../features/career/careerSlice';
 import faqformReducer from '../features/faqform/faqformSlice';
 import formdataReducer from '../features/formData/formDataSlice';
+import paymentformdataReducer from '../features/paymentformData/paymentformDataSlice';
 import fieldReducer from '../features/form/formSlice';
+import paymentfieldReducer from '../features/paymentform/paymentformSlice';
 import careerpageReducer from '../features/careerpage/careerpageSlice';
 import servicecategoryReducer from '../features/servicecategories/servicecategoriesSlice';
 
@@ -41,6 +43,7 @@ export const store = configureStore({
     servicecategory: servicecategoryReducer,
     region: regionReducer,
     field: fieldReducer,
+    paymentfield: paymentfieldReducer,
     post: postReducer,
     advantage: advantageReducer,
     ourvalue: ourvalueReducer,
@@ -57,6 +60,7 @@ export const store = configureStore({
     careerpage: careerpageReducer,
     faqform: faqformReducer,
     formdata: formdataReducer,
+    paymentformdata: paymentformdataReducer,
     setting: settingReducer,
     user: userReducer,
     country: countryReducer,

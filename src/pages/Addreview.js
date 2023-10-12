@@ -17,30 +17,33 @@ import { uploadImg } from '../features/upload/uploadSlice';
 import { language } from '../Language/languages';
 import { useTranslation } from '../components/TranslationContext';
 
-let schema = yup.object({
-  reviewer_name: yup.object().shape(
-    language.reduce(
-      (acc, lang) => ({
-        ...acc,
-        az: yup.string().required(`Name for az is Required`),
-      }),
-      {}
-    )
-  ),
-  comment: yup.object().shape(
-    language.reduce(
-      (acc, lang) => ({
-        ...acc,
-        az: yup.string().required(`Comment for az is Required`),
-      }),
-      {}
-    )
-  ),
-  reviewer_image: yup.mixed().required('Image is Required'),
-  active: yup.string(),
-});
-
 const Addreview = () => {
+  const { translate, Language } = useTranslation();
+
+  let schema = yup.object({
+    reviewer_name: yup.object().shape(
+      language.reduce(
+        (acc, lang) => ({
+          ...acc,
+          az: yup.string().required(`${translate('Required_Fill', Language)}`),
+        }),
+        {}
+      )
+    ),
+    comment: yup.object().shape(
+      language.reduce(
+        (acc, lang) => ({
+          ...acc,
+          az: yup.string().required(`${translate('Required_Fill', Language)}`),
+        }),
+        {}
+      )
+    ),
+    reviewer_image: yup
+      .mixed()
+      .required(`${translate('Required_Fill', Language)}`),
+    active: yup.string(),
+  });
   const [selectedLanguage1, setSelectedLanguage1] = useState('az');
   const [selectedLanguage2, setSelectedLanguage2] = useState('az');
   const dispatch = useDispatch();
@@ -94,7 +97,7 @@ const Addreview = () => {
         clearTimeout(debounceTimeoutRef.current);
       }
       debounceTimeoutRef.current = setTimeout(() => {
-        toast.success('Review Updated Successfully!');
+        toast.success(`${translate('Updated', Language)}`);
         prevUpdatedReviewfRef.current = updatedReview;
         navigate('/admin/review-list');
       }, 1000);
@@ -104,14 +107,14 @@ const Addreview = () => {
       createdReview !== undefined &&
       updatedReview !== undefined
     ) {
-      toast.success('Review Added Successfully!');
+      toast.success(`${translate('Added', Language)}`);
       navigate('/admin/review-list');
       setTimeout(() => {
         window.location.reload();
       }, 1000);
     }
     if (isError) {
-      toast.error('Something Went Wrong!');
+      toast.error(`${translate('Wrong', Language)}`);
     }
   }, [isSuccess, isError, createdReview, updatedReview, navigate]);
 
@@ -213,8 +216,6 @@ const Addreview = () => {
     setSelectedLanguage2(language);
   };
 
-  const { translate, Language } = useTranslation();
-
   return (
     <div>
       <h3 className="mb-4 title">
@@ -255,7 +256,7 @@ const Addreview = () => {
             });
 
             if (Object.keys(errors).length > 0) {
-              toast.error('Please fill in the required fields.');
+              toast.error(`${translate('Fill', Language)}`);
               return;
             }
 

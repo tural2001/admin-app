@@ -15,38 +15,39 @@ import {
 } from '../features/careerpage/careerpageSlice';
 import { useTranslation } from '../components/TranslationContext';
 
-let schema = yup.object({
-  name: yup.object().shape(
-    language.reduce(
-      (acc, lang) => ({
-        ...acc,
-        az: yup.string().required(`Question for az is Required`),
-      }),
-      {}
-    )
-  ),
-  address: yup.object().shape(
-    language.reduce(
-      (acc, lang) => ({
-        ...acc,
-        az: yup.string().required(`Answer for az is Required`),
-      }),
-      {}
-    )
-  ),
-  description: yup.object().shape(
-    language.reduce(
-      (acc, lang) => ({
-        ...acc,
-        az: yup.string().required(`Answer for az is Required`),
-      }),
-      {}
-    )
-  ),
-  active: yup.string(),
-});
-
 const Addcareerpage = (e) => {
+  const { translate, Language } = useTranslation();
+  let schema = yup.object({
+    name: yup.object().shape(
+      language.reduce(
+        (acc, lang) => ({
+          ...acc,
+          az: yup.string().required(`${translate('Required_Fill', Language)}`),
+        }),
+        {}
+      )
+    ),
+    address: yup.object().shape(
+      language.reduce(
+        (acc, lang) => ({
+          ...acc,
+          az: yup.string().required(`${translate('Required_Fill', Language)}`),
+        }),
+        {}
+      )
+    ),
+    description: yup.object().shape(
+      language.reduce(
+        (acc, lang) => ({
+          ...acc,
+          az: yup.string().required(`${translate('Required_Fill', Language)}`),
+        }),
+        {}
+      )
+    ),
+    active: yup.string(),
+  });
+
   const [selectedLanguage1, setSelectedLanguage1] = useState('az');
   const [selectedLanguage2, setSelectedLanguage2] = useState('az');
   const [selectedLanguage3, setSelectedLanguage3] = useState('az');
@@ -90,14 +91,14 @@ const Addcareerpage = (e) => {
         clearTimeout(debounceTimeoutRef.current);
       }
       debounceTimeoutRef.current = setTimeout(() => {
-        toast.success('Faq Updated Successfully!');
+        toast.success(`${translate('Updated', Language)}`);
         prevUpdatedFaqRef.current = updatedcareerpage;
         navigate('/admin/faq-list');
       }, 1000);
     }
 
     if (isError) {
-      toast.error('Something Went Wrong!');
+      toast.error(`${translate('Wrong', Language)}`);
     }
   }, [isSuccess, isError, updatedcareerpage]);
   useEffect(() => {
@@ -106,21 +107,21 @@ const Addcareerpage = (e) => {
       createdcareerpage !== undefined &&
       updatedcareerpage !== undefined
     ) {
-      toast.success('Faq Added Successfully!');
+      toast.success(`${translate('Added', Language)}`);
       navigate('/admin/faq-list');
       setTimeout(() => {
         window.location.reload();
       }, 1000);
     }
     if (isSuccess && createdcareerpage !== undefined) {
-      toast.success('Faq Added Successfully!');
+      toast.success(`${translate('Added', Language)}`);
       navigate('/admin/faq-list');
       setTimeout(() => {
         window.location.reload();
       }, 1000);
     }
     if (isError) {
-      toast.error('Something Went Wrong!');
+      toast.error(`${translate('Wrong', Language)}`);
     }
   }, [
     isSuccess,
@@ -246,8 +247,6 @@ const Addcareerpage = (e) => {
     setSelectedLanguage3(language);
   };
 
-  const { translate, Language } = useTranslation();
-
   return (
     <div>
       <h3 className="mb-4 title">
@@ -307,7 +306,7 @@ const Addcareerpage = (e) => {
 
             if (Object.keys(errors).length > 0) {
               console.log(errors);
-              toast.error('Please fill in the required fields.');
+              toast.error(`${translate('Fill', Language)}`);
               return;
             }
             formik.handleSubmit(e);

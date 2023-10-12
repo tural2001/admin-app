@@ -16,30 +16,32 @@ import { getcolors } from '../features/color/colorSlice';
 import { language } from '../Language/languages';
 import { useTranslation } from '../components/TranslationContext';
 
-let schema = yup.object({
-  name: yup.object().shape(
-    language.reduce(
-      (acc, lang) => ({
-        ...acc,
-        az: yup.string().required(`Name for az is Required`),
-      }),
-      {}
-    )
-  ),
-  description: yup.object().shape(
-    language.reduce(
-      (acc, lang) => ({
-        ...acc,
-        az: yup.string().required(`Description for az is Required`),
-      }),
-      {}
-    )
-  ),
-  active: yup.string(),
-  color_id: yup.string().required('Color is Required'),
-  handle: yup.string(),
-});
 const AddRegion = () => {
+  const { translate, Language } = useTranslation();
+
+  let schema = yup.object({
+    name: yup.object().shape(
+      language.reduce(
+        (acc, lang) => ({
+          ...acc,
+          az: yup.string().required(`${translate('Required_Fill', Language)}`),
+        }),
+        {}
+      )
+    ),
+    description: yup.object().shape(
+      language.reduce(
+        (acc, lang) => ({
+          ...acc,
+          az: yup.string().required(`${translate('Required_Fill', Language)}`),
+        }),
+        {}
+      )
+    ),
+    active: yup.string(),
+    color_id: yup.string().required(`${translate('Required_Fill', Language)}`),
+    handle: yup.string(),
+  });
   const [selectedLanguage1, setSelectedLanguage1] = useState('az');
   const [selectedLanguage2, setSelectedLanguage2] = useState('az');
   const dispatch = useDispatch();
@@ -83,14 +85,14 @@ const AddRegion = () => {
         clearTimeout(debounceTimeoutRef.current);
       }
       debounceTimeoutRef.current = setTimeout(() => {
-        toast.success('Region Updated Successfully!');
+        toast.success(`${translate('Updated', Language)}`);
         prevUpdatedRegionRef.current = updatedRegion;
         navigate('/admin/region-list');
       }, 1000);
     }
 
     if (isError) {
-      toast.error('Something Went Wrong!');
+      toast.error(`${translate('Wrong', Language)}`);
     }
   }, [isSuccess, isError, updatedRegion]);
   useEffect(() => {
@@ -153,8 +155,6 @@ const AddRegion = () => {
     setSelectedLanguage2(language);
   };
 
-  const { translate, Language } = useTranslation();
-
   return (
     <div>
       <h3 className="mb-4 title">
@@ -191,7 +191,7 @@ const AddRegion = () => {
               }
             });
             if (Object.keys(errors).length > 0) {
-              toast.error('Please fill in the required fields.');
+              toast.error(`${translate('Fill', Language)}`);
               return;
             }
             formik.handleSubmit(e);

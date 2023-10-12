@@ -17,21 +17,22 @@ import { uploadImg } from '../features/upload/uploadSlice';
 import { language } from '../Language/languages';
 import { useTranslation } from '../components/TranslationContext';
 
-let schema = yup.object({
-  title: yup.object().shape(
-    language.reduce(
-      (acc, lang) => ({
-        ...acc,
-        az: yup.string().required(`Title for az is Required`),
-      }),
-      {}
-    )
-  ),
-  active: yup.string(),
-  icon: yup.mixed().required('Icon is Required'),
-});
-
 const Addadvantage = () => {
+  const { translate, Language } = useTranslation();
+
+  let schema = yup.object({
+    title: yup.object().shape(
+      language.reduce(
+        (acc, lang) => ({
+          ...acc,
+          az: yup.string().required(`${translate('Required_Fill', Language)}`),
+        }),
+        {}
+      )
+    ),
+    active: yup.string(),
+    icon: yup.mixed().required(`${translate('Required_Fill', Language)}`),
+  });
   const [selectedLanguage1, setSelectedLanguage1] = useState('az');
   const [isFileDetected, setIsFileDetected] = useState(false);
   const dispatch = useDispatch();
@@ -81,7 +82,7 @@ const Addadvantage = () => {
         clearTimeout(debounceTimeoutRef.current);
       }
       debounceTimeoutRef.current = setTimeout(() => {
-        toast.success('Advantage Updated Successfully!');
+        toast.success(`${translate('Updated', Language)}`);
         prevUpdatedAdvantageRef.current = updatedAdvantage;
         navigate('/admin/advantage-list');
       }, 1000);
@@ -91,14 +92,14 @@ const Addadvantage = () => {
       createdAdvantage !== undefined &&
       updatedAdvantage !== undefined
     ) {
-      toast.success('Advantage Added Successfully!');
+      toast.success(`${translate('Added', Language)}`);
       navigate('/admin/advantage-list');
       setTimeout(() => {
         window.location.reload();
       }, 1000);
     }
     if (isError) {
-      toast.error('Something Went Wrong!');
+      toast.error(`${translate('Wrong', Language)}`);
     }
   }, [isSuccess, isError, createdAdvantage, updatedAdvantage, navigate]);
 
@@ -183,7 +184,6 @@ const Addadvantage = () => {
   const handleLanguageClick1 = (language) => {
     setSelectedLanguage1(language);
   };
-  const { translate, Language } = useTranslation();
 
   return (
     <div>
@@ -214,7 +214,7 @@ const Addadvantage = () => {
             });
 
             if (Object.keys(errors).length > 0) {
-              toast.error('Please fill in the required fields.');
+              toast.error(`${translate('Fill', Language)}`);
               return;
             }
 

@@ -13,12 +13,13 @@ import {
 } from '../features/settings/settingSlice';
 import { useTranslation } from '../components/TranslationContext';
 
-let schema = yup.object({
-  key: yup.string().required('Key is Required'),
-  value: yup.string().required('Value is Required'),
-});
-
 const Addsetting = (e) => {
+  const { translate, Language } = useTranslation();
+
+  let schema = yup.object({
+    key: yup.string().required(`${translate('Required_Fill', Language)}`),
+    value: yup.string().required(`${translate('Required_Fill', Language)}`),
+  });
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const location = useLocation();
@@ -44,18 +45,18 @@ const Addsetting = (e) => {
 
   useEffect(() => {
     if (isSuccess && createdSetting !== undefined) {
-      toast.success('Setting Added Successfully!');
+      toast.success(`${translate('Added', Language)}`);
       navigate('/admin/setting-list');
       setTimeout(() => {
         window.location.reload();
       }, 1000);
     }
     if (isSuccess && updatedSetting !== undefined) {
-      toast.success('Setting Updated Successfully!');
+      toast.success(`${translate('Updated', Language)}`);
       navigate('/admin/setting-list');
     }
     if (isError) {
-      toast.error('Something Went Wrong!');
+      toast.error(`${translate('Wrong', Language)}`);
     }
   }, [
     isSuccess,
@@ -66,6 +67,8 @@ const Addsetting = (e) => {
     settingValue,
     updatedSetting,
     navigate,
+    translate,
+    Language,
   ]);
 
   const formik = useFormik({
@@ -89,8 +92,6 @@ const Addsetting = (e) => {
     },
   });
 
-  const { translate, Language } = useTranslation();
-
   return (
     <div>
       <h3 className="mb-4 title">
@@ -110,7 +111,7 @@ const Addsetting = (e) => {
               }
             });
             if (Object.keys(errors).length > 0) {
-              toast.error('Please fill in the required fields.');
+              toast.error(`${translate('Fill', Language)}`);
               return;
             }
             formik.handleSubmit(e);

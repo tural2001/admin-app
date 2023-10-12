@@ -17,22 +17,23 @@ import { uploadImg } from '../features/upload/uploadSlice';
 import { language } from '../Language/languages';
 import { useTranslation } from '../components/TranslationContext';
 
-let schema = yup.object({
-  content: yup.object().shape(
-    language.reduce(
-      (acc, lang) => ({
-        ...acc,
-        az: yup.string().required(`Content for az is Required`),
-      }),
-      {}
-    )
-  ),
-  handle: yup.string().required('Handle is Required'),
-  image: yup.mixed(),
-  active: yup.string(),
-});
-
 const Addpopup = () => {
+  const { translate, Language } = useTranslation();
+  let schema = yup.object({
+    content: yup.object().shape(
+      language.reduce(
+        (acc, lang) => ({
+          ...acc,
+          az: yup.string().required(`${translate('Required_Fill', Language)}`),
+        }),
+        {}
+      )
+    ),
+    handle: yup.string().required(`${translate('Required_Fill', Language)}`),
+    image: yup.mixed(),
+    active: yup.string(),
+  });
+
   const [selectedLanguage1, setSelectedLanguage1] = useState('az');
 
   const [isFileDetected, setIsFileDetected] = useState(false);
@@ -86,14 +87,14 @@ const Addpopup = () => {
         clearTimeout(debounceTimeoutRef.current);
       }
       debounceTimeoutRef.current = setTimeout(() => {
-        toast.success('Popup Updated Successfully!');
+        toast.success(`${translate('Updated', Language)}`);
         prevUpdatedPopupRef.current = updatedPopup;
         navigate('/admin/popup-list');
       }, 1000);
     }
 
     if (isError) {
-      toast.error('Something Went Wrong!');
+      toast.error(`${translate('Wrong', Language)}`);
     }
   }, [isSuccess, isError, updatedPopup]);
 
@@ -144,8 +145,6 @@ const Addpopup = () => {
     setSelectedLanguage1(language);
   };
 
-  const { translate, Language } = useTranslation();
-
   return (
     <div>
       <h3 className="mb-4 title-popup">
@@ -174,7 +173,7 @@ const Addpopup = () => {
             });
 
             if (Object.keys(errors).length > 0) {
-              toast.error('Please fill in the required fields.');
+              toast.error(`${translate('Fill', Language)}`);
               return;
             }
 

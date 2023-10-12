@@ -7,7 +7,6 @@ import { useFormik } from 'formik';
 import * as yup from 'yup';
 import { useLocation, useNavigate } from 'react-router-dom';
 import {
-  createApage,
   getApage,
   resetState,
   updateApage,
@@ -16,58 +15,57 @@ import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 import { language } from '../Language/languages';
 import { useTranslation } from '../components/TranslationContext';
-import axios from 'axios';
-import { config } from '../utils/axiosconfig';
-import { base_url } from '../utils/base_url';
 
-let schema = yup.object({
-  title: yup.object().shape(
-    language.reduce(
-      (acc, lang) => ({
-        ...acc,
-        az: yup.string().required(`Title for az is Required`),
-      }),
-      {}
-    )
-  ),
-  slug: yup.object().shape(
-    language.reduce(
-      (acc, lang) => ({
-        ...acc,
-        az: yup.string(),
-      }),
-      {}
-    )
-  ),
-  content: yup.object().shape(
-    language.reduce(
-      (acc, lang) => ({
-        ...acc,
-        az: yup.string().required(`Content for az is Required`),
-      }),
-      {}
-    )
-  ),
-  meta_title: yup.object().shape(
-    language.reduce(
-      (acc, lang) => ({
-        ...acc,
-        az: yup.string(),
-      }),
-      {}
-    )
-  ),
-  meta_description: yup.object().shape(
-    language.reduce(
-      (acc, lang) => ({
-        ...acc,
-        az: yup.string(),
-      }),
-      {}
-    )
-  ),
-});
 const AddPage = () => {
+  const { translate, Language } = useTranslation();
+
+  let schema = yup.object({
+    title: yup.object().shape(
+      language.reduce(
+        (acc, lang) => ({
+          ...acc,
+          az: yup.string().required(`${translate('Required_Fill', Language)}`),
+        }),
+        {}
+      )
+    ),
+    slug: yup.object().shape(
+      language.reduce(
+        (acc, lang) => ({
+          ...acc,
+          az: yup.string(),
+        }),
+        {}
+      )
+    ),
+    content: yup.object().shape(
+      language.reduce(
+        (acc, lang) => ({
+          ...acc,
+          az: yup.string().required(`${translate('Required_Fill', Language)}`),
+        }),
+        {}
+      )
+    ),
+    meta_title: yup.object().shape(
+      language.reduce(
+        (acc, lang) => ({
+          ...acc,
+          az: yup.string(),
+        }),
+        {}
+      )
+    ),
+    meta_description: yup.object().shape(
+      language.reduce(
+        (acc, lang) => ({
+          ...acc,
+          az: yup.string(),
+        }),
+        {}
+      )
+    ),
+  });
   const [selectedLanguage1, setSelectedLanguage1] = useState('az');
   const [selectedLanguage2, setSelectedLanguage2] = useState('az');
   const [selectedLanguage3, setSelectedLanguage3] = useState('az');
@@ -105,20 +103,20 @@ const AddPage = () => {
         clearTimeout(debounceTimeoutRef.current);
       }
       debounceTimeoutRef.current = setTimeout(() => {
-        toast.success('Page Updated Successfully!');
+        toast.success(`${translate('Updated', Language)}`);
         prevUpdatedPageRef.current = updatedPage;
         navigate('/admin/page-list');
       }, 1000);
     }
     if (isSuccess && createdPage !== undefined && updatedPage !== undefined) {
-      toast.success('Page Added Successfully!');
+      toast.success(`${translate('Added', Language)}`);
       navigate('/admin/page-list');
       setTimeout(() => {
         window.location.reload();
       }, 1000);
     }
     if (isError) {
-      toast.error('Something Went Wrong!');
+      toast.error(`${translate('Wrong', Language)}`);
     }
   }, [isSuccess, isError, createdPage, updatedPage, navigate]);
   console.log(PagessData);
@@ -209,8 +207,6 @@ const AddPage = () => {
     setSelectedLanguage5(language);
   };
 
-  const { translate, Language } = useTranslation();
-
   return (
     <div>
       <h3 className="mb-4 title">
@@ -244,7 +240,7 @@ const AddPage = () => {
             });
 
             if (Object.keys(errors).length > 0) {
-              toast.error('Please fill in the required fields.');
+              toast.error(`${translate('Fill', Language)}`);
               return;
             }
             console.log(formik.errors.answer);

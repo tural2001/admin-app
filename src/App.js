@@ -58,6 +58,9 @@ import Addcareerpage from './pages/Addcareerpage';
 import ServiceCList from './pages/ServiceCList';
 import AddServiceC from './pages/AddServiceC';
 import { TranslationProvider } from './components/TranslationContext';
+import PaymentFieldList from './pages/PaymentFieldList';
+import AddPaymentField from './pages/AddPaymentField';
+import PaymentFormDataList from './pages/PaymentFormDataList';
 
 function App() {
   return (
@@ -90,6 +93,10 @@ function App() {
           <Route path="setting" element={<Addsetting />} />
           <Route path="faq-form-list" element={<FaqFormList />} />
           <Route path="formdata-list" element={<FormDataList />} />
+          <Route
+            path="payment-formdata-list"
+            element={<PaymentFormDataList />}
+          />
           <Route path="faq-form" element={<AddFaqForm />} />
           <Route path="faq-form/:id" element={<AddFaqForm />} />
           <Route path="service-category-list" element={<ServiceCList />} />
@@ -118,6 +125,9 @@ function App() {
           <Route path="post" element={<AddPost />} />
           <Route path="post/:id" element={<AddPost />} />
           <Route path="field-list" element={<FieldList />} />
+          <Route path="payment-field-list" element={<PaymentFieldList />} />
+          <Route path="payment-field" element={<AddPaymentField />} />
+          <Route path="payment-field-list/:id" element={<AddPaymentField />} />
           <Route path="field" element={<AddField />} />
           <Route path="field-list/:id" element={<AddField />} />
           <Route path="slide-list" element={<SlideList />} />

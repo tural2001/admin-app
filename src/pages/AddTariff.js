@@ -19,36 +19,39 @@ import { uploadImg } from '../features/upload/uploadSlice';
 import Dropzone from 'react-dropzone';
 import { useTranslation } from '../components/TranslationContext';
 
-let schema = yup.object({
-  name: yup.object().shape(
-    language.reduce(
-      (acc, lang) => ({
-        ...acc,
-        az: yup.string().required(`Name for az is Required`),
-      }),
-      {}
-    )
-  ),
-  description: yup.object().shape(
-    language.reduce(
-      (acc, lang) => ({
-        ...acc,
-        az: yup.string().required(`Description for az is Required`),
-      }),
-      {}
-    )
-  ),
-  price: yup.number(),
-  service_id: yup.number().required('Service Id is Required'),
-  speed: yup.number().required('Speed is Required'),
-  active: yup.string(),
-  channel: yup.string(),
-  type: yup.number().required('Type is Required'),
-  most_wanted: yup.string(),
-  icon: yup.mixed().required('Icon is Required'),
-});
-
 const AddTariff = () => {
+  const { translate, Language } = useTranslation();
+
+  let schema = yup.object({
+    name: yup.object().shape(
+      language.reduce(
+        (acc, lang) => ({
+          ...acc,
+          az: yup.string().required(`${translate('Required_Fill', Language)}`),
+        }),
+        {}
+      )
+    ),
+    description: yup.object().shape(
+      language.reduce(
+        (acc, lang) => ({
+          ...acc,
+          az: yup.string().required(`${translate('Required_Fill', Language)}`),
+        }),
+        {}
+      )
+    ),
+    price: yup.number(),
+    service_id: yup
+      .number()
+      .required(`${translate('Required_Fill', Language)}`),
+    speed: yup.number().required(`${translate('Required_Fill', Language)}`),
+    active: yup.string(),
+    channel: yup.string(),
+    type: yup.number().required(`${translate('Required_Fill', Language)}`),
+    most_wanted: yup.string(),
+    icon: yup.mixed().required(`${translate('Required_Fill', Language)}`),
+  });
   const [selectedLanguageAn, setSelectedLanguageAn] = useState('az');
   const [selectedLanguageQu, setSelectedLanguageQu] = useState('az');
   const dispatch = useDispatch();
@@ -97,7 +100,7 @@ const AddTariff = () => {
         clearTimeout(debounceTimeoutRef.current);
       }
       debounceTimeoutRef.current = setTimeout(() => {
-        toast.success('Tariff Updated Successfully!');
+        toast.success(`${translate('Updated', Language)}`);
         prevUpdatedTariffRef.current = updatedTariff;
         navigate('/admin/tariff-list');
       }, 1000);
@@ -107,14 +110,14 @@ const AddTariff = () => {
       createdTariff !== undefined &&
       updatedTariff !== undefined
     ) {
-      toast.success('Tariff Added Successfully!');
+      toast.success(`${translate('Added', Language)}`);
       navigate('/admin/tariff-list');
       setTimeout(() => {
         window.location.reload();
       }, 1000);
     }
     if (isError) {
-      toast.error('Something Went Wrong!');
+      toast.error(`${translate('Wrong', Language)}`);
     }
   }, [isSuccess, isError, createdTariff, updatedTariff, navigate]);
 
@@ -270,8 +273,6 @@ const AddTariff = () => {
     setSelectedLanguageQu(language);
   };
 
-  const { translate, Language } = useTranslation();
-
   return (
     <div>
       <h3 className="mb-4 title">
@@ -317,7 +318,7 @@ const AddTariff = () => {
             });
 
             if (Object.keys(errors).length > 0) {
-              toast.error('Please fill in the required fields.');
+              toast.error(`${translate('Fill', Language)}`);
               return;
             }
             console.log(formik.errors.answer);

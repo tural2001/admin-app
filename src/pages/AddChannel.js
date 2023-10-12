@@ -19,23 +19,26 @@ import { uploadImg } from '../features/upload/uploadSlice';
 import { language } from '../Language/languages';
 import { useTranslation } from '../components/TranslationContext';
 
-let schema = yup.object({
-  name: yup.object().shape(
-    language.reduce(
-      (acc, lang) => ({
-        ...acc,
-        az: yup.string().required(`Name for az is Required`),
-      }),
-      {}
-    )
-  ),
-  country_id: yup.number().required('Country Id is Required'),
-  tariff_id: yup.number().required('Country Id is Required'),
-  image: yup.mixed().required('Image is Required'),
-  active: yup.boolean(),
-});
-
 const Addchannel = () => {
+  const { translate, Language } = useTranslation();
+
+  let schema = yup.object({
+    name: yup.object().shape(
+      language.reduce(
+        (acc, lang) => ({
+          ...acc,
+          az: yup.string().required(`${translate('Required_Fill', Language)}`),
+        }),
+        {}
+      )
+    ),
+    country_id: yup
+      .number()
+      .required(`${translate('Required_Fill', Language)}`),
+    tariff_id: yup.number().required(`${translate('Required_Fill', Language)}`),
+    image: yup.mixed().required(`${translate('Required_Fill', Language)}`),
+    active: yup.boolean(),
+  });
   const [selectedLanguage1, setSelectedLanguage1] = useState('az');
   const [isFileDetected, setIsFileDetected] = useState(false);
   const dispatch = useDispatch();
@@ -97,7 +100,7 @@ const Addchannel = () => {
         clearTimeout(debounceTimeoutRef.current);
       }
       debounceTimeoutRef.current = setTimeout(() => {
-        toast.success('Channel Updated Successfully!');
+        toast.success(`${translate('Updated', Language)}`);
         prevUpdatedChannelRef.current = updatedChannel;
         navigate('/admin/channel-list');
       }, 1000);
@@ -107,14 +110,14 @@ const Addchannel = () => {
       createdChannel !== undefined &&
       updatedChannel !== undefined
     ) {
-      toast.success('Channel Added Successfully!');
+      toast.success(`${translate('Added', Language)}`);
       navigate('/admin/channel-list');
       setTimeout(() => {
         window.location.reload();
       }, 1000);
     }
     if (isError) {
-      toast.error('Something Went Wrong!');
+      toast.success(`${translate('Wrong', Language)}`);
     }
   }, [isSuccess, isError, createdChannel, updatedChannel, navigate]);
 
@@ -207,7 +210,6 @@ const Addchannel = () => {
   const handleLanguageClick1 = (language) => {
     setSelectedLanguage1(language);
   };
-  const { translate, Language } = useTranslation();
 
   return (
     <div>
@@ -237,7 +239,7 @@ const Addchannel = () => {
             });
 
             if (Object.keys(errors).length > 0) {
-              toast.error('Please fill in the required fields.');
+              toast.error(`${translate('Fill', Language)}`);
               return;
             }
 

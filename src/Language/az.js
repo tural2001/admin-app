@@ -85,7 +85,9 @@ export const Meta_Description = 'Meta Təsvir';
 //Fields
 export const Fields = 'Sahələr';
 export const Add_Field = 'Sahə əlavə et';
-export const Edit_Field = 'Sahə redakte et';
+export const Edit_Field = 'Sahə əlavə et';
+export const Add_Payment_Field = 'Ödəniş sahəsi əlavə et';
+export const Edit_Payment_Field = 'Ödəniş sahəsi redakte et';
 export const Label = 'Etiket';
 export const Type = 'Növü';
 export const Required = 'Tələb olunur';
@@ -207,12 +209,23 @@ export const Popup_List = 'Pop-uplar siyahısı';
 export const Post_List = 'Yazılar siyahısı';
 export const Region_List = 'Bölgələr siyahısı';
 export const Register_Form_Data_List = 'Qeydiyyat formları siyahısı';
+export const Payment_Register_Form_Data_List =
+  'Ödəniş Qeydiyyat formları siyahısı';
 export const Register_Field_Data_List = 'Qeydiyyat sahələri siyahısı';
+export const Payment_Register_Field_Data_List =
+  'Ödəniş qeydiyyat sahələri siyahısı';
 export const Review_List = 'Rəylər siyahısı';
 export const Service_List = 'Xidmətlər siyahısı';
-export const Setting_list = 'Parametrlər siyahısı';
+export const Setting_List = 'Parametrlər siyahısı';
 export const Service_Category_List = 'Xidmətlər kateqoriyası siyahısı';
 export const Slide_List = 'Slaydlar siyahısı';
 export const Structure_List = 'Strukturlar siyahısı';
 export const Tariff_List = 'Tariflər siyahısı';
 export const User_List = 'İstifadəçilər siyahısı';
+
+//Toast
+export const Updated = 'Uğurla yeniləndi';
+export const Added = 'Uğurla əlavə edildi';
+export const Wrong = 'Nə isə səhv getdi!';
+export const Required_Fill = 'Doldurmağınız tələb olunur!';
+export const Fill = 'Zəhmət olmasa tələb olunan sahələri doldurun!';

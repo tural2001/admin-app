@@ -16,13 +16,14 @@ import {
 import { uploadImg } from '../features/upload/uploadSlice';
 import { useTranslation } from '../components/TranslationContext';
 
-let schema = yup.object({
-  name: yup.string().required('Name is required'),
-  logo: yup.mixed().required('Logo is Required'),
-  active: yup.string(),
-});
-
 const AddPartner = () => {
+  const { translate, Language } = useTranslation();
+
+  let schema = yup.object({
+    name: yup.string().required(`${translate('Required_Fill', Language)}`),
+    logo: yup.mixed().required(`${translate('Required_Fill', Language)}`),
+    active: yup.string(),
+  });
   const [isFileDetected, setIsFileDetected] = useState(false);
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -60,18 +61,18 @@ const AddPartner = () => {
 
   useEffect(() => {
     if (isSuccess && createdPartner !== undefined) {
-      toast.success('Partner Added Successfully!');
+      toast.success(`${translate('Added', Language)}`);
       navigate('/admin/partner-list');
       setTimeout(() => {
         window.location.reload();
       }, 1000);
     }
     if (isSuccess && updatedPartner !== undefined) {
-      toast.success('Partner Updated Successfully!');
+      toast.success(`${translate('Updated', Language)}`);
       navigate('/admin/partner-list');
     }
     if (isError) {
-      toast.error('Something Went Wrong!');
+      toast.error(`${translate('Wrong', Language)}`);
     }
   }, [
     isSuccess,
@@ -116,8 +117,6 @@ const AddPartner = () => {
     }
   }, [getPartnerId, newPartner.partnerActive]);
 
-  const { translate, Language } = useTranslation();
-
   return (
     <div>
       <h3 className="mb-4 title">
@@ -138,7 +137,7 @@ const AddPartner = () => {
             });
 
             if (Object.keys(errors).length > 0) {
-              toast.error('Please fill in the required fields.');
+              toast.error(`${translate('Fill', Language)}`);
               return;
             }
 

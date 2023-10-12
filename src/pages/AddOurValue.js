@@ -17,30 +17,31 @@ import { uploadImg } from '../features/upload/uploadSlice';
 import { language } from '../Language/languages';
 import { useTranslation } from '../components/TranslationContext';
 
-let schema = yup.object({
-  title: yup.object().shape(
-    language.reduce(
-      (acc, lang) => ({
-        ...acc,
-        az: yup.string().required(`Title for az is Required`),
-      }),
-      {}
-    )
-  ),
-  description: yup.object().shape(
-    language.reduce(
-      (acc, lang) => ({
-        ...acc,
-        az: yup.string().required(`Description for az is Required`),
-      }),
-      {}
-    )
-  ),
-  active: yup.string(),
-  icon: yup.mixed().required('Icon is Required'),
-});
-
 const AddOurValue = () => {
+  const { translate, Language } = useTranslation();
+
+  let schema = yup.object({
+    title: yup.object().shape(
+      language.reduce(
+        (acc, lang) => ({
+          ...acc,
+          az: yup.string().required(`${translate('Required_Fill', Language)}`),
+        }),
+        {}
+      )
+    ),
+    description: yup.object().shape(
+      language.reduce(
+        (acc, lang) => ({
+          ...acc,
+          az: yup.string().required(`${translate('Required_Fill', Language)}`),
+        }),
+        {}
+      )
+    ),
+    active: yup.string(),
+    icon: yup.mixed().required(`${translate('Required_Fill', Language)}`),
+  });
   const [selectedLanguage1, setSelectedLanguage1] = useState('az');
   const [selectedLanguage2, setSelectedLanguage2] = useState('az');
   const [isFileDetected, setIsFileDetected] = useState(false);
@@ -90,7 +91,7 @@ const AddOurValue = () => {
         clearTimeout(debounceTimeoutRef.current);
       }
       debounceTimeoutRef.current = setTimeout(() => {
-        toast.success('Ourvalue Updated Successfully!');
+        toast.success(`${translate('Updated', Language)}`);
         prevUpdatedOurvalueRef.current = updatedOurvalue;
         navigate('/admin/our-value-list');
       }, 1000);
@@ -100,14 +101,14 @@ const AddOurValue = () => {
       createdOurvalue !== undefined &&
       updatedOurvalue !== undefined
     ) {
-      toast.success('Ourvalue Added Successfully!');
+      toast.success(`${translate('Added', Language)}`);
       navigate('/admin/our-value-list');
       setTimeout(() => {
         window.location.reload();
       }, 1000);
     }
     if (isError) {
-      toast.error('Something Went Wrong!');
+      toast.error(`${translate('Wrong', Language)}`);
     }
   }, [isSuccess, isError, createAourvalue, updatedOurvalue, navigate]);
 
@@ -205,8 +206,6 @@ const AddOurValue = () => {
     setSelectedLanguage2(language);
   };
 
-  const { translate, Language } = useTranslation();
-
   return (
     <div>
       <h3 className="mb-4 title">
@@ -244,7 +243,7 @@ const AddOurValue = () => {
             });
 
             if (Object.keys(errors).length > 0) {
-              toast.error('Please fill in the required fields.');
+              toast.success(`${translate('Fill', Language)}`);
               return;
             }
 

@@ -4,7 +4,7 @@ import { config } from '../../utils/axiosconfig';
 
 const getformdatas = async () => {
   const selectedLanguage = 'az';
-  const response = await axios.get(`${base_url}/api/form-data`, {
+  const response = await axios.get(`${base_url}/api/register-form-data`, {
     headers: config.getHeaders(selectedLanguage),
   });
   return response.data;
@@ -31,7 +31,7 @@ const getformdatas = async () => {
 const getformdata = async (id) => {
   const selectedLanguage = 'az';
 
-  const response = await axios.get(`${base_url}/api/form-data/${id}`, {
+  const response = await axios.get(`${base_url}/api/register-form-data/${id}`, {
     headers: config.getHeaders(selectedLanguage),
   });
   console.log(response.data);
@@ -41,9 +41,12 @@ const getformdata = async (id) => {
 const deleteformdata = async (id) => {
   const selectedLanguage = 'az';
 
-  const response = await axios.delete(`${base_url}/api/form-data/${id}`, {
-    headers: config.getHeaders(selectedLanguage),
-  });
+  const response = await axios.delete(
+    `${base_url}/api/register-form-data/${id}`,
+    {
+      headers: config.getHeaders(selectedLanguage),
+    }
+  );
   return response.data;
 };
 

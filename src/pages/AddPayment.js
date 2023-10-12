@@ -18,49 +18,51 @@ import { uploadImg } from '../features/upload/uploadSlice';
 import { language } from '../Language/languages';
 import { useTranslation } from '../components/TranslationContext';
 
-let schema = yup.object({
-  name: yup.object().shape(
-    language.reduce(
-      (acc, lang) => ({
-        ...acc,
-        az: yup.string().required(`Name for az is Required`),
-      }),
-      {}
-    )
-  ),
-  description: yup.object().shape(
-    language.reduce(
-      (acc, lang) => ({
-        ...acc,
-        az: yup.string(),
-      }),
-      {}
-    )
-  ),
-  meta_title: yup.object().shape(
-    language.reduce(
-      (acc, lang) => ({
-        ...acc,
-        az: yup.string(),
-      }),
-      {}
-    )
-  ),
-  meta_description: yup.object().shape(
-    language.reduce(
-      (acc, lang) => ({
-        ...acc,
-        az: yup.string(),
-      }),
-      {}
-    )
-  ),
-  redirect_link: yup.string(),
-  image: yup.mixed().required('Image is Required'),
-  active: yup.string(),
-});
-
 const AddPayment = () => {
+  const { translate, Language } = useTranslation();
+
+  let schema = yup.object({
+    name: yup.object().shape(
+      language.reduce(
+        (acc, lang) => ({
+          ...acc,
+          az: yup.string().required(`${translate('Required_Fill', Language)}`),
+        }),
+        {}
+      )
+    ),
+    description: yup.object().shape(
+      language.reduce(
+        (acc, lang) => ({
+          ...acc,
+          az: yup.string(),
+        }),
+        {}
+      )
+    ),
+    meta_title: yup.object().shape(
+      language.reduce(
+        (acc, lang) => ({
+          ...acc,
+          az: yup.string(),
+        }),
+        {}
+      )
+    ),
+    meta_description: yup.object().shape(
+      language.reduce(
+        (acc, lang) => ({
+          ...acc,
+          az: yup.string(),
+        }),
+        {}
+      )
+    ),
+    redirect_link: yup.string(),
+    image: yup.mixed().required(`${translate('Required_Fill', Language)}`),
+    active: yup.string(),
+  });
+
   const [selectedLanguage1, setSelectedLanguage1] = useState('az');
   const [selectedLanguage2, setSelectedLanguage2] = useState('az');
   const [selectedLanguage3, setSelectedLanguage3] = useState('az');
@@ -118,7 +120,7 @@ const AddPayment = () => {
         clearTimeout(debounceTimeoutRef.current);
       }
       debounceTimeoutRef.current = setTimeout(() => {
-        toast.success('Payment Updated Successfully!');
+        toast.success(`${translate('Updated', Language)}`);
         prevUpdatedPaymentRef.current = updatedPayment;
         navigate('/admin/payment-list');
       }, 1000);
@@ -128,14 +130,14 @@ const AddPayment = () => {
       createdPayment !== undefined &&
       updatedPayment !== undefined
     ) {
-      toast.success('Payment Added Successfully!');
+      toast.success(`${translate('Added', Language)}`);
       navigate('/admin/payment-list');
       setTimeout(() => {
         window.location.reload();
       }, 1000);
     }
     if (isError) {
-      toast.error('Something Went Wrong!');
+      toast.error(`${translate('Wrong', Language)}`);
     }
   }, [isSuccess, isError, createdPayment, updatedPayment, navigate]);
 
@@ -260,8 +262,6 @@ const AddPayment = () => {
     setSelectedLanguage4(language);
   };
 
-  const { translate, Language } = useTranslation();
-
   return (
     <div>
       <h3 className="mb-4 title">
@@ -290,7 +290,7 @@ const AddPayment = () => {
             });
 
             if (Object.keys(errors).length > 0) {
-              toast.error('Please fill in the required fields.');
+              toast.error(`${translate('Fill', Language)}`);
               return;
             }
             formik.handleSubmit(e);

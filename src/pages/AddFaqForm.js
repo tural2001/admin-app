@@ -13,13 +13,14 @@ import {
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useTranslation } from '../components/TranslationContext';
 
-let schema = yup.object({
-  name: yup.string().required('Name is Required'),
-  phone: yup.string().required('Phone is Required'),
-  question: yup.string().required('Question is Required'),
-});
-
 const AddFaqForm = (e) => {
+  const { translate, Language } = useTranslation();
+
+  let schema = yup.object({
+    name: yup.string().required(`${translate('Required_Fill', Language)}`),
+    phone: yup.string().required(`${translate('Required_Fill', Language)}`),
+    question: yup.string().required(`${translate('Required_Fill', Language)}`),
+  });
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const location = useLocation();
@@ -46,18 +47,18 @@ const AddFaqForm = (e) => {
 
   useEffect(() => {
     if (isSuccess && createdfaqform !== undefined) {
-      toast.success('faqform Added Successfully!');
+      toast.success(`${translate('Added', Language)}`);
       navigate('/admin/faq-form-list');
       setTimeout(() => {
         window.location.reload();
       }, 1000);
     }
     if (isSuccess && updatedfaqform !== undefined) {
-      toast.success('faqform Updated Successfully!');
+      toast.success(`${translate('Updated', Language)}`);
       navigate('/admin/faq-form-list');
     }
     if (isError) {
-      toast.error('Something Went Wrong!');
+      toast.error(`${translate('Wrong', Language)}`);
     }
   }, [
     isSuccess,
@@ -68,6 +69,8 @@ const AddFaqForm = (e) => {
     faqformPhone,
     faqformQuestion,
     updatedfaqform,
+    translate,
+    Language,
     navigate,
   ]);
 
@@ -93,8 +96,6 @@ const AddFaqForm = (e) => {
     },
   });
 
-  const { translate, Language } = useTranslation();
-
   return (
     <div>
       <h3 className="mb-4 title">
@@ -114,7 +115,7 @@ const AddFaqForm = (e) => {
               }
             });
             if (Object.keys(errors).length > 0) {
-              toast.error('Please fill in the required fields.');
+              toast.error(`${translate('Fill', Language)}`);
               return;
             }
             formik.handleSubmit(e);

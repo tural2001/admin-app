@@ -203,6 +203,10 @@ export const Post_List = 'Post List';
 export const Region_List = 'Region List';
 export const Register_Form_Data_List = 'Register Form Data List';
 export const Register_Field_Data_List = 'Register Field Data List';
+export const Payment_Register_Form_Data_List =
+  'Payment Register Form Data List';
+export const Payment_Register_Field_Data_List =
+  'Payment Register Field Data List';
 export const Review_List = 'Review List';
 export const Service_List = 'Service List';
 export const Setting_List = 'Setting List';
@@ -211,3 +215,10 @@ export const Slide_List = 'Slide List';
 export const Structure_List = 'Structure List';
 export const Tariff_List = 'Tariff List';
 export const User_List = 'User List';
+
+//Toast
+export const Updated = 'Updated successfully!';
+export const Added = 'Added successfully!';
+export const Wrong = 'Sometign went wrong!';
+export const Required_Fill = 'Required to fill!';
+export const Fill = 'Please fill in the required fields!';

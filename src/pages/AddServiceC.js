@@ -20,21 +20,21 @@ import {
 } from '../features/servicecategories/servicecategoriesSlice';
 import { useTranslation } from '../components/TranslationContext';
 
-let schema = yup.object({
-  name: yup.object().shape(
-    language.reduce(
-      (acc, lang) => ({
-        ...acc,
-        az: yup.string().required(`Name for az is Required`),
-      }),
-      {}
-    )
-  ),
-  active: yup.string(),
-  icon: yup.mixed().required('Icon is Required'),
-});
-
 const AddServiceC = () => {
+  const { translate, Language } = useTranslation();
+  let schema = yup.object({
+    name: yup.object().shape(
+      language.reduce(
+        (acc, lang) => ({
+          ...acc,
+          az: yup.string().required(`${translate('Required_Fill', Language)}`),
+        }),
+        {}
+      )
+    ),
+    active: yup.string(),
+    icon: yup.mixed().required(`${translate('Required_Fill', Language)}`),
+  });
   const [selectedLanguage1, setSelectedLanguage1] = useState('az');
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -76,7 +76,7 @@ const AddServiceC = () => {
         clearTimeout(debounceTimeoutRef.current);
       }
       debounceTimeoutRef.current = setTimeout(() => {
-        toast.success('servicec Updated Successfully!');
+        toast.success(`${translate('Updated', Language)}`);
         prevUpdatedservicecRef.current = updatedserviceC;
         navigate('/admin/service-category-list');
       }, 1000);
@@ -86,14 +86,14 @@ const AddServiceC = () => {
       createdserviceC !== undefined &&
       updatedserviceC !== undefined
     ) {
-      toast.success('servicec Added Successfully!');
+      toast.success(`${translate('Added', Language)}`);
       navigate('/admin/service-category-list');
       setTimeout(() => {
         window.location.reload();
       }, 1000);
     }
     if (isError) {
-      toast.error('Something Went Wrong!');
+      toast.error(`${translate('Wrong', Language)}`);
     }
   }, [isSuccess, isError, createdserviceC, updatedserviceC, navigate]);
 
@@ -207,8 +207,6 @@ const AddServiceC = () => {
     setSelectedLanguage1(language);
   };
 
-  const { translate, Language } = useTranslation();
-
   return (
     <div>
       <h3 className="mb-4 title">
@@ -237,7 +235,7 @@ const AddServiceC = () => {
             });
 
             if (Object.keys(errors).length > 0) {
-              toast.error('Please fill in the required fields.');
+              toast.error(`${translate('Fill', Language)}`);
               return;
             }
             console.log(formik.errors.answer);

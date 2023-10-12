@@ -16,21 +16,23 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import { language } from '../Language/languages';
 import { useTranslation } from '../components/TranslationContext';
 
-let schema = yup.object({
-  name: yup.object().shape(
-    language.reduce(
-      (acc, lang) => ({
-        ...acc,
-        az: yup.string().required(`Name for az is Required`),
-      }),
-      {}
-    )
-  ),
-  code: yup.string().required('Code is Required'),
-  active: yup.string(),
-});
-
 const AddColor = (e) => {
+  const { translate, Language } = useTranslation();
+
+  let schema = yup.object({
+    name: yup.object().shape(
+      language.reduce(
+        (acc, lang) => ({
+          ...acc,
+          az: yup.string().required(`${translate('Required_Fill', Language)}`),
+        }),
+        {}
+      )
+    ),
+    code: yup.string().required(`${translate('Required_Fill', Language)}`),
+    active: yup.string(),
+  });
+
   const [selectedLanguage1, setSelectedLanguage1] = useState('az');
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -71,20 +73,20 @@ const AddColor = (e) => {
         clearTimeout(debounceTimeoutRef.current);
       }
       debounceTimeoutRef.current = setTimeout(() => {
-        toast.success('Color Updated Successfully!');
+        toast.success(`${translate('Updated', Language)}`);
         prevUpdatedColorRef.current = updatedcolor;
         navigate('/admin/color-list');
       }, 1000);
     }
     if (isSuccess && createdcolor !== undefined && updatedcolor !== undefined) {
-      toast.success('Color Added Successfully!');
+      toast.success(`${translate('Added', Language)}`);
       navigate('/admin/color-list');
       setTimeout(() => {
         window.location.reload();
       }, 1000);
     }
     if (isError) {
-      toast.error('Something Went Wrong!');
+      toast.error(`${translate('Wrong', Language)}`);
     }
   }, [isSuccess, isError, createdcolor, updatedcolor, navigate]);
 
@@ -169,7 +171,6 @@ const AddColor = (e) => {
   const handleLanguageClick1 = (language) => {
     setSelectedLanguage1(language);
   };
-  const { translate, Language } = useTranslation();
 
   return (
     <div>
@@ -199,7 +200,7 @@ const AddColor = (e) => {
             });
 
             if (Object.keys(errors).length > 0) {
-              toast.error('Please fill in the required fields.');
+              toast.error(`${translate('Fill', Language)}`);
               return;
             }
 

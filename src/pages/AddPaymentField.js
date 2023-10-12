@@ -6,17 +6,17 @@ import { useFormik } from 'formik';
 import * as yup from 'yup';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
-import {
-  createAfield,
-  getAfield,
-  getfields,
-  resetState,
-  updateAfield,
-} from '../features/form/formSlice';
 import { language } from '../Language/languages';
 import { useTranslation } from '../components/TranslationContext';
+import {
+  createApaymentfield,
+  getApaymentfield,
+  getpaymentfields,
+  updateApaymentfield,
+} from '../features/paymentform/paymentformSlice';
+import { resetState } from '../features/formData/formDataSlice';
 
-const AddForm = () => {
+const AddPaymentField = () => {
   const { translate, Language } = useTranslation();
 
   let schema = yup.object({
@@ -49,26 +49,25 @@ const AddForm = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const getfieldId = location.pathname.split('/')[3];
-  const newField = useSelector((state) => state.field);
-  console.log(newField);
+  const newpaymentField = useSelector((state) => state.paymentfield);
+  console.log(newpaymentField);
   const {
     isSuccess,
     isError,
     isLoading,
-    createdField,
-    fieldName,
-    FieldData,
-    fieldType,
-    fieldRequired,
-    updatedField,
-  } = newField;
-  console.log(newField);
+    createdpaymentfield,
+    fieldpaymentData,
+    fieldpaymentRequired,
+    fieldpaymentName,
+    fieldpaymentType,
+    updatedpaymentfield,
+  } = newpaymentField;
 
   useEffect(() => {
     if (getfieldId !== undefined) {
       language.forEach((selectedLanguage) => {
-        dispatch(getAfield(getfieldId, selectedLanguage));
-        dispatch(getfields(selectedLanguage));
+        dispatch(getApaymentfield(getfieldId, selectedLanguage));
+        dispatch(getpaymentfields(selectedLanguage));
       });
     } else {
       dispatch(resetState());
@@ -82,27 +81,31 @@ const AddForm = () => {
     const prevUpdatedField = prevUpdatedFieldRef.current;
     if (
       isSuccess &&
-      updatedField !== undefined &&
-      updatedField !== prevUpdatedField
+      updatedpaymentfield !== undefined &&
+      updatedpaymentfield !== prevUpdatedField
     ) {
       if (debounceTimeoutRef.current) {
         clearTimeout(debounceTimeoutRef.current);
       }
       debounceTimeoutRef.current = setTimeout(() => {
         toast.success(`${translate('Updated', Language)}`);
-        prevUpdatedFieldRef.current = updatedField;
-        navigate('/admin/field-list');
+        prevUpdatedFieldRef.current = updatedpaymentfield;
+        navigate('/admin/payment-field-list');
       }, 1000);
     }
 
     if (isError) {
       toast.error(`${translate('Wrong', Language)}`);
     }
-  }, [isSuccess, isError, updatedField]);
+  }, [isSuccess, isError, updatedpaymentfield]);
   useEffect(() => {
-    if (isSuccess && createdField !== undefined && updatedField !== undefined) {
+    if (
+      isSuccess &&
+      createdpaymentfield !== undefined &&
+      updatedpaymentfield !== undefined
+    ) {
       toast.success(`${translate('Added', Language)}`);
-      navigate('/admin/field-list');
+      navigate('/admin/payment-field-list');
       setTimeout(() => {
         window.location.reload();
       }, 1000);
@@ -114,24 +117,24 @@ const AddForm = () => {
     isSuccess,
     isError,
     isLoading,
-    createdField,
-    FieldData,
-    updatedField,
+    createdpaymentfield,
+    fieldpaymentData,
+    updatedpaymentfield,
     navigate,
   ]);
-  console.log(FieldData);
+
   const formik = useFormik({
     enableReinitialize: true,
     initialValues: {
       label: language.reduce((acc, lang) => {
-        acc[lang] = FieldData ? FieldData[lang]?.label || '' : '';
+        acc[lang] = fieldpaymentData ? fieldpaymentData[lang]?.label || '' : '';
         return acc;
       }, {}),
-      type: fieldType || '',
-      name: fieldName || '',
-      required: fieldRequired ? 1 : 0,
+      type: fieldpaymentType || '',
+      name: fieldpaymentName || '',
+      required: fieldpaymentRequired ? 1 : 0,
       data: language.reduce((acc, lang) => {
-        acc[lang] = FieldData ? FieldData[lang]?.data || '' : '';
+        acc[lang] = fieldpaymentData ? fieldpaymentData[lang]?.data || '' : '';
         return acc;
       }, {}),
     },
@@ -144,7 +147,7 @@ const AddForm = () => {
         updatedLanguages.forEach((lang) => {
           const data = {
             id: getfieldId,
-            fieldData: {
+            paymentfieldData: {
               label: values.label[lang],
               data: values.data[lang],
               type: values.type,
@@ -153,7 +156,7 @@ const AddForm = () => {
             },
             selectedLanguage: lang,
           };
-          dispatch(updateAfield(data));
+          dispatch(updateApaymentfield(data));
         });
       } else {
         if (updatedLanguages.length > 0) {
@@ -169,14 +172,14 @@ const AddForm = () => {
             selectedLanguage: firstLang,
           };
           console.log(createData);
-          dispatch(createAfield(createData))
+          dispatch(createApaymentfield(createData))
             .then((createdfield) => {
               console.log(createdfield);
 
               updatedLanguages.slice(1).forEach((lang) => {
                 const updateData = {
                   id: createdfield.payload.id,
-                  fieldData: {
+                  paymentfieldData: {
                     label: values.label[lang],
                     data: values.data[lang],
                     type: values.type,
@@ -186,7 +189,7 @@ const AddForm = () => {
                   selectedLanguage: lang,
                 };
 
-                dispatch(updateAfield(updateData));
+                dispatch(updateApaymentfield(updateData));
               });
 
               formik.resetForm();
@@ -206,9 +209,12 @@ const AddForm = () => {
     if (getfieldId === undefined) {
       formik.setFieldValue('required', 1);
     } else {
-      formik.setFieldValue('required', newField.fieldRequired ? 1 : 0);
+      formik.setFieldValue(
+        'required',
+        newpaymentField.fieldpaymentRequired ? 1 : 0
+      );
     }
-  }, [getfieldId, newField.fieldRequired]);
+  }, [getfieldId, newpaymentField.fieldpaymentRequired]);
 
   // useEffect(() => {
   //   if (
@@ -237,8 +243,8 @@ const AddForm = () => {
     <div>
       <h3 className="mb-4 title">
         {getfieldId !== undefined
-          ? `${translate('Edit_Field', Language)}`
-          : `${translate('Add_Field', Language)}`}
+          ? `${translate('Edit_Payment_Field', Language)}`
+          : `${translate('Add_Payment_Field', Language)}`}
       </h3>
       <div>
         <form
@@ -428,4 +434,4 @@ const AddForm = () => {
   );
 };
 
-export default AddForm;
+export default AddPaymentField;

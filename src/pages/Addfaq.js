@@ -12,30 +12,31 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import { language } from '../Language/languages';
 import { useTranslation } from '../components/TranslationContext';
 
-let schema = yup.object({
-  question: yup.object().shape(
-    language.reduce(
-      (acc, lang) => ({
-        ...acc,
-        az: yup.string().required(`Question for az is Required`),
-      }),
-      {}
-    )
-  ),
-
-  answer: yup.object().shape(
-    language.reduce(
-      (acc, lang) => ({
-        ...acc,
-        az: yup.string().required(`Answer for az is Required`),
-      }),
-      {}
-    )
-  ),
-  active: yup.string(),
-});
-
 const Addfaq = (e) => {
+  const { translate, Language } = useTranslation();
+
+  let schema = yup.object({
+    question: yup.object().shape(
+      language.reduce(
+        (acc, lang) => ({
+          ...acc,
+          az: yup.string().required(`${translate('Required_Fill', Language)}`),
+        }),
+        {}
+      )
+    ),
+
+    answer: yup.object().shape(
+      language.reduce(
+        (acc, lang) => ({
+          ...acc,
+          az: yup.string().required(`${translate('Required_Fill', Language)}`),
+        }),
+        {}
+      )
+    ),
+    active: yup.string(),
+  });
   const [selectedLanguage1, setSelectedLanguage1] = useState('az');
   const [selectedLanguage2, setSelectedLanguage2] = useState('az');
 
@@ -78,26 +79,26 @@ const Addfaq = (e) => {
         clearTimeout(debounceTimeoutRef.current);
       }
       debounceTimeoutRef.current = setTimeout(() => {
-        toast.success('Faq Updated Successfully!');
+        toast.success(`${translate('Updated', Language)}`);
         prevUpdatedFaqRef.current = updatedFaq;
         navigate('/admin/faq-list');
       }, 1000);
     }
 
     if (isError) {
-      toast.error('Something Went Wrong!');
+      toast.error(`${translate('Wrong', Language)}`);
     }
   }, [isSuccess, isError, updatedFaq]);
   useEffect(() => {
     if (isSuccess && createdFaq !== undefined && updatedFaq !== undefined) {
-      toast.success('Faq Added Successfully!');
+      toast.success(`${translate('Added', Language)}`);
       navigate('/admin/faq-list');
       setTimeout(() => {
         window.location.reload();
       }, 1000);
     }
     if (isError) {
-      toast.error('Something Went Wrong!');
+      toast.error(`${translate('Wrong', Language)}`);
     }
   }, [
     isSuccess,
@@ -213,8 +214,6 @@ const Addfaq = (e) => {
     setSelectedLanguage2(language);
   };
 
-  const { translate, Language } = useTranslation();
-
   return (
     <div>
       <h3 className="mb-4 title">
@@ -248,7 +247,7 @@ const Addfaq = (e) => {
             });
 
             if (Object.keys(errors).length > 0) {
-              toast.error('Please fill in the required fields.');
+              toast.error(`${translate('Fill', Language)}`);
               return;
             }
 

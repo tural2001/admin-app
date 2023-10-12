@@ -16,16 +16,20 @@ import {
 import { uploadImg } from '../features/upload/uploadSlice';
 import { useTranslation } from '../components/TranslationContext';
 
-let schema = yup.object({
-  name: yup.string().required('Name is Required'),
-  email: yup.string().required('Email is Required'),
-  phone: yup.string().required('Phone is Required'),
-  notes: yup.string().required('Notes is Required'),
-  vacancy_name: yup.string().required('Vancancy is Required'),
-  cv: yup.mixed().required('Cv is Required'),
-});
-
 const AddCareer = () => {
+  const { translate, Language } = useTranslation();
+
+  let schema = yup.object({
+    name: yup.string().required(`${translate('Required_Fill', Language)}`),
+    email: yup.string().required(`${translate('Required_Fill', Language)}`),
+    phone: yup.string().required(`${translate('Required_Fill', Language)}`),
+    notes: yup.string().required(`${translate('Required_Fill', Language)}`),
+    vacancy_name: yup
+      .string()
+      .required(`${translate('Required_Fill', Language)}`),
+    cv: yup.mixed().required(`${translate('Required_Fill', Language)}`),
+  });
+
   const [isFileDetected, setIsFileDetected] = useState(false);
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -64,18 +68,18 @@ const AddCareer = () => {
 
   useEffect(() => {
     if (isSuccess && createdcareer) {
-      toast.success('career Added Successfully!');
+      toast.success(`${translate('Added', Language)}`);
       navigate('/admin/career-form-list');
       setTimeout(() => {
         window.location.reload();
       }, 500);
     }
     if (isSuccess && updatedcareer !== undefined) {
-      toast.success('career Updated Successfully!');
+      toast.success(`${translate('Updated', Language)}`);
       navigate('/admin/career-form-lis');
     }
     if (isError) {
-      toast.error('Something Went Wrong!');
+      toast.error(`${translate('Wrong', Language)}`);
     }
   }, [
     isSuccess,
@@ -125,8 +129,6 @@ const AddCareer = () => {
     }
   }, [getcareerId, newcareer.campaignActive]);
 
-  const { translate, Language } = useTranslation();
-
   return (
     <div>
       <h3 className="mb-4 title">
@@ -153,7 +155,7 @@ const AddCareer = () => {
               }
             });
             if (Object.keys(errors).length > 0) {
-              toast.error('Please fill in the required fields.');
+              toast.error(`${translate('Fill', Language)}`);
               return;
             }
             formik.handleSubmit(e);

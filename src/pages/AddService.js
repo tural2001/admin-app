@@ -18,50 +18,51 @@ import { language } from '../Language/languages';
 import { getServicecategories } from '../features/servicecategories/servicecategoriesSlice';
 import { useTranslation } from '../components/TranslationContext';
 
-let schema = yup.object({
-  title: yup.object().shape(
-    language.reduce(
-      (acc, lang) => ({
-        ...acc,
-        az: yup.string().required(`Title for az is Required`),
-      }),
-      {}
-    )
-  ),
-  description: yup.object().shape(
-    language.reduce(
-      (acc, lang) => ({
-        ...acc,
-        az: yup.string().required(`Description for az is Required`),
-      }),
-      {}
-    )
-  ),
-  icon: yup.mixed().required('Icon is Required'),
-  active: yup.string(),
-  partner: yup.string(),
-  parent_id: yup.number().required('Parent ID is Required'),
-  meta_title: yup.object().shape(
-    language.reduce(
-      (acc, lang) => ({
-        ...acc,
-        az: yup.string(),
-      }),
-      {}
-    )
-  ),
-  meta_description: yup.object().shape(
-    language.reduce(
-      (acc, lang) => ({
-        ...acc,
-        az: yup.string(),
-      }),
-      {}
-    )
-  ),
-});
-
 const AddService = () => {
+  const { translate, Language } = useTranslation();
+
+  let schema = yup.object({
+    title: yup.object().shape(
+      language.reduce(
+        (acc, lang) => ({
+          ...acc,
+          az: yup.string().required(`${translate('Required_Fill', Language)}`),
+        }),
+        {}
+      )
+    ),
+    description: yup.object().shape(
+      language.reduce(
+        (acc, lang) => ({
+          ...acc,
+          az: yup.string().required(`${translate('Required_Fill', Language)}`),
+        }),
+        {}
+      )
+    ),
+    icon: yup.mixed().required(`${translate('Required_Fill', Language)}`),
+    active: yup.string(),
+    partner: yup.string(),
+    parent_id: yup.number().required(`${translate('Required_Fill', Language)}`),
+    meta_title: yup.object().shape(
+      language.reduce(
+        (acc, lang) => ({
+          ...acc,
+          az: yup.string(),
+        }),
+        {}
+      )
+    ),
+    meta_description: yup.object().shape(
+      language.reduce(
+        (acc, lang) => ({
+          ...acc,
+          az: yup.string(),
+        }),
+        {}
+      )
+    ),
+  });
   const [selectedLanguage1, setSelectedLanguage1] = useState('az');
   const [selectedLanguage2, setSelectedLanguage2] = useState('az');
   const [selectedLanguage3, setSelectedLanguage3] = useState('az');
@@ -124,7 +125,7 @@ const AddService = () => {
         clearTimeout(debounceTimeoutRef.current);
       }
       debounceTimeoutRef.current = setTimeout(() => {
-        toast.success('Service Updated Successfully!');
+        toast.success(`${translate('Updated', Language)}`);
         prevUpdatedTariffRef.current = updatedService;
         navigate('/admin/service-list');
       }, 1000);
@@ -134,14 +135,14 @@ const AddService = () => {
       createdService !== undefined &&
       updatedService !== undefined
     ) {
-      toast.success('Service Added Successfully!');
+      toast.success(`${translate('Added', Language)}`);
       navigate('/admin/service-list');
       setTimeout(() => {
         window.location.reload();
       }, 1000);
     }
     if (isError) {
-      toast.error('Something Went Wrong!');
+      toast.error(`${translate('Wrong', Language)}`);
     }
   }, [isSuccess, isError, createdService, updatedService, navigate]);
 
@@ -279,7 +280,6 @@ const AddService = () => {
   const handleLanguageClick4 = (language) => {
     setSelectedLanguage4(language);
   };
-  const { translate, Language } = useTranslation();
 
   return (
     <div>
@@ -324,7 +324,7 @@ const AddService = () => {
             });
             console.log(errors);
             if (Object.keys(errors).length > 0) {
-              toast.error('Please fill in the required fields.');
+              toast.error(`${translate('Fill', Language)}`);
               return;
             }
             formik.handleSubmit(e);

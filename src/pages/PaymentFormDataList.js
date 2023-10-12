@@ -5,19 +5,19 @@ import { RiDeleteBin5Line } from 'react-icons/ri';
 
 import ReactPaginate from 'react-paginate';
 import { BsArrowLeft, BsArrowRight } from 'react-icons/bs';
-import {
-  deleteAformdata,
-  getformdatas,
-  resetState,
-} from '../features/formData/formDataSlice';
 import Popup from 'reactjs-popup';
 import axios from 'axios';
 import { base_url } from '../utils/base_url';
 import { config } from '../utils/axiosconfig';
 import { x } from '../assets';
 import { useTranslation } from '../components/TranslationContext';
+import {
+  deleteApaymentformdata,
+  getpaymentformdatas,
+  resetState,
+} from '../features/paymentformData/paymentformDataSlice';
 
-const FormDataList = () => {
+const PaymentFormDataList = () => {
   const [open, setOpen] = useState(false);
   const [formdataId, setformdataId] = useState('');
 
@@ -32,29 +32,29 @@ const FormDataList = () => {
 
   useEffect(() => {
     dispatch(resetState());
-    dispatch(getformdatas());
+    dispatch(getpaymentformdatas());
   }, [dispatch]);
 
-  const formdatastate =
-    useSelector((state) => state.formdata?.formdatas?.data) || [];
+  const paymentformdatastate =
+    useSelector((state) => state.paymentformdata?.paymentformdatas?.data) || [];
 
   const deleteformdata = (e) => {
     setOpen(false);
-    dispatch(deleteAformdata(e));
+    dispatch(deleteApaymentformdata(e));
     setTimeout(() => {
-      dispatch(getformdatas());
+      dispatch(getpaymentformdatas());
     }, 100);
   };
 
   const [currentPage, setCurrentPage] = useState(0);
   const itemsPerPage = 7;
 
-  const filteredformdata = formdatastate?.slice(
+  const filteredformdata = paymentformdatastate?.slice(
     currentPage * itemsPerPage,
     (currentPage + 1) * itemsPerPage
   );
 
-  const pageCount = Math.ceil(formdatastate?.length / itemsPerPage);
+  const pageCount = Math.ceil(paymentformdatastate?.length / itemsPerPage);
 
   const handlePageClick = (data) => {
     setCurrentPage(data.selected);
@@ -77,12 +77,12 @@ const FormDataList = () => {
   const fetchFormData = (formId) => {
     console.log(formId);
     axios
-      .get(`${base_url}/api/register-form-data/${formId}`, {
+      .get(`${base_url}/api/installment-payment-form-data/${formId}`, {
         headers: config.getHeaders('az'),
       })
       .then((response) => {
         console.log(response);
-        dispatch(getformdatas());
+        dispatch(getpaymentformdatas());
       })
       .catch((error) => {
         console.error('Form Data Request Error:', error);
@@ -95,7 +95,7 @@ const FormDataList = () => {
     <div>
       <div className="flex justify-between gap-3 mb-4">
         <h3 className="title">
-          {translate('Register_Form_Data_List', Language)}
+          {translate('Payment_Register_Form_Data_List', Language)}
         </h3>{' '}
       </div>
       <div>
@@ -253,4 +253,4 @@ const FormDataList = () => {
   );
 };
 
-export default FormDataList;
+export default PaymentFormDataList;

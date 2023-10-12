@@ -17,50 +17,50 @@ import { uploadImg } from '../features/upload/uploadSlice';
 import { language } from '../Language/languages';
 import { useTranslation } from '../components/TranslationContext';
 
-let schema = yup.object({
-  title: yup.object().shape(
-    language.reduce(
-      (acc, lang) => ({
-        ...acc,
-        az: yup.string().required(`Title for az is Required`),
-      }),
-      {}
-    )
-  ),
-  order: yup.number(),
-  show_button: yup.string(),
-  button_text: yup.object().shape(
-    language.reduce(
-      (acc, lang) => ({
-        ...acc,
-        az: yup.string().required(`button text for az is Required`),
-      }),
-      {}
-    )
-  ),
-  button_link: yup.object().shape(
-    language.reduce(
-      (acc, lang) => ({
-        ...acc,
-        az: yup.string().required(`button link for az is Required`),
-      }),
-      {}
-    )
-  ),
-  description: yup.object().shape(
-    language.reduce(
-      (acc, lang) => ({
-        ...acc,
-        az: yup.string().required(`Description for az is Required`),
-      }),
-      {}
-    )
-  ),
-  image: yup.mixed().required('Image is Required'),
-  active: yup.string(),
-});
-
 const AddSlide = () => {
+  const { translate, Language } = useTranslation();
+  let schema = yup.object({
+    title: yup.object().shape(
+      language.reduce(
+        (acc, lang) => ({
+          ...acc,
+          az: yup.string().required(`${translate('Required_Fill', Language)}`),
+        }),
+        {}
+      )
+    ),
+    order: yup.number(),
+    show_button: yup.string(),
+    button_text: yup.object().shape(
+      language.reduce(
+        (acc, lang) => ({
+          ...acc,
+          az: yup.string().required(`${translate('Required_Fill', Language)}`),
+        }),
+        {}
+      )
+    ),
+    button_link: yup.object().shape(
+      language.reduce(
+        (acc, lang) => ({
+          ...acc,
+          az: yup.string().required(`${translate('Required_Fill', Language)}`),
+        }),
+        {}
+      )
+    ),
+    description: yup.object().shape(
+      language.reduce(
+        (acc, lang) => ({
+          ...acc,
+          az: yup.string().required(`${translate('Required_Fill', Language)}`),
+        }),
+        {}
+      )
+    ),
+    image: yup.mixed().required(`${translate('Required_Fill', Language)}`),
+    active: yup.string(),
+  });
   const [selectedLanguage1, setSelectedLanguage1] = useState('az');
   const [selectedLanguage2, setSelectedLanguage2] = useState('az');
   const [selectedLanguage3, setSelectedLanguage3] = useState('az');
@@ -119,20 +119,20 @@ const AddSlide = () => {
         clearTimeout(debounceTimeoutRef.current);
       }
       debounceTimeoutRef.current = setTimeout(() => {
-        toast.success('Slide Updated Successfully!');
+        toast.success(`${translate('Updated', Language)}`);
         prevUpdatedSlideRef.current = updatedSlide;
         navigate('/admin/slide-list');
       }, 1000);
     }
     if (isSuccess && createdSlide !== undefined && updatedSlide !== undefined) {
-      toast.success('Slide Added Successfully!');
+      toast.success(`${translate('Added', Language)}`);
       navigate('/admin/slide-list');
       setTimeout(() => {
         window.location.reload();
       }, 1000);
     }
     if (isError) {
-      toast.error('Something Went Wrong!');
+      toast.error(`${translate('Wrong', Language)}`);
     }
   }, [isSuccess, isError, createdSlide, updatedSlide, navigate]);
   console.log(slideData);
@@ -260,8 +260,6 @@ const AddSlide = () => {
     setSelectedLanguage4(language);
   };
 
-  const { translate, Language } = useTranslation();
-
   return (
     <div>
       <h3 className="mb-4 title">
@@ -319,7 +317,7 @@ const AddSlide = () => {
             });
 
             if (Object.keys(errors).length > 0) {
-              toast.error('Please fill in the required fields.');
+              toast.error(`${translate('Fill', Language)}`);
               return;
             }
             console.log(formik.errors.answer);
