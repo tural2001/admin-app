@@ -48,10 +48,10 @@ const ReviewList = () => {
     (currentPage + 1) * itemsPerPage
   );
 
-  const pageCount = Math.ceil(reviewstate?.length / itemsPerPage); // Toplam sayfa sayısını hesaplar
+  const pageCount = Math.ceil(reviewstate?.length / itemsPerPage);
 
   const handlePageClick = (data) => {
-    setCurrentPage(data.selected); // Sayfa numarasını günceller
+    setCurrentPage(data.selected);
   };
   const { translate, Language } = useTranslation();
 
@@ -122,14 +122,13 @@ const ReviewList = () => {
                   <td className="px-6 py-4">
                     <Popup
                       trigger={
-                        <button>
+                        <div className="w-[150px] h-[50px] flex justify-center items-center">
                           <img
                             src={review.reviewer_image}
                             alt=""
-                            width={150}
-                            height={50}
+                            className="object-cover"
                           />
-                        </button>
+                        </div>
                       }
                       modal
                       nested
@@ -137,17 +136,14 @@ const ReviewList = () => {
                         padding: '0px',
                         borderRadius: '50px',
                         borderColor: 'white',
-                        width: '1110px',
-                        height: '575px',
                         overflow: 'hidden',
                       }}
                     >
-                      <div>
+                      <div className="flex justify-center items-center">
                         <img
-                          src="https://azeronline.netlify.app/static/media/blog2.891d84e7b5ab348201fd.png"
+                          src={review.reviewer_image}
                           alt=""
-                          width={1110}
-                          height={50}
+                          className="object-cover"
                         />
                       </div>
                     </Popup>

@@ -79,19 +79,16 @@ const Partnerlist = () => {
                 </th>
                 <th scope="col" className="px-6 py-3">
                   <div className="flex items-center">
-                    {' '}
                     {translate('Status', Language)}
                   </div>
                 </th>
                 <th scope="col" className="px-6 py-3">
                   <div className="flex items-center">
-                    {' '}
                     {translate('Name', Language)}
                   </div>
                 </th>
                 <th scope="col" className="px-6 py-3">
                   <div className="flex items-center">
-                    {' '}
                     {translate('Logo', Language)}
                   </div>
                 </th>
@@ -122,19 +119,16 @@ const Partnerlist = () => {
                       : `${translate('Not_Active', Language)}`}
                   </td>
                   <td className="px-6 py-4">{partner.name}</td>
-                  {/* <td className="px-6 py-4">{partner.logo}</td> */}
                   <td className="px-6 py-4">
                     <Popup
                       trigger={
-                        <button>
-                          {' '}
+                        <div className="w-[150px] h-[50px] flex justify-center items-center">
                           <img
-                            src="https://azeronline.netlify.app/static/media/blog2.891d84e7b5ab348201fd.png"
+                            src={partner.logo}
                             alt=""
-                            width={150}
-                            height={50}
+                            className="object-cover"
                           />{' '}
-                        </button>
+                        </div>
                       }
                       modal
                       nested
@@ -142,17 +136,14 @@ const Partnerlist = () => {
                         padding: '0px',
                         borderRadius: '50px',
                         borderColor: 'white',
-                        width: '1110px',
-                        height: '575px',
                         overflow: 'hidden',
                       }}
                     >
-                      <div>
+                      <div className="flex justify-center items-center">
                         <img
-                          src="https://azeronline.netlify.app/static/media/blog2.891d84e7b5ab348201fd.png"
+                          src={partner.logo}
                           alt=""
-                          width={1110}
-                          height={50}
+                          className="object-cover"
                         />{' '}
                       </div>
                     </Popup>

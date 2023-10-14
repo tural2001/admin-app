@@ -124,15 +124,13 @@ const ServiceCList = () => {
                   <td className="px-6 py-4">
                     <Popup
                       trigger={
-                        <button>
-                          {' '}
+                        <div className="w-[150px] h-[50px] flex justify-center items-center">
                           <img
                             src={servicec.icon}
                             alt=""
-                            width={150}
-                            height={50}
-                          />{' '}
-                        </button>
+                            className="object-cover"
+                          />
+                        </div>
                       }
                       modal
                       nested
@@ -140,18 +138,15 @@ const ServiceCList = () => {
                         padding: '0px',
                         borderRadius: '50px',
                         borderColor: 'white',
-                        width: '800px',
-                        height: '475px',
                         overflow: 'hidden',
                       }}
                     >
-                      <div>
+                      <div className="flex justify-center items-center">
                         <img
                           src={servicec.icon}
                           alt=""
-                          width={1110}
-                          height={50}
-                        />{' '}
+                          className="object-cover"
+                        />
                       </div>
                     </Popup>
                   </td>

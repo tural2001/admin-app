@@ -87,19 +87,16 @@ const CareerpageList = () => {
                 </th>
                 <th scope="col" className="px-6 py-3">
                   <div className="flex items-center">
-                    {' '}
                     {translate('Name', Language)}
                   </div>
                 </th>
                 <th scope="col" className="px-6 py-3">
                   <div className="flex items-center">
-                    {' '}
                     {translate('Address', Language)}
                   </div>
                 </th>
                 <th scope="col" className="px-6 py-3">
                   <div className="flex items-center">
-                    {' '}
                     {translate('Description', Language)}
                   </div>
                 </th>

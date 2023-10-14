@@ -128,15 +128,13 @@ const AdvantageList = () => {
                   <td className="px-6 py-4">
                     <Popup
                       trigger={
-                        <button>
-                          {' '}
+                        <div className="w-[150px] h-[50px] flex justify-center items-center">
                           <img
-                            src="https://azeronline.netlify.app/static/media/blog2.891d84e7b5ab348201fd.png"
+                            src={advantage.icon}
                             alt=""
-                            width={150}
-                            height={50}
+                            className="object-cover"
                           />{' '}
-                        </button>
+                        </div>
                       }
                       modal
                       nested
@@ -144,30 +142,27 @@ const AdvantageList = () => {
                         padding: '0px',
                         borderRadius: '50px',
                         borderColor: 'white',
-                        width: '1110px',
-                        height: '575px',
                         overflow: 'hidden',
                       }}
                     >
-                      <div>
+                      <div className="flex justify-center items-center">
                         <img
-                          src="https://azeronline.netlify.app/static/media/blog2.891d84e7b5ab348201fd.png"
+                          src={advantage.icon}
                           alt=""
-                          width={1110}
-                          height={50}
+                          className="object-cover"
                         />{' '}
                       </div>
                     </Popup>
                   </td>
                   <td className="px-6 py-16 flex gap-2">
                     <Link
-                      to={`/admin/advantage/${advantagestate[index]?.id}`}
+                      to={`/admin/advantage/${filteredadvantage[index]?.id}`}
                       className="text-[25px] text-blue-500 "
                     >
                       <VscEdit />
                     </Link>
                     <button
-                      onClick={() => showModal(advantagestate[index]?.id)}
+                      onClick={() => showModal(filteredadvantage[index]?.id)}
                       className="text-[25px] text-red-500 "
                     >
                       <RiDeleteBin5Line />

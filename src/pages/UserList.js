@@ -80,13 +80,11 @@ const UserList = () => {
                 </th>
                 <th scope="col" className="px-6 py-3">
                   <div className="flex items-center">
-                    {' '}
                     {translate('Name', Language)}
                   </div>
                 </th>
                 <th scope="col" className="px-6 py-3">
                   <div className="flex items-center">
-                    {' '}
                     {translate('Email', Language)}
                   </div>
                 </th>

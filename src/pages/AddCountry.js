@@ -129,7 +129,6 @@ const AddCountry = (e) => {
           dispatch(createAcountry(createData))
             .then((createdCountry) => {
               console.log(createdCountry);
-
               updatedLanguages.slice(1).forEach((lang) => {
                 const updateData = {
                   id: createdCountry.payload.id,
@@ -139,7 +138,6 @@ const AddCountry = (e) => {
                   },
                   selectedLanguage: lang,
                 };
-
                 dispatch(updateAcountry(updateData));
               });
 

@@ -426,8 +426,12 @@ const AddOurValue = () => {
                     {formik.touched.image && formik.errors.image}
                   </div>
                 </div>
-                <div className="mt-[70px] w-[200px]">
-                  <img src={imageState ? imageState : ''} alt="" />
+                <div className="flex justify-center items-center">
+                  <img
+                    src={imageState ? imageState : ''}
+                    alt=""
+                    className="w-[300px] h-[200px] object-contain"
+                  />
                 </div>
               </div>
             </div>

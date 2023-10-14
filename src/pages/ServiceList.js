@@ -156,15 +156,13 @@ const ServiceList = () => {
                   <td className="px-6 py-4">
                     <Popup
                       trigger={
-                        <button>
-                          {' '}
+                        <div className="w-[150px] h-[50px] flex justify-center items-center">
                           <img
-                            src="https://azeronline.netlify.app/static/media/blog2.891d84e7b5ab348201fd.png"
+                            src={service.icon}
                             alt=""
-                            width={150}
-                            height={50}
-                          />{' '}
-                        </button>
+                            className="object-cover"
+                          />
+                        </div>
                       }
                       modal
                       nested
@@ -172,18 +170,15 @@ const ServiceList = () => {
                         padding: '0px',
                         borderRadius: '50px',
                         borderColor: 'white',
-                        width: '1110px',
-                        height: '575px',
                         overflow: 'hidden',
                       }}
                     >
-                      <div>
+                      <div className="flex justify-center items-center">
                         <img
-                          src="https://azeronline.netlify.app/static/media/blog2.891d84e7b5ab348201fd.png"
+                          src={service.icon}
                           alt=""
-                          width={1110}
-                          height={50}
-                        />{' '}
+                          className="object-cover"
+                        />
                       </div>
                     </Popup>
                   </td>

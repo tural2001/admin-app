@@ -83,19 +83,16 @@ const ChannelList = () => {
                 </th>
                 <th scope="col" className="px-6 py-3">
                   <div className="flex items-center">
-                    {' '}
                     {translate('Status', Language)}
                   </div>
                 </th>
                 <th scope="col" className="px-6 py-3">
                   <div className="flex items-center">
-                    {' '}
                     {translate('Country', Language)}
                   </div>
                 </th>
                 <th scope="col" className="px-6 py-3">
                   <div className="flex items-center">
-                    {' '}
                     {translate('Name', Language)}
                   </div>
                 </th>
@@ -132,27 +129,17 @@ const ChannelList = () => {
                   </td>
                   <td className="px-6 py-4">{channel.country_id}</td>
                   <td className="px-6 py-4">{channel.name}</td>
-                  {/* <td className="px-6 py-4">
-                    <a
-                      href={channel.image}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                    >
-                      {channel.image}
-                    </a>
-                  </td> */}
+
                   <td className="px-6 py-4">
                     <Popup
                       trigger={
-                        <button>
-                          {' '}
+                        <div className="w-[150px] h-[50px] flex justify-center items-center">
                           <img
-                            src="https://azeronline.netlify.app/static/media/blog2.891d84e7b5ab348201fd.png"
+                            src={channel.image}
                             alt=""
-                            width={150}
-                            height={50}
-                          />{' '}
-                        </button>
+                            className="object-cover"
+                          />
+                        </div>
                       }
                       modal
                       nested
@@ -165,12 +152,11 @@ const ChannelList = () => {
                         overflow: 'hidden',
                       }}
                     >
-                      <div>
+                      <div className="flex justify-center items-center">
                         <img
-                          src="https://azeronline.netlify.app/static/media/blog2.891d84e7b5ab348201fd.png"
+                          src={channel.image}
                           alt=""
-                          width={1110}
-                          height={50}
+                          className="object-cover"
                         />{' '}
                       </div>
                     </Popup>

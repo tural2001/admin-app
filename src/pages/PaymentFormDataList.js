@@ -195,7 +195,6 @@ const PaymentFormDataList = () => {
                                       );
                                     }
                                   });
-
                                   return formDataElements;
                                 } catch (error) {
                                   console.error(

@@ -131,16 +131,9 @@ const CareerList = () => {
                       {career.cv}
                     </a>
                   </td>
-                  {/* <td className="px-6 py-4">{career.cv}</td> */}
                   <td className="px-6 py-16 flex gap-2">
-                    {/* <Link
-                      to={`/admin/career/${careerstate[index]?.id}`}
-                      className="text-[25px] text-blue-500 "
-                    >
-                      <VscEdit />
-                    </Link> */}
                     <button
-                      onClick={() => showModal(careerstate[index]?.id)}
+                      onClick={() => showModal(filteredcareer[index]?.id)}
                       className="text-[25px] text-red-500 "
                     >
                       <RiDeleteBin5Line />

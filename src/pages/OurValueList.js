@@ -82,25 +82,21 @@ const OurValueList = () => {
                 </th>
                 <th scope="col" className="px-6 py-3">
                   <div className="flex items-center">
-                    {' '}
                     {translate('Status', Language)}
                   </div>
                 </th>
                 <th scope="col" className="px-6 py-3">
                   <div className="flex items-center">
-                    {' '}
                     {translate('Title', Language)}
                   </div>
                 </th>
                 <th scope="col" className="px-6 py-3">
                   <div className="flex items-center">
-                    {' '}
                     {translate('Description', Language)}
                   </div>
                 </th>
                 <th scope="col" className="px-6 py-3">
                   <div className="flex items-center">
-                    {' '}
                     {translate('Icon', Language)}
                   </div>
                 </th>
@@ -135,15 +131,13 @@ const OurValueList = () => {
                   <td className="px-6 py-4">
                     <Popup
                       trigger={
-                        <button>
-                          {' '}
+                        <div className="w-[150px] h-[50px] flex justify-center items-center">
                           <img
-                            src="https://azeronline.netlify.app/static/media/blog2.891d84e7b5ab348201fd.png"
+                            src={ourvalue.icon}
                             alt=""
-                            width={150}
-                            height={50}
+                            className="object-cover"
                           />{' '}
-                        </button>
+                        </div>
                       }
                       modal
                       nested
@@ -151,17 +145,14 @@ const OurValueList = () => {
                         padding: '0px',
                         borderRadius: '50px',
                         borderColor: 'white',
-                        width: '1110px',
-                        height: '575px',
                         overflow: 'hidden',
                       }}
                     >
-                      <div>
+                      <div className="flex justify-center items-center">
                         <img
-                          src="https://azeronline.netlify.app/static/media/blog2.891d84e7b5ab348201fd.png"
+                          src={ourvalue.icon}
                           alt=""
-                          width={1110}
-                          height={50}
+                          className="object-cover"
                         />{' '}
                       </div>
                     </Popup>

@@ -336,12 +336,6 @@ const AddCareer = () => {
                     {formik.touched.cv && formik.errors.cv}
                   </div>
                 </div>
-                <div className="mt-[70px] w-[200px]">
-                  <img
-                    src="https://img.freepik.com/free-psd/google-icon-isolated-3d-render-illustration_47987-9777.jpg?w=2000"
-                    alt=""
-                  />
-                </div>
               </div>
             </div>
           </div>
