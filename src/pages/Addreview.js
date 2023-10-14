@@ -445,7 +445,16 @@ const Addreview = () => {
                   </div>
                 </div>
                 <div className="mt-[70px] w-[200px]">
-                  <img src={imageState ? imageState : ''} alt="" />
+                  <img
+                    src={
+                      imageState
+                        ? imageState
+                        : '' || reviewReviewer_image
+                        ? reviewReviewer_image
+                        : ''
+                    }
+                    alt=""
+                  />
                 </div>
               </div>
             </div>

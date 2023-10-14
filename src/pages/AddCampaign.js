@@ -474,7 +474,16 @@ const AddCampaign = () => {
                   </div>
                 </div>
                 <div className="mt-[70px] w-[200px]">
-                  <img src={imageState ? imageState : ''} alt="" />
+                  <img
+                    src={
+                      imageState
+                        ? imageState
+                        : '' || campaignImage
+                        ? campaignImage
+                        : ''
+                    }
+                    alt=""
+                  />
                 </div>
               </div>
             </div>

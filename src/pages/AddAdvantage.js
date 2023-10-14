@@ -56,7 +56,7 @@ const Addadvantage = () => {
     dispatch(uploadImg(acceptedFiles));
     setIsFileDetected(true);
   }, []);
-  const imageState = useSelector((state) => state.upload.images.url);
+  const imageState = useSelector((state) => state?.upload?.images?.url);
 
   useEffect(() => {
     if (getadvantageId !== undefined) {
@@ -184,7 +184,7 @@ const Addadvantage = () => {
   const handleLanguageClick1 = (language) => {
     setSelectedLanguage1(language);
   };
-
+  console.log(AdIcon);
   return (
     <div>
       <h3 className="mb-4 title">
@@ -192,7 +192,6 @@ const Addadvantage = () => {
           ? `${translate('Edit_Advantage', Language)}`
           : `${translate('Add_Advantage', language)}`}
       </h3>
-
       <div>
         <form
           onSubmit={(e) => {
@@ -290,7 +289,6 @@ const Addadvantage = () => {
               </div>
             );
           })}
-
           <label htmlFor="" className="mt-2">
             {translate('Icon', Language)}
           </label>
@@ -361,7 +359,10 @@ const Addadvantage = () => {
                   </div>
                 </div>
                 <div className="mt-[70px] w-[200px]">
-                  <img src={imageState ? imageState : ''} alt="" />
+                  <img
+                    src={imageState ? imageState : '' || AdIcon ? AdIcon : ''}
+                    alt=""
+                  />
                 </div>
               </div>
             </div>

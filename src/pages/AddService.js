@@ -618,9 +618,6 @@ const AddService = () => {
               </div>
             );
           })}
-          {/* <div className="error">
-            {formik.touched.country_id && formik.errors.country_id}
-          </div> */}
           <label htmlFor="" className="mt-2">
             {translate('Icon', Language)}{' '}
           </label>
@@ -689,7 +686,16 @@ const AddService = () => {
                   </Dropzone>
                 </div>
                 <div className="mt-[70px] w-[200px]">
-                  <img src={imageState ? imageState : ''} alt="" />
+                  <img
+                    src={
+                      imageState
+                        ? imageState
+                        : '' || serviceIcon
+                        ? serviceIcon
+                        : ''
+                    }
+                    alt=""
+                  />
                 </div>
               </div>
             </div>

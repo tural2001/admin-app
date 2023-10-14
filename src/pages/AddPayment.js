@@ -543,7 +543,16 @@ const AddPayment = () => {
                   </div>
                 </div>
                 <div className="mt-[70px] w-[200px]">
-                  <img src={imageState ? imageState : ''} alt="" />
+                  <img
+                    src={
+                      imageState
+                        ? imageState
+                        : '' || paymentImage
+                        ? paymentImage
+                        : ''
+                    }
+                    alt=""
+                  />
                 </div>
               </div>
             </div>

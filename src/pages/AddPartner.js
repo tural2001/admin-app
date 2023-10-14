@@ -259,8 +259,13 @@ const AddPartner = () => {
                 {formik.touched.logo && formik.errors.logo}
               </div>
             </div>
-            <div className="mt-[90px]">
-              <img src={imageState ? imageState : ''} alt="" />
+            <div className="mt-[70px] w-[200px]">
+              <img
+                src={
+                  imageState ? imageState : '' || partnerLogo ? partnerLogo : ''
+                }
+                alt=""
+              />
             </div>
           </div>
           <button

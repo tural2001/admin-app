@@ -225,6 +225,7 @@ const AddForm = () => {
   //     formik.setFieldTouched('data', false);
   //   }
   // }, [formik.values.type]);
+
   const handleLanguageClick1 = (language) => {
     setSelectedLanguage1(language);
   };
@@ -371,9 +372,9 @@ const AddForm = () => {
           <div className="error">
             {formik.touched.required && formik.errors.required}
           </div>{' '}
-          {formik.values.type === '3' ||
-          formik.values.type === '4' ||
-          formik.values.type === '6' ? (
+          {formik.values.type === 3 ||
+          formik.values.type === 4 ||
+          formik.values.type === 6 ? (
             <>
               <label htmlFor="" className="mt-2">
                 {translate('Data', Language)}

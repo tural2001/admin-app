@@ -60,7 +60,6 @@ const Addcareerpage = (e) => {
   const {
     isSuccess,
     isError,
-    isLoading,
     createdcareerpage,
     PageData,
     careerpageActive,
@@ -77,23 +76,23 @@ const Addcareerpage = (e) => {
     }
   }, [dispatch, getcareerpageId]);
 
-  const prevUpdatedFaqRef = useRef();
+  const prevUpdatedCareerRef = useRef();
   const debounceTimeoutRef = useRef(null);
 
   useEffect(() => {
-    const prevUpdatedFaq = prevUpdatedFaqRef.current;
+    const prevUpdatedCareer = prevUpdatedCareerRef.current;
     if (
       isSuccess &&
       updatedcareerpage !== undefined &&
-      updatedcareerpage !== prevUpdatedFaq
+      updatedcareerpage !== prevUpdatedCareer
     ) {
       if (debounceTimeoutRef.current) {
         clearTimeout(debounceTimeoutRef.current);
       }
       debounceTimeoutRef.current = setTimeout(() => {
         toast.success(`${translate('Updated', Language)}`);
-        prevUpdatedFaqRef.current = updatedcareerpage;
-        navigate('/admin/faq-list');
+        prevUpdatedCareerRef.current = updatedcareerpage;
+        navigate('/admin/career-list');
       }, 1000);
     }
 
@@ -108,14 +107,14 @@ const Addcareerpage = (e) => {
       updatedcareerpage !== undefined
     ) {
       toast.success(`${translate('Added', Language)}`);
-      navigate('/admin/faq-list');
+      navigate('/admin/career-list');
       setTimeout(() => {
         window.location.reload();
       }, 1000);
     }
     if (isSuccess && createdcareerpage !== undefined) {
       toast.success(`${translate('Added', Language)}`);
-      navigate('/admin/faq-list');
+      navigate('/admin/career-list');
       setTimeout(() => {
         window.location.reload();
       }, 1000);
@@ -123,16 +122,7 @@ const Addcareerpage = (e) => {
     if (isError) {
       toast.error(`${translate('Wrong', Language)}`);
     }
-  }, [
-    isSuccess,
-    isError,
-    isLoading,
-    createdcareerpage,
-    PageData,
-    careerpageActive,
-    updatedcareerpage,
-    navigate,
-  ]);
+  }, [isSuccess, isError, createdcareerpage, updatedcareerpage, navigate]);
 
   const formik = useFormik({
     enableReinitialize: true,
@@ -465,8 +455,8 @@ const Addcareerpage = (e) => {
             className="mt-10 text-purple-700 hover:text-white border border-purple-700 hover:bg-purple-800 focus:ring-4 focus:outline-none focus:ring-purple-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center mr-2 mb-2 add_button"
           >
             {getAcareerpage !== undefined
-              ? `${translate('Edit', Language)}`
-              : `${translate('Add', Language)}`}
+              ? `${translate('Add', Language)}`
+              : `${translate('Edit', Language)}`}
           </button>
         </form>
       </div>
