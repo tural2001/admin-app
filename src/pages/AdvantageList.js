@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
@@ -33,7 +34,7 @@ const AdvantageList = () => {
   useEffect(() => {
     dispatch(resetState());
     dispatch(getadvantages());
-  }, [dispatch]);
+  }, []);
 
   const advantagestate =
     useSelector((state) => state.advantage.advantages.data) || [];

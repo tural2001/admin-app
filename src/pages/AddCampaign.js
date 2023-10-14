@@ -18,6 +18,7 @@ import 'react-quill/dist/quill.snow.css';
 import { uploadImg } from '../features/upload/uploadSlice';
 import { language } from '../Language/languages';
 import { useTranslation } from '../components/TranslationContext';
+import { debounce } from 'lodash';
 
 const AddCampaign = () => {
   const { translate, Language } = useTranslation();
@@ -64,26 +65,29 @@ const AddCampaign = () => {
     updatedCampaign,
   } = newCampaign;
 
-  const onDrop = useCallback(
-    (acceptedFiles) => {
-      formik.setFieldValue('image', acceptedFiles);
-      dispatch(uploadImg(acceptedFiles));
-      setIsFileDetected(true);
-    },
-    // eslint-disable-next-line no-use-before-define, react-hooks/exhaustive-deps
-    []
-  );
+  const onDrop = useCallback((acceptedFiles) => {
+    formik.setFieldValue('image', acceptedFiles);
+    dispatch(uploadImg(acceptedFiles));
+    setIsFileDetected(true);
+  }, []);
   const imageState = useSelector((state) => state.upload.images.url);
 
+  const debouncedApiCalls = useCallback(
+    debounce(() => {
+      if (getCampaignId !== undefined) {
+        language.forEach((selectedLanguage) => {
+          dispatch(getAcampaign(getCampaignId, selectedLanguage));
+        });
+      } else {
+        dispatch(resetState());
+      }
+    }, 500),
+    [getCampaignId, language, dispatch]
+  );
+
   useEffect(() => {
-    if (getCampaignId !== undefined) {
-      language.forEach((selectedLanguage) => {
-        dispatch(getAcampaign(getCampaignId, selectedLanguage));
-      });
-    } else {
-      dispatch(resetState());
-    }
-  }, [getCampaignId]);
+    debouncedApiCalls();
+  }, [debouncedApiCalls]);
 
   const prevUpdatedCampaignRef = useRef();
   const debounceTimeoutRef = useRef(null);
@@ -294,7 +298,6 @@ const AddCampaign = () => {
             formik.handleSubmit(e);
           }}
         >
-          {' '}
           <label htmlFor="" className="">
             {translate('Status', Language)}
           </label>
@@ -402,7 +405,6 @@ const AddCampaign = () => {
             );
           })}
           <label htmlFor="" className="mt-2">
-            {' '}
             {translate('Name', Language)}
           </label>
           <div className="">

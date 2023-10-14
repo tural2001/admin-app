@@ -18,6 +18,7 @@ import { language } from '../Language/languages';
 import { uploadImg } from '../features/upload/uploadSlice';
 import Dropzone from 'react-dropzone';
 import { useTranslation } from '../components/TranslationContext';
+import { debounce } from 'lodash';
 
 const AddTariff = () => {
   const { translate, Language } = useTranslation();
@@ -74,15 +75,22 @@ const AddTariff = () => {
     tariffMostWanted,
   } = newTariff;
 
+  const debouncedApiCalls = useCallback(
+    debounce(() => {
+      if (getTariffId !== undefined) {
+        language.forEach((selectedLanguage) => {
+          dispatch(getAtariff(getTariffId, selectedLanguage));
+        });
+      } else {
+        dispatch(resetState());
+      }
+    }, 500),
+    [getTariffId, dispatch]
+  );
+
   useEffect(() => {
-    if (getTariffId !== undefined) {
-      language.forEach((selectedLanguage) => {
-        dispatch(getAtariff(getTariffId, selectedLanguage));
-      });
-    } else {
-      dispatch(resetState());
-    }
-  }, [getTariffId]);
+    debouncedApiCalls();
+  }, [debouncedApiCalls]);
 
   const prevUpdatedTariffRef = useRef();
   const debounceTimeoutRef = useRef(null);

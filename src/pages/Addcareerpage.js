@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import CustomInput from '../components/CustomInput';
 import { useFormik } from 'formik';
 import * as yup from 'yup';
@@ -14,6 +14,7 @@ import {
   updateAcareerpage,
 } from '../features/careerpage/careerpageSlice';
 import { useTranslation } from '../components/TranslationContext';
+import { debounce } from 'lodash';
 
 const Addcareerpage = (e) => {
   const { translate, Language } = useTranslation();
@@ -65,16 +66,23 @@ const Addcareerpage = (e) => {
     careerpageActive,
     updatedcareerpage,
   } = newcareerpage;
-  console.log(newcareerpage);
+
+  const debouncedApiCalls = useCallback(
+    debounce(() => {
+      if (getcareerpageId !== undefined) {
+        language.forEach((selectedLanguage) => {
+          dispatch(getAcareerpage(getcareerpageId, selectedLanguage));
+        });
+      } else {
+        dispatch(resetState());
+      }
+    }, 500),
+    [getcareerpageId, language, dispatch]
+  );
+
   useEffect(() => {
-    if (getcareerpageId !== undefined) {
-      language.forEach((selectedLanguage) => {
-        dispatch(getAcareerpage(getcareerpageId, selectedLanguage));
-      });
-    } else {
-      dispatch(resetState());
-    }
-  }, [dispatch, getcareerpageId]);
+    debouncedApiCalls();
+  }, [debouncedApiCalls]);
 
   const prevUpdatedCareerRef = useRef();
   const debounceTimeoutRef = useRef(null);
@@ -455,8 +463,8 @@ const Addcareerpage = (e) => {
             className="mt-10 text-purple-700 hover:text-white border border-purple-700 hover:bg-purple-800 focus:ring-4 focus:outline-none focus:ring-purple-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center mr-2 mb-2 add_button"
           >
             {getAcareerpage !== undefined
-              ? `${translate('Add', Language)}`
-              : `${translate('Edit', Language)}`}
+              ? `${translate('Edit', Language)}`
+              : `${translate('Add', Language)}`}
           </button>
         </form>
       </div>

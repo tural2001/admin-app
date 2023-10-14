@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import CustomInput from '../components/CustomInput';
 import { useDispatch, useSelector } from 'react-redux';
 import { useFormik } from 'formik';
@@ -15,6 +15,7 @@ import {
   updateApaymentfield,
 } from '../features/paymentform/paymentformSlice';
 import { resetState } from '../features/formData/formDataSlice';
+import { debounce } from 'lodash';
 
 const AddPaymentField = () => {
   const { translate, Language } = useTranslation();
@@ -63,16 +64,23 @@ const AddPaymentField = () => {
     updatedpaymentfield,
   } = newpaymentField;
 
+  const debouncedApiCalls = useCallback(
+    debounce(() => {
+      if (getfieldId !== undefined) {
+        language.forEach((selectedLanguage) => {
+          dispatch(getApaymentfield(getfieldId, selectedLanguage));
+          dispatch(getpaymentfields(selectedLanguage));
+        });
+      } else {
+        dispatch(resetState());
+      }
+    }, 500),
+    [getfieldId, dispatch]
+  );
+
   useEffect(() => {
-    if (getfieldId !== undefined) {
-      language.forEach((selectedLanguage) => {
-        dispatch(getApaymentfield(getfieldId, selectedLanguage));
-        dispatch(getpaymentfields(selectedLanguage));
-      });
-    } else {
-      dispatch(resetState());
-    }
-  }, [dispatch, getfieldId]);
+    debouncedApiCalls();
+  }, [debouncedApiCalls]);
 
   const prevUpdatedFieldRef = useRef();
   const debounceTimeoutRef = useRef(null);
@@ -118,7 +126,6 @@ const AddPaymentField = () => {
     isError,
     isLoading,
     createdpaymentfield,
-    fieldpaymentData,
     updatedpaymentfield,
     navigate,
   ]);

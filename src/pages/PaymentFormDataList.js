@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import CustomModal from '../components/CustomModal';
@@ -33,7 +34,7 @@ const PaymentFormDataList = () => {
   useEffect(() => {
     dispatch(resetState());
     dispatch(getpaymentformdatas());
-  }, [dispatch]);
+  }, []);
 
   const paymentformdatastate =
     useSelector((state) => state.paymentformdata?.paymentformdatas?.data) || [];

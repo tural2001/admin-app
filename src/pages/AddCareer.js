@@ -15,6 +15,7 @@ import {
 } from '../features/career/careerSlice';
 import { uploadImg } from '../features/upload/uploadSlice';
 import { useTranslation } from '../components/TranslationContext';
+import { debounce } from 'lodash';
 
 const AddCareer = () => {
   const { translate, Language } = useTranslation();
@@ -40,7 +41,6 @@ const AddCareer = () => {
   const {
     isSuccess,
     isError,
-    isLoading,
     createdcareer,
     careerName,
     careerPhone,
@@ -57,13 +57,21 @@ const AddCareer = () => {
     setIsFileDetected(true);
   }, []);
 
+  const debouncedApiCalls = useCallback(
+    debounce(() => {
+      if (getcareerId !== undefined) {
+        dispatch(getAcareer(getcareerId));
+      } else {
+        dispatch(resetState());
+      }
+    }, 500),
+    [getcareerId, dispatch]
+  );
+
   useEffect(() => {
-    if (getcareerId !== undefined) {
-      dispatch(getAcareer(getcareerId));
-    } else {
-      dispatch(resetState());
-    }
-  }, [dispatch, getcareerId]);
+    debouncedApiCalls();
+  }, [debouncedApiCalls]);
+
   const prevUpdatedCareerRef = useRef();
   const debounceTimeoutRef = useRef(null);
 
@@ -110,7 +118,7 @@ const AddCareer = () => {
     if (isError) {
       toast.error(`${translate('Wrong', Language)}`);
     }
-  }, [isSuccess, isError, isLoading, createdcareer, updatedcareer, navigate]);
+  }, [isSuccess, isError, createdcareer, updatedcareer, navigate]);
 
   const formik = useFormik({
     enableReinitialize: true,
@@ -344,8 +352,8 @@ const AddCareer = () => {
             className="mt-10 text-purple-700 hover:text-white border border-purple-700 hover:bg-purple-800 focus:ring-4 focus:outline-none focus:ring-purple-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center mr-2 mb-2 add_button"
           >
             {getcareerId !== undefined
-              ? `${translate('Edit_Career', Language)}`
-              : `${translate('Add_Career', Language)}`}{' '}
+              ? `${translate('Edit', Language)}`
+              : `${translate('Add', Language)}`}{' '}
           </button>
         </form>
       </div>

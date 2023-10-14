@@ -244,3 +244,10 @@ form label.mt-2 {
 .ant-modal-body {
   margin-top: 30px !important;
 }
+.ql-snow * {
+  box-sizing: content-box;
+  display: inline;
+}
+.ql-container {
+  padding-top: 20px;
+}

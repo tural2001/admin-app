@@ -16,6 +16,7 @@ import Dropzone from 'react-dropzone';
 import { uploadImg } from '../features/upload/uploadSlice';
 import { language } from '../Language/languages';
 import { useTranslation } from '../components/TranslationContext';
+import { debounce } from 'lodash';
 
 const Addreview = () => {
   const { translate, Language } = useTranslation();
@@ -62,26 +63,29 @@ const Addreview = () => {
     updatedReview,
   } = newReview;
 
-  const onDrop = useCallback(
-    (acceptedFiles) => {
-      formik.setFieldValue('reviewer_image', acceptedFiles);
-      dispatch(uploadImg(acceptedFiles));
-      setIsFileDetected(true);
-    },
-    // eslint-disable-next-line no-use-before-define, react-hooks/exhaustive-deps
-    []
-  );
+  const onDrop = useCallback((acceptedFiles) => {
+    formik.setFieldValue('reviewer_image', acceptedFiles);
+    dispatch(uploadImg(acceptedFiles));
+    setIsFileDetected(true);
+  }, []);
   const imageState = useSelector((state) => state.upload.images.url);
 
+  const debouncedApiCalls = useCallback(
+    debounce(() => {
+      if (getReviewId !== undefined) {
+        language.forEach((selectedLanguage) => {
+          dispatch(getAreview(getReviewId, selectedLanguage));
+        });
+      } else {
+        dispatch(resetState());
+      }
+    }, 500),
+    [getReviewId, dispatch]
+  );
+
   useEffect(() => {
-    if (getReviewId !== undefined) {
-      language.forEach((selectedLanguage) => {
-        dispatch(getAreview(getReviewId, selectedLanguage));
-      });
-    } else {
-      dispatch(resetState());
-    }
-  }, [getReviewId]);
+    debouncedApiCalls();
+  }, [debouncedApiCalls]);
 
   const prevUpdatedReviewfRef = useRef();
   const debounceTimeoutRef = useRef(null);

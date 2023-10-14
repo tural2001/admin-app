@@ -16,6 +16,7 @@ import {
 import { uploadImg } from '../features/upload/uploadSlice';
 import { language } from '../Language/languages';
 import { useTranslation } from '../components/TranslationContext';
+import { debounce } from 'lodash';
 
 const AddOurValue = () => {
   const { translate, Language } = useTranslation();
@@ -67,15 +68,23 @@ const AddOurValue = () => {
     setIsFileDetected(true);
   }, []);
   const imageState = useSelector((state) => state.upload.images.url);
+
+  const debouncedApiCalls = useCallback(
+    debounce(() => {
+      if (getourvalueId !== undefined) {
+        language.forEach((selectedLanguage) => {
+          dispatch(getAourvalue(getourvalueId, selectedLanguage));
+        });
+      } else {
+        dispatch(resetState());
+      }
+    }, 500),
+    [getourvalueId, language, dispatch]
+  );
+
   useEffect(() => {
-    if (getourvalueId !== undefined) {
-      language.forEach((selectedLanguage) => {
-        dispatch(getAourvalue(getourvalueId, selectedLanguage));
-      });
-    } else {
-      dispatch(resetState());
-    }
-  }, [getourvalueId]);
+    debouncedApiCalls();
+  }, [debouncedApiCalls]);
 
   const prevUpdatedOurvalueRef = useRef();
   const debounceTimeoutRef = useRef(null);

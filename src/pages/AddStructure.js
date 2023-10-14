@@ -62,15 +62,11 @@ const AddStructure = () => {
     updatedStructure,
   } = newStructure;
 
-  const onDrop = useCallback(
-    (acceptedFiles) => {
-      formik.setFieldValue('image', acceptedFiles);
-      dispatch(uploadImg(acceptedFiles));
-      setIsFileDetected(true);
-    },
-    // eslint-disable-next-line no-use-before-define, react-hooks/exhaustive-deps
-    []
-  );
+  const onDrop = useCallback((acceptedFiles) => {
+    formik.setFieldValue('image', acceptedFiles);
+    dispatch(uploadImg(acceptedFiles));
+    setIsFileDetected(true);
+  }, []);
   const imageState = useSelector((state) => state.upload.images.url);
 
   useEffect(() => {

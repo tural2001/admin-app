@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import CustomModal from '../components/CustomModal';
@@ -27,7 +28,7 @@ const CareerList = () => {
   useEffect(() => {
     dispatch(resetState());
     dispatch(getcareers());
-  }, [dispatch]);
+  }, []);
 
   const careerstate = useSelector((state) => state.career.careers.data) || [];
   console.log(careerstate);

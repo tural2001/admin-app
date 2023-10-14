@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import CustomInput from '../components/CustomInput';
 import { useFormik } from 'formik';
 import * as yup from 'yup';
@@ -11,6 +11,7 @@ import { resetState } from '../features/faq/faqSlice';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { language } from '../Language/languages';
 import { useTranslation } from '../components/TranslationContext';
+import { debounce } from 'lodash';
 
 const Addfaq = (e) => {
   const { translate, Language } = useTranslation();
@@ -47,16 +48,23 @@ const Addfaq = (e) => {
   const newFaq = useSelector((state) => state.faq);
   const { isSuccess, isError, createdFaq, FaqData, updatedFaq, FaqActive } =
     newFaq;
-  console.log(newFaq);
+
+  const debouncedApiCalls = useCallback(
+    debounce(() => {
+      if (getFaqId !== undefined) {
+        language.forEach((selectedLanguage) => {
+          dispatch(getAfaq(getFaqId, selectedLanguage));
+        });
+      } else {
+        dispatch(resetState());
+      }
+    }, 500),
+    [getFaqId, language, dispatch]
+  );
+
   useEffect(() => {
-    if (getFaqId !== undefined) {
-      language.forEach((selectedLanguage) => {
-        dispatch(getAfaq(getFaqId, selectedLanguage));
-      });
-    } else {
-      dispatch(resetState());
-    }
-  }, [dispatch, getFaqId]);
+    debouncedApiCalls();
+  }, [debouncedApiCalls]);
 
   const prevUpdatedFaqRef = useRef();
   const debounceTimeoutRef = useRef(null);

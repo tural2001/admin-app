@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
@@ -31,7 +32,7 @@ const TariffList = () => {
   useEffect(() => {
     dispatch(resetState());
     dispatch(gettariffs());
-  }, [dispatch]);
+  }, []);
 
   const tariffstate = useSelector((state) => state.tariff.tariffs.data) || [];
 

@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
@@ -12,7 +13,7 @@ const RegionList = () => {
   useEffect(() => {
     dispatch(resetState());
     dispatch(getregions());
-  }, [dispatch]);
+  }, []);
 
   const regionstate = useSelector((state) => state.region?.regions?.data) || [];
   const [currentPage, setCurrentPage] = useState(0);
@@ -28,7 +29,7 @@ const RegionList = () => {
   const handlePageClick = (data) => {
     setCurrentPage(data?.selected);
   };
-  console.log(filteredRegion);
+
   const { translate, Language } = useTranslation();
 
   return (

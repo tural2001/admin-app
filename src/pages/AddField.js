@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import CustomInput from '../components/CustomInput';
 import { useDispatch, useSelector } from 'react-redux';
 import { useFormik } from 'formik';
@@ -15,6 +15,7 @@ import {
 } from '../features/form/formSlice';
 import { language } from '../Language/languages';
 import { useTranslation } from '../components/TranslationContext';
+import { debounce } from 'lodash';
 
 const AddForm = () => {
   const { translate, Language } = useTranslation();
@@ -64,16 +65,23 @@ const AddForm = () => {
   } = newField;
   console.log(newField);
 
+  const debouncedApiCalls = useCallback(
+    debounce(() => {
+      if (getfieldId !== undefined) {
+        language.forEach((selectedLanguage) => {
+          dispatch(getAfield(getfieldId, selectedLanguage));
+          dispatch(getfields(selectedLanguage));
+        });
+      } else {
+        dispatch(resetState());
+      }
+    }, 500),
+    [getfieldId, language, dispatch]
+  );
+
   useEffect(() => {
-    if (getfieldId !== undefined) {
-      language.forEach((selectedLanguage) => {
-        dispatch(getAfield(getfieldId, selectedLanguage));
-        dispatch(getfields(selectedLanguage));
-      });
-    } else {
-      dispatch(resetState());
-    }
-  }, [dispatch, getfieldId]);
+    debouncedApiCalls();
+  }, [debouncedApiCalls]);
 
   const prevUpdatedFieldRef = useRef();
   const debounceTimeoutRef = useRef(null);
@@ -110,16 +118,8 @@ const AddForm = () => {
     if (isError) {
       toast.error(`${translate('Wrong', Language)}`);
     }
-  }, [
-    isSuccess,
-    isError,
-    isLoading,
-    createdField,
-    FieldData,
-    updatedField,
-    navigate,
-  ]);
-  console.log(FieldData);
+  }, [isSuccess, isError, isLoading, createdField, updatedField, navigate]);
+
   const formik = useFormik({
     enableReinitialize: true,
     initialValues: {

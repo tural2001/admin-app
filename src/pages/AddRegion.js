@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import CustomInput from '../components/CustomInput';
 import { useDispatch, useSelector } from 'react-redux';
 import { toast } from 'react-toastify';
@@ -15,6 +15,7 @@ import {
 import { getcolors } from '../features/color/colorSlice';
 import { language } from '../Language/languages';
 import { useTranslation } from '../components/TranslationContext';
+import { debounce } from 'lodash';
 
 const AddRegion = () => {
   const { translate, Language } = useTranslation();
@@ -61,15 +62,22 @@ const AddRegion = () => {
     updatedRegion,
   } = newRegion;
 
+  const debouncedApiCalls = useCallback(
+    debounce(() => {
+      if (getregionId !== undefined) {
+        language.forEach((selectedLanguage) => {
+          dispatch(getAregion(getregionId, selectedLanguage));
+        });
+      } else {
+        dispatch(resetState());
+      }
+    }, 500),
+    [getregionId, dispatch]
+  );
+
   useEffect(() => {
-    if (getregionId !== undefined) {
-      language.forEach((selectedLanguage) => {
-        dispatch(getAregion(getregionId, selectedLanguage));
-      });
-    } else {
-      dispatch(resetState());
-    }
-  }, [dispatch, getregionId]);
+    debouncedApiCalls();
+  }, [debouncedApiCalls]);
 
   const prevUpdatedRegionRef = useRef();
   const debounceTimeoutRef = useRef(null);
@@ -95,11 +103,11 @@ const AddRegion = () => {
       toast.error(`${translate('Wrong', Language)}`);
     }
   }, [isSuccess, isError, updatedRegion]);
+
   useEffect(() => {
     dispatch(getcolors());
   }, []);
   const colorState = useSelector((state) => state.color.colors.data);
-  console.log(colorState);
 
   const formik = useFormik({
     enableReinitialize: true,

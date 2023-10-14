@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
@@ -32,7 +33,7 @@ const UserList = () => {
   useEffect(() => {
     dispatch(resetState());
     dispatch(getusers());
-  }, [dispatch]);
+  }, []);
 
   const userstate = useSelector((state) => state.user.users.data) || [];
   console.log(userstate);

@@ -1,4 +1,5 @@
-import React, { useEffect } from 'react';
+/* eslint-disable react-hooks/exhaustive-deps */
+import React, { useEffect, useRef } from 'react';
 import CustomInput from '../components/CustomInput';
 import { useFormik } from 'formik';
 import * as yup from 'yup';
@@ -28,7 +29,6 @@ const Addsetting = (e) => {
   const {
     isSuccess,
     isError,
-    isLoading,
     createdSetting,
     settingKey,
     settingValue,
@@ -43,33 +43,46 @@ const Addsetting = (e) => {
     }
   }, [dispatch, getsettingId]);
 
+  const prevUpdatedSettingRef = useRef();
+  const debounceTimeoutRef = useRef(null);
+
   useEffect(() => {
-    if (isSuccess && createdSetting !== undefined) {
+    const prevUpdatedSetting = prevUpdatedSettingRef.current;
+    if (
+      isSuccess &&
+      updatedSetting !== undefined &&
+      updatedSetting !== prevUpdatedSetting
+    ) {
+      if (debounceTimeoutRef.current) {
+        clearTimeout(debounceTimeoutRef.current);
+      }
+      debounceTimeoutRef.current = setTimeout(() => {
+        toast.success(`${translate('Updated', Language)}`);
+        prevUpdatedSettingRef.current = updatedSetting;
+        navigate('/admin/setting-list');
+      }, 1000);
+    }
+
+    if (isError) {
+      toast.error(`${translate('Wrong', Language)}`);
+    }
+  }, [isSuccess, isError, updatedSetting, navigate]);
+  useEffect(() => {
+    if (
+      isSuccess &&
+      createdSetting !== undefined &&
+      updatedSetting !== undefined
+    ) {
       toast.success(`${translate('Added', Language)}`);
       navigate('/admin/setting-list');
       setTimeout(() => {
         window.location.reload();
       }, 1000);
     }
-    if (isSuccess && updatedSetting !== undefined) {
-      toast.success(`${translate('Updated', Language)}`);
-      navigate('/admin/setting-list');
-    }
     if (isError) {
       toast.error(`${translate('Wrong', Language)}`);
     }
-  }, [
-    isSuccess,
-    isError,
-    isLoading,
-    createdSetting,
-    settingKey,
-    settingValue,
-    updatedSetting,
-    navigate,
-    translate,
-    Language,
-  ]);
+  }, [isSuccess, isError, createdSetting, updatedSetting, navigate]);
 
   const formik = useFormik({
     enableReinitialize: true,

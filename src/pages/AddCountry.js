@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import CustomInput from '../components/CustomInput';
 import { useFormik } from 'formik';
 import * as yup from 'yup';
@@ -15,6 +15,7 @@ import {
 } from '../features/countries/countriesSlice';
 import { language } from '../Language/languages';
 import { useTranslation } from '../components/TranslationContext';
+import { debounce } from 'lodash';
 
 const AddCountry = (e) => {
   const { translate, Language } = useTranslation();
@@ -45,15 +46,22 @@ const AddCountry = (e) => {
     updatedCountry,
   } = newCountry;
 
+  const debouncedApiCalls = useCallback(
+    debounce(() => {
+      if (getcountryId !== undefined) {
+        language.forEach((selectedLanguage) => {
+          dispatch(getAcountry(getcountryId, selectedLanguage));
+        });
+      } else {
+        dispatch(resetState());
+      }
+    }, 500),
+    [getcountryId, language, dispatch]
+  );
+
   useEffect(() => {
-    if (getcountryId !== undefined) {
-      language.forEach((selectedLanguage) => {
-        dispatch(getAcountry(getcountryId, selectedLanguage));
-      });
-    } else {
-      dispatch(resetState());
-    }
-  }, [getcountryId]);
+    debouncedApiCalls();
+  }, [debouncedApiCalls]);
 
   const prevUpdatedCountyRef = useRef();
   const debounceTimeoutRef = useRef(null);

@@ -16,6 +16,7 @@ import { resetState } from '../features/users/usersSlice';
 import { uploadImg } from '../features/upload/uploadSlice';
 import { language } from '../Language/languages';
 import { useTranslation } from '../components/TranslationContext';
+import { debounce } from 'lodash';
 
 const AddSlide = () => {
   const { translate, Language } = useTranslation();
@@ -91,15 +92,22 @@ const AddSlide = () => {
   }, []);
   const imageState = useSelector((state) => state.upload.images.url);
 
+  const debouncedApiCalls = useCallback(
+    debounce(() => {
+      if (getslideId !== undefined) {
+        language.forEach((selectedLanguage) => {
+          dispatch(getAslide(getslideId, selectedLanguage));
+        });
+      } else {
+        dispatch(resetState());
+      }
+    }, 500),
+    [getslideId, dispatch]
+  );
+
   useEffect(() => {
-    if (getslideId !== undefined) {
-      language.forEach((selectedLanguage) => {
-        dispatch(getAslide(getslideId, selectedLanguage));
-      });
-    } else {
-      dispatch(resetState());
-    }
-  }, [getslideId]);
+    debouncedApiCalls();
+  }, [debouncedApiCalls]);
 
   const prevUpdatedSlideRef = useRef();
   const debounceTimeoutRef = useRef(null);

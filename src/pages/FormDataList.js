@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import CustomModal from '../components/CustomModal';
@@ -33,7 +34,7 @@ const FormDataList = () => {
   useEffect(() => {
     dispatch(resetState());
     dispatch(getformdatas());
-  }, [dispatch]);
+  }, []);
 
   const formdatastate =
     useSelector((state) => state.formdata?.formdatas?.data) || [];

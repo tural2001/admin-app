@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { Link } from 'react-router-dom';
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
@@ -30,7 +31,7 @@ const ServiceCList = () => {
   useEffect(() => {
     dispatch(resetState());
     dispatch(getServicecategories());
-  }, [dispatch]);
+  }, []);
 
   const servicecstate =
     useSelector((state) => state.servicecategory?.serviceC?.data) || [];

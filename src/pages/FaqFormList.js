@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
@@ -29,7 +30,7 @@ const FaqFormList = () => {
   useEffect(() => {
     dispatch(resetState());
     dispatch(getfaqforms());
-  }, [dispatch]);
+  }, []);
 
   const faqformstate =
     useSelector((state) => state.faqform.faqforms.data) || [];

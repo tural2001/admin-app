@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
@@ -12,7 +13,7 @@ const PageList = () => {
   useEffect(() => {
     dispatch(resetState());
     dispatch(getpages());
-  }, [dispatch]);
+  }, []);
 
   const pagestate = useSelector((state) => state.page.pages.data) || [];
 

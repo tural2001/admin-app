@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import CustomInput from '../components/CustomInput';
 import { useDispatch, useSelector } from 'react-redux';
 import { toast } from 'react-toastify';
@@ -15,6 +15,7 @@ import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 import { language } from '../Language/languages';
 import { useTranslation } from '../components/TranslationContext';
+import { debounce } from 'lodash';
 
 const AddPage = () => {
   const { translate, Language } = useTranslation();
@@ -79,19 +80,26 @@ const AddPage = () => {
 
   const { isSuccess, isError, createdPage, PagessData, updatedPage } = newPage;
 
+  const debouncedApiCalls = useCallback(
+    debounce(() => {
+      if (getpageId !== undefined) {
+        language.forEach((selectedLanguage) => {
+          dispatch(getApage(getpageId, selectedLanguage));
+        });
+      } else {
+        dispatch(resetState());
+      }
+    }, 500),
+    [getpageId, language, dispatch]
+  );
+
   useEffect(() => {
-    if (getpageId !== undefined) {
-      language.forEach((selectedLanguage) => {
-        dispatch(getApage(getpageId, selectedLanguage));
-      });
-    } else {
-      dispatch(resetState());
-    }
-  }, []);
+    debouncedApiCalls();
+  }, [debouncedApiCalls]);
 
   const prevUpdatedPageRef = useRef();
   const debounceTimeoutRef = useRef(null);
-  console.log(PagessData);
+
   useEffect(() => {
     const prevUpdatedPage = prevUpdatedPageRef.current;
     if (
@@ -119,7 +127,7 @@ const AddPage = () => {
       toast.error(`${translate('Wrong', Language)}`);
     }
   }, [isSuccess, isError, createdPage, updatedPage, navigate]);
-  console.log(PagessData);
+
   const formik = useFormik({
     enableReinitialize: true,
     initialValues: {

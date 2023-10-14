@@ -18,6 +18,7 @@ import { gettariffs } from '../features/tariffs/tariffSlice';
 import { uploadImg } from '../features/upload/uploadSlice';
 import { language } from '../Language/languages';
 import { useTranslation } from '../components/TranslationContext';
+import { debounce } from 'lodash';
 
 const Addchannel = () => {
   const { translate, Language } = useTranslation();
@@ -66,25 +67,39 @@ const Addchannel = () => {
   }, []);
   const imageState = useSelector((state) => state.upload.images.url);
 
-  useEffect(() => {
-    language.forEach((selectedLanguage) => {
-      dispatch(getcountries(selectedLanguage));
-      dispatch(gettariffs(selectedLanguage));
-    });
-  }, []);
+  const debouncedApiCalls2 = useCallback(
+    debounce(() => {
+      language.forEach((selectedLanguage) => {
+        dispatch(getcountries(selectedLanguage));
+        dispatch(gettariffs(selectedLanguage));
+      });
+    }, 500),
+    []
+  );
 
   const countryState = useSelector((state) => state.country.countries.data);
   const tariffState = useSelector((state) => state.tariff.tariffs.data);
 
+  const debouncedApiCalls = useCallback(
+    debounce(() => {
+      if (getchannelId !== undefined) {
+        language.forEach((selectedLanguage) => {
+          dispatch(getAchannel(getchannelId, selectedLanguage));
+        });
+      } else {
+        dispatch(resetState());
+      }
+    }, 500),
+    [getchannelId, dispatch]
+  );
+
   useEffect(() => {
-    if (getchannelId !== undefined) {
-      language.forEach((selectedLanguage) => {
-        dispatch(getAchannel(getchannelId, selectedLanguage));
-      });
-    } else {
-      dispatch(resetState());
-    }
-  }, [getchannelId]);
+    debouncedApiCalls();
+  }, [debouncedApiCalls]);
+
+  useEffect(() => {
+    debouncedApiCalls2();
+  }, [debouncedApiCalls2]);
 
   const prevUpdatedChannelRef = useRef();
   const debounceTimeoutRef = useRef(null);

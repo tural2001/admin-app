@@ -1,4 +1,5 @@
-import React, { useEffect } from 'react';
+/* eslint-disable react-hooks/exhaustive-deps */
+import React, { useEffect, useRef } from 'react';
 import CustomInput from '../components/CustomInput';
 import { useFormik } from 'formik';
 import * as yup from 'yup';
@@ -42,7 +43,6 @@ const AddUser = () => {
   const {
     isSuccess,
     isError,
-    isLoading,
     createdUser,
     userName,
     userEmail,
@@ -58,34 +58,49 @@ const AddUser = () => {
     }
   }, [dispatch, getuserId]);
 
+  const prevUpdatedUserRef = useRef();
+  const debounceTimeoutRef = useRef(null);
+
   useEffect(() => {
-    if (isSuccess && createdUser) {
+    const prevUpdatedUser = prevUpdatedUserRef.current;
+    if (
+      isSuccess &&
+      updatedUser !== undefined &&
+      updatedUser !== prevUpdatedUser
+    ) {
+      if (debounceTimeoutRef.current) {
+        clearTimeout(debounceTimeoutRef.current);
+      }
+      debounceTimeoutRef.current = setTimeout(() => {
+        toast.success(`${translate('Updated', Language)}`);
+        prevUpdatedUserRef.current = updatedUser;
+        navigate('/admin/user-list');
+      }, 1000);
+    }
+
+    if (isError) {
+      toast.error(`${translate('Wrong', Language)}`);
+    }
+  }, [isSuccess, isError, updatedUser, navigate]);
+  useEffect(() => {
+    if (isSuccess && createdUser !== undefined && updatedUser !== undefined) {
       toast.success(`${translate('Added', Language)}`);
       navigate('/admin/user-list');
       setTimeout(() => {
         window.location.reload();
-      }, 500);
+      }, 1000);
     }
-    if (isSuccess && updatedUser !== undefined) {
-      toast.success(`${translate('Updated', Language)}`);
+    if (isSuccess && createdUser !== undefined) {
+      toast.success(`${translate('Added', Language)}`);
       navigate('/admin/user-list');
+      setTimeout(() => {
+        window.location.reload();
+      }, 1000);
     }
     if (isError) {
       toast.error(`${translate('Wrong', Language)}`);
     }
-  }, [
-    isSuccess,
-    isError,
-    isLoading,
-    createdUser,
-    userName,
-    userEmail,
-    userPassword,
-    updatedUser,
-    navigate,
-    translate,
-    Language,
-  ]);
+  }, [isSuccess, isError, createdUser, updatedUser, navigate]);
 
   const formik = useFormik({
     enableReinitialize: true,

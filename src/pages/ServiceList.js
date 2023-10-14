@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
@@ -30,7 +31,7 @@ const ServiceList = () => {
   useEffect(() => {
     dispatch(resetState());
     dispatch(getservices());
-  }, [dispatch]);
+  }, []);
 
   const servicestate =
     useSelector((state) => state.service.services.data) || [];

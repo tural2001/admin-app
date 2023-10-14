@@ -19,6 +19,7 @@ import {
   updateServicecategories,
 } from '../features/servicecategories/servicecategoriesSlice';
 import { useTranslation } from '../components/TranslationContext';
+import { debounce } from 'lodash';
 
 const AddServiceC = () => {
   const { translate, Language } = useTranslation();
@@ -52,15 +53,22 @@ const AddServiceC = () => {
     updatedserviceC,
   } = newserviceC;
 
+  const debouncedApiCalls = useCallback(
+    debounce(() => {
+      if (getserviceCId !== undefined) {
+        language.forEach((selectedLanguage) => {
+          dispatch(getServicecategory(getserviceCId, selectedLanguage));
+        });
+      } else {
+        dispatch(resetState());
+      }
+    }, 500),
+    [getserviceCId, dispatch]
+  );
+
   useEffect(() => {
-    if (getserviceCId !== undefined) {
-      language.forEach((selectedLanguage) => {
-        dispatch(getServicecategory(getserviceCId, selectedLanguage));
-      });
-    } else {
-      dispatch(resetState());
-    }
-  }, [getserviceCId]);
+    debouncedApiCalls();
+  }, [debouncedApiCalls]);
 
   const prevUpdatedservicecRef = useRef();
   const debounceTimeoutRef = useRef(null);

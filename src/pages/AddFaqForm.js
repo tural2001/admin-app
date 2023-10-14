@@ -1,4 +1,5 @@
-import React, { useEffect } from 'react';
+/* eslint-disable react-hooks/exhaustive-deps */
+import React, { useCallback, useEffect, useRef } from 'react';
 import CustomInput from '../components/CustomInput';
 import { useFormik } from 'formik';
 import * as yup from 'yup';
@@ -12,6 +13,7 @@ import {
 } from '../features/faqform/faqformSlice';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useTranslation } from '../components/TranslationContext';
+import { debounce } from 'lodash';
 
 const AddFaqForm = (e) => {
   const { translate, Language } = useTranslation();
@@ -29,7 +31,6 @@ const AddFaqForm = (e) => {
   const {
     isSuccess,
     isError,
-    isLoading,
     createdfaqform,
     faqformName,
     faqformPhone,
@@ -37,42 +38,55 @@ const AddFaqForm = (e) => {
     updatedfaqform,
   } = newfaqform;
 
-  useEffect(() => {
-    if (getfaqformId !== undefined) {
-      dispatch(getAfaqform(getfaqformId));
-    } else {
-      dispatch(resetState());
-    }
-  }, [dispatch, getfaqformId]);
+  const debouncedApiCalls = useCallback(
+    debounce(() => {
+      if (getfaqformId !== undefined) {
+        dispatch(getAfaqform(getfaqformId));
+      } else {
+        dispatch(resetState());
+      }
+    }, 500),
+    [getfaqformId, dispatch]
+  );
 
   useEffect(() => {
-    if (isSuccess && createdfaqform !== undefined) {
+    debouncedApiCalls();
+  }, [debouncedApiCalls]);
+
+  const prevUpdatedFormRef = useRef();
+  const debounceTimeoutRef = useRef(null);
+
+  useEffect(() => {
+    const prevUpdatedForm = prevUpdatedFormRef.current;
+    if (
+      isSuccess &&
+      updatedfaqform !== undefined &&
+      updatedfaqform !== prevUpdatedForm
+    ) {
+      if (debounceTimeoutRef.current) {
+        clearTimeout(debounceTimeoutRef.current);
+      }
+      debounceTimeoutRef.current = setTimeout(() => {
+        toast.success(`${translate('Updated', Language)}`);
+        prevUpdatedFormRef.current = updatedfaqform;
+        navigate('/admin/faq-form-list');
+      }, 1000);
+    }
+    if (
+      isSuccess &&
+      createdfaqform !== undefined &&
+      updatedfaqform !== undefined
+    ) {
       toast.success(`${translate('Added', Language)}`);
       navigate('/admin/faq-form-list');
       setTimeout(() => {
         window.location.reload();
       }, 1000);
     }
-    if (isSuccess && updatedfaqform !== undefined) {
-      toast.success(`${translate('Updated', Language)}`);
-      navigate('/admin/faq-form-list');
-    }
     if (isError) {
       toast.error(`${translate('Wrong', Language)}`);
     }
-  }, [
-    isSuccess,
-    isError,
-    isLoading,
-    createdfaqform,
-    faqformName,
-    faqformPhone,
-    faqformQuestion,
-    updatedfaqform,
-    translate,
-    Language,
-    navigate,
-  ]);
+  }, [isSuccess, isError, createdfaqform, updatedfaqform, navigate]);
 
   const formik = useFormik({
     enableReinitialize: true,

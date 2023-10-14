@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { Link } from 'react-router-dom';
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
@@ -29,7 +30,7 @@ const PaymentFieldList = () => {
   useEffect(() => {
     dispatch(resetState());
     dispatch(getpaymentfields());
-  }, [dispatch]);
+  }, []);
 
   const paymentfieldstate =
     useSelector((state) => state.paymentfield?.paymentfields?.data) || [];

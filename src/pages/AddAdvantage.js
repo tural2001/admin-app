@@ -16,6 +16,7 @@ import {
 import { uploadImg } from '../features/upload/uploadSlice';
 import { language } from '../Language/languages';
 import { useTranslation } from '../components/TranslationContext';
+import { debounce } from 'lodash';
 
 const Addadvantage = () => {
   const { translate, Language } = useTranslation();
@@ -58,15 +59,22 @@ const Addadvantage = () => {
   }, []);
   const imageState = useSelector((state) => state?.upload?.images?.url);
 
+  const debouncedApiCalls = useCallback(
+    debounce(() => {
+      if (getadvantageId !== undefined) {
+        language.forEach((selectedLanguage) => {
+          dispatch(getAadvantage(getadvantageId, selectedLanguage));
+        });
+      } else {
+        dispatch(resetState());
+      }
+    }, 500),
+    [getadvantageId, language, dispatch]
+  );
+
   useEffect(() => {
-    if (getadvantageId !== undefined) {
-      language.forEach((selectedLanguage) => {
-        dispatch(getAadvantage(getadvantageId, selectedLanguage));
-      });
-    } else {
-      dispatch(resetState());
-    }
-  }, [getadvantageId]);
+    debouncedApiCalls();
+  }, [debouncedApiCalls]);
 
   const prevUpdatedAdvantageRef = useRef();
   const debounceTimeoutRef = useRef(null);

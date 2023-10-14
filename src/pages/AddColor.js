@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import CustomInput from '../components/CustomInput';
 import { useFormik } from 'formik';
 import * as yup from 'yup';
@@ -15,6 +15,7 @@ import {
 import { useLocation, useNavigate } from 'react-router-dom';
 import { language } from '../Language/languages';
 import { useTranslation } from '../components/TranslationContext';
+import { debounce } from 'lodash';
 
 const AddColor = (e) => {
   const { translate, Language } = useTranslation();
@@ -49,15 +50,22 @@ const AddColor = (e) => {
     updatedcolor,
   } = newcolor;
 
+  const debouncedApiCalls = useCallback(
+    debounce(() => {
+      if (getcolorId !== undefined) {
+        language.forEach((selectedLanguage) => {
+          dispatch(getAcolor(getcolorId, selectedLanguage));
+        });
+      } else {
+        dispatch(resetState());
+      }
+    }, 500),
+    [getcolorId, language, dispatch]
+  );
+
   useEffect(() => {
-    if (getcolorId !== undefined) {
-      language.forEach((selectedLanguage) => {
-        dispatch(getAcolor(getcolorId, selectedLanguage));
-      });
-    } else {
-      dispatch(resetState());
-    }
-  }, [getcolorId]);
+    debouncedApiCalls();
+  }, [debouncedApiCalls]);
 
   const prevUpdatedColorRef = useRef();
   const debounceTimeoutRef = useRef(null);

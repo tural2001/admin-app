@@ -26,46 +26,13 @@ import ImageUploader from 'quill-image-uploader';
 import ImageResize from 'quill-image-resize-module-react';
 import BlotFormatter from 'quill-blot-formatter';
 import { useTranslation } from '../components/TranslationContext';
+import { debounce } from 'lodash';
 
 Quill.register('modules/imageUploader', ImageUploader);
 Quill.register('modules/imageResize', ImageResize);
 Quill.register('modules/blotFormatter', BlotFormatter);
 
 window.Quill = Quill;
-
-// let schema = yup.object({
-//   title: yup.object().shape(
-//     language.reduce(
-//       (acc, lang) => ({
-//         ...acc,
-//         az: yup.string().required(`Name for az is Required`),
-//       }),
-//       {}
-//     )
-//   ),
-//   description: yup.object().shape(
-//     language.reduce(
-//       (acc, lang) => ({
-//         ...acc,
-//         az: yup.string().required(`Description for az is Required`),
-//       }),
-//       {}
-//     )
-//   ),
-//   slug: yup.object().shape(
-//     language.reduce(
-//       (acc, lang) => ({
-//         ...acc,
-//         az: yup.string().required(`Slug for az is Required`),
-//       }),
-//       {}
-//     )
-//   ),
-//   image: yup.mixed().required('Image is Required'),
-//   meta_title: yup.string(),
-//   meta_description: yup.string(),
-//   published_at: yup.date(),
-// });
 
 const AddPost = () => {
   const [selectedLanguage1, setSelectedLanguage1] = useState('az');
@@ -78,6 +45,7 @@ const AddPost = () => {
   const location = useLocation();
   const getpostId = location.pathname.split('/')[3];
   const newPost = useSelector((state) => state.post);
+  const { translate, Language } = useTranslation();
 
   const {
     isSuccess,
@@ -96,13 +64,20 @@ const AddPost = () => {
   }, []);
   const imageState = useSelector((state) => state.upload.images.url);
 
+  const debouncedApiCalls = useCallback(
+    debounce(() => {
+      if (getpostId !== undefined) {
+        dispatch(getApost(getpostId));
+      } else {
+        dispatch(resetState());
+      }
+    }, 500),
+    [getpostId, dispatch]
+  );
+
   useEffect(() => {
-    if (getpostId !== undefined) {
-      dispatch(getApost(getpostId));
-    } else {
-      dispatch(resetState());
-    }
-  }, [getpostId]);
+    debouncedApiCalls();
+  }, [debouncedApiCalls]);
 
   const prevUpdatedPostRef = useRef();
   const debounceTimeoutRef = useRef(null);
@@ -118,20 +93,33 @@ const AddPost = () => {
         clearTimeout(debounceTimeoutRef.current);
       }
       debounceTimeoutRef.current = setTimeout(() => {
-        toast.success('Post Updated Successfully!');
+        toast.success(`${translate('Updated', Language)}`);
         prevUpdatedPostRef.current = updatedPost;
         navigate('/admin/post-list');
       }, 1000);
     }
+
+    if (isError) {
+      toast.error(`${translate('Wrong', Language)}`);
+    }
+  }, [isSuccess, isError, updatedPost]);
+  useEffect(() => {
     if (isSuccess && createdPost !== undefined && updatedPost !== undefined) {
-      toast.success('Post Added Successfully!');
+      toast.success(`${translate('Added', Language)}`);
+      navigate('/admin/post-list');
+      setTimeout(() => {
+        window.location.reload();
+      }, 1000);
+    }
+    if (isSuccess && createdPost !== undefined) {
+      toast.success(`${translate('Added', Language)}`);
       navigate('/admin/post-list');
       setTimeout(() => {
         window.location.reload();
       }, 1000);
     }
     if (isError) {
-      toast.error('Something Went Wrong!');
+      toast.error(`${translate('Wrong', Language)}`);
     }
   }, [isSuccess, isError, createdPost, updatedPost, navigate]);
 
@@ -145,6 +133,56 @@ const AddPost = () => {
 
     return formattedDate;
   };
+
+  let schema = yup.object({
+    title: yup.object().shape(
+      language.reduce(
+        (acc, lang) => ({
+          ...acc,
+          az: yup.string().required(`${translate('Required_Fill', Language)}`),
+        }),
+        {}
+      )
+    ),
+    description: yup.object().shape(
+      language.reduce(
+        (acc, lang) => ({
+          ...acc,
+          az: yup.string().required(`${translate('Required_Fill', Language)}`),
+        }),
+        {}
+      )
+    ),
+    slug: yup.object().shape(
+      language.reduce(
+        (acc, lang) => ({
+          ...acc,
+          az: yup.string().required(`${translate('Required_Fill', Language)}`),
+        }),
+        {}
+      )
+    ),
+    image: yup.mixed().required('Image is Required'),
+    meta_title: yup.object().shape(
+      language.reduce(
+        (acc, lang) => ({
+          ...acc,
+          az: yup.string(),
+        }),
+        {}
+      )
+    ),
+    meta_description: yup.object().shape(
+      language.reduce(
+        (acc, lang) => ({
+          ...acc,
+          az: yup.string(),
+        }),
+        {}
+      )
+    ),
+    published_at: yup.date(),
+  });
 
   const formik = useFormik({
     enableReinitialize: true,
@@ -174,7 +212,7 @@ const AddPost = () => {
       }, {}),
       published_at: postPublished || undefined,
     },
-    // validationSchema: schema,
+    validationSchema: schema,
     onSubmit: (values) => {
       alert(JSON.stringify(values));
       const formattedPublishedAt = values.published_at
@@ -328,8 +366,6 @@ const AddPost = () => {
     setSelectedLanguage5(language);
   };
 
-  const { translate, Language } = useTranslation();
-
   return (
     <div>
       <h3 className="mb-4 title">
@@ -375,7 +411,7 @@ const AddPost = () => {
               toast.error('Please fill in the required fields.');
               return;
             }
-
+            console.log(formik.errors);
             formik.handleSubmit(e);
           }}
         >

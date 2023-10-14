@@ -17,6 +17,7 @@ import { uploadImg } from '../features/upload/uploadSlice';
 import { language } from '../Language/languages';
 import { getServicecategories } from '../features/servicecategories/servicecategoriesSlice';
 import { useTranslation } from '../components/TranslationContext';
+import { debounce } from 'lodash';
 
 const AddService = () => {
   const { translate, Language } = useTranslation();
@@ -97,17 +98,24 @@ const AddService = () => {
 
   useEffect(() => {
     dispatch(getServicecategories());
-  }, [dispatch]);
+  }, []);
+
+  const debouncedApiCalls = useCallback(
+    debounce(() => {
+      if (getServiceId !== undefined) {
+        language.forEach((selectedLanguage) => {
+          dispatch(getAservice(getServiceId, selectedLanguage));
+        });
+      } else {
+        dispatch(resetState());
+      }
+    }, 500),
+    [getServiceId, dispatch]
+  );
 
   useEffect(() => {
-    if (getServiceId !== undefined) {
-      language.forEach((selectedLanguage) => {
-        dispatch(getAservice(getServiceId, selectedLanguage));
-      });
-    } else {
-      dispatch(resetState());
-    }
-  }, [getServiceId]);
+    debouncedApiCalls();
+  }, [debouncedApiCalls]);
 
   const prevUpdatedTariffRef = useRef();
   const debounceTimeoutRef = useRef(null);

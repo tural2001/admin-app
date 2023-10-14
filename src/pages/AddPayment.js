@@ -17,6 +17,7 @@ import {
 import { uploadImg } from '../features/upload/uploadSlice';
 import { language } from '../Language/languages';
 import { useTranslation } from '../components/TranslationContext';
+import { debounce } from 'lodash';
 
 const AddPayment = () => {
   const { translate, Language } = useTranslation();
@@ -86,25 +87,29 @@ const AddPayment = () => {
     updatedPayment,
   } = newPayment;
 
-  const onDrop = useCallback(
-    (acceptedFiles) => {
-      formik.setFieldValue('image', acceptedFiles);
-      setIsFileDetected(true);
-      dispatch(uploadImg(acceptedFiles));
-    }, // eslint-disable-next-line no-use-before-define, react-hooks/exhaustive-deps
-    []
-  );
+  const onDrop = useCallback((acceptedFiles) => {
+    formik.setFieldValue('image', acceptedFiles);
+    setIsFileDetected(true);
+    dispatch(uploadImg(acceptedFiles));
+  }, []);
   const imageState = useSelector((state) => state.upload.images.url);
 
+  const debouncedApiCalls = useCallback(
+    debounce(() => {
+      if (getPaymentId !== undefined) {
+        language.forEach((selectedLanguage) => {
+          dispatch(getApayment(getPaymentId, selectedLanguage));
+        });
+      } else {
+        dispatch(resetState());
+      }
+    }, 500),
+    [getPaymentId, dispatch]
+  );
+
   useEffect(() => {
-    if (getPaymentId !== undefined) {
-      language.forEach((selectedLanguage) => {
-        dispatch(getApayment(getPaymentId, selectedLanguage));
-      });
-    } else {
-      dispatch(resetState());
-    }
-  }, [getPaymentId]);
+    debouncedApiCalls();
+  }, [debouncedApiCalls]);
 
   const prevUpdatedPaymentRef = useRef();
   const debounceTimeoutRef = useRef(null);

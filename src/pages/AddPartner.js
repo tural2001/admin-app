@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import CustomInput from '../components/CustomInput';
 import { useDispatch, useSelector } from 'react-redux';
 import { toast } from 'react-toastify';
@@ -15,6 +15,7 @@ import {
 } from '../features/partners/partnersSlice';
 import { uploadImg } from '../features/upload/uploadSlice';
 import { useTranslation } from '../components/TranslationContext';
+import { debounce } from 'lodash';
 
 const AddPartner = () => {
   const { translate, Language } = useTranslation();
@@ -41,51 +42,68 @@ const AddPartner = () => {
     updatedPartner,
   } = newPartner;
 
-  const onDrop = useCallback(
-    (acceptedFiles) => {
-      formik.setFieldValue('logo', acceptedFiles);
-      dispatch(uploadImg(acceptedFiles));
-      setIsFileDetected(true);
-    }, // eslint-disable-next-line no-use-before-define, react-hooks/exhaustive-deps
-    []
-  );
+  const onDrop = useCallback((acceptedFiles) => {
+    formik.setFieldValue('logo', acceptedFiles);
+    dispatch(uploadImg(acceptedFiles));
+    setIsFileDetected(true);
+  }, []);
   const imageState = useSelector((state) => state.upload.images.url);
 
-  useEffect(() => {
-    if (getPartnerId !== undefined) {
-      dispatch(getApartner(getPartnerId));
-    } else {
-      dispatch(resetState());
-    }
-  }, [dispatch, getPartnerId]);
+  const debouncedApiCalls = useCallback(
+    debounce(() => {
+      if (getPartnerId !== undefined) {
+        dispatch(getApartner(getPartnerId));
+      } else {
+        dispatch(resetState());
+      }
+    }, 500),
+    [getPartnerId, dispatch]
+  );
 
   useEffect(() => {
-    if (isSuccess && createdPartner !== undefined) {
+    debouncedApiCalls();
+  }, [debouncedApiCalls]);
+
+  const prevUpdatedPartnerRef = useRef();
+  const debounceTimeoutRef = useRef(null);
+
+  useEffect(() => {
+    const prevUpdatedPartner = prevUpdatedPartnerRef.current;
+    if (
+      isSuccess &&
+      updatedPartner !== undefined &&
+      updatedPartner !== prevUpdatedPartner
+    ) {
+      if (debounceTimeoutRef.current) {
+        clearTimeout(debounceTimeoutRef.current);
+      }
+      debounceTimeoutRef.current = setTimeout(() => {
+        toast.success(`${translate('Updated', Language)}`);
+        prevUpdatedPartnerRef.current = updatedPartner;
+        navigate('/admin/partner-list');
+      }, 1000);
+    }
+
+    if (isError) {
+      toast.error(`${translate('Wrong', Language)}`);
+    }
+  }, [isSuccess, isError, updatedPartner]);
+  useEffect(() => {
+    if (
+      isSuccess &&
+      createdPartner !== undefined &&
+      updatedPartner !== undefined
+    ) {
       toast.success(`${translate('Added', Language)}`);
       navigate('/admin/partner-list');
       setTimeout(() => {
         window.location.reload();
       }, 1000);
     }
-    if (isSuccess && updatedPartner !== undefined) {
-      toast.success(`${translate('Updated', Language)}`);
-      navigate('/admin/partner-list');
-    }
     if (isError) {
       toast.error(`${translate('Wrong', Language)}`);
     }
-  }, [
-    isSuccess,
-    isError,
-    isSuccess,
-    isError,
-    createdPartner,
-    PartnerName,
-    partnerLogo,
-    partnerActive,
-    updatedPartner,
-    navigate,
-  ]);
+  }, [isSuccess, isError, createdPartner, updatedPartner, navigate]);
 
   const formik = useFormik({
     enableReinitialize: true,

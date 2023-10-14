@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
@@ -28,7 +29,7 @@ const Partnerlist = () => {
   useEffect(() => {
     dispatch(resetState());
     dispatch(getpartners());
-  }, [dispatch]);
+  }, []);
   const partnerState =
     useSelector((state) => state.partner.partners.data) || [];
 

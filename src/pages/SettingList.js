@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
@@ -13,7 +14,7 @@ const SettingList = () => {
   useEffect(() => {
     dispatch(resetState());
     dispatch(getsettings());
-  }, [dispatch]);
+  }, []);
 
   const settingstate =
     useSelector((state) => state.setting.settings.data) || [];

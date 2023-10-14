@@ -1,4 +1,5 @@
-import React, { useEffect } from 'react';
+/* eslint-disable react-hooks/exhaustive-deps */
+import React, { useCallback, useEffect } from 'react';
 import { getcampaigns } from '../features/campaigns/campaignsSlice';
 import { useDispatch, useSelector } from 'react-redux';
 import { getfaqforms } from '../features/faqform/faqformSlice';
@@ -10,18 +11,32 @@ import { useTranslation } from '../components/TranslationContext';
 const Dashboard = () => {
   const dispatch = useDispatch();
 
-  useEffect(() => {
-    const debouncedDispatch = debounce(dispatch, 1000); // Adjust the debounce delay as needed
+  // useEffect(() => {
+  //   const debouncedDispatch = debounce(dispatch, 1000);
 
-    dispatch(getcampaigns());
-    dispatch(getcareers());
-    dispatch(getfaqforms());
-    dispatch(getcareers());
-    dispatch(getformdatas());
-    return () => {
-      debouncedDispatch.cancel();
-    };
-  }, [dispatch]);
+  //   dispatch(getcampaigns());
+  //   dispatch(getcareers());
+  //   dispatch(getfaqforms());
+  //   dispatch(getcareers());
+  //   dispatch(getformdatas());
+  //   return () => {
+  //     debouncedDispatch.cancel();
+  //   };
+  // }, []);
+
+  const debouncedApiCalls = useCallback(
+    debounce(() => {
+      dispatch(getcampaigns());
+      dispatch(getcareers());
+      dispatch(getfaqforms());
+      dispatch(getformdatas());
+    }, 1000),
+    [dispatch]
+  );
+
+  useEffect(() => {
+    debouncedApiCalls();
+  }, [debouncedApiCalls]);
 
   const formdatastate =
     useSelector((state) => state.formdata?.formdatas?.data) || [];
