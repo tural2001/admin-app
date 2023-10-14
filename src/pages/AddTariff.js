@@ -47,7 +47,6 @@ const AddTariff = () => {
       .required(`${translate('Required_Fill', Language)}`),
     speed: yup.number().required(`${translate('Required_Fill', Language)}`),
     active: yup.string(),
-    channel: yup.string(),
     type: yup.number().required(`${translate('Required_Fill', Language)}`),
     most_wanted: yup.string(),
     icon: yup.mixed().required(`${translate('Required_Fill', Language)}`),
@@ -64,7 +63,6 @@ const AddTariff = () => {
     isSuccess,
     isError,
     createdTariff,
-    tariffChannel,
     tariffSpeed,
     tariffPrice,
     tariffType,
@@ -90,11 +88,11 @@ const AddTariff = () => {
   const debounceTimeoutRef = useRef(null);
 
   useEffect(() => {
-    const prevUpdatedFaq = prevUpdatedTariffRef.current;
+    const prevUpdatedTariff = prevUpdatedTariffRef.current;
     if (
       isSuccess &&
       updatedTariff !== undefined &&
-      updatedTariff !== prevUpdatedFaq
+      updatedTariff !== prevUpdatedTariff
     ) {
       if (debounceTimeoutRef.current) {
         clearTimeout(debounceTimeoutRef.current);
@@ -105,6 +103,12 @@ const AddTariff = () => {
         navigate('/admin/tariff-list');
       }, 1000);
     }
+
+    if (isError) {
+      toast.error(`${translate('Wrong', Language)}`);
+    }
+  }, [isSuccess, isError, updatedTariff]);
+  useEffect(() => {
     if (
       isSuccess &&
       createdTariff !== undefined &&
@@ -139,26 +143,10 @@ const AddTariff = () => {
       }, {}),
       service_id: tariffService_id || '',
       active: TariffActive ? 1 : 0,
-      channel: tariffChannel ? 1 : 0,
       most_wanted: tariffMostWanted ? 1 : 0,
       type: tariffType || null,
     },
     validationSchema: schema,
-    // validate: (values) => {
-    //   const errors = {};
-
-    //   language.forEach((lang) => {
-    //     const nameKey = `name.${lang}`;
-    //     const descriptionKey = `description.${lang}`;
-
-    //     if (values[descriptionKey] && !values[nameKey]) {
-    //       errors[nameKey] = `Answer for ${lang} is Required`;
-    //     }
-    //   });
-
-    //   return errors;
-    // },
-
     onSubmit: (values) => {
       alert(JSON.stringify(values));
       const updatedLanguages = language.filter((lang) => values.name[lang]);
@@ -175,7 +163,6 @@ const AddTariff = () => {
               service_id: values.service_id,
               most_wanted: values.most_wanted === 1 ? 1 : 0,
               active: values.active === 1 ? 1 : 0,
-              channel: values.channel === 1 ? 1 : 0,
               type: values.type === 1 ? 1 : 2,
             },
             selectedLanguage: lang,
@@ -195,7 +182,6 @@ const AddTariff = () => {
               service_id: values.service_id,
               most_wanted: values.most_wanted === 1 ? 1 : 0,
               active: values.active === 1 ? 1 : 0,
-              channel: values.channel === 1 ? 1 : 0,
               type: values.type === 1 ? 1 : 2,
             },
             selectedLanguage: firstLang,
@@ -216,7 +202,6 @@ const AddTariff = () => {
                     service_id: values.service_id,
                     most_wanted: values.most_wanted === 1 ? 1 : 0,
                     active: values.active === 1 ? 1 : 0,
-                    channel: values.channel === 1 ? 1 : 0,
                     type: values.type === 1 ? 1 : 2,
                   },
                   selectedLanguage: lang,
@@ -248,11 +233,9 @@ const AddTariff = () => {
     if (getTariffId === undefined) {
       formik.setFieldValue('active', 1);
       formik.setFieldValue('most_wanted', 1);
-      formik.setFieldValue('channel', 1);
     } else {
       formik.setFieldValue('active', newTariff.TariffActive ? 1 : 0);
       formik.setFieldValue('most_wanted', newTariff.tariffMostWanted ? 1 : 0);
-      formik.setFieldValue('channel', newTariff.tariffChannel ? 1 : 0);
     }
   }, [getTariffId]);
 
@@ -357,9 +340,6 @@ const AddTariff = () => {
               </label>
             </div>
           </div>
-          <div className="error">
-            {formik.touched.active && formik.errors.active}
-          </div>
           <label htmlFor="" className="mt-2">
             {translate('Service', Language)}{' '}
           </label>
@@ -397,8 +377,7 @@ const AddTariff = () => {
                   className="text-blue-500 form-radio h-4 w-4"
                 />
                 <span className="ml-2">
-                  {' '}
-                  {translate('İndividual', Language)}{' '}
+                  {translate('Individual', Language)}{' '}
                 </span>
               </label>
               <label className="inline-flex items-center ml-6">
@@ -411,10 +390,7 @@ const AddTariff = () => {
                   checked={formik.values.type === 2}
                   className="text-blue-500 form-radio h-4 w-4"
                 />
-                <span className="ml-2">
-                  {' '}
-                  {translate('Business', Language)}{' '}
-                </span>
+                <span className="ml-2">{translate('Business', Language)} </span>
               </label>
             </div>
           </div>
@@ -456,47 +432,6 @@ const AddTariff = () => {
               </label>
             </div>
           </div>
-          <div className="error">
-            {formik.touched.most_wanted && formik.errors.most_wanted}
-          </div>
-          <label htmlFor="" className="mt-2">
-            {translate('Channel', Language)}
-          </label>
-          <div className="my-2">
-            <div className="mt-1">
-              <label className="inline-flex items-center">
-                <input
-                  type="radio"
-                  name="channel"
-                  onChange={() => formik.setFieldValue('channel', 1)}
-                  onBlur={formik.handleBlur}
-                  value={1}
-                  checked={
-                    newTariff.tariffChannel
-                      ? 1
-                      : 0 || formik.values.channel === 1
-                  }
-                  className="text-blue-500 form-radio h-4 w-4"
-                />
-                <span className="ml-2"> {translate('Yes', Language)}</span>
-              </label>
-              <label className="inline-flex items-center ml-6">
-                <input
-                  type="radio"
-                  name="channel"
-                  onChange={() => formik.setFieldValue('channel', 0)}
-                  onBlur={formik.handleBlur}
-                  value={0}
-                  checked={formik.values.channel === 0}
-                  className="text-blue-500 form-radio h-4 w-4"
-                />
-                <span className="ml-2"> {translate('No', Language)}</span>
-              </label>
-            </div>
-          </div>
-          <div className="error">
-            {formik.touched.channel && formik.errors.channel}
-          </div>
           <label htmlFor="" className="mt-2">
             {translate('Name', Language)}
           </label>
@@ -519,7 +454,6 @@ const AddTariff = () => {
                 key={lang}
                 className={lang === selectedLanguageAn ? '' : 'hidden'}
               >
-                {' '}
                 <CustomInput
                   type="text"
                   name={`name.${lang}`}

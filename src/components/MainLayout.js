@@ -153,7 +153,7 @@ const MainLayout = () => {
             {
               key: 'color-list',
               icon: <img src={color} className="w-6" alt="" />,
-              label: `${translate('Channel_List', Language)}`,
+              label: `${translate('Color_List', Language)}`,
             },
             {
               key: 'country-list',

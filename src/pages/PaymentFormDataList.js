@@ -209,7 +209,7 @@ const PaymentFormDataList = () => {
                           </>
                         )}
                       </Popup>
-                    </td>{' '}
+                    </td>
                     <td className="px-6 py-4">
                       {form.read_at ? formatDate(form.read_at) : 'null'}
                     </td>

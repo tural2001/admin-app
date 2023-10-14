@@ -80,32 +80,27 @@ const PaymentFieldList = () => {
                 </th>
                 <th scope="col" className="px-6 py-3">
                   <div className="flex items-center">
-                    {' '}
-                    {translate('Label', Language)}{' '}
+                    {translate('Label', Language)}
                   </div>
                 </th>
                 <th scope="col" className="px-6 py-3">
                   <div className="flex items-center">
-                    {' '}
-                    {translate('Type', Language)}{' '}
+                    {translate('Type', Language)}
                   </div>
                 </th>
                 <th scope="col" className="px-6 py-3">
                   <div className="flex items-center">
-                    {' '}
-                    {translate('Name', Language)}{' '}
+                    {translate('Name', Language)}
                   </div>
                 </th>
                 <th scope="col" className="px-6 py-3">
                   <div className="flex items-center">
-                    {' '}
                     {translate('Required', Language)}
                   </div>
                 </th>
                 <th scope="col" className="px-6 py-3">
                   <div className="flex items-center">
-                    {' '}
-                    {translate('Data', Language)}{' '}
+                    {translate('Data', Language)}
                   </div>
                 </th>
                 <th scope="col" className="px-6 py-3"></th>

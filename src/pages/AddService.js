@@ -35,15 +35,15 @@ const AddService = () => {
       language.reduce(
         (acc, lang) => ({
           ...acc,
-          az: yup.string().required(`${translate('Required_Fill', Language)}`),
+          az: yup.string(),
         }),
         {}
       )
     ),
-    icon: yup.mixed().required(`${translate('Required_Fill', Language)}`),
+    icon: yup.mixed(),
     active: yup.string(),
     partner: yup.string(),
-    parent_id: yup.number().required(`${translate('Required_Fill', Language)}`),
+    parent_id: yup.number(),
     meta_title: yup.object().shape(
       language.reduce(
         (acc, lang) => ({
@@ -81,20 +81,18 @@ const AddService = () => {
     serviceActive,
     serviceData,
     serviceIcon,
+    serviceIpTv,
+    serviseAdsl,
     updatedService,
     serviceParentId,
     servicePartner,
   } = newService;
 
-  const onDrop = useCallback(
-    (acceptedFiles) => {
-      formik.setFieldValue('icon', acceptedFiles);
-      dispatch(uploadImg(acceptedFiles));
-      setIsFileDetected(true);
-    },
-    // eslint-disable-next-line no-use-before-define, react-hooks/exhaustive-deps
-    []
-  );
+  const onDrop = useCallback((acceptedFiles) => {
+    formik.setFieldValue('icon', acceptedFiles);
+    dispatch(uploadImg(acceptedFiles));
+    setIsFileDetected(true);
+  }, []);
   const imageState = useSelector((state) => state.upload.images.url);
 
   useEffect(() => {
@@ -157,15 +155,17 @@ const AddService = () => {
         return acc;
       }, {}),
       active: serviceActive ? 1 : 0,
+      adsl: serviseAdsl ? 1 : 0,
+      ip_tv: serviceIpTv ? 1 : 0,
       partner: servicePartner ? 1 : 0,
-      parent_id: serviceParentId || null,
+      parent_id: serviceParentId || '',
       description: language.reduce((acc, lang) => {
         acc[lang] = serviceData
           ? serviceData[lang]?.data?.description || ''
           : '';
         return acc;
       }, {}),
-      icon: serviceIcon || null,
+      icon: serviceIcon || '',
       meta_title: language.reduce((acc, lang) => {
         acc[lang] = serviceData
           ? serviceData[lang]?.data?.meta_title || ''
@@ -194,6 +194,8 @@ const AddService = () => {
               meta_title: values.meta_title[lang],
               meta_description: values.meta_description[lang],
               active: values.active === 1 ? 1 : 0,
+              ip_tv: values.ip_tv === 1 ? 1 : 0,
+              adsl: values.adsl === 1 ? 1 : 0,
               partner: values.partner === 1 ? 1 : 0,
               parent_id: values.parent_id,
               icon: values.icon,
@@ -213,6 +215,8 @@ const AddService = () => {
               meta_title: values.meta_title[firstLang],
               meta_description: values.meta_description[firstLang],
               active: values.active === 1 ? 1 : 0,
+              ip_tv: values.ip_tv === 1 ? 1 : 0,
+              adsl: values.adsl === 1 ? 1 : 0,
               partner: values.partner === 1 ? 1 : 0,
               parent_id: ParentID,
               icon: values.icon,
@@ -233,6 +237,8 @@ const AddService = () => {
                     meta_title: values.meta_title[lang],
                     meta_description: values.meta_description[lang],
                     active: values.active === 1 ? 1 : 0,
+                    ip_tv: values.ip_tv === 1 ? 1 : 0,
+                    adsl: values.adsl === 1 ? 1 : 0,
                     partner: values.partner === 1 ? 1 : 0,
                     parent_id: values.parent_id,
                     icon: values.icon,
@@ -260,11 +266,21 @@ const AddService = () => {
     if (getServiceId === undefined) {
       formik.setFieldValue('active', 1);
       formik.setFieldValue('partner', 0);
+      formik.setFieldValue('ip_tv', 0);
+      formik.setFieldValue('adsl', 0);
     } else {
       formik.setFieldValue('active', newService.serviceActive ? 1 : 0);
       formik.setFieldValue('partner', newService.servicePartner ? 1 : 0);
+      formik.setFieldValue('ip_tv', newService.serviceIpTv ? 1 : 0);
+      formik.setFieldValue('adsl', newService.serviseAdsl ? 1 : 0);
     }
-  }, [getServiceId, newService.serviceActive]);
+  }, [
+    getServiceId,
+    newService.serviceActive,
+    newService.servicePartner,
+    newService.serviceIpTv,
+    newService.serviseAdsl,
+  ]);
   console.log(servicecstate);
   const handleLanguageClick1 = (language) => {
     setSelectedLanguage1(language);
@@ -292,12 +308,7 @@ const AddService = () => {
         <form
           onSubmit={(e) => {
             e.preventDefault();
-            const requiredFields = [
-              'title',
-              'description',
-              'icon',
-              'parent_id',
-            ];
+            const requiredFields = ['title'];
             const errors = {};
             requiredFields.forEach((fieldName) => {
               if (formik.touched[fieldName] && !formik.values[fieldName]) {
@@ -308,18 +319,8 @@ const AddService = () => {
             language.forEach((lang) => {
               const titleFieldName = `title.${lang}`;
 
-              const descriptionFieldName = `description.${lang}`;
-
               if (formik.touched.title && !formik.values.title[lang]) {
                 errors[titleFieldName] = `Name for ${lang} is Required`;
-              }
-              if (
-                formik.touched.description &&
-                !formik.values.description[lang]
-              ) {
-                errors[
-                  descriptionFieldName
-                ] = `Description for ${lang} is Required`;
               }
             });
             console.log(errors);
@@ -331,7 +332,7 @@ const AddService = () => {
           }}
         >
           <label htmlFor="" className="mt-2">
-            {translate('Yes', Language)}
+            {translate('Status', Language)}
           </label>
           <div className="my-2">
             <div className="mt-1">
@@ -389,6 +390,68 @@ const AddService = () => {
                   onBlur={formik.handleBlur}
                   value={0}
                   checked={formik.values.partner === 0}
+                  className="text-blue-500 form-radio h-4 w-4"
+                />
+                <span className="ml-2">{translate('No', Language)}</span>
+              </label>
+            </div>
+          </div>
+          <label htmlFor="" className="mt-2">
+            {translate('IpTv', Language)}
+          </label>
+          <div className="my-2">
+            <div className="mt-1">
+              <label className="inline-flex items-center">
+                <input
+                  type="radio"
+                  name="ip_tv"
+                  onChange={() => formik.setFieldValue('ip_tv', 1)}
+                  onBlur={formik.handleBlur}
+                  value={1}
+                  checked={formik.values.ip_tv === 1}
+                  className="text-blue-500 form-radio h-4 w-4"
+                />
+                <span className="ml-2">{translate('Yes', Language)}</span>
+              </label>
+              <label className="inline-flex items-center ml-6">
+                <input
+                  type="radio"
+                  name="ip_tv"
+                  onChange={() => formik.setFieldValue('ip_tv', 0)}
+                  onBlur={formik.handleBlur}
+                  value={0}
+                  checked={formik.values.ip_tv === 0}
+                  className="text-blue-500 form-radio h-4 w-4"
+                />
+                <span className="ml-2">{translate('No', Language)}</span>
+              </label>
+            </div>
+          </div>
+          <label htmlFor="" className="mt-2">
+            {translate('Adsl', Language)}
+          </label>
+          <div className="my-2">
+            <div className="mt-1">
+              <label className="inline-flex items-center">
+                <input
+                  type="radio"
+                  name="adsl"
+                  onChange={() => formik.setFieldValue('adsl', 1)}
+                  onBlur={formik.handleBlur}
+                  value={1}
+                  checked={formik.values.adsl === 1}
+                  className="text-blue-500 form-radio h-4 w-4"
+                />
+                <span className="ml-2">{translate('Yes', Language)}</span>
+              </label>
+              <label className="inline-flex items-center ml-6">
+                <input
+                  type="radio"
+                  name="adsl"
+                  onChange={() => formik.setFieldValue('adsl', 0)}
+                  onBlur={formik.handleBlur}
+                  value={0}
+                  checked={formik.values.adsl === 0}
                   className="text-blue-500 form-radio h-4 w-4"
                 />
                 <span className="ml-2">{translate('No', Language)}</span>
@@ -624,9 +687,6 @@ const AddService = () => {
                       </section>
                     )}
                   </Dropzone>
-                  <div className="error">
-                    {formik.touched.icon && formik.errors.icon}
-                  </div>
                 </div>
                 <div className="mt-[70px] w-[200px]">
                   <img src={imageState ? imageState : ''} alt="" />

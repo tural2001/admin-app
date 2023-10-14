@@ -160,7 +160,7 @@ const AddRegion = () => {
       <h3 className="mb-4 title">
         {getregionId !== undefined
           ? `${translate('Edit_Region', Language)}`
-          : `${translate('Add_Regipn', Language)}`}{' '}
+          : `${translate('Add_Region', Language)}`}{' '}
       </h3>
       <div>
         <form

@@ -87,6 +87,16 @@ const ServiceList = () => {
                 </th>
                 <th scope="col" className="px-6 py-3">
                   <div className="flex items-center">
+                    {translate('IpTv', Language)}
+                  </div>
+                </th>
+                <th scope="col" className="px-6 py-3">
+                  <div className="flex items-center">
+                    {translate('Adsl', Language)}
+                  </div>
+                </th>
+                <th scope="col" className="px-6 py-3">
+                  <div className="flex items-center">
                     {translate('Meta_Title', Language)}
                   </div>
                 </th>
@@ -137,11 +147,12 @@ const ServiceList = () => {
                       ? `${translate('Active', Language)}`
                       : `${translate('Not_Active', Language)}`}
                   </td>
+                  <td className="px-6 py-4">{service.ip_tv}</td>
+                  <td className="px-6 py-4">{service.adsl}</td>
                   <td className="px-6 py-4">{service.meta_title}</td>
                   <td className="px-6 py-4">{service.meta_description}</td>
                   <td className="px-6 py-4">{service.title}</td>
                   <td className="px-6 py-4">{service.description}</td>
-
                   <td className="px-6 py-4">
                     <Popup
                       trigger={

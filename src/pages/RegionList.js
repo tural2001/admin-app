@@ -46,25 +46,21 @@ const RegionList = () => {
                 </th>
                 <th scope="col" className="px-6 py-3">
                   <div className="flex items-center">
-                    {' '}
                     {translate('Status', Language)}
                   </div>
                 </th>
                 <th scope="col" className="px-6 py-3">
                   <div className="flex items-center">
-                    {' '}
                     {translate('Name', Language)}
                   </div>
                 </th>
                 <th scope="col" className="px-6 py-3">
                   <div className="flex items-center">
-                    {' '}
                     {translate('Description', Language)}
                   </div>
                 </th>
                 <th scope="col" className="px-6 py-3">
                   <div className="flex items-center">
-                    {' '}
                     {translate('Handle', Language)}
                   </div>
                 </th>
@@ -100,11 +96,11 @@ const RegionList = () => {
                   <td className="px-6 py-4">{region.name}</td>
                   <td className="px-6 py-4">{region.description}</td>
                   <td className="px-6 py-4">{region.handle}</td>
-                  <td className="px-6 py-4">{region.color.name.az}</td>
+                  <td className="px-6 py-4">{region?.color?.name?.az}</td>
                   <td className="px-6 py-16 flex gap-2">
                     <Link
                       to={`/admin/region/${filteredRegion[index]?.handle}`}
-                      className="text-[25px] text-blue-500 "
+                      className="text-[25px] text-blue-500"
                     >
                       <VscEdit />
                     </Link>

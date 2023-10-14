@@ -45,15 +45,8 @@ const Addfaq = (e) => {
   const location = useLocation();
   const getFaqId = location.pathname.split('/')[3];
   const newFaq = useSelector((state) => state.faq);
-  const {
-    isSuccess,
-    isError,
-    isLoading,
-    createdFaq,
-    FaqData,
-    updatedFaq,
-    FaqActive,
-  } = newFaq;
+  const { isSuccess, isError, createdFaq, FaqData, updatedFaq, FaqActive } =
+    newFaq;
   console.log(newFaq);
   useEffect(() => {
     if (getFaqId !== undefined) {
@@ -100,16 +93,7 @@ const Addfaq = (e) => {
     if (isError) {
       toast.error(`${translate('Wrong', Language)}`);
     }
-  }, [
-    isSuccess,
-    isError,
-    isLoading,
-    createdFaq,
-    FaqData,
-    FaqActive,
-    updatedFaq,
-    navigate,
-  ]);
+  }, [isSuccess, isError, createdFaq, updatedFaq, navigate]);
 
   const formik = useFormik({
     enableReinitialize: true,
@@ -151,7 +135,7 @@ const Addfaq = (e) => {
             faqData: {
               question: values.question[lang],
               answer: values.answer[lang],
-              active: values.active === '1' ? true : false,
+              active: values.active === 1 ? 1 : 0,
             },
             selectedLanguage: lang,
           };
@@ -164,7 +148,7 @@ const Addfaq = (e) => {
             values: {
               question: values.question[firstLang],
               answer: values.answer[firstLang],
-              active: values.active === '1' ? true : false,
+              active: values.active === 1 ? 1 : 0,
             },
             selectedLanguage: firstLang,
           };
@@ -178,6 +162,7 @@ const Addfaq = (e) => {
                   faqData: {
                     question: values.question[lang],
                     answer: values.answer[lang],
+                    active: values.active === 1 ? 1 : 0,
                   },
                   selectedLanguage: lang,
                 };

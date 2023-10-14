@@ -35,7 +35,7 @@ const AddSlide = () => {
       language.reduce(
         (acc, lang) => ({
           ...acc,
-          az: yup.string().required(`${translate('Required_Fill', Language)}`),
+          az: yup.string(),
         }),
         {}
       )
@@ -44,7 +44,7 @@ const AddSlide = () => {
       language.reduce(
         (acc, lang) => ({
           ...acc,
-          az: yup.string().required(`${translate('Required_Fill', Language)}`),
+          az: yup.string(),
         }),
         {}
       )
@@ -84,15 +84,11 @@ const AddSlide = () => {
     slideImage,
   } = newslide;
 
-  const onDrop = useCallback(
-    (acceptedFiles) => {
-      formik.setFieldValue('image', acceptedFiles);
-      dispatch(uploadImg(acceptedFiles));
-      setIsFileDetected(true);
-    },
-    // eslint-disable-next-line no-use-before-define, react-hooks/exhaustive-deps
-    []
-  );
+  const onDrop = useCallback((acceptedFiles) => {
+    formik.setFieldValue('image', acceptedFiles);
+    dispatch(uploadImg(acceptedFiles));
+    setIsFileDetected(true);
+  }, []);
   const imageState = useSelector((state) => state.upload.images.url);
 
   useEffect(() => {
@@ -124,6 +120,12 @@ const AddSlide = () => {
         navigate('/admin/slide-list');
       }, 1000);
     }
+
+    if (isError) {
+      toast.error(`${translate('Wrong', Language)}`);
+    }
+  }, [isSuccess, isError, updatedSlide]);
+  useEffect(() => {
     if (isSuccess && createdSlide !== undefined && updatedSlide !== undefined) {
       toast.success(`${translate('Added', Language)}`);
       navigate('/admin/slide-list');
@@ -135,7 +137,7 @@ const AddSlide = () => {
       toast.error(`${translate('Wrong', Language)}`);
     }
   }, [isSuccess, isError, createdSlide, updatedSlide, navigate]);
-  console.log(slideData);
+
   const formik = useFormik({
     enableReinitialize: true,
     initialValues: {
@@ -174,7 +176,7 @@ const AddSlide = () => {
               description: values.description[lang],
               button_link: values.button_link[lang],
               button_text: values.button_text[lang],
-              show_button: values.show_button,
+              show_button: values.show_button === 1 ? 1 : 0,
               active: values.active === 1 ? 1 : 0,
               order: values.order === 1 ? 1 : 0,
               image: values.image,
@@ -192,7 +194,7 @@ const AddSlide = () => {
               description: values.description[firstLang],
               button_link: values.button_link[firstLang],
               button_text: values.button_text[firstLang],
-              show_button: values.show_button,
+              show_button: values.show_button === 1 ? 1 : 0,
               order: values.order === 1 ? 1 : 0,
               active: values.active === 1 ? 1 : 0,
               image: values.image,
@@ -211,7 +213,7 @@ const AddSlide = () => {
                     description: values.description[lang],
                     button_link: values.button_link[lang],
                     button_text: values.button_text[lang],
-                    show_button: values.show_button,
+                    show_button: values.show_button === 1 ? 1 : 0,
                     order: values.order === 1 ? 1 : 0,
                     active: values.active === 1 ? 1 : 0,
                     image: values.image,
@@ -239,9 +241,11 @@ const AddSlide = () => {
     if (getslideId === undefined) {
       formik.setFieldValue('active', 1);
       formik.setFieldValue('order', 0);
+      formik.setFieldValue('show_button', 1);
     } else {
       formik.setFieldValue('active', newslide.slideActive ? 1 : 0);
       formik.setFieldValue('order', newslide.slideOrder ? 1 : 0);
+      formik.setFieldValue('show_button', newslide.slideOrder ? 1 : 0);
     }
   }, [getslideId, newslide.slideActive]);
 
@@ -286,26 +290,12 @@ const AddSlide = () => {
 
             language.forEach((lang) => {
               const titleFieldName = `title.${lang}`;
-              const button_textFieldName = `button_link.${lang}`;
-              const button_linkFieldName = `button_text.${lang}`;
               const descriptionFieldName = `description.${lang}`;
 
               if (formik.touched.title && !formik.values.title[lang]) {
                 errors[titleFieldName] = `Name for ${lang} is Required`;
               }
 
-              if (
-                formik.touched.button_link &&
-                !formik.values.button_link[lang]
-              ) {
-                errors[button_textFieldName] = `Name for ${lang} is Required`;
-              }
-              if (
-                formik.touched.button_text &&
-                !formik.values.button_text[lang]
-              ) {
-                errors[button_linkFieldName] = `Name for ${lang} is Required`;
-              }
               if (
                 formik.touched.description &&
                 !formik.values.description[lang]
@@ -391,6 +381,44 @@ const AddSlide = () => {
             </div>
           </div>
           <label htmlFor="" className="mt-2">
+            {translate('Show_Button', Language)}{' '}
+          </label>
+          <div className="my-2">
+            <div className="mt-1">
+              <label className="inline-flex items-center">
+                <input
+                  type="radio"
+                  name="show_button"
+                  onChange={formik.handleChange}
+                  onBlur={formik.handleBlur}
+                  value={1}
+                  checked={
+                    newslide.slideShow_button
+                      ? 1
+                      : 0 || formik.values.show_button === 1
+                  }
+                  className="text-blue-500 form-radio h-4 w-4"
+                />
+                <span className="ml-2">{translate('Yes', Language)}</span>
+              </label>
+              <label className="inline-flex items-center ml-6">
+                <input
+                  type="radio"
+                  name="show_button"
+                  onChange={formik.handleChange}
+                  onBlur={formik.handleBlur}
+                  value={0}
+                  checked={formik.values.show_button === 0}
+                  className="text-blue-500 form-radio h-4 w-4"
+                />
+                <span className="ml-2">{translate('No', Language)}</span>
+              </label>
+            </div>
+            <div className="error">
+              {formik.touched.show_button && formik.errors.show_button}
+            </div>
+          </div>
+          <label htmlFor="" className="mt-2">
             {translate('Title', Language)}{' '}
           </label>
           <div className="flex">
@@ -466,44 +494,6 @@ const AddSlide = () => {
               </div>
             );
           })}
-          <label htmlFor="" className="mt-2">
-            {translate('Show_Button', Language)}{' '}
-          </label>
-          <div className="my-2">
-            <div className="mt-1">
-              <label className="inline-flex items-center">
-                <input
-                  type="radio"
-                  name="show_button"
-                  onChange={formik.handleChange}
-                  onBlur={formik.handleBlur}
-                  value="1"
-                  checked={
-                    newslide.slideShow_button
-                      ? 1
-                      : 0 || formik.values.show_button === '1'
-                  }
-                  className="text-blue-500 form-radio h-4 w-4"
-                />
-                <span className="ml-2">{translate('Yes', Language)}</span>
-              </label>
-              <label className="inline-flex items-center ml-6">
-                <input
-                  type="radio"
-                  name="show_button"
-                  onChange={formik.handleChange}
-                  onBlur={formik.handleBlur}
-                  value="0"
-                  checked={formik.values.show_button === '0'}
-                  className="text-blue-500 form-radio h-4 w-4"
-                />
-                <span className="ml-2">{translate('No', Language)}</span>
-              </label>
-            </div>
-            <div className="error">
-              {formik.touched.show_button && formik.errors.show_button}
-            </div>
-          </div>
           <label htmlFor="" className="mt-2">
             {translate('Button_Text', Language)}{' '}
           </label>

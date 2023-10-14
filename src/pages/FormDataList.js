@@ -159,7 +159,7 @@ const FormDataList = () => {
                       >
                         {(close) => (
                           <>
-                            <div className="flex flex-col   justify-center items-center p-2">
+                            <div className="flex flex-col justify-center items-center p-2">
                               <img
                                 src={x}
                                 className="absolute right-7 top-5 w-10"
@@ -209,7 +209,7 @@ const FormDataList = () => {
                           </>
                         )}
                       </Popup>
-                    </td>{' '}
+                    </td>
                     <td className="px-6 py-4">
                       {form.read_at ? formatDate(form.read_at) : 'null'}
                     </td>

@@ -190,7 +190,9 @@ export const SignOut = 'Çıxış etmək';
 export const SignIn = 'Daxil olmaq';
 export const Sign_Account = 'Hesabınıza daxil olun';
 export const Password = 'Parol';
-
+export const Password_v_1 = 'Parol ən azı 8 simvoldan ibarət olmalıdır';
+export const Password_v_2 =
+  'Parolda ən azı bir böyük və bir kiçik hərf olmalıdır';
 //Main Layout
 export const Advantage_List = 'Üstünlüklər siyahısı';
 export const Campaign_List = 'Kampaniyalar siyahısı';
@@ -222,7 +224,6 @@ export const Slide_List = 'Slaydlar siyahısı';
 export const Structure_List = 'Strukturlar siyahısı';
 export const Tariff_List = 'Tariflər siyahısı';
 export const User_List = 'İstifadəçilər siyahısı';
-
 //Toast
 export const Updated = 'Uğurla yeniləndi';
 export const Added = 'Uğurla əlavə edildi';

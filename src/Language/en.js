@@ -184,6 +184,9 @@ export const SignOut = 'SignOut';
 export const SignIn = 'SignIn';
 export const Sign_account = 'Sign in to your account';
 export const Password = 'Password';
+export const Password_v_1 = 'Password must be at least 8 characters';
+export const Password_v_2 =
+  'Password must contain at least one uppercase and one lowercase letter';
 //Main Layout
 export const Advantage_List = 'Advantage List';
 export const Campaign_List = 'Campaign List';
@@ -215,7 +218,6 @@ export const Slide_List = 'Slide List';
 export const Structure_List = 'Structure List';
 export const Tariff_List = 'Tariff List';
 export const User_List = 'User List';
-
 //Toast
 export const Updated = 'Updated successfully!';
 export const Added = 'Added successfully!';

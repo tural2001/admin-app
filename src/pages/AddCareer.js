@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import CustomInput from '../components/CustomInput';
 import { useDispatch, useSelector } from 'react-redux';
 import { toast } from 'react-toastify';
@@ -20,10 +20,10 @@ const AddCareer = () => {
   const { translate, Language } = useTranslation();
 
   let schema = yup.object({
-    name: yup.string().required(`${translate('Required_Fill', Language)}`),
-    email: yup.string().required(`${translate('Required_Fill', Language)}`),
-    phone: yup.string().required(`${translate('Required_Fill', Language)}`),
-    notes: yup.string().required(`${translate('Required_Fill', Language)}`),
+    name: yup.string(),
+    email: yup.string(),
+    phone: yup.string(),
+    notes: yup.string(),
     vacancy_name: yup
       .string()
       .required(`${translate('Required_Fill', Language)}`),
@@ -56,7 +56,6 @@ const AddCareer = () => {
     dispatch(uploadImg(acceptedFiles));
     setIsFileDetected(true);
   }, []);
-  // const imageState = useSelector((state) => state.upload.images.url);
 
   useEffect(() => {
     if (getcareerId !== undefined) {
@@ -65,36 +64,53 @@ const AddCareer = () => {
       dispatch(resetState());
     }
   }, [dispatch, getcareerId]);
+  const prevUpdatedCareerRef = useRef();
+  const debounceTimeoutRef = useRef(null);
 
   useEffect(() => {
-    if (isSuccess && createdcareer) {
+    const prevUpdatedFaq = prevUpdatedCareerRef.current;
+    if (
+      isSuccess &&
+      updatedcareer !== undefined &&
+      updatedcareer !== prevUpdatedFaq
+    ) {
+      if (debounceTimeoutRef.current) {
+        clearTimeout(debounceTimeoutRef.current);
+      }
+      debounceTimeoutRef.current = setTimeout(() => {
+        toast.success(`${translate('Updated', Language)}`);
+        prevUpdatedCareerRef.current = updatedcareer;
+        navigate('/admin/career-list');
+      }, 1000);
+    }
+
+    if (isError) {
+      toast.error(`${translate('Wrong', Language)}`);
+    }
+  }, [isSuccess, isError, updatedcareer]);
+  useEffect(() => {
+    if (
+      isSuccess &&
+      createdcareer !== undefined &&
+      updatedcareer !== undefined
+    ) {
       toast.success(`${translate('Added', Language)}`);
-      navigate('/admin/career-form-list');
+      navigate('/admin/career-list');
       setTimeout(() => {
         window.location.reload();
-      }, 500);
+      }, 1000);
     }
-    if (isSuccess && updatedcareer !== undefined) {
-      toast.success(`${translate('Updated', Language)}`);
-      navigate('/admin/career-form-lis');
+    if (isSuccess && createdcareer !== undefined) {
+      toast.success(`${translate('Added', Language)}`);
+      navigate('/admin/faq-list');
+      setTimeout(() => {
+        window.location.reload();
+      }, 1000);
     }
     if (isError) {
       toast.error(`${translate('Wrong', Language)}`);
     }
-  }, [
-    isSuccess,
-    isError,
-    isLoading,
-    createdcareer,
-    careerName,
-    careerPhone,
-    careerEmail,
-    careerCv,
-    careerNotes,
-    careerVancancy,
-    updatedcareer,
-    navigate,
-  ]);
+  }, [isSuccess, isError, isLoading, createdcareer, updatedcareer, navigate]);
 
   const formik = useFormik({
     enableReinitialize: true,
@@ -140,14 +156,7 @@ const AddCareer = () => {
         <form
           onSubmit={(e) => {
             e.preventDefault();
-            const requiredFields = [
-              'name',
-              'phone',
-              'cv',
-              'email',
-              'notes',
-              'vacancy_name',
-            ];
+            const requiredFields = ['cv', 'vacancy_name'];
             const errors = {};
             requiredFields.forEach((fieldName) => {
               if (formik.touched[fieldName] && !formik.values[fieldName]) {

@@ -53,7 +53,6 @@ export const createAtariff = createAsyncThunk(
       formdata.append('name', tariffData.values.name);
       formdata.append('price', tariffData.values.price);
       formdata.append('service_id', tariffData.values.service_id);
-      formdata.append('channel', tariffData.values.channel);
       formdata.append(
         'icon',
         tariffData?.values.icon[0],
@@ -81,7 +80,6 @@ export const updateAtariff = createAsyncThunk(
       formdata.append('name', tariffData.tariffData.name);
       formdata.append('price', tariffData.tariffData.price);
       formdata.append('service_id', tariffData.tariffData.service_id);
-      formdata.append('channel', tariffData.tariffData.channel);
       if (tariffData.tariffData.icon instanceof File) {
         formdata.append(
           'icon',
@@ -160,7 +158,6 @@ export const tariffSlice = createSlice({
         state.tariffService_id = action.payload[language[0]].data.service.id;
         state.tariffType = action.payload[language[0]].data.type;
         state.TariffActive = action.payload[language[0]].data.active;
-        state.TariffChannel = action.payload[language[0]].data.channel;
         state.tariffMostWanted = action.payload[language[0]].data.most_wanted;
       })
       .addCase(getAtariff.rejected, (state, action) => {

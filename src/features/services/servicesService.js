@@ -11,6 +11,7 @@ const getservices = async (selectedLanguage) => {
 };
 
 const createservice = async (service) => {
+  console.log(service);
   const response = await axios.post(`${base_url}/api/services`, service, {
     headers: config.getHeaders(service.selectedLanguage),
   });

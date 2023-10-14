@@ -46,15 +46,22 @@ export const deleteAservice = createAsyncThunk(
 export const createAservice = createAsyncThunk(
   'services/create-service',
   async (serviceData, thunkAPI) => {
+    console.log(serviceData);
     try {
       const formdata = new FormData();
       formdata.append('active', serviceData.values.active);
       formdata.append('partner', serviceData.values.partner);
-      formdata.append(
-        'icon',
-        serviceData.values.icon[0],
-        serviceData.values.icon[0].name
-      );
+      if (serviceData.values.icon !== '') {
+        formdata.append(
+          'icon',
+          serviceData.values.icon[0],
+          serviceData.values.icon[0].name
+        );
+      }
+
+      formdata.append('title', serviceData.values.title);
+      formdata.append('ip_tv', serviceData.values.ip_tv);
+      formdata.append('adsl', serviceData.values.adsl);
       formdata.append('title', serviceData.values.title);
       formdata.append('parent_id', serviceData.values.parent_id);
       formdata.append('meta_title', serviceData.values.meta_title);
@@ -76,6 +83,8 @@ export const updateAservice = createAsyncThunk(
       formdata.append('active', serviceData.serviceData.active);
       formdata.append('partner', serviceData.serviceData.partner);
       formdata.append('title', serviceData.serviceData.title);
+      formdata.append('ip_tv', serviceData.serviceData.ip_tv);
+      formdata.append('adsl', serviceData.serviceData.adsl);
       formdata.append('parent_id', serviceData.serviceData.parent_id);
       formdata.append('meta_title', serviceData.serviceData.meta_title);
       formdata.append(
@@ -150,6 +159,8 @@ export const servicesSlice = createSlice({
         state.isError = false;
         state.serviceData = action.payload;
         state.serviceActive = action.payload[language[0]].data.active;
+        state.serviceIpTv = action.payload[language[0]].data.ip_tv;
+        state.serviseAdsl = action.payload[language[0]].data.adsl;
         state.servicePartner = action.payload[language[0]].data.partner;
         state.serviceIcon = action.payload[language[0]].data.icon;
         state.serviceParentId = action.payload[language[0]].data.parent_id;

@@ -94,6 +94,7 @@ const ServiceCList = () => {
                   </div>
                 </th>
                 <th scope="col" className="px-6 py-3"></th>
+                <th scope="col" className="px-6 py-3"></th>
               </tr>
             </thead>
             <tbody>
@@ -107,7 +108,7 @@ const ServiceCList = () => {
                     className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"
                   >
                     {servicec.id}
-                  </th>{' '}
+                  </th>
                   <td
                     className={`px-6 py-4 ${
                       servicec.active === true
@@ -120,14 +121,13 @@ const ServiceCList = () => {
                       : `${translate('Not_Active', Language)}`}
                   </td>
                   <td className="px-6 py-4">{servicec.name}</td>
-                  {/* <td className="px-6 py-4">{review.reviewer_image}</td> */}
                   <td className="px-6 py-4">
                     <Popup
                       trigger={
                         <button>
                           {' '}
                           <img
-                            src="https://azeronline.netlify.app/static/media/blog2.891d84e7b5ab348201fd.png"
+                            src={servicec.icon}
                             alt=""
                             width={150}
                             height={50}
@@ -140,14 +140,14 @@ const ServiceCList = () => {
                         padding: '0px',
                         borderRadius: '50px',
                         borderColor: 'white',
-                        width: '1110px',
-                        height: '575px',
+                        width: '800px',
+                        height: '475px',
                         overflow: 'hidden',
                       }}
                     >
                       <div>
                         <img
-                          src="https://azeronline.netlify.app/static/media/blog2.891d84e7b5ab348201fd.png"
+                          src={servicec.icon}
                           alt=""
                           width={1110}
                           height={50}
@@ -174,7 +174,7 @@ const ServiceCList = () => {
               ))}
             </tbody>
           </table>
-        </div>{' '}
+        </div>
       </div>
       <ReactPaginate
         previousLabel={<BsArrowLeft />}

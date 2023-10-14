@@ -20,7 +20,19 @@ const AddUser = () => {
   let schema = yup.object({
     name: yup.string().required(`${translate('Required_Fill', Language)}`),
     email: yup.string().required(`${translate('Required_Fill', Language)}`),
-    password: yup.string().required(`${translate('Required_Fill', Language)}`),
+    password: yup
+      .string()
+      .required(`${translate('Required_Fill', Language)}`)
+      .test(
+        'min-length',
+        `${translate('Password_v_1', Language)}`,
+        (value) => (value || '').length >= 8
+      )
+      .test(
+        'contains-uppercase-lowercase',
+        `${translate('Password_v_2', Language)}`,
+        (value) => /^(?=.*[a-z])(?=.*[A-Z])/.test(value)
+      ),
   });
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -133,6 +145,9 @@ const AddUser = () => {
           }}
         >
           <div className="mt-4">
+            <label htmlFor="" className="mt-2">
+              {translate('Name', Language)}
+            </label>
             <CustomInput
               type="text"
               label="Enter user Name"
@@ -144,6 +159,9 @@ const AddUser = () => {
             <div className="error">
               {formik.touched.name && formik.errors.name}
             </div>
+            <label htmlFor="" className="mt-2">
+              {translate('Email', Language)}
+            </label>
             <CustomInput
               type="text"
               label="Enter user Email"
@@ -155,6 +173,9 @@ const AddUser = () => {
             <div className="error">
               {formik.touched.email && formik.errors.email}
             </div>
+            <label htmlFor="" className="mt-2">
+              {translate('Password', Language)}
+            </label>
             <CustomInput
               type="password"
               label="Enter user Password"
