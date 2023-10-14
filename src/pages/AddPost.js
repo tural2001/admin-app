@@ -15,14 +15,12 @@ import {
 } from '../features/posts/postSlice';
 import 'react-quill/dist/quill.snow.css';
 import { uploadImg } from '../features/upload/uploadSlice';
-import 'react-quill/dist/quill.snow.css';
 import { language } from '../Language/languages';
 import { base_url } from '../utils/base_url';
 import axios from 'axios';
 import { config } from '../utils/axiosconfig';
 
 import ReactQuill, { Quill } from 'react-quill';
-import 'react-quill/dist/quill.snow.css'; // Stil dosyasını içe aktarın
 
 import ImageUploader from 'quill-image-uploader';
 import ImageResize from 'quill-image-resize-module-react';
@@ -32,6 +30,8 @@ import { useTranslation } from '../components/TranslationContext';
 Quill.register('modules/imageUploader', ImageUploader);
 Quill.register('modules/imageResize', ImageResize);
 Quill.register('modules/blotFormatter', BlotFormatter);
+
+window.Quill = Quill;
 
 // let schema = yup.object({
 //   title: yup.object().shape(
@@ -257,12 +257,14 @@ const AddPost = () => {
 
   useEffect(() => {
     language?.forEach((lang) => {
-      const postDataDescription = PostData[lang]?.data?.description;
-      if (postDataDescription) {
-        setEditorHtml((prevEditorHtml) => ({
-          ...prevEditorHtml,
-          [lang]: postDataDescription,
-        }));
+      if (PostData !== undefined) {
+        const postDataDescription = PostData[lang]?.data?.description;
+        if (postDataDescription) {
+          setEditorHtml((prevEditorHtml) => ({
+            ...prevEditorHtml,
+            [lang]: postDataDescription,
+          }));
+        }
       }
     });
   }, [PostData, language]);
@@ -561,7 +563,6 @@ const AddPost = () => {
               </div>
             );
           })}
-          {/* <Editor onDescriptionChange={handleDescriptionChange} /> */}
           <label htmlFor="" className="mt-2">
             {translate('Title', Language)}{' '}
           </label>
