@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import CustomInput from '../components/CustomInput';
 import { useDispatch, useSelector } from 'react-redux';
 import { toast } from 'react-toastify';
@@ -31,7 +31,7 @@ const AddPartner = () => {
   const location = useLocation();
   const getPartnerId = location.pathname.split('/')[3];
   const newPartner = useSelector((state) => state.partner);
-
+  console.log(newPartner);
   const {
     isSuccess,
     isError,
@@ -64,47 +64,22 @@ const AddPartner = () => {
     debouncedApiCalls();
   }, [debouncedApiCalls]);
 
-  const prevUpdatedPartnerRef = useRef();
-  const debounceTimeoutRef = useRef(null);
-
   useEffect(() => {
-    const prevUpdatedPartner = prevUpdatedPartnerRef.current;
-    if (
-      isSuccess &&
-      updatedPartner !== undefined &&
-      updatedPartner !== prevUpdatedPartner
-    ) {
-      if (debounceTimeoutRef.current) {
-        clearTimeout(debounceTimeoutRef.current);
-      }
-      debounceTimeoutRef.current = setTimeout(() => {
-        toast.success(`${translate('Updated', Language)}`);
-        prevUpdatedPartnerRef.current = updatedPartner;
-        navigate('/admin/partner-list');
-      }, 1000);
-    }
-
-    if (isError) {
-      toast.error(`${translate('Wrong', Language)}`);
-    }
-  }, [isSuccess, isError, updatedPartner]);
-  useEffect(() => {
-    if (
-      isSuccess &&
-      createdPartner !== undefined &&
-      updatedPartner !== undefined
-    ) {
-      toast.success(`${translate('Added', Language)}`);
+    if (isSuccess && createdPartner) {
+      toast.success(`${translate('Created', Language)}`);
       navigate('/admin/partner-list');
       setTimeout(() => {
         window.location.reload();
       }, 1000);
     }
+    if (isSuccess && updatedPartner) {
+      toast.success(`${translate('Updated', Language)}`);
+      navigate('/admin/partner-list');
+    }
     if (isError) {
       toast.error(`${translate('Wrong', Language)}`);
     }
   }, [isSuccess, isError, createdPartner, updatedPartner, navigate]);
-
   const formik = useFormik({
     enableReinitialize: true,
     initialValues: {

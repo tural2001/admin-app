@@ -13,7 +13,6 @@ function ProtectedRoute({ element: Component, ...rest }) {
   );
 }
 
-// Usage:
 <Route
   path="/dashboard"
   element={<ProtectedRoute element={<Dashboard />} />}

@@ -14,11 +14,11 @@ import {
   updateAchannel,
 } from '../features/channels/channelsSlice';
 import { getcountries } from '../features/countries/countriesSlice';
-import { gettariffs } from '../features/tariffs/tariffSlice';
 import { uploadImg } from '../features/upload/uploadSlice';
 import { language } from '../Language/languages';
 import { useTranslation } from '../components/TranslationContext';
 import { debounce } from 'lodash';
+import { getservices } from '../features/services/servicesSlice';
 
 const Addchannel = () => {
   const { translate, Language } = useTranslation();
@@ -36,7 +36,9 @@ const Addchannel = () => {
     country_id: yup
       .number()
       .required(`${translate('Required_Fill', Language)}`),
-    tariff_id: yup.number().required(`${translate('Required_Fill', Language)}`),
+    service_id: yup
+      .number()
+      .required(`${translate('Required_Fill', Language)}`),
     image: yup.mixed().required(`${translate('Required_Fill', Language)}`),
     active: yup.boolean(),
   });
@@ -51,7 +53,7 @@ const Addchannel = () => {
   const {
     isSuccess,
     isError,
-    channelTariff_id,
+    channelService_id,
     createdChannel,
     ChannelData,
     channelActive,
@@ -71,15 +73,15 @@ const Addchannel = () => {
     debounce(() => {
       language.forEach((selectedLanguage) => {
         dispatch(getcountries(selectedLanguage));
-        dispatch(gettariffs(selectedLanguage));
+        dispatch(getservices(selectedLanguage));
       });
     }, 500),
     []
   );
 
   const countryState = useSelector((state) => state.country.countries.data);
-  const tariffState = useSelector((state) => state.tariff.tariffs.data);
-
+  const serviceState = useSelector((state) => state.service.services.data);
+  console.log(serviceState);
   const debouncedApiCalls = useCallback(
     debounce(() => {
       if (getchannelId !== undefined) {
@@ -145,7 +147,7 @@ const Addchannel = () => {
       }, {}),
       active: channelActive ? 1 : 0,
       country_id: channelCountry_id || '',
-      tariff_id: channelTariff_id || '',
+      service_id: channelService_id || '',
       image: channelImage || null,
     },
     validationSchema: schema,
@@ -161,7 +163,7 @@ const Addchannel = () => {
               name: values.name[lang],
               active: values.active === 1 ? 1 : 0,
               country_id: values.country_id,
-              tariff_id: values.tariff_id,
+              service_id: values.service_id,
               image: values.image,
             },
             selectedLanguage: lang,
@@ -176,7 +178,7 @@ const Addchannel = () => {
               name: values.name[firstLang],
               active: values.active === 1 ? 1 : 0,
               country_id: values.country_id,
-              tariff_id: values.tariff_id,
+              service_id: values.service_id,
               image: values.image,
             },
             selectedLanguage: firstLang,
@@ -192,7 +194,7 @@ const Addchannel = () => {
                     name: values.name[lang],
                     active: values.active === 1 ? 1 : 0,
                     country_id: values.country_id,
-                    tariff_id: values.tariff_id,
+                    service_id: values.service_id,
                     image: values.image,
                   },
                   selectedLanguage: lang,
@@ -237,7 +239,12 @@ const Addchannel = () => {
         <form
           onSubmit={(e) => {
             e.preventDefault();
-            const requiredFields = ['name', 'country_id', 'image', 'tariff_id'];
+            const requiredFields = [
+              'name',
+              'country_id',
+              'image',
+              'service_id',
+            ];
             const errors = {};
             requiredFields.forEach((fieldName) => {
               if (formik.touched[fieldName] && !formik.values[fieldName]) {
@@ -355,25 +362,25 @@ const Addchannel = () => {
             {formik.touched.country_id && formik.errors.country_id}
           </div>
           <label htmlFor="" className="mt-2">
-            {translate('Tariff', Language)}{' '}
+            {translate('Service', Language)}{' '}
           </label>
           <select
             className="text-[#637381] mt-2 bg-inherit w text-[15px] font-medium rounded-lg block w-1/8 p-2.5 focus:ring-0 hom"
-            id="tariff_id"
-            name="tariff_id"
-            onChange={formik.handleChange('tariff_id')}
-            onBlur={formik.handleBlur('tariff_id')}
-            value={formik.values.tariff_id}
+            id="service_id"
+            name="service_id"
+            onChange={formik.handleChange('service_id')}
+            onBlur={formik.handleBlur('service_id')}
+            value={formik.values.service_id}
           >
-            <option value=""> {translate('Select_Tariff', Language)}</option>
-            {tariffState?.map((tariff) => (
-              <option key={tariff.id} value={tariff.id}>
-                {tariff.name}
+            <option value=""> {translate('Select_Service', Language)}</option>
+            {serviceState?.map((service) => (
+              <option key={service.id} value={service.id}>
+                {service.title}
               </option>
             ))}
           </select>
           <div className="error">
-            {formik.touched.tariff_id && formik.errors.tariff_id}
+            {formik.touched.service_id && formik.errors.service_id}
           </div>
           <label htmlFor="" className="mt-2">
             {translate('Image', Language)}

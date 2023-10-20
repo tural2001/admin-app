@@ -192,7 +192,7 @@ const Addadvantage = () => {
   const handleLanguageClick1 = (language) => {
     setSelectedLanguage1(language);
   };
-  console.log(AdIcon);
+
   return (
     <div>
       <h3 className="mb-4 title">

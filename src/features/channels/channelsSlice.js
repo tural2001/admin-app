@@ -56,7 +56,7 @@ export const createAchannel = createAsyncThunk(
       );
       formdata.append('name', channelData.values.name);
       formdata.append('country_id', channelData.values.country_id);
-      formdata.append('tariff_id', channelData.values.tariff_id);
+      formdata.append('service_id', channelData.values.service_id);
       const response = await channelService.createchannel(formdata);
       return response.data;
     } catch (error) {
@@ -80,7 +80,7 @@ export const updateAchannel = createAsyncThunk(
         );
       }
       formdata.append('country_id', channelData.channelData.country_id);
-      formdata.append('tariff_id', channelData.channelData.tariff_id);
+      formdata.append('service_id', channelData.channelData.service_id);
       formdata.append('_method', 'PUT');
       const response = await channelService.updatechannel(
         formdata,
@@ -141,7 +141,7 @@ export const channelSlice = createSlice({
         state.ChannelData = action.payload;
         state.channelActive = action.payload[language[0]].data.active;
         state.channelCountry_id = action.payload[language[0]].data.country_id;
-        state.channelTariff_id = action.payload[language[0]].data.tariff_id;
+        state.channelService_id = action.payload[language[0]].data.service_id;
         state.channelImage = action.payload[language[0]].data.image;
       })
       .addCase(getAchannel.rejected, (state, action) => {

@@ -42,44 +42,6 @@ export const deleteApaymentformdata = createAsyncThunk(
   }
 );
 
-// export const createApaymentformdata = createAsyncThunk(
-//   'paymentformdatas/create-paymentformdata',
-//   async (paymentformdataData, id, thunkAPI) => {
-//     console.log(paymentformdataData);
-//     try {
-//       const response = await formService.createpaymentformdata(paymentformdataData, id);
-//       return response.data;
-//     } catch (error) {
-//       return thunkAPI.rejectWithValue(error);
-//     }
-//   }
-// );
-
-// export const updateApaymentformdata = createAsyncThunk(
-//   'paymentformdatas/update-paymentformdata',
-//   async (paymentformdataData, thunkAPI) => {
-//     console.log(paymentformdataData);
-//     try {
-//       const paymentformdata = new paymentformdata();
-//       paymentformdata.append('label', paymentformdataData.paymentformdata.label);
-//       paymentformdata.append('name', paymentformdataData.paymentformdata.name);
-//       paymentformdata.append('rules', paymentformdataData.paymentformdata.rules);
-//       paymentformdata.append('data', paymentformdataData.paymentformdata.data);
-//       paymentformdata.append('type', paymentformdataData.paymentformdata.type);
-//       paymentformdata.append('_method', 'PUT');
-//       const response = await formService.updatepaymentformdata(
-//         paymentformdata,
-//         paymentformdataData.id,
-//         paymentformdataData.formId
-//       );
-//       console.log(response.data);
-//       return response.data;
-//     } catch (error) {
-//       return thunkAPI.rejectWithValue(error);
-//     }
-//   }
-// );
-
 export const resetState = createAction('Reset_all');
 
 export const paymentformdataSlice = createSlice({
@@ -103,21 +65,7 @@ export const paymentformdataSlice = createSlice({
         state.isError = true;
         state.message = action.error;
       })
-      // .addCase(createApaymentformdata.pending, (state) => {
-      //   state.isLoading = true;
-      // })
-      // .addCase(createApaymentformdata.fulfilled, (state, action) => {
-      //   state.isLoading = false;
-      //   state.isSuccess = true;
-      //   state.isError = false;
-      //   state.createdpaymentformdata = action.payload;
-      // })
-      // .addCase(createApaymentformdata.rejected, (state, action) => {
-      //   state.isLoading = false;
-      //   state.isSuccess = false;
-      //   state.isError = true;
-      //   state.message = action.error;
-      // })
+
       .addCase(getApaymentformdata.pending, (state) => {
         state.isLoading = true;
       })
@@ -137,21 +85,7 @@ export const paymentformdataSlice = createSlice({
         state.isError = true;
         state.message = action.error;
       })
-      // .addCase(updateApaymentformdata.pending, (state) => {
-      //   state.isLoading = true;
-      // })
-      // .addCase(updateApaymentformdata.fulfilled, (state, action) => {
-      //   state.isLoading = false;
-      //   state.isSuccess = true;
-      //   state.isError = false;
-      //   state.updatedpaymentformdata = action.payload;
-      // })
-      // .addCase(updateApaymentformdata.rejected, (state, action) => {
-      //   state.isLoading = false;
-      //   state.isSuccess = false;
-      //   state.isError = true;
-      //   state.message = action.error;
-      // })
+
       .addCase(deleteApaymentformdata.pending, (state) => {
         state.isLoading = true;
       })

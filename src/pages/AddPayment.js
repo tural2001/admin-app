@@ -130,6 +130,12 @@ const AddPayment = () => {
         navigate('/admin/payment-list');
       }, 1000);
     }
+
+    if (isError) {
+      toast.error(`${translate('Wrong', Language)}`);
+    }
+  }, [isSuccess, isError, updatedPayment]);
+  useEffect(() => {
     if (
       isSuccess &&
       createdPayment !== undefined &&
@@ -137,6 +143,13 @@ const AddPayment = () => {
     ) {
       toast.success(`${translate('Added', Language)}`);
       navigate('/admin/payment-list');
+      setTimeout(() => {
+        window.location.reload();
+      }, 1000);
+    }
+    if (isSuccess && createdPayment !== undefined) {
+      toast.success(`${translate('Added', Language)}`);
+      navigate('/admin/faq-list');
       setTimeout(() => {
         window.location.reload();
       }, 1000);

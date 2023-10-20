@@ -223,21 +223,6 @@ const AddPaymentField = () => {
     }
   }, [getfieldId, newpaymentField.fieldpaymentRequired]);
 
-  // useEffect(() => {
-  //   if (
-  //     formik.values.type === '3' ||
-  //     formik.values.type === '4' ||
-  //     formik.values.type === '6'
-  //   ) {
-  //     formik.setFieldTouched('required', true);
-  //     formik.setFieldTouched('data', true);
-  //   } else {
-  //     formik.setFieldValue('required', '');
-  //     formik.setFieldValue('data', '');
-  //     formik.setFieldTouched('required', false);
-  //     formik.setFieldTouched('data', false);
-  //   }
-  // }, [formik.values.type]);
   const handleLanguageClick1 = (language) => {
     setSelectedLanguage1(language);
   };

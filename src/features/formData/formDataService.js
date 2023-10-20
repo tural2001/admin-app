@@ -10,24 +10,6 @@ const getformdatas = async () => {
   return response.data;
 };
 
-// const createformdata = async (formdata) => {
-//   const response = await axios.post(
-//     `${base_url}/api/form-data`,
-//     formdata,
-//     config
-//   );
-//   return response.data;
-// };
-
-// const updateformdata = async (formdata, id) => {
-//   const response = await axios.post(
-//     `${base_url}/api/form-data/${id}`,
-//     formdata,
-//     config
-//   );
-//   return response.data;
-// };
-
 const getformdata = async (id) => {
   const selectedLanguage = 'az';
 
@@ -52,8 +34,6 @@ const deleteformdata = async (id) => {
 
 const formService = {
   getformdatas,
-  // createformdata,
-  // updateformdata,
   getformdata,
   deleteformdata,
 };

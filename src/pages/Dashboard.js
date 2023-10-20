@@ -11,19 +11,6 @@ import { useTranslation } from '../components/TranslationContext';
 const Dashboard = () => {
   const dispatch = useDispatch();
 
-  // useEffect(() => {
-  //   const debouncedDispatch = debounce(dispatch, 1000);
-
-  //   dispatch(getcampaigns());
-  //   dispatch(getcareers());
-  //   dispatch(getfaqforms());
-  //   dispatch(getcareers());
-  //   dispatch(getformdatas());
-  //   return () => {
-  //     debouncedDispatch.cancel();
-  //   };
-  // }, []);
-
   const debouncedApiCalls = useCallback(
     debounce(() => {
       dispatch(getcampaigns());
@@ -38,29 +25,11 @@ const Dashboard = () => {
     debouncedApiCalls();
   }, [debouncedApiCalls]);
 
-  const formdatastate =
-    useSelector((state) => state.formdata?.formdatas?.data) || [];
-  // const dataList = formdatastate.map((item) => item.data);
-  // const parsedDataList = dataList.map((data) => JSON.parse(data));
-
   const faqformState =
     useSelector((state) => state.faqform?.faqforms?.data) || [];
   const careerformState =
     useSelector((state) => state.career?.careers?.data) || [];
 
-  const formatDate = (dateTimeString) => {
-    const options = {
-      year: 'numeric',
-      month: '2-digit',
-      day: '2-digit',
-      hour: '2-digit',
-      minute: '2-digit',
-      second: '2-digit',
-      hour12: false,
-    };
-
-    return new Date(dateTimeString).toLocaleString(undefined, options);
-  };
   const { translate, Language } = useTranslation();
 
   return (

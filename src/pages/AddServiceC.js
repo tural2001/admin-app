@@ -116,19 +116,6 @@ const AddServiceC = () => {
       active: serviceCActive ? 1 : 0,
     },
     validationSchema: schema,
-    // validate: (values) => {
-    //   const errors = {};
-
-    //   language.forEach((lang) => {
-    //     const nameKey = `name.${lang}`;
-
-    //     if (values && !values[nameKey]) {
-    //       errors[nameKey] = ` Name for ${lang} is Required`;
-    //     }
-    //   });
-
-    //   return errors;
-    // },
 
     onSubmit: (values) => {
       alert(JSON.stringify(values));

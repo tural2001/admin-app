@@ -224,3 +224,5 @@ export const Added = 'Added successfully!';
 export const Wrong = 'Sometign went wrong!';
 export const Required_Fill = 'Required to fill!';
 export const Fill = 'Please fill in the required fields!';
+//Login
+export const Sign_to = 'Sign to your account';

@@ -3,13 +3,11 @@ export const Dashboard = 'İdarə paneli';
 
 // Advantages
 export const Advantages = 'Üstünlüklər';
-export const Add_Advantages = 'Üstünlük əlavə et';
-export const Edit_Advantages = 'Üstünlük redaktə et';
+export const Add_Advantage = 'Üstünlük əlavə et';
+export const Edit_Advantage = 'Üstünlük redaktə et';
 export const Status = 'Aktiv';
 export const Title = 'Başlıq';
 export const Icon = 'İkon';
-export const Add_Advantage = 'Üstünlük əlavə et';
-export const Edit_Advantage = 'Üstünlüyü redaktə et';
 export const Advantage_Modal = 'Bu üstünlüyü silmək istədiyinizə əminsiniz ?';
 export const Edit = 'Redaktə et';
 export const Add = 'Əlavə et';
@@ -230,3 +228,5 @@ export const Added = 'Uğurla əlavə edildi';
 export const Wrong = 'Nə isə səhv getdi!';
 export const Required_Fill = 'Doldurmağınız tələb olunur!';
 export const Fill = 'Zəhmət olmasa tələb olunan sahələri doldurun!';
+//Login
+export const Sign_to = 'Öz hesabınız ilə giriş edin';

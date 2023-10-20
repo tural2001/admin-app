@@ -106,11 +106,24 @@ const Addreview = () => {
         navigate('/admin/review-list');
       }, 1000);
     }
+
+    if (isError) {
+      toast.error(`${translate('Wrong', Language)}`);
+    }
+  }, [isSuccess, isError, updatedReview]);
+  useEffect(() => {
     if (
       isSuccess &&
       createdReview !== undefined &&
       updatedReview !== undefined
     ) {
+      toast.success(`${translate('Added', Language)}`);
+      navigate('/admin/review-list');
+      setTimeout(() => {
+        window.location.reload();
+      }, 1000);
+    }
+    if (isSuccess && createdReview !== undefined) {
       toast.success(`${translate('Added', Language)}`);
       navigate('/admin/review-list');
       setTimeout(() => {

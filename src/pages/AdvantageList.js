@@ -70,7 +70,7 @@ const AdvantageList = () => {
           className="flex justify-center items-center pr-3 gap-1 rounded-lg add_button_2"
         >
           <span className="mb-1 ml-2 text-[30px] hover:text-white">+</span>
-          {translate('Add_Advantages', Language)}
+          {translate('Add_Advantage', Language)}
         </Link>
       </div>
       <div>
@@ -83,19 +83,16 @@ const AdvantageList = () => {
                 </th>
                 <th scope="col" className="px-6 py-3">
                   <div className="flex items-center">
-                    {' '}
                     {translate('Status', Language)}
                   </div>
                 </th>
                 <th scope="col" className="px-6 py-3">
                   <div className="flex items-center">
-                    {' '}
                     {translate('Title', Language)}
                   </div>
                 </th>
                 <th scope="col" className="px-6 py-3">
                   <div className="flex items-center">
-                    {' '}
                     {translate('Icon', Language)}
                   </div>
                 </th>

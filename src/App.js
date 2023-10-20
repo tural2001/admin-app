@@ -5,7 +5,7 @@ import Login from './pages/Login';
 import MainLayout from './components/MainLayout';
 import FaqList from './pages/FaqList';
 import { PrivateRoutes } from './routing/PrivateRoutes';
-import { OpenRoutes } from './routing//OpenRoutes';
+import { OpenRoutes } from './routing/OpenRoutes';
 import Addfaq from './pages/Addfaq';
 import Addreview from './pages/Addreview';
 import ReviewList from './pages/ReviewList';
@@ -48,11 +48,9 @@ import AddOurValue from './pages/AddOurValue';
 import AddColor from './pages/AddColor';
 import ColorList from './pages/ColorList';
 import CareerList from './pages/CareerList';
-import AddCareer from './pages/AddCareer';
 import FaqFormList from './pages/FaqFormList';
 import AddFaqForm from './pages/AddFaqForm';
 import FormDataList from './pages/FormDataList';
-import Addcareer from './pages/Addcareerpage';
 import CareerpageList from './pages/Careerpage';
 import Addcareerpage from './pages/Addcareerpage';
 import ServiceCList from './pages/ServiceCList';
@@ -69,9 +67,11 @@ function App() {
         <Route
           path="/"
           element={
-            <OpenRoutes>
-              <Login />
-            </OpenRoutes>
+            <TranslationProvider>
+              <OpenRoutes>
+                <Login />
+              </OpenRoutes>
+            </TranslationProvider>
           }
         />
         <Route

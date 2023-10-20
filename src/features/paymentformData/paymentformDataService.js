@@ -13,24 +13,6 @@ const getpaymentformdatas = async () => {
   return response.data;
 };
 
-// const createpaymentformdata = async (paymentformdata) => {
-//   const response = await axios.post(
-//     `${base_url}/api/form-data`,
-//     paymentformdata,
-//     config
-//   );
-//   return response.data;
-// };
-
-// const updatepaymentformdata = async (paymentformdata, id) => {
-//   const response = await axios.post(
-//     `${base_url}/api/form-data/${id}`,
-//     paymentformdata,
-//     config
-//   );
-//   return response.data;
-// };
-
 const getpaymentformdata = async (id) => {
   const selectedLanguage = 'az';
 
@@ -58,8 +40,6 @@ const deletepaymentformdata = async (id) => {
 
 const paymentformService = {
   getpaymentformdatas,
-  // createpaymentformdata,
-  // updatepaymentformdata,
   getpaymentformdata,
   deletepaymentformdata,
 };

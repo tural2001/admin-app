@@ -106,13 +106,6 @@ export const faqSlice = createSlice({
         console.log(action.payload[language[0]].data.active);
         state.FaqData = action.payload;
         state.FaqActive = action.payload[language[0]].data.active;
-
-        // state.faqQuestion = action.payload.az.data.question;
-        // state.faqAnswer = action.payload.az.data.answer;
-        // state.faqActive = action.payload.az.data.active;
-        // state.faqQuestion = action.payload.en.data.question;
-        // state.faqAnswer = action.payload.en.data.answer;
-        // state.faqActive = action.payload.en.data.active;
       })
       .addCase(getAfaq.rejected, (state, action) => {
         state.isLoading = false;
