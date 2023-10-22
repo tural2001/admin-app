@@ -1,6 +1,5 @@
 import { createSlice, createAsyncThunk, createAction } from '@reduxjs/toolkit';
 import partnerService from './partnersService';
-import { language } from '../../Language/languages';
 
 const initialState = {
   partners: [],
