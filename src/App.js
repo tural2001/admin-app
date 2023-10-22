@@ -10,6 +10,7 @@ import Addfaq from './pages/Addfaq';
 import Addreview from './pages/Addreview';
 import ReviewList from './pages/ReviewList';
 import AddPartner from './pages/AddPartner';
+
 import Partnerlist from './pages/Partnerlist';
 import Addpopup from './pages/Addpopup';
 import Popuplist from './pages/Popuplist';
@@ -86,7 +87,7 @@ function App() {
         >
           <Route index element={<Dashboard />} />
           <Route path="user-list" element={<UserList />} />
-          <Route path="user" element={<AddUser />} />
+          <Route path="users" element={<AddUser />} />
           <Route path="user/:id" element={<AddUser />} />
           <Route path="setting-list" element={<SettingList />} />
           <Route path="setting/:id" element={<Addsetting />} />
