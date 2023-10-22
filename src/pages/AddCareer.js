@@ -180,7 +180,7 @@ const AddCareer = () => {
         >
           {' '}
           <label htmlFor="" className="">
-            Status
+            {translate('Status', Language)}{' '}
           </label>
           <div className="my-3">
             <div className="mt-1">
